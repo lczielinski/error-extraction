@@ -1,0 +1,330 @@
+Base path: /Users/laura.zielinski/FPTaylor
+Config file: /Users/laura.zielinski/FPTaylor/default.cfg
+Config file: /var/folders/38/q_vgzzt959nfc63ldktzz1gr0000gp/T/tmp9uzegl27.cfg
+default-rnd = rnd64
+nlopt-cc = gcc -std=c99 -O3
+opt-exact = true
+develop = false
+log-append-date = start
+uncertainty = false
+rel-error = true
+opt-approx = false
+proof-record = false
+find-bounds = false
+proof-dir = proofs
+opt-f-abs-tol = 0.01
+fail-on-exception = true
+print-opt-lower-bounds = true
+bb-compile = {base}/b_and_b/compile.sh {base} {input} {out}
+z3-python-lib = 
+opt-x-abs-tol = 0.01
+export-error-bounds = 
+opt-f-rel-tol = 0.01
+export-options = 
+opt-x-rel-tol = 0.0
+rel-error-threshold = 0.0001
+bb-alg = opt0
+log-base-dir = log
+intermediate-opt = false
+z3-interval-bounds = true
+opt-max-iters = 1000000
+abs-error = true
+z3-bin = 
+maxima-simplification = false
+print-hex-floats = true
+debug = true
+print-precision = 7
+export-error-bounds-data = 
+fp-power2-model = true
+opt = auto
+default-var-type = float64
+verbosity = 2
+ulp-error = false
+opt-timeout = 10000
+nlopt-lib = -lnlopt -lm
+tmp-base-dir = tmp
+unique-indices = false
+z3-seed = 0
+tmp-date = false
+z3-python-cmd = python
+const-approx-real-vars = false
+print-second-order-errors = false
+Resetting input_parser_env
+eval_const_expr: 4
+result: 4
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 0
+result: 0
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 4
+result: 4
+eval_const_expr: 4
+result: 4
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 0
+result: 0
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 4
+result: 4
+eval_const_expr: 4
+result: 4
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 0
+result: 0
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 4
+result: 4
+eval_const_expr: 4
+result: 4
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 0
+result: 0
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 4
+result: 4
+eval_const_expr: 4
+result: 4
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 0
+result: 0
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 4
+result: 4
+eval_const_expr: 4
+result: 4
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 0
+result: 0
+eval_const_expr: (159/25)
+result: 159/25
+eval_const_expr: 4
+result: 4
+Resetting input_parser_env
+|tasks| = 1
+Processing: result
+
+*************************************
+Taylor form for: rnd64((rnd64((rnd64((rnd64((rnd64((rnd64(x6) - rnd64((rnd64((rnd64(x2) - rnd64(x3))) - rnd64(x1))))) - rnd64((rnd64(x5) - rnd64(x4))))) * rnd64((rnd64(x5) * rnd64(x2))))) - rnd64((rnd64((rnd64((rnd64((rnd64((rnd64(x4) - rnd64(x5))) - rnd64(x6))) - rnd64((rnd64(x3) - rnd64((rnd64(x1) - rnd64(x2))))))) * rnd64((rnd64(x4) * rnd64(x1))))) - rnd64((rnd64((rnd64((rnd64((rnd64((rnd64((rnd64(x5) - rnd64(x6))) - rnd64((rnd64((rnd64((rnd64(x3) - rnd64(x1))) - rnd64(x2))) - rnd64(x4))))) * rnd64(x6))) - rnd64((rnd64(x2) * rnd64(x4))))) * rnd64(x3))) - rnd64((rnd64((rnd64((rnd64(x5) * rnd64(x3))) + rnd64((rnd64(x6) * rnd64(x2))))) * rnd64(x1))))))))) - rnd64((rnd64((rnd64(x5) * rnd64(x4))) * rnd64(x6)))))
+
+Conservative bound: [-840.634624, 1822.563072]
+
+Simplified rounding: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x6 - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x2 - x3)) - x1)))) - rnd[64,ne,1.00,-53,0]((x5 - x4)))) * rnd64((x5 * x2)))) - rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x4 - x5)) - x6)) - rnd[64,ne,1.00,-53,0]((x3 - rnd[64,ne,1.00,-53,0]((x1 - x2)))))) * rnd64((x4 * x1)))) - rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x5 - x6)) - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x3 - x1)) - x2)) - x4)))) * x6)) - rnd64((x2 * x4)))) * x3)) - rnd64((rnd[64,ne,1.00,-53,0]((rnd64((x5 * x3)) + rnd64((x6 * x2)))) * x1)))))))) - rnd64((rnd64((x5 * x4)) * x6))))
+Building Taylor forms...
+var_form
+var_form
+var_form
+sub_form
+rounded_form
+var_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+var_form
+var_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+mul_form
+rounded_form
+mul_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+mul_form
+rounded_form
+mul_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+mul_form
+rounded_form
+mul_form
+rounded_form
+sub_form
+rounded_form
+mul_form
+rounded_form
+mul_form
+rounded_form
+mul_form
+rounded_form
+add_form
+rounded_form
+mul_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+mul_form
+rounded_form
+mul_form
+rounded_form
+sub_form
+rounded_form
+Taylor forms cache stats: num_bindings = 72, num_buckets = 1024, max_bucket_length = 2
+Expr cache stats: num_bindings = 226, num_buckets = 65536, max_bucket_length = 2
+Simplifying Taylor forms...
+success
+v0 = (((((x6 - ((x2 - x3) - x1)) - (x5 - x4)) * (x5 * x2)) - (((((x4 - x5) - x6) - (x3 - (x1 - x2))) * (x4 * x1)) - ((((((x5 - x6) - (((x3 - x1) - x2) - x4)) * x6) - (x2 * x4)) * x3) - (((x5 * x3) + (x6 * x2)) * x1)))) - ((x5 * x4) * x6))
+-1: exp = -53: (2533274790395907/9903520314283042199192993792)
+1: exp = -53: ((x5 * x2) * (-(floor_power2(((x2 - x3) + 0)))))
+2: exp = -53: ((x5 * x2) * (-(floor_power2((((x2 - x3) - x1) + interval(-2.22044604925031308085e-16, 2.22044604925031308085e-16))))))
+3: exp = -53: ((x5 * x2) * floor_power2(((x6 - ((x2 - x3) - x1)) + interval(-1.11022302462515654042e-15, 1.11022302462515654042e-15))))
+4: exp = -53: ((x5 * x2) * (-(floor_power2(((x5 - x4) + 0)))))
+5: exp = -53: ((x5 * x2) * floor_power2((((x6 - ((x2 - x3) - x1)) - (x5 - x4)) + interval(-2.22044604925031308085e-15, 2.22044604925031308085e-15))))
+6: exp = -53: (((x6 - ((x2 - x3) - x1)) - (x5 - x4)) * floor_power2(((x5 * x2) + 0)))
+7: exp = -53: floor_power2(((((x6 - ((x2 - x3) - x1)) - (x5 - x4)) * (x5 * x2)) + interval(-2.23628404683040666759e-13, 2.23628404683040666759e-13)))
+8: exp = -53: (-(((x4 * x1) * floor_power2(((x4 - x5) + 0)))))
+9: exp = -53: (-(((x4 * x1) * floor_power2((((x4 - x5) - x6) + interval(-2.22044604925031308085e-16, 2.22044604925031308085e-16))))))
+10: exp = -53: (-(((x4 * x1) * (-((-(floor_power2(((x1 - x2) + 0)))))))))
+11: exp = -53: (-(((x4 * x1) * (-(floor_power2(((x3 - (x1 - x2)) + interval(-2.22044604925031308085e-16, 2.22044604925031308085e-16))))))))
+12: exp = -53: (-(((x4 * x1) * floor_power2(((((x4 - x5) - x6) - (x3 - (x1 - x2))) + interval(-2.22044604925031308085e-15, 2.22044604925031308085e-15))))))
+13: exp = -53: (-(((((x4 - x5) - x6) - (x3 - (x1 - x2))) * floor_power2(((x4 * x1) + 0)))))
+14: exp = -53: (-(floor_power2((((((x4 - x5) - x6) - (x3 - (x1 - x2))) * (x4 * x1)) + interval(-2.23628404683040666759e-13, 2.23628404683040666759e-13)))))
+15: exp = -53: (-((-((x3 * (x6 * floor_power2(((x5 - x6) + 0))))))))
+16: exp = -53: (-((-((x3 * (x6 * (-(floor_power2(((x3 - x1) + 0))))))))))
+17: exp = -53: (-((-((x3 * (x6 * (-(floor_power2((((x3 - x1) - x2) + interval(-2.22044604925031308085e-16, 2.22044604925031308085e-16)))))))))))
+18: exp = -53: (-((-((x3 * (x6 * (-(floor_power2(((((x3 - x1) - x2) - x4) + interval(-1.11022302462515654042e-15, 1.11022302462515654042e-15)))))))))))
+19: exp = -53: (-((-((x3 * (x6 * floor_power2((((x5 - x6) - (((x3 - x1) - x2) - x4)) + interval(-2.22044604925031308085e-15, 2.22044604925031308085e-15)))))))))
+20: exp = -53: (-((-((x3 * floor_power2(((((x5 - x6) - (((x3 - x1) - x2) - x4)) * x6) + interval(-2.54196663718175881885e-14, 2.54196663718175881885e-14))))))))
+21: exp = -53: (-((-((x3 * (-(floor_power2(((x2 * x4) + 0)))))))))
+22: exp = -53: (-((-((x3 * floor_power2((((((x5 - x6) - (((x3 - x1) - x2) - x4)) * x6) - (x2 * x4)) + interval(-3.60778074082190909766e-14, 3.60778074082190909766e-14))))))))
+23: exp = -53: (-((-(floor_power2(((((((x5 - x6) - (((x3 - x1) - x2) - x4)) * x6) - (x2 * x4)) * x3) + interval(-2.74645373110615933816e-13, 2.74645373110615933816e-13)))))))
+24: exp = -53: (-((-((-((x1 * floor_power2(((x5 * x3) + 0)))))))))
+25: exp = -53: (-((-((-((x1 * floor_power2(((x6 * x2) + 0)))))))))
+26: exp = -53: (-((-((-((x1 * floor_power2((((x5 * x3) + (x6 * x2)) + interval(-7.10542735760100343643e-15, 7.10542735760100343643e-15))))))))))
+27: exp = -53: (-((-((-(floor_power2(((((x5 * x3) + (x6 * x2)) * x1) + interval(-9.03810359886847608084e-14, 9.03810359886847608084e-14)))))))))
+28: exp = -53: (-((-(floor_power2((((((((x5 - x6) - (((x3 - x1) - x2) - x4)) * x6) - (x2 * x4)) * x3) - (((x5 * x3) + (x6 * x2)) * x1)) + interval(-4.78713246820916850581e-13, 4.78713246820916850581e-13)))))))
+29: exp = -53: (-(floor_power2(((((((x4 - x5) - x6) - (x3 - (x1 - x2))) * (x4 * x1)) - ((((((x5 - x6) - (((x3 - x1) - x2) - x4)) * x6) - (x2 * x4)) * x3) - (((x5 * x3) + (x6 * x2)) * x1))) + interval(-8.16028489225573824759e-13, 8.16028489225573824759e-13)))))
+30: exp = -53: floor_power2((((((x6 - ((x2 - x3) - x1)) - (x5 - x4)) * (x5 * x2)) - (((((x4 - x5) - x6) - (x3 - (x1 - x2))) * (x4 * x1)) - ((((((x5 - x6) - (((x3 - x1) - x2) - x4)) * x6) - (x2 * x4)) * x3) - (((x5 * x3) + (x6 * x2)) * x1)))) + interval(-1.21018715049103881381e-12, 1.21018715049103881381e-12)))
+31: exp = -53: (-((x6 * floor_power2(((x5 * x4) + 0)))))
+32: exp = -53: (-(floor_power2((((x5 * x4) * x6) + interval(-2.25952589971711902021e-14, 2.25952589971711902021e-14)))))
+33: exp = -53: floor_power2(((((((x6 - ((x2 - x3) - x1)) - (x5 - x4)) * (x5 * x2)) - (((((x4 - x5) - x6) - (x3 - (x1 - x2))) * (x4 * x1)) - ((((((x5 - x6) - (((x3 - x1) - x2) - x4)) * x6) - (x2 * x4)) * x3) - (((x5 * x3) + (x6 * x2)) * x1)))) - ((x5 * x4) * x6)) + interval(-1.37489095664023008536e-12, 1.37489095664023008536e-12)))
+
+Corresponding original subexpressions:
+1: rnd[64,ne,1.00,-53,0]((x2 - x3))
+2: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x2 - x3)) - x1))
+3: rnd[64,ne,1.00,-53,0]((x6 - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x2 - x3)) - x1))))
+4: rnd[64,ne,1.00,-53,0]((x5 - x4))
+5: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x6 - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x2 - x3)) - x1)))) - rnd[64,ne,1.00,-53,0]((x5 - x4))))
+6: rnd64((x5 * x2))
+7: rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x6 - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x2 - x3)) - x1)))) - rnd[64,ne,1.00,-53,0]((x5 - x4)))) * rnd64((x5 * x2))))
+8: rnd[64,ne,1.00,-53,0]((x4 - x5))
+9: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x4 - x5)) - x6))
+10: rnd[64,ne,1.00,-53,0]((x1 - x2))
+11: rnd[64,ne,1.00,-53,0]((x3 - rnd[64,ne,1.00,-53,0]((x1 - x2))))
+12: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x4 - x5)) - x6)) - rnd[64,ne,1.00,-53,0]((x3 - rnd[64,ne,1.00,-53,0]((x1 - x2))))))
+13: rnd64((x4 * x1))
+14: rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x4 - x5)) - x6)) - rnd[64,ne,1.00,-53,0]((x3 - rnd[64,ne,1.00,-53,0]((x1 - x2)))))) * rnd64((x4 * x1))))
+15: rnd[64,ne,1.00,-53,0]((x5 - x6))
+16: rnd[64,ne,1.00,-53,0]((x3 - x1))
+17: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x3 - x1)) - x2))
+18: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x3 - x1)) - x2)) - x4))
+19: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x5 - x6)) - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x3 - x1)) - x2)) - x4))))
+20: rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x5 - x6)) - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x3 - x1)) - x2)) - x4)))) * x6))
+21: rnd64((x2 * x4))
+22: rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x5 - x6)) - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x3 - x1)) - x2)) - x4)))) * x6)) - rnd64((x2 * x4))))
+23: rnd64((rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x5 - x6)) - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x3 - x1)) - x2)) - x4)))) * x6)) - rnd64((x2 * x4)))) * x3))
+24: rnd64((x5 * x3))
+25: rnd64((x6 * x2))
+26: rnd[64,ne,1.00,-53,0]((rnd64((x5 * x3)) + rnd64((x6 * x2))))
+27: rnd64((rnd[64,ne,1.00,-53,0]((rnd64((x5 * x3)) + rnd64((x6 * x2)))) * x1))
+28: rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x5 - x6)) - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x3 - x1)) - x2)) - x4)))) * x6)) - rnd64((x2 * x4)))) * x3)) - rnd64((rnd[64,ne,1.00,-53,0]((rnd64((x5 * x3)) + rnd64((x6 * x2)))) * x1))))
+29: rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x4 - x5)) - x6)) - rnd[64,ne,1.00,-53,0]((x3 - rnd[64,ne,1.00,-53,0]((x1 - x2)))))) * rnd64((x4 * x1)))) - rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x5 - x6)) - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x3 - x1)) - x2)) - x4)))) * x6)) - rnd64((x2 * x4)))) * x3)) - rnd64((rnd[64,ne,1.00,-53,0]((rnd64((x5 * x3)) + rnd64((x6 * x2)))) * x1))))))
+30: rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x6 - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x2 - x3)) - x1)))) - rnd[64,ne,1.00,-53,0]((x5 - x4)))) * rnd64((x5 * x2)))) - rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x4 - x5)) - x6)) - rnd[64,ne,1.00,-53,0]((x3 - rnd[64,ne,1.00,-53,0]((x1 - x2)))))) * rnd64((x4 * x1)))) - rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x5 - x6)) - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x3 - x1)) - x2)) - x4)))) * x6)) - rnd64((x2 * x4)))) * x3)) - rnd64((rnd[64,ne,1.00,-53,0]((rnd64((x5 * x3)) + rnd64((x6 * x2)))) * x1))))))))
+31: rnd64((x5 * x4))
+32: rnd64((rnd64((x5 * x4)) * x6))
+33: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x6 - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x2 - x3)) - x1)))) - rnd[64,ne,1.00,-53,0]((x5 - x4)))) * rnd64((x5 * x2)))) - rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x4 - x5)) - x6)) - rnd[64,ne,1.00,-53,0]((x3 - rnd[64,ne,1.00,-53,0]((x1 - x2)))))) * rnd64((x4 * x1)))) - rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x5 - x6)) - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((x3 - x1)) - x2)) - x4)))) * x6)) - rnd64((x2 * x4)))) * x3)) - rnd64((rnd[64,ne,1.00,-53,0]((rnd64((x5 * x3)) + rnd64((x6 * x2)))) * x1)))))))) - rnd64((rnd64((x5 * x4)) * x6))))
+
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 1000000, max = 1000000): 1000000
+min = 4.915901e+01 (lower_min = 1.280000e+02)
+max = 5.442297e+02 (lower_max = 5.145189e+02)
+subopt = 2.971076e+01 (5.5%)
+bounds: [4.915901e+01, 5.442297e+02]
+
+Computing absolute errors
+Selected optimization method: bb-eval
+bb-eval_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+rmin(result = 2.557954e-13, lower = 2.557954e-13), rmax(result = 2.557954e-13, lower = 2.557954e-13)
+-1: exp = -53: 2.557954e-13 (low = 2.557954e-13, subopt = 0.0%)
+
+Solving the exact optimization problem
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 0, max = 236): 236
+min = 0.000000e+00 (lower_min = 0.000000e+00)
+max = 8.568763e+03 (lower_max = 8.494938e+03)
+subopt = 7.382580e+01 (0.9%)
+exact bound (exp = -53): 8.568763e+03 (low = 8.494938e+03, subopt = 0.9%)
+total2: 2.839899e-29 (low = 2.839899e-29, subopt = 0.0%)
+exact total: 9.513238e-13 (low = 9.431275e-13, subopt = 0.9%)
+
+Computing relative errors
+Selected optimization method: bb-eval
+bb-eval_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+rmin(result = 2.557954e-13, lower = 2.557954e-13), rmax(result = 2.557954e-13, lower = 2.557954e-13)
+-1: exp = -53: 2.557954e-13 (low = 2.557954e-13, subopt = 0.0%)
+
+Solving the exact optimization problem
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 0, max = 1000000): 1000000
+min = 0.000000e+00 (lower_min = 0.000000e+00)
+max = 9.339205e+01 (lower_max = 2.070380e+01)
+subopt = 7.268826e+01 (77.8%)
+exact bound-rel (exp = -53): 9.339205e+01 (low = 2.070380e+01, subopt = 77.8%)
+total2: 5.776966e-31 (low = 5.218200e-32, subopt = 91.0%)
+exact total-rel: 1.036860e-14 (low = 2.298583e-15, subopt = 77.8%)
+
+Elapsed time: 33.79438
+*************************************
+
+-------------------------------------------------------------------------------
+Problem: result
+
+Optimization lower bounds for error models:
+The absolute error (exact) model: 9.431275e-13 (0x1.097780346dc5ap-40) (suboptimality = 0.9%)
+The relative error (exact) model: 2.298583e-15 (0x1.4b42c1c297ab8p-49) (suboptimality = 77.8%)
+
+Bounds (without rounding): [4.915901e+1, 5.442297e+2]
+Bounds (floating-point): [4.915901e+1, 5.442297e+2]
+
+Absolute error (exact): 9.513239e-13 (0x1.0bc61b71758ebp-40)
+Relative error (exact): 1.036861e-14 (0x1.759176bc8495dp-47)
+
+Elapsed time: 33.79
+

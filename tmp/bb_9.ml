@@ -10,24 +10,24 @@ let start_interval = Array.init 3 (function
 )
 
 let f_X input_array = 
-  let var_b = input_array.(0) in
+  let var_c = input_array.(0) in
   let var_a = input_array.(1) in
-  let var_c = input_array.(2) in
+  let var_b = input_array.(2) in
   let ref_0 = (var_a +$ var_b) in
-  let ref_1 = ({low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+00} /$ {low = 2.00000000000000000000e+00; high = 2.00000000000000000000e+00}) in
-  let ref_2 = (var_c *$ ref_1) in
-  let ref_3 = (ref_2 -$ var_a) in
-  let ref_4 = (ref_3 *$ {low = 2.00000000000000000000e+00; high = 2.00000000000000000000e+00}) in
-  let ref_5 = (ref_0 +$ ref_4) in
-  let ref_6 = ({low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+00} /$ {low = 4.00000000000000000000e+00; high = 4.00000000000000000000e+00}) in
-  let ref_7 = (ref_5 *$ ref_6) in
-  let ref_8 = (var_c +$ ref_0) in
-  let ref_9 = (ref_7 *$ ref_8) in
-  let ref_10 = (ref_2 -$ var_b) in
+  let ref_1 = (ref_0 +$ var_c) in
+  let ref_2 = ({low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+00} /$ {low = 2.00000000000000000000e+00; high = 2.00000000000000000000e+00}) in
+  let ref_3 = (var_c *$ ref_2) in
+  let ref_4 = (ref_3 -$ var_a) in
+  let ref_5 = (ref_4 *$ {low = 2.00000000000000000000e+00; high = 2.00000000000000000000e+00}) in
+  let ref_6 = (ref_0 +$ ref_5) in
+  let ref_7 = ({low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+00} /$ {low = 4.00000000000000000000e+00; high = 4.00000000000000000000e+00}) in
+  let ref_8 = (ref_6 *$ ref_7) in
+  let ref_9 = (ref_1 *$ ref_8) in
+  let ref_10 = (ref_3 -$ var_b) in
   let ref_11 = (ref_10 *$ {low = 2.00000000000000000000e+00; high = 2.00000000000000000000e+00}) in
   let ref_12 = (ref_11 +$ ref_0) in
-  let ref_13 = (ref_12 *$ ref_1) in
-  ((ref_9 *$ (ref_13 *$ {low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+00})) /$ ({low = 2.00000000000000000000e+00; high = 2.00000000000000000000e+00} *$ sqrt_I((ref_9 *$ (((((ref_2 -$ var_c) *$ {low = 2.00000000000000000000e+00; high = 2.00000000000000000000e+00}) +$ ref_0) *$ ref_1) *$ ref_13)))))
+  let ref_13 = (ref_12 *$ ref_2) in
+  ((ref_9 *$ (ref_13 *$ {low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+00})) /$ ({low = 2.00000000000000000000e+00; high = 2.00000000000000000000e+00} *$ sqrt_I(((ref_13 *$ ((((ref_3 -$ var_c) *$ {low = 2.00000000000000000000e+00; high = 2.00000000000000000000e+00}) +$ ref_0) *$ ref_2)) *$ ref_9))))
 
 
 let _ =

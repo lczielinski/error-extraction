@@ -179,3 +179,29 @@ rmin(result = 2.629781e-04, lower = 2.629781e-04), rmax(result = 2.629781e-04, l
 Solving the exact optimization problem
 Selected optimization method: bb
 bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 0, max = 1000000): 1000000
+min = 0.000000e+00 (lower_min = 0.000000e+00)
+max = 4.420374e+01 (lower_max = 6.865196e+00)
+subopt = 3.733855e+01 (84.5%)
+exact bound-rel (exp = -53): 4.420374e+01 (low = 6.865196e+00, subopt = 84.5%)
+total2: 3.973674e-17 (low = 2.901933e-21, subopt = 100.0%)
+exact total-rel: 4.947338e-15 (low = 7.621927e-16, subopt = 84.6%)
+
+Elapsed time: 27.04965
+*************************************
+
+-------------------------------------------------------------------------------
+Problem: result
+
+Optimization lower bounds for error models:
+The absolute error (exact) model: 5.890403e-15 (0x1.a872c3cc3c4fap-48) (suboptimality = 6.0%)
+The relative error (exact) model: 7.621927e-16 (0x1.b75fcb817156cp-51) (suboptimality = 84.6%)
+
+Bounds (without rounding): [-1.006104e+1, -7.347467e-4]
+Bounds (floating-point): [-1.006104e+1, -7.347467e-4]
+
+Absolute error (exact): 6.264319e-15 (0x1.c364484e3645cp-48)
+Relative error (exact): 4.947338e-15 (0x1.647e46cc23fe5p-48)
+
+Elapsed time: 27.05
+

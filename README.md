@@ -18,10 +18,21 @@ uv run extract.py all                    # the whole suite (~25s)
 uv run extract.py all --rounds 6         # bigger e-graphs (~6 min); this is what
                                          # cancel_sqrt_shift3 needs to find its split
 uv run check.py                          # FPTaylor-measure everything extracted
+uv run herbie.py                         # score against Herbie's own search
+uv run daisy.py                          # score against Daisy's sound rewriting
 ```
 
 Needs `uv` (the scripts declare their own dependencies) — no GPU, no model.
-`check.py` additionally needs `fptaylor` on PATH (`eval $(opam env)`).
+`check.py` additionally needs `fptaylor` on PATH (`eval $(opam env)`);
+`herbie.py` needs `herbie`, or racket with the herbie package installed;
+`daisy.py` needs a Daisy checkout built with `sbt compile && sbt script`
+(default `~/daisy`, override with `DAISY_DIR`; on a new JDK, Daisy's
+`Taylor.scala` needs explicit `override def max/min` in its
+`optionAbsOrdering` to compile). Daisy is the closest incumbent — it also
+optimizes a sound worst-case bound, but by genetic search with a static
+analysis in the loop rather than e-graph extraction against a compositional
+cost; `daisy.md` compares both tools' certified bounds and their output
+programs measured by FPTaylor as the neutral judge.
 
 Every `extract.py` run merges its records into `results.json` (benchmark,
 box, extracted program, predicted bound). `check.py` then bounds each
@@ -60,45 +71,69 @@ per benchmark).
 
 ## The cost model
 
-Each floating-point operation rounds once: it multiplies its exact result by
-`(1 + e)` with `|e| ≤ u = 2⁻⁵³` (IEEE double, round to nearest). Given bounds
-`da`, `db` for the children, the bound for each operator is:
+Two sound bounds are computed per e-class and compared lexicographically —
+relative error is the objective, absolute error the fallback where no
+relative bound can exist, term size the final tiebreak.
 
-| term            | bound on relative error                              |
-|-----------------|------------------------------------------------------|
-| variable        | `0` (inputs are doubles, taken as exact)             |
-| integer literal | `0` (`u` if the integer needs more than 53 bits)     |
-| `(- a)`         | `da` — negation is exact                             |
-| `(* a b)`       | `((1+da)(1+db) − 1) ⊕ u`                             |
-| `(/ a b)`       | `(da ⊕ db/(1−db)) ⊕ u`, infinite if `db ≥ 1`         |
-| `(sqrt a)`      | `≈ da/2 ⊕ u` (two-sided, exact formula in the code)  |
-| `a ± b`, same sign | `max(da, db) ⊕ u` — no cancellation possible      |
-| `a ± b`, general   | `(max|a|·da + max|b|·db) / min|a±b| ⊕ u`          |
+**Relative, in NumFuzz's log metric.** `R` means the term computes
+`exact · e^s` with `|s| ≤ R` everywhere in the box. One rounding multiplies
+by `(1+e)`, `|e| ≤ u = 2⁻⁵³`, i.e. contributes at most `E = −ln(1−u)` in the
+metric — and in this metric the operators compose *additively* (this is why
+NumFuzz uses it; it also makes "the bound formula itself cancels" bugs
+impossible, since everything is a sum of nonnegative terms):
 
-where `x ⊕ y = x + y + x·y` stacks two relative errors (this is exactly
-`(1+x)(1+y) − 1`, but written so the formula itself cannot cancel — computing
-`1 + 2⁻⁵³ − 1` naively gives `0.0`!).
+| term            | log-relative bound `R`                              |
+|-----------------|-----------------------------------------------------|
+| variable        | `0` (inputs are doubles, taken as exact)            |
+| integer literal | `0` (`E` if the integer needs more than 53 bits)    |
+| `(- a)`         | `Ra` — negation is exact                            |
+| `(* a b)`, `(/ a b)` | `Ra + Rb + E`                                  |
+| `(sqrt a)`      | `Ra/2 + E` — sqrt exactly halves the log error      |
+| `a ± b`, same sign | `max(Ra, Rb) + E` — no cancellation possible     |
+| `a ± b`, general   | `−ln(1 − err/min|a±b|) + E`                      |
 
-The last row is the interesting one: additions that can cancel pay a
-*condition number* built from the intervals of stage 3. When the enclosure of
-the result contains zero the bound is infinite — no finite relative-error
-bound exists there. NumFuzz's type system rejects such programs; here the
-spelling simply loses to any bounded alternative, and if *nothing* is bounded
-the split search takes over.
+with `err = max|a|·(e^Ra − 1) + max|b|·(e^Rb − 1)` the operands' worst
+absolute deviation, from the stage-3 intervals. When the result's enclosure
+reaches zero (or `err` exceeds it) the bound is infinite — no finite relative
+bound exists there. NumFuzz's type system rules that case out (its numeric
+type is the *strictly positive* reals); here the spelling simply loses to any
+bounded alternative, and the split search or the absolute bound take over.
 
-Soundness of the bound itself: interval endpoints are outward-rounded
-(`math.nextafter`), and every error-bound formula is nudged up by a factor
+**Absolute.** `A` means `|computed − exact| ≤ A`. Its hard cases mirror the
+relative model's: cancellation is free (absolute errors of `±` just add),
+while `* / sqrt` need the interval magnitudes, and division blows up only if
+the divisor's computed value can reach zero — a genuine singularity. Each op
+adds its final rounding `u·|computed|` plus `ETA = 2⁻¹⁰⁷⁵` for the subnormal
+range; a value that may overflow makes the bound infinite.
+
+The two tracks help each other: at a cancelling `±`, the operand deviation
+`|x̂ − x|` is bounded by the *better* of `max|x|(e^R − 1)` and `A`, so a
+finite absolute bound on a child can rescue the parent's relative bound.
+
+Soundness of the bound arithmetic itself: interval endpoints are
+outward-rounded (`math.nextafter`) and every bound formula is nudged up by
 `1 + 2⁻⁴⁵` (`up()`), which dwarfs the handful of roundings incurred computing
-the bound. The idealizations, shared with NumFuzz: round-to-nearest doubles,
-and no overflow or underflow in intermediate results.
+it. Remaining idealization: round-to-nearest doubles.
 
-## Comparing against the LLM mode
+## Comparing against the LLM mode and Herbie
 
 The predicted bounds are worst-case and directly comparable to FPTaylor's
 relative-error bounds (both in ulps of `2⁻⁵²`); `uv run check.py` does that
 comparison for you (see `summary.md`). To score against an egrammars LLM run,
 the FPCore programs in `results.json` are exactly the format that repo's
 `src/analysis/fptaylor_check.py` consumes.
+
+`uv run herbie.py` scores against Herbie inside Herbie's own harness: each
+benchmark becomes one FPCore with our extracted program attached as an `:alt`
+target, and a single `herbie report` evaluates reference (`start`), ours
+(`target`), and Herbie's rewrite (`end`) on the same sampled points with
+Herbie's average-bits metric. It runs on this directory's arithmetic-only
+platform ([herbie_platform.rkt](herbie_platform.rkt)) so the comparison is
+search-vs-search rather than vocabulary. A second table compares *worst-case*
+FPTaylor bounds — our measured bound (from `check.py`) against Herbie's
+output program bounded the same way. Writes `herbie.md`; note the two tables
+answer different questions: Herbie optimizes the average-case metric, this
+repo optimizes (and certifies) the worst case.
 
 Expect three kinds of outcomes:
 

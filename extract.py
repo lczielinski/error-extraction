@@ -13,7 +13,7 @@ Pipeline (one function per stage, in order in this file):
                       reference over the box (rules.egglog, same as egrammars)
   2. read_egraph      pull the e-classes out of egglog
   3. analyze_intervals a sound enclosure [lo, hi] per e-class
-  4. cost_table       a sound relative-error bound per e-class
+  4. cost_table       sound relative- and absolute-error bounds per e-class
   5. build            emit the cheapest term
   6. split_search     if nothing is bounded over the whole box, try one
                       `(if (<= var t) ...)` split and extract each arm
@@ -39,6 +39,7 @@ RULES = (HERE / "rules.egglog").read_text()
 
 U = 2.0 ** -53           # unit roundoff of IEEE double, round-to-nearest
 ULP = 2.0 ** -52         # for printing bounds in "ulps", like FPTaylor
+ETA = 2.0 ** -1075       # largest rounding error in the subnormal range
 INF = math.inf
 TOP = (-INF, INF)        # the unknown interval
 
@@ -176,82 +177,137 @@ def analyze_intervals(classes, leaf, box):
 
 
 # ---------------------------------------------------------------------------
-# 4. Cost: a sound bound on relative rounding error, composed per operator.
+# 4. Cost: two sound error bounds, composed per operator.
 #
-#    rel[c] = d means: evaluating class c's chosen term in doubles gives
-#    computed = exact*(1+e) with |e| <= d, at every point of the box.
-#    Each operation's own rounding contributes a factor (1+u), |u| <= 2^-53
-#    (the standard model; assumes no overflow/underflow, like NumFuzz).
+#    Relative, in NumFuzz's log metric:  rel[c] = R  means the chosen term
+#    computes  exact * e^s  with |s| <= R everywhere in the box. One rounding
+#    is  *(1+e), |e| <= u,  i.e. at most  E = -ln(1-u)  in the metric, and the
+#    ops compose *additively*: mul/div add the child bounds, sqrt exactly
+#    halves, same-signed +- takes the max (no cancellation possible). A
+#    cancelling +- pays the condition number  err / min|a+-b|  from the
+#    intervals -- infinite when the result's enclosure reaches zero, the case
+#    NumFuzz's type system rules out (its numbers are strictly positive).
 #
-#    Multiplicative ops compose cleanly.  Addition of same-signed operands
-#    can't cancel, so errors average: max(da, db).  Otherwise we pay the
-#    condition number  (|a|max*da + |b|max*db) / min|a+b|,  taken from the
-#    intervals -- infinite when the sum's enclosure contains zero, because
-#    then no finite relative error bound exists (this is the case NumFuzz's
-#    type system rules out; here it simply loses to bounded spellings).
+#    Absolute:  ab[c] = A  means  |computed - exact| <= A.  This is the metric
+#    that stays finite when the result can be exactly zero: cancellation is
+#    free (absolute errors of +- just add), while mul/div/sqrt need the
+#    interval magnitudes. The two metrics also help each other: a cancelling
+#    +- may bound |x^ - x| by either  max|x|(e^R - 1)  or  A,  whichever is
+#    smaller, so a finite absolute bound can rescue a relative one.
+#
+#    Assumed idealizations: round-to-nearest doubles; overflow makes a bound
+#    infinite; subnormal rounding is covered by the ETA term.
 # ---------------------------------------------------------------------------
 
-def compose(a: float, b: float) -> float:
-    """(1+a)(1+b) - 1: how two relative errors stack. Written as a + b + a*b
-    so the formula itself never cancels (naively, 1 + 2^-53 - 1 == 0.0!)."""
-    return a + b + a * b if a < INF and b < INF else INF
+E = up(-math.log1p(-U))  # one rounding step, measured in the log metric
 
 
-def worst_abs_error(iv, d):
-    """|computed - exact| <= max|value| * d, over the interval."""
-    return 0.0 if d == 0.0 else max(abs(iv[0]), abs(iv[1])) * d
+def mag(iv) -> float:
+    """max |value| over an interval."""
+    return max(abs(iv[0]), abs(iv[1]))
 
 
-def rel_bound(spelling, cls, rel, itv, leaf):
+def pmul(x: float, y: float) -> float:
+    """x*y for error terms, where 0 * inf should mean 0 (no error is no
+    error, whatever the other factor)."""
+    return 0.0 if x == 0.0 or y == 0.0 else x * y
+
+
+def growth(r: float) -> float:
+    """e^r - 1: back from the log metric to plain relative error."""
+    return INF if r > 700.0 else math.expm1(r)
+
+
+def rel_bound(spelling, cls, rel, ab, itv, leaf) -> float:
     op, kids = spelling
     if op == "Var":
         return 0.0  # inputs are doubles, taken as exact (as FPTaylor does)
     if op == "Num":
         n = int(leaf[kids[0]])
-        return 0.0 if float(n) == n else U  # int literals over 2^53 round once
-    da = rel[kids[0]]
+        return 0.0 if float(n) == n else E  # literals over 2^53 round once
+    ra = rel[kids[0]]
     if op == "Neg":
-        return da  # sign flip is exact
+        return ra  # sign flip is exact
     if op == "Sqrt":
-        if da > 1.0:
-            return INF  # operand may have lost its sign entirely
-        # sqrt(1 +- da) pulls the error toward 1 (~halves it), then one rounding;
-        # sqrt(1+x)-1 is spelled x/(sqrt(1+x)+1) to avoid cancelling, as above
-        over = compose(da / (math.sqrt(1 + da) + 1), U)
-        under = da / (1 + math.sqrt(1 - da)) + U * math.sqrt(1 - da)
-        return up(max(over, under))
-    db = rel[kids[1]]
-    if op == "Mul":
-        return up(compose(compose(da, db), U))
-    if op == "Div":  # 1/(1-db) == 1 + db/(1-db)
-        return INF if db >= 1.0 else up(compose(compose(da, db / (1 - db)), U))
+        return up(ra / 2 + E)  # sqrt(x e^s) = sqrt(x) e^(s/2), then one rounding
+    rb = rel[kids[1]]
+    if op in ("Mul", "Div"):
+        return up(ra + rb + E)
 
     # Add/Sub; treat a - b as a + (-b) so one analysis covers both
     a, b = itv[kids[0]], itv[kids[1]]
     if op == "Sub":
         b = (-b[1], -b[0])
+    best = INF
     if (a[0] >= 0 and b[0] >= 0) or (a[1] <= 0 and b[1] <= 0):
-        return up(compose(max(da, db), U))  # same signs: no cancellation
-    err = worst_abs_error(a, da) + worst_abs_error(b, db)
-    if err == 0.0:
-        return U  # both operands exact; only the final rounding remains
+        best = max(ra, rb) + E  # same signs: no cancellation
+    # condition-number path: |computed child - exact child| is bounded by the
+    # better of its relative and absolute tracks
+    err = (min(pmul(mag(a), growth(ra)), ab[kids[0]])
+           + min(pmul(mag(b), growth(rb)), ab[kids[1]]))
     zlo, zhi = itv[cls]
     zmin = zlo if zlo > 0 else -zhi if zhi < 0 else 0.0  # min |exact result|
-    return INF if zmin == 0.0 else up(compose(err / zmin, U))
+    if err == 0.0:
+        best = min(best, E)  # operands exact: only the final rounding remains
+    elif err < zmin and (ratio := err / zmin) < 1.0:
+        best = min(best, -math.log1p(-ratio) + E)
+    return up(best)
+
+
+def abs_bound(spelling, cls, ab, itv, leaf) -> float:
+    op, kids = spelling
+    if op == "Var":
+        return 0.0
+    if op == "Num":
+        n = int(leaf[kids[0]])
+        return 0.0 if float(n) == n else up(U * abs(float(n)))
+    aa = ab[kids[0]]
+    if op == "Neg":
+        return aa
+    m = mag(itv[cls])
+
+    def rounded(pre: float) -> float:
+        """`pre` plus the final rounding, u * |computed value|."""
+        if pre + m > 1e308:  # the computed value may overflow to infinity
+            return INF
+        return up(pre + U * (m + pre) + ETA)
+
+    if op == "Sqrt":
+        xlo = itv[kids[0]][0]
+        if xlo < 0 or aa > xlo:  # operand (or its computed value) may go negative
+            return INF
+        pre = 0.0 if aa == 0.0 else min(math.sqrt(aa),  # |sqrt x^ - sqrt x| <= sqrt|x^ - x|
+                                        aa / math.sqrt(xlo) if xlo > 0 else INF)
+        return rounded(pre)
+    a, b = itv[kids[0]], itv[kids[1]]
+    ba = ab[kids[1]]
+    if op in ("Add", "Sub"):
+        return rounded(aa + ba)  # cancellation is free in absolute terms
+    if op == "Mul":
+        return rounded(pmul(mag(a), ba) + pmul(mag(b), aa) + pmul(aa, ba))
+    ymin = b[0] if b[0] > 0 else -b[1] if b[1] < 0 else 0.0  # Div
+    if ba >= ymin:  # divisor's computed value may reach zero
+        return INF
+    return rounded((aa + pmul(mag(a), ba) / ymin) / (ymin - ba))
 
 
 def spelling_cost(spelling, cls, cost, itv, leaf):
-    """(relative error bound, term size) -- compared lexicographically, so
-    size breaks ties, and picks smallest terms when nothing is bounded."""
+    """(relative bound, absolute bound, term size) -- compared
+    lexicographically: relative error is the objective, absolute error the
+    fallback where no relative bound exists, size the final tiebreak."""
     op, kids = spelling
     if op in ("Var", "Num"):
-        return (rel_bound(spelling, cls, {}, itv, leaf), 1)
-    return (rel_bound(spelling, cls, {k: cost[k][0] for k in kids}, itv, leaf),
-            1 + sum(cost[k][1] for k in kids))
+        return (rel_bound(spelling, cls, {}, {}, itv, leaf),
+                abs_bound(spelling, cls, {}, itv, leaf), 1)
+    rel = {k: cost[k][0] for k in kids}
+    ab = {k: cost[k][1] for k in kids}
+    return (rel_bound(spelling, cls, rel, ab, itv, leaf),
+            abs_bound(spelling, cls, ab, itv, leaf),
+            1 + sum(cost[k][2] for k in kids))
 
 
 def cost_table(classes, itv, leaf):
-    cost = {c: (INF, INF) for c in classes}
+    cost = {c: (INF, INF, INF) for c in classes}
     changed = True
     while changed:  # rerun until no class finds a cheaper spelling
         changed = False
@@ -272,26 +328,30 @@ def build(cls, classes, cost, itv, leaf, ancestors=frozenset()):
                     key=lambda s: spelling_cost(s, cls, cost, itv, leaf))
     for op, kids in ranked:
         if op in ("Var", "Num"):
-            return leaf[kids[0]], rel_bound((op, kids), cls, {}, itv, leaf)
+            return (leaf[kids[0]],
+                    rel_bound((op, kids), cls, {}, {}, itv, leaf),
+                    abs_bound((op, kids), cls, {}, itv, leaf))
         if any(k == cls or k in ancestors for k in kids):
             continue  # a self-referential spelling would never terminate
         parts = [build(k, classes, cost, itv, leaf, ancestors | {cls})
                  for k in kids]
-        rel = {k: r for k, (_, r) in zip(kids, parts)}
-        return (f"({SPELLING[op]} {' '.join(text for text, _ in parts)})",
-                rel_bound((op, kids), cls, rel, itv, leaf))
+        rel = {k: r for k, (_, r, _) in zip(kids, parts)}
+        ab = {k: a for k, (_, _, a) in zip(kids, parts)}
+        return (f"({SPELLING[op]} {' '.join(p[0] for p in parts)})",
+                rel_bound((op, kids), cls, rel, ab, itv, leaf),
+                abs_bound((op, kids), cls, ab, itv, leaf))
     raise RuntimeError(f"every spelling of {cls} loops back on itself")
 
 
 def extract(source: str, box: dict, rounds: int):
-    """Run stages 1-5: (best term over `box`, its bound, e-graph's literals)."""
+    """Stages 1-5: (best term over `box`, its two bounds, e-graph literals)."""
     root, classes, leaf = read_egraph(saturate(source, box, rounds))
     itv = analyze_intervals(classes, leaf, box)
     cost = cost_table(classes, itv, leaf)
-    term, rel = build(root, classes, cost, itv, leaf)
+    term, rel, ab = build(root, classes, cost, itv, leaf)
     literals = {float(leaf[kids[0]]) for spellings in classes.values()
                 for op, kids in spellings if op == "Num"}
-    return term, rel, literals
+    return term, rel, ab, literals
 
 
 # ---------------------------------------------------------------------------
@@ -312,12 +372,12 @@ def split_search(source, box, rounds, literals):
             lo, hi = box[var]
             sub = box | {var: (lo, min(hi, t)) if side == "<=" else (max(lo, t), hi)}
             arms.append(extract(source, sub, rounds))
-        (then_term, then_rel, _), (else_term, else_rel, _) = arms
-        rel = max(then_rel, else_rel)
-        print(f"  split {var} <= {fmt(t)}: "
-              f"{f'{rel / ULP:.1f} ulp' if math.isfinite(rel) else 'unbounded'}")
+        rel = max(arms[0][1], arms[1][1])
+        label = (f"{growth(rel) / ULP:.1f} ulp" if math.isfinite(rel)
+                 else "unbounded")
+        print(f"  split {var} <= {fmt(t)}: {label}")
         if math.isfinite(rel):
-            return var, t, then_term, else_term, rel
+            return var, t, arms
     return None
 
 
@@ -342,11 +402,12 @@ def run(name: str, rounds: int) -> dict:
     source, reference, box = read_benchmark(name)
     print(f"\n{name}   box: {box or '(none)'}\n  reference: {reference}")
 
-    term, rel, literals = extract(source, box, rounds)
+    term, rel, ab, literals = extract(source, box, rounds)
     branches = None
     if not math.isfinite(rel) and box:
         if (found := split_search(source, box, rounds, literals)) is not None:
-            var, t, then_term, else_term, rel = found
+            var, t, ((then_term, tr, ta, _), (else_term, er, ea, _)) = found
+            rel, ab = max(tr, er), max(ta, ea)
             if then_term == else_term:  # same form on both sides: skip the if
                 term = then_term
             else:
@@ -356,11 +417,13 @@ def run(name: str, rounds: int) -> dict:
 
     variables = re.match(r"\(FPCore \(([^)]*)\)", reference).group(1)
     program = f"(FPCore ({variables}) {term})"
-    bound = f"~{rel / ULP:.1f} ulp" if math.isfinite(rel) else "unbounded"
+    bound = (f"~{growth(rel) / ULP:.1f} ulp" if math.isfinite(rel) else
+             f"abs {ab:.1e}" if math.isfinite(ab) else "unbounded")
     print(f"  extracted ({bound}): {program}")
     return {"reference": reference, "box": box, "program": program,
             "body": term, "branches": branches,
-            "predicted_ulps": rel / ULP if math.isfinite(rel) else None}
+            "predicted_ulps": growth(rel) / ULP if math.isfinite(rel) else None,
+            "predicted_abs": ab if math.isfinite(ab) else None}
 
 
 def main() -> None:

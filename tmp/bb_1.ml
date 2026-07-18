@@ -2,21 +2,34 @@ open Interval
 open Opt_func
 
 
-let start_interval = Array.init 3 (function
-| 0 -> {low = -1.00000000000000000000e+02; high = 0.00000000000000000000e+00}
-| 1 -> {low = -1.00000000000000000000e+02; high = -1.00000000000000000000e+00}
-| 2 -> {low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+02}
+let start_interval = Array.init 9 (function
+| 0 -> {low = 9.99999999999999912396e-06; high = 1.00000000000000000000e+00}
+| 1 -> {low = 9.99999999999999912396e-06; high = 1.00000000000000000000e+00}
+| 2 -> {low = -1.00000000000000000000e+00; high = 1.00000000000000000000e+00}
+| 3 -> {low = 9.99999999999999912396e-06; high = 1.00000000000000000000e+00}
+| 4 -> {low = 9.99999999999999912396e-06; high = 1.00000000000000000000e+00}
+| 5 -> {low = -1.00000000000000000000e+00; high = 1.00000000000000000000e+00}
+| 6 -> {low = -1.00000000000000000000e+00; high = 1.00000000000000000000e+00}
+| 7 -> {low = 9.99999999999999912396e-06; high = 1.00000000000000000000e+00}
+| 8 -> {low = 9.99999999999999912396e-06; high = 1.00000000000000000000e+00}
 | _ -> failwith "Out of boundaries"
 )
 
 let f_X input_array = 
-  let var_b = input_array.(0) in
-  let var_c = input_array.(1) in
-  let var_a = input_array.(2) in
-  let ref_0 = (~-$({low = 4.00000000000000000000e+00; high = 4.00000000000000000000e+00})) in
-  let ref_1 = (ref_0 *$ var_a) in
-  let ref_2 = (var_c *$ ref_1) in
-  ((ref_2 *$ ({low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+00} /$ (var_b -$ sqrt_I((ref_2 +$ (var_b *$ var_b)))))) *$ ({low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+00} /$ (var_a +$ var_a)))
+  let var_w0 = input_array.(0) in
+  let var_a0 = input_array.(1) in
+  let var_m0 = input_array.(2) in
+  let var_w1 = input_array.(3) in
+  let var_a1 = input_array.(4) in
+  let var_m1 = input_array.(5) in
+  let var_m2 = input_array.(6) in
+  let var_a2 = input_array.(7) in
+  let var_w2 = input_array.(8) in
+  let ref_0 = (~-$({low = 3.00000000000000000000e+00; high = 3.00000000000000000000e+00})) in
+  let ref_1 = ({low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+00} /$ var_w0) in
+  let ref_2 = ({low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+00} /$ var_w1) in
+  let ref_3 = ({low = 1.00000000000000000000e+00; high = 1.00000000000000000000e+00} /$ var_w2) in
+  (((~-$(var_m0)) *$ ((ref_0 *$ ((var_a0 *$ (var_a0 *$ ref_1)) *$ ref_1)) *$ var_w0)) +$ (((~-$(var_m1)) *$ ((ref_0 *$ (((var_a1 *$ ref_2) *$ var_a1) *$ ref_2)) *$ var_w1)) +$ ((~-$(var_m2)) *$ ((ref_0 *$ (((var_a2 *$ ref_3) *$ var_a2) *$ ref_3)) *$ var_w2))))
 
 
 let _ =

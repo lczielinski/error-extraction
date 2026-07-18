@@ -64,11 +64,12 @@ def infix(node) -> str:
 # Run FPTaylor on one expression over one box
 # ---------------------------------------------------------------------------
 
-def fptaylor(body, box: dict) -> dict:
-    tree = parse(body) if isinstance(body, str) else body
+def fptaylor(expr: str, box: dict) -> dict:
+    """Bound `expr` (FPTaylor's infix syntax; use infix(parse(..)) to convert
+    an FPCore body) evaluated in doubles over `box`."""
     decls = "\n".join(f"  float64 {v} in [{lo}, {hi}];"
                       for v, (lo, hi) in box.items())
-    problem = f"Variables\n{decls}\n\nExpressions\n  result rnd64= {infix(tree)};\n"
+    problem = f"Variables\n{decls}\n\nExpressions\n  result rnd64= {expr};\n"
     with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False) as inp, \
          tempfile.NamedTemporaryFile("w", suffix=".cfg", delete=False) as cfg:
         inp.write(problem)
@@ -103,11 +104,13 @@ def measure(record: dict) -> dict:
     """The extracted program's bound; a split program is the worst of its arms."""
     box = record["box"]
     if not record["branches"]:
-        return fptaylor(record["body"], box)
+        return fptaylor(infix(parse(record["body"])), box)
     var, t = record["branches"]["var"], record["branches"]["threshold"]
     lo, hi = box[var]
-    arms = [fptaylor(record["branches"]["then"], box | {var: (lo, min(hi, t))}),
-            fptaylor(record["branches"]["else"], box | {var: (max(lo, t), hi)})]
+    arms = [fptaylor(infix(parse(record["branches"]["then"])),
+                     box | {var: (lo, min(hi, t))}),
+            fptaylor(infix(parse(record["branches"]["else"])),
+                     box | {var: (max(lo, t), hi)})]
     worst = {}
     for key in ("abs_err", "rel_err"):  # a bound needs one from *every* arm
         vals = [a.get(key) for a in arms]
@@ -141,6 +144,25 @@ def ulps(measured: dict) -> str:
     return f"{measured['rel_err_ulps']:.1f}" + ("*" if measured.get("derived") else "")
 
 
+def cells(r: dict) -> tuple[str, str, str]:
+    """(predicted, measured, reference) in the row's metric: relative ulps
+    when both sides have a relative bound, else absolute error (scientific)."""
+    ours, ref = r["measured"], r["measured_reference"]
+    if ours.get("rel_err") is not None and ref.get("rel_err") is not None:
+        pred = (f"{r['predicted_ulps']:.1f}"
+                if r.get("predicted_ulps") is not None else "-")
+        return pred, ulps(ours), ulps(ref)
+
+    def sci(m):
+        if m.get("timeout"):
+            return "timeout"
+        return f"{m['abs_err']:.1e}" if m.get("abs_err") is not None else "-"
+
+    pred = (f"{r['predicted_abs']:.1e}"
+            if r.get("predicted_abs") is not None else "-")
+    return pred, sci(ours), sci(ref)
+
+
 def main() -> None:
     if shutil.which("fptaylor") is None:
         sys.exit("fptaylor not on PATH -- try `eval $(opam env)` first")
@@ -151,11 +173,11 @@ def main() -> None:
 
     for name, r in sorted(results.items()):
         r["measured"] = measure(r)
-        r["measured_reference"] = fptaylor(parse(r["reference"])[2], r["box"])
-        pred = f"{r['predicted_ulps']:.1f}" if r["predicted_ulps"] is not None else "-"
-        print(f"{name:35s} predicted={pred:>10} "
-              f"measured={ulps(r['measured']):>10} "
-              f"reference={ulps(r['measured_reference']):>10}  "
+        r["measured_reference"] = fptaylor(infix(parse(r["reference"])[2]),
+                                           r["box"])
+        pred, ours, ref = cells(r)
+        print(f"{name:35s} predicted={pred:>10} measured={ours:>10} "
+              f"reference={ref:>10}  "
               f"{verdict(r['measured'], r['measured_reference'])}", flush=True)
         path.write_text(json.dumps(results, indent=2, sort_keys=True))
 
@@ -167,17 +189,17 @@ def main() -> None:
     lines = [
         "# Cost-based extraction vs reference (FPTaylor worst-case bounds)", "",
         "predicted = this repo's cost bound; measured/reference = FPTaylor on the",
-        "extracted program / the original, same box. All in ulps of 2^-52;",
-        "`*` = derived from the absolute bound; `-` = value range straddles zero.", "",
+        "extracted program / the original, same box. Relative error in ulps of",
+        "2^-52; rows where the value range straddles zero (relative error",
+        "undefined) compare absolute error instead, in scientific notation,",
+        "and say `(abs)`. `*` = crude bound derived from the absolute one.", "",
         *(f"- {v}: **{n}/{len(rows)}**" for v, n in sorted(counts.items())), "",
         "| benchmark | predicted | measured | reference | vs reference |",
         "|---|--:|--:|--:|---|",
     ]
     for name, r in rows:
-        pred = (f"{r['predicted_ulps']:.1f}"
-                if r["predicted_ulps"] is not None else "-")
-        lines.append(f"| {name} | {pred} | {ulps(r['measured'])} | "
-                     f"{ulps(r['measured_reference'])} | "
+        pred, ours, ref = cells(r)
+        lines.append(f"| {name} | {pred} | {ours} | {ref} | "
                      f"{verdict(r['measured'], r['measured_reference'])} |")
     (HERE / "summary.md").write_text("\n".join(lines) + "\n")
     print(f"\nwrote {path} and {HERE / 'summary.md'}")
