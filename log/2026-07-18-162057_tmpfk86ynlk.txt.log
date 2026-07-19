@@ -1,0 +1,353 @@
+Base path: /Users/laura.zielinski/FPTaylor
+Config file: /Users/laura.zielinski/FPTaylor/default.cfg
+Config file: /var/folders/38/q_vgzzt959nfc63ldktzz1gr0000gp/T/tmpgq_2duvp.cfg
+default-rnd = rnd64
+nlopt-cc = gcc -std=c99 -O3
+opt-exact = true
+develop = false
+log-append-date = start
+uncertainty = false
+rel-error = true
+opt-approx = false
+proof-record = false
+find-bounds = false
+proof-dir = proofs
+opt-f-abs-tol = 0.01
+fail-on-exception = true
+print-opt-lower-bounds = true
+bb-compile = {base}/b_and_b/compile.sh {base} {input} {out}
+z3-python-lib = 
+opt-x-abs-tol = 0.01
+export-error-bounds = 
+opt-f-rel-tol = 0.01
+export-options = 
+opt-x-rel-tol = 0.0
+rel-error-threshold = 0.0001
+bb-alg = opt0
+log-base-dir = log
+intermediate-opt = false
+z3-interval-bounds = true
+opt-max-iters = 1000000
+abs-error = true
+z3-bin = 
+maxima-simplification = false
+print-hex-floats = true
+debug = true
+print-precision = 7
+export-error-bounds-data = 
+fp-power2-model = true
+opt = auto
+default-var-type = float64
+verbosity = 2
+ulp-error = false
+opt-timeout = 10000
+nlopt-lib = -lnlopt -lm
+tmp-base-dir = tmp
+unique-indices = false
+z3-seed = 0
+tmp-date = false
+z3-python-cmd = python
+const-approx-real-vars = false
+print-second-order-errors = false
+Resetting input_parser_env
+eval_const_expr: 6
+result: 6
+eval_const_expr: 8
+result: 8
+eval_const_expr: 0
+result: 0
+eval_const_expr: 8
+result: 8
+eval_const_expr: 6
+result: 6
+eval_const_expr: 6
+result: 6
+eval_const_expr: 8
+result: 8
+eval_const_expr: 0
+result: 0
+eval_const_expr: 8
+result: 8
+eval_const_expr: 6
+result: 6
+eval_const_expr: 6
+result: 6
+eval_const_expr: 8
+result: 8
+eval_const_expr: 0
+result: 0
+eval_const_expr: 8
+result: 8
+eval_const_expr: 6
+result: 6
+Resetting input_parser_env
+|tasks| = 1
+Processing: result
+
+*************************************
+Taylor form for: rnd64(sqrt(rnd64((rnd64((rnd64((rnd64((rnd64(a) - rnd64((rnd64((rnd64((rnd64(2) * rnd64(c))) - rnd64(c))) - rnd64(b))))) * rnd64((rnd64(c) - rnd64((rnd64((rnd64((rnd64(2) * rnd64(b))) - rnd64(b))) - rnd64(a))))))) / rnd64(4))) * rnd64((rnd64((rnd64(b) * rnd64((rnd64((rnd64(c) / rnd64(4))) - rnd64((rnd64((rnd64((rnd64(a) + rnd64((rnd64(a) / rnd64((-(rnd64(2)))))))) - rnd64((rnd64(b) / rnd64(2))))) / rnd64(2))))))) + rnd64((rnd64((rnd64((rnd64((rnd64(c) - rnd64((rnd64((rnd64((rnd64(2) * rnd64(a))) - rnd64(a))) - rnd64(b))))) * rnd64(a))) / rnd64(4))) - rnd64((rnd64((rnd64((rnd64((rnd64((rnd64(2) * rnd64(a))) - rnd64(a))) - rnd64(c))) - rnd64(b))) * rnd64((rnd64(c) / rnd64(4)))))))))))))
+
+Conservative bound: [3.000000, 50.911688]
+
+Simplified rounding: rnd[64,ne,1.00,-53,0](sqrt(rnd64((rnd[64,ne,1.00,0,-1022]((rnd64((rnd[64,ne,1.00,-53,0]((a - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * c) - c)) - b)))) * rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * b) - b)) - a)))))) / 4)) * rnd[64,ne,1.00,-53,0]((rnd64((b * rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,0,-1022]((c / 4)) - rnd[64,ne,1.00,0,-1022]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((a + rnd64((a / (-(2)))))) - rnd[64,ne,1.00,0,-1022]((b / 2)))) / 2)))))) + rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,0,-1022]((rnd64((rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - b)))) * a)) / 4)) - rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - c)) - b)) * rnd[64,ne,1.00,0,-1022]((c / 4))))))))))))
+Building Taylor forms...
+var_form
+const_form
+var_form
+mul_form
+sub_form
+rounded_form
+var_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+mul_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+mul_form
+rounded_form
+const_form
+div_form
+inv_form
+mul_form
+rounded_form
+div_form
+inv_form
+mul_form
+rounded_form
+neg_form
+div_form
+inv_form
+mul_form
+rounded_form
+add_form
+rounded_form
+div_form
+inv_form
+mul_form
+rounded_form
+sub_form
+rounded_form
+div_form
+inv_form
+mul_form
+rounded_form
+sub_form
+rounded_form
+mul_form
+rounded_form
+mul_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+mul_form
+rounded_form
+div_form
+inv_form
+mul_form
+rounded_form
+sub_form
+rounded_form
+sub_form
+rounded_form
+mul_form
+rounded_form
+sub_form
+rounded_form
+add_form
+rounded_form
+mul_form
+rounded_form
+sqrt_form
+rounded_form
+Taylor forms cache stats: num_bindings = 65, num_buckets = 1024, max_bucket_length = 1
+Expr cache stats: num_bindings = 242, num_buckets = 65536, max_bucket_length = 1
+Simplifying Taylor forms...
+success
+v0 = sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))
+-1: exp = -53: (2589200354922531/9671406556917033397649408)
+-1: exp = -1022: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * 24) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+1: exp = -53: ((((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4))))) * ((1 / 4) * ((c - (((2 * b) - b) - a)) * (-(floor_power2((((2 * c) - c) + 0))))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+2: exp = -53: ((((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4))))) * ((1 / 4) * ((c - (((2 * b) - b) - a)) * (-(floor_power2(((((2 * c) - c) - b) + interval(-8.88178419700125232339e-16, 8.88178419700125232339e-16)))))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+3: exp = -53: ((((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4))))) * ((1 / 4) * ((c - (((2 * b) - b) - a)) * floor_power2(((a - (((2 * c) - c) - b)) + interval(-1.33226762955018784851e-15, 1.33226762955018784851e-15)))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+4: exp = -53: ((((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4))))) * ((1 / 4) * ((a - (((2 * c) - c) - b)) * (-(floor_power2((((2 * b) - b) + 0))))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+5: exp = -53: ((((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4))))) * ((1 / 4) * ((a - (((2 * c) - c) - b)) * (-(floor_power2(((((2 * b) - b) - a) + interval(-8.88178419700125232339e-16, 8.88178419700125232339e-16)))))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+6: exp = -53: ((((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4))))) * ((1 / 4) * ((a - (((2 * c) - c) - b)) * floor_power2(((c - (((2 * b) - b) - a)) + interval(-1.33226762955018784851e-15, 1.33226762955018784851e-15)))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+7: exp = -53: ((((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4))))) * ((1 / 4) * floor_power2((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) + interval(-5.32907051820075202512e-14, 5.32907051820075202512e-14))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+-1: exp = -1022: ((((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4))))) * 1) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+8: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * (b * (-(((1 / 2) * floor_power2(((a * (1 / (-(2)))) + 0))))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+9: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * (b * (-(((1 / 2) * floor_power2(((a + (a * (1 / (-(2))))) + interval(-2.22044604925031357389e-16, 2.22044604925031357389e-16)))))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+10: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * (b * (-(((1 / 2) * floor_power2((((a + (a * (1 / (-(2))))) - (b * (1 / 2))) + interval(-6.66133814775094022862e-16, 6.66133814775094022862e-16)))))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+-1: exp = -1022: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * (b * (-(1)))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+11: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * (b * floor_power2((((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2))) + interval(-4.44089209850062813385e-16, 4.44089209850062813385e-16))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+12: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * floor_power2(((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + interval(-5.32907051820075297176e-15, 5.32907051820075297176e-15)))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+13: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * (((1 / 4) * (a * (-(floor_power2((((2 * a) - a) + 0)))))) + (-(((c * (1 / 4)) * floor_power2((((2 * a) - a) + 0))))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+14: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((1 / 4) * (a * (-(floor_power2(((((2 * a) - a) - b) + interval(-8.88178419700125232339e-16, 8.88178419700125232339e-16)))))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+15: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((1 / 4) * (a * floor_power2(((c - (((2 * a) - a) - b)) + interval(-1.33226762955018784851e-15, 1.33226762955018784851e-15)))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+16: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((1 / 4) * floor_power2((((c - (((2 * a) - a) - b)) * a) + interval(-1.77635683940025046468e-14, 1.77635683940025046468e-14))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+-1: exp = -1022: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * 1) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+17: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * (-(((c * (1 / 4)) * floor_power2(((((2 * a) - a) - c) + interval(-8.88178419700125232339e-16, 8.88178419700125232339e-16))))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+18: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * (-(((c * (1 / 4)) * floor_power2((((((2 * a) - a) - c) - b) + interval(-1.33226762955018784851e-15, 1.33226762955018784851e-15))))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+19: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * (-(floor_power2(((((((2 * a) - a) - c) - b) * (c * (1 / 4))) + interval(-4.44089209850062695056e-15, 4.44089209850062695056e-15)))))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+20: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * floor_power2((((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))) + interval(-1.24344978758017564082e-14, 1.24344978758017564082e-14)))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+21: exp = -53: (((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * floor_power2((((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4))))) + interval(-2.30926389122032623517e-14, 2.30926389122032623517e-14)))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+22: exp = -53: (floor_power2((((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))) + interval(-2.30215846386272581391e-12, 2.30215846386272581391e-12))) / (2 * sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4)))))))))
+23: exp = -53: floor_power2((sqrt(((((a - (((2 * c) - c) - b)) * (c - (((2 * b) - b) - a))) * (1 / 4)) * ((b * ((c * (1 / 4)) - (((a + (a * (1 / (-(2))))) - (b * (1 / 2))) * (1 / 2)))) + ((((c - (((2 * a) - a) - b)) * a) * (1 / 4)) - (((((2 * a) - a) - c) - b) * (c * (1 / 4))))))) + interval(-4.21588689884355964987e-13, 4.21588689884355964987e-13)))
+
+Corresponding original subexpressions:
+1: rnd[64,ne,1.00,-53,0](((2 * c) - c))
+2: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * c) - c)) - b))
+3: rnd[64,ne,1.00,-53,0]((a - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * c) - c)) - b))))
+4: rnd[64,ne,1.00,-53,0](((2 * b) - b))
+5: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * b) - b)) - a))
+6: rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * b) - b)) - a))))
+7: rnd64((rnd[64,ne,1.00,-53,0]((a - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * c) - c)) - b)))) * rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * b) - b)) - a))))))
+8: rnd64((a / (-(2))))
+9: rnd[64,ne,1.00,-53,0]((a + rnd64((a / (-(2))))))
+10: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((a + rnd64((a / (-(2)))))) - rnd[64,ne,1.00,0,-1022]((b / 2))))
+11: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,0,-1022]((c / 4)) - rnd[64,ne,1.00,0,-1022]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((a + rnd64((a / (-(2)))))) - rnd[64,ne,1.00,0,-1022]((b / 2)))) / 2))))
+12: rnd64((b * rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,0,-1022]((c / 4)) - rnd[64,ne,1.00,0,-1022]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((a + rnd64((a / (-(2)))))) - rnd[64,ne,1.00,0,-1022]((b / 2)))) / 2))))))
+13: rnd[64,ne,1.00,-53,0](((2 * a) - a))
+14: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - b))
+15: rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - b))))
+16: rnd64((rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - b)))) * a))
+17: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - c))
+18: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - c)) - b))
+19: rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - c)) - b)) * rnd[64,ne,1.00,0,-1022]((c / 4))))
+20: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,0,-1022]((rnd64((rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - b)))) * a)) / 4)) - rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - c)) - b)) * rnd[64,ne,1.00,0,-1022]((c / 4))))))
+21: rnd[64,ne,1.00,-53,0]((rnd64((b * rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,0,-1022]((c / 4)) - rnd[64,ne,1.00,0,-1022]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((a + rnd64((a / (-(2)))))) - rnd[64,ne,1.00,0,-1022]((b / 2)))) / 2)))))) + rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,0,-1022]((rnd64((rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - b)))) * a)) / 4)) - rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - c)) - b)) * rnd[64,ne,1.00,0,-1022]((c / 4))))))))
+22: rnd64((rnd[64,ne,1.00,0,-1022]((rnd64((rnd[64,ne,1.00,-53,0]((a - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * c) - c)) - b)))) * rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * b) - b)) - a)))))) / 4)) * rnd[64,ne,1.00,-53,0]((rnd64((b * rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,0,-1022]((c / 4)) - rnd[64,ne,1.00,0,-1022]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((a + rnd64((a / (-(2)))))) - rnd[64,ne,1.00,0,-1022]((b / 2)))) / 2)))))) + rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,0,-1022]((rnd64((rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - b)))) * a)) / 4)) - rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - c)) - b)) * rnd[64,ne,1.00,0,-1022]((c / 4))))))))))
+23: rnd[64,ne,1.00,-53,0](sqrt(rnd64((rnd[64,ne,1.00,0,-1022]((rnd64((rnd[64,ne,1.00,-53,0]((a - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * c) - c)) - b)))) * rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * b) - b)) - a)))))) / 4)) * rnd[64,ne,1.00,-53,0]((rnd64((b * rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,0,-1022]((c / 4)) - rnd[64,ne,1.00,0,-1022]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((a + rnd64((a / (-(2)))))) - rnd[64,ne,1.00,0,-1022]((b / 2)))) / 2)))))) + rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,0,-1022]((rnd64((rnd[64,ne,1.00,-53,0]((c - rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - b)))) * a)) / 4)) - rnd64((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](((2 * a) - a)) - c)) - b)) * rnd[64,ne,1.00,0,-1022]((c / 4))))))))))))
+
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 688, max = 518): 688
+min = 1.542629e+01 (lower_min = 1.558846e+01)
+max = 2.798382e+01 (lower_max = 2.771281e+01)
+subopt = 2.710026e-01 (1.0%)
+bounds: [1.542629e+01, 2.798382e+01]
+
+Computing absolute errors
+Selected optimization method: bb-eval
+bb-eval_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+rmin(result = 2.677170e-10, lower = 2.677170e-10), rmax(result = 2.677170e-10, lower = 2.677170e-10)
+-1: exp = -53: 2.677170e-10 (low = 2.677170e-10, subopt = 0.0%)
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 10020, max = 2531): 10020
+min = 4.807468e+00 (lower_min = 4.859762e+00)
+max = 1.081944e+01 (lower_max = 1.071428e+01)
+subopt = 1.051547e-01 (1.0%)
+rmin(result = 4.807468e+00, lower = 4.859762e+00), rmax(result = 1.081944e+01, lower = 1.071428e+01)
+-1: exp = -1022: 1.081944e+01 (low = 1.071428e+01, subopt = 1.0%)
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 1717, max = 3088): 3088
+min = 5.471922e-01 (lower_min = 5.609846e-01)
+max = 1.250128e+00 (lower_max = 1.233223e+00)
+subopt = 1.690443e-02 (1.4%)
+rmin(result = 5.471922e-01, lower = 5.609846e-01), rmax(result = 1.250128e+00, lower = 1.233223e+00)
+-1: exp = -1022: 1.250128e+00 (low = 1.233223e+00, subopt = 1.4%)
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 41272, max = 3873): 41272
+min = -2.736505e+00 (lower_min = -2.709823e+00)
+max = -1.321376e+00 (lower_max = -1.343213e+00)
+subopt = 2.668182e-02 (1.0%)
+rmin(result = -2.736505e+00, lower = -2.709823e+00), rmax(result = -1.321376e+00, lower = -1.343213e+00)
+-1: exp = -1022: 2.736505e+00 (low = 2.709823e+00, subopt = 1.0%)
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 5879, max = 2026): 5879
+min = 1.915562e-01 (lower_min = 2.034873e-01)
+max = 4.571053e-01 (lower_max = 4.456450e-01)
+subopt = 1.146024e-02 (2.5%)
+rmin(result = 1.915562e-01, lower = 2.034873e-01), rmax(result = 4.571053e-01, lower = 4.456450e-01)
+-1: exp = -1022: 4.571053e-01 (low = 4.456450e-01, subopt = 2.5%)
+
+Solving the exact optimization problem
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 0, max = 219533): 219533
+min = 0.000000e+00 (lower_min = 0.000000e+00)
+max = 1.581358e+02 (lower_max = 1.129565e+02)
+subopt = 4.517929e+01 (28.6%)
+exact bound (exp = -53): 1.581358e+02 (low = 1.129565e+02, subopt = 28.6%)
+total2: 2.972256e-26 (low = 2.972256e-26, subopt = 0.0%)
+exact total: 1.755660e-14 (low = 1.254070e-14, subopt = 28.6%)
+
+Computing relative errors
+Selected optimization method: bb-eval
+bb-eval_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+rmin(result = 2.677170e-10, lower = 2.677170e-10), rmax(result = 2.677170e-10, lower = 2.677170e-10)
+-1: exp = -53: 2.677170e-10 (low = 2.677170e-10, subopt = 0.0%)
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 10020, max = 2531): 10020
+min = 4.807468e+00 (lower_min = 4.859762e+00)
+max = 1.081944e+01 (lower_max = 1.071428e+01)
+subopt = 1.051547e-01 (1.0%)
+rmin(result = 4.807468e+00, lower = 4.859762e+00), rmax(result = 1.081944e+01, lower = 1.071428e+01)
+-1: exp = -1022: 1.081944e+01 (low = 1.071428e+01, subopt = 1.0%)
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 1717, max = 3088): 3088
+min = 5.471922e-01 (lower_min = 5.609846e-01)
+max = 1.250128e+00 (lower_max = 1.233223e+00)
+subopt = 1.690443e-02 (1.4%)
+rmin(result = 5.471922e-01, lower = 5.609846e-01), rmax(result = 1.250128e+00, lower = 1.233223e+00)
+-1: exp = -1022: 1.250128e+00 (low = 1.233223e+00, subopt = 1.4%)
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 41272, max = 3873): 41272
+min = -2.736505e+00 (lower_min = -2.709823e+00)
+max = -1.321376e+00 (lower_max = -1.343213e+00)
+subopt = 2.668182e-02 (1.0%)
+rmin(result = -2.736505e+00, lower = -2.709823e+00), rmax(result = -1.321376e+00, lower = -1.343213e+00)
+-1: exp = -1022: 2.736505e+00 (low = 2.709823e+00, subopt = 1.0%)
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 5879, max = 2026): 5879
+min = 1.915562e-01 (lower_min = 2.034873e-01)
+max = 4.571053e-01 (lower_max = 4.456450e-01)
+subopt = 1.146024e-02 (2.5%)
+rmin(result = 1.915562e-01, lower = 2.034873e-01), rmax(result = 4.571053e-01, lower = 4.456450e-01)
+-1: exp = -1022: 4.571053e-01 (low = 4.456450e-01, subopt = 2.5%)
+
+Solving the exact optimization problem
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 0, max = 117267): 117267
+min = 0.000000e+00 (lower_min = 0.000000e+00)
+max = 6.444699e+00 (lower_max = 5.358234e+00)
+subopt = 1.086465e+00 (16.9%)
+exact bound-rel (exp = -53): 6.444699e+00 (low = 5.358234e+00, subopt = 16.9%)
+total2: 1.926747e-27 (low = 1.062134e-27, subopt = 44.9%)
+exact total-rel: 7.155053e-16 (low = 5.948834e-16, subopt = 16.9%)
+
+Elapsed time: 12.77177
+*************************************
+
+-------------------------------------------------------------------------------
+Problem: result
+
+Optimization lower bounds for error models:
+The absolute error (exact) model: 1.254069e-14 (0x1.c3d381bca0de7p-47) (suboptimality = 28.6%)
+The relative error (exact) model: 5.948834e-16 (0x1.56ed4d4fcf1aap-51) (suboptimality = 16.9%)
+
+Bounds (without rounding): [1.542628e+1, 2.798382e+1]
+Bounds (floating-point): [1.542628e+1, 2.798382e+1]
+
+Absolute error (exact): 1.755661e-14 (0x1.3c458ca4ef3bp-46)
+Relative error (exact): 7.155054e-16 (0x1.9c75f21dcb6p-51)
+
+Elapsed time: 12.77
+

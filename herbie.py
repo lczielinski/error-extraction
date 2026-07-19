@@ -46,13 +46,18 @@ def body_of(program: str) -> str:
     return program[program.index(") ") + 2:-1]
 
 
+def programs_of(r: dict) -> list[str]:
+    return list(dict.fromkeys(  # every distinct portfolio candidate
+        c["program"] for c in r.get("candidates") or [r]))
+
+
 def to_fpcore(name: str, r: dict) -> str:
-    """The reference as an FPCore: box as :pre, our program as an :alt."""
+    """The reference as an FPCore: box as :pre, each candidate as an :alt."""
     variables = " ".join(check.parse(r["reference"])[1])
     pre = " ".join(f"(<= {lo} {v} {hi})" for v, (lo, hi) in r["box"].items())
+    alts = "\n".join(f" :alt {body_of(p)}" for p in programs_of(r))
     return (f"(FPCore ({variables})\n :name \"{name}\"\n"
-            f" :pre (and {pre})\n"
-            f" :alt {body_of(r['program'])}\n"
+            f" :pre (and {pre})\n{alts}\n"
             f" {body_of(r['reference'])})")
 
 
@@ -120,9 +125,11 @@ def main() -> None:
     rows = []
     for t in sorted(tests, key=lambda t: t["name"]):
         num = lambda x: x if isinstance(x, (int, float)) else None
-        target = (t.get("target") or [[None, None]])[0][1]  # [[cost, bits]]
+        targets = [num(x[1]) for x in (t.get("target") or [])]  # [[cost, bits]]
+        targets = [x for x in targets if x is not None]
         rows.append({"name": t["name"], "reference": num(t.get("start")),
-                     "ours": num(target), "herbie": num(t.get("end")),
+                     "ours": min(targets, default=None),  # best candidate
+                     "herbie": num(t.get("end")),
                      "herbie_program": t.get("output")})
 
     # worst-case bounds: ours from check.py's measurements, Herbie's measured

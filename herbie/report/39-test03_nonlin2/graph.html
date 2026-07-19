@@ -1,5 +1,5 @@
 <!doctype html>
-<html><head><meta charset="utf-8"/><title>Result for test03_nonlin2</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>test03_nonlin2</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 97.5% → 97.5%">99.9%<span class="unit"> → </span>99.9%</span></div><div>Time: <span class="number">248.0ms</span></div><div>Alternatives: <span class="number">5</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.0×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(0 \leq x \land x \leq 1\right) \land \left(-1 \leq y \land y \leq \frac{-1}{10}\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\frac{x + y}{x - y}
+<html><head><meta charset="utf-8"/><title>Result for test03_nonlin2</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>test03_nonlin2</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 97.5% → 97.5%">99.9%<span class="unit"> → </span>99.9%</span></div><div>Time: <span class="number">237.0ms</span></div><div>Alternatives: <span class="number">5</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.0×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(0 \leq x \land x \leq 1\right) \land \left(-1 \leq y \land y \leq \frac{-1}{10}\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\frac{x + y}{x - y}
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (x y)
   :precision binary64
   :pre (and (and (&lt;= 0 x) (&lt;= x 1)) (and (&lt;= -1 y) (&lt;= y -1/10)))
@@ -241,6 +241,39 @@ BEGIN
 f(x, y: real): real =
 	(x + y) / (x - y)
 END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\frac{x + y}{x - y}
+</pre></div></div></section><section id="target2" class="programs"><h2>Developer Target 2: <span class="subhead"><data>99.9%</data> accurate, <data>0.5×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\frac{\frac{x + y}{y}}{\frac{x}{y} - 1}
+\]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (x y)
+  :precision binary64
+  :pre TRUE
+  (/ (/ (+ x y) y) (- (/ x y) 1.0)))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double x, double y) {
+	return ((x + y) / y) / ((x / y) - 1.0);
+}
+</pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(x, y)
+use fmin_fmax_functions
+    real(8), intent (in) :: x
+    real(8), intent (in) :: y
+    code = ((x + y) / y) / ((x / y) - 1.0d0)
+end function
+</pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double x, double y) {
+	return ((x + y) / y) / ((x / y) - 1.0);
+}
+</pre></div><div class="implementation" data-language="Python"><pre class="program">def code(x, y):
+	return ((x + y) / y) / ((x / y) - 1.0)
+</pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(x, y)
+	return Float64(Float64(Float64(x + y) / y) / Float64(Float64(x / y) - 1.0))
+end
+</pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(x, y)
+	tmp = ((x + y) / y) / ((x / y) - 1.0);
+end
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[x_, y_] := N[(N[(N[(x + y), $MachinePrecision] / y), $MachinePrecision] / N[(N[(x / y), $MachinePrecision] - 1.0), $MachinePrecision]), $MachinePrecision]
+</pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(x, y):
+	x in [-inf, +inf],
+	y in [-inf, +inf]
+code: THEORY
+BEGIN
+f(x, y: real): real =
+	((x + y) / y) / ((x / y) - (1))
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\frac{\frac{x + y}{y}}{\frac{x}{y} - 1}
 </pre></div></div></section><section id="reproduce"><details><summary><h2>Reproduce</h2><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#reproduction" target="_blank">?</a></summary><pre class="shell"><code>herbie shell --seed 1 
 (FPCore (x y)
   :name "test03_nonlin2"
@@ -249,6 +282,9 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
 
   :alt
   (/ (+ x y) (- x y))
+
+  :alt
+  (/ (/ (+ x y) y) (- (/ x y) 1))
 
   (/ (+ x y) (- x y)))
 </code></pre></details></section></body></html>

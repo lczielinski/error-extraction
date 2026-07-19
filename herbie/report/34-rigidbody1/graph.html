@@ -1,5 +1,5 @@
 <!doctype html>
-<html><head><meta charset="utf-8"/><title>Result for rigidbody1</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>rigidbody1</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 91.3% → 91.3%">100.0%<span class="unit"> → </span>100.0%</span></div><div>Time: <span class="number">436.0ms</span></div><div>Alternatives: <span class="number">5</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">N/A×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(\left(-15 \leq x1 \land x1 \leq 15\right) \land \left(-15 \leq x2 \land x2 \leq 15\right)\right) \land \left(-15 \leq x3 \land x3 \leq 15\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\left(\left(\left(\mathsf{neg}\left(x1 \cdot x2\right)\right) - \left(2 \cdot x2\right) \cdot x3\right) - x1\right) - x3
+<html><head><meta charset="utf-8"/><title>Result for rigidbody1</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>rigidbody1</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 91.3% → 91.3%">100.0%<span class="unit"> → </span>100.0%</span></div><div>Time: <span class="number">417.0ms</span></div><div>Alternatives: <span class="number">5</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">N/A×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(\left(-15 \leq x1 \land x1 \leq 15\right) \land \left(-15 \leq x2 \land x2 \leq 15\right)\right) \land \left(-15 \leq x3 \land x3 \leq 15\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\left(\left(\left(\mathsf{neg}\left(x1 \cdot x2\right)\right) - \left(2 \cdot x2\right) \cdot x3\right) - x1\right) - x3
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (x1 x2 x3)
   :precision binary64
   :pre (and (and (and (&lt;= -15 x1) (&lt;= x1 15))
@@ -246,32 +246,32 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
 \]</div></li><li><p>Taylor expanded in x2 around 0 to order 0</p><div class="math">\[\leadsto -1 \cdot x1 - x3
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">97.5%</span></p><div class="math">\[\leadsto -1 \cdot x1 - x3
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">97.5%</span></p><div class="math">\[\leadsto \left(-x1\right) - x3
-\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>100.0%</data> accurate, <data>1.1×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\left(-2 \cdot x2\right) \cdot x3 - \left(x1 \cdot x2 + \left(x3 + x1\right)\right)
+\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>100.0%</data> accurate, <data>1.1×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[x2 \cdot \left(-2 \cdot x3\right) - \left(x2 \cdot x1 + \left(x1 + x3\right)\right)
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (x1 x2 x3)
   :precision binary64
   :pre TRUE
-  (- (* (* -2.0 x2) x3) (+ (* x1 x2) (+ x3 x1))))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double x1, double x2, double x3) {
-	return ((-2.0 * x2) * x3) - ((x1 * x2) + (x3 + x1));
+  (- (* x2 (* -2.0 x3)) (+ (* x2 x1) (+ x1 x3))))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double x1, double x2, double x3) {
+	return (x2 * (-2.0 * x3)) - ((x2 * x1) + (x1 + x3));
 }
 </pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(x1, x2, x3)
 use fmin_fmax_functions
     real(8), intent (in) :: x1
     real(8), intent (in) :: x2
     real(8), intent (in) :: x3
-    code = (((-2.0d0) * x2) * x3) - ((x1 * x2) + (x3 + x1))
+    code = (x2 * ((-2.0d0) * x3)) - ((x2 * x1) + (x1 + x3))
 end function
 </pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double x1, double x2, double x3) {
-	return ((-2.0 * x2) * x3) - ((x1 * x2) + (x3 + x1));
+	return (x2 * (-2.0 * x3)) - ((x2 * x1) + (x1 + x3));
 }
 </pre></div><div class="implementation" data-language="Python"><pre class="program">def code(x1, x2, x3):
-	return ((-2.0 * x2) * x3) - ((x1 * x2) + (x3 + x1))
+	return (x2 * (-2.0 * x3)) - ((x2 * x1) + (x1 + x3))
 </pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(x1, x2, x3)
-	return Float64(Float64(Float64(-2.0 * x2) * x3) - Float64(Float64(x1 * x2) + Float64(x3 + x1)))
+	return Float64(Float64(x2 * Float64(-2.0 * x3)) - Float64(Float64(x2 * x1) + Float64(x1 + x3)))
 end
 </pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(x1, x2, x3)
-	tmp = ((-2.0 * x2) * x3) - ((x1 * x2) + (x3 + x1));
+	tmp = (x2 * (-2.0 * x3)) - ((x2 * x1) + (x1 + x3));
 end
-</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[x1_, x2_, x3_] := N[(N[(N[(-2.0 * x2), $MachinePrecision] * x3), $MachinePrecision] - N[(N[(x1 * x2), $MachinePrecision] + N[(x3 + x1), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[x1_, x2_, x3_] := N[(N[(x2 * N[(-2.0 * x3), $MachinePrecision]), $MachinePrecision] - N[(N[(x2 * x1), $MachinePrecision] + N[(x1 + x3), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]
 </pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(x1, x2, x3):
 	x1 in [-inf, +inf],
 	x2 in [-inf, +inf],
@@ -279,8 +279,8 @@ end
 code: THEORY
 BEGIN
 f(x1, x2, x3: real): real =
-	(((-2) * x2) * x3) - ((x1 * x2) + (x3 + x1))
-END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\left(-2 \cdot x2\right) \cdot x3 - \left(x1 \cdot x2 + \left(x3 + x1\right)\right)
+	(x2 * ((-2) * x3)) - ((x2 * x1) + (x1 + x3))
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">x2 \cdot \left(-2 \cdot x3\right) - \left(x2 \cdot x1 + \left(x1 + x3\right)\right)
 </pre></div></div></section><section id="reproduce"><details><summary><h2>Reproduce</h2><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#reproduction" target="_blank">?</a></summary><pre class="shell"><code>herbie shell --seed 1 
 (FPCore (x1 x2 x3)
   :name "rigidbody1"
@@ -288,7 +288,7 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
   :pre (and (and (and (&lt;= -15 x1) (&lt;= x1 15)) (and (&lt;= -15 x2) (&lt;= x2 15))) (and (&lt;= -15 x3) (&lt;= x3 15)))
 
   :alt
-  (- (* (* -2 x2) x3) (+ (* x1 x2) (+ x3 x1)))
+  (- (* x2 (* -2 x3)) (+ (* x2 x1) (+ x1 x3)))
 
   (- (- (- (- (* x1 x2)) (* (* 2.0 x2) x3)) x1) x3))
 </code></pre></details></section></body></html>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html><head><meta charset="utf-8"/><title>Result for beta_b</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>beta_b</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 78.7% → 80.2%">95.5%<span class="unit"> → </span>96.5%</span></div><div>Time: <span class="number">1.4s</span></div><div>Alternatives: <span class="number">9</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.2×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(\frac{2}{5} \leq m \land m \leq \frac{3}{5}\right) \land \left(\frac{1}{5} \leq v \land v \leq \frac{1}{4}\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\left(\frac{m \cdot \left(1 - m\right)}{v} - 1\right) \cdot \left(1 - m\right)
+<html><head><meta charset="utf-8"/><title>Result for beta_b</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>beta_b</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 78.7% → 80.2%">95.5%<span class="unit"> → </span>96.5%</span></div><div>Time: <span class="number">1.2s</span></div><div>Alternatives: <span class="number">9</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.2×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(\frac{2}{5} \leq m \land m \leq \frac{3}{5}\right) \land \left(\frac{1}{5} \leq v \land v \leq \frac{1}{4}\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\left(\frac{m \cdot \left(1 - m\right)}{v} - 1\right) \cdot \left(1 - m\right)
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (m v)
   :precision binary64
   :pre (and (and (&lt;= 2/5 m) (&lt;= m 3/5)) (and (&lt;= 1/5 v) (&lt;= v 1/4)))
@@ -406,39 +406,39 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">95.4%</span></p><div class="math">\[\leadsto \frac{-1 \cdot \left(v \cdot \left(1 - m\right)\right) + m \cdot \left(\left(1 - m\right) \cdot \left(1 - m\right)\right)}{v}
 \]</div></li><li><p>Taylor expanded in m around 0 to order 0</p><div class="math">\[\leadsto -1
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">2.4%</span></p><div class="math">\[\leadsto -1
-\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>96.1%</data> accurate, <data>1.1×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\left(v - m \cdot \left(1 - m\right)\right) \cdot \frac{m - 1}{v}
+\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>96.1%</data> accurate, <data>1.0×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\frac{m + -1}{v} \cdot \left(\left(m + -1\right) \cdot m + v\right)
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (m v)
   :precision binary64
   :pre TRUE
-  (* (- v (* m (- 1.0 m))) (/ (- m 1.0) v)))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double m, double v) {
-	return (v - (m * (1.0 - m))) * ((m - 1.0) / v);
+  (* (/ (+ m -1.0) v) (+ (* (+ m -1.0) m) v)))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double m, double v) {
+	return ((m + -1.0) / v) * (((m + -1.0) * m) + v);
 }
 </pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(m, v)
 use fmin_fmax_functions
     real(8), intent (in) :: m
     real(8), intent (in) :: v
-    code = (v - (m * (1.0d0 - m))) * ((m - 1.0d0) / v)
+    code = ((m + (-1.0d0)) / v) * (((m + (-1.0d0)) * m) + v)
 end function
 </pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double m, double v) {
-	return (v - (m * (1.0 - m))) * ((m - 1.0) / v);
+	return ((m + -1.0) / v) * (((m + -1.0) * m) + v);
 }
 </pre></div><div class="implementation" data-language="Python"><pre class="program">def code(m, v):
-	return (v - (m * (1.0 - m))) * ((m - 1.0) / v)
+	return ((m + -1.0) / v) * (((m + -1.0) * m) + v)
 </pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(m, v)
-	return Float64(Float64(v - Float64(m * Float64(1.0 - m))) * Float64(Float64(m - 1.0) / v))
+	return Float64(Float64(Float64(m + -1.0) / v) * Float64(Float64(Float64(m + -1.0) * m) + v))
 end
 </pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(m, v)
-	tmp = (v - (m * (1.0 - m))) * ((m - 1.0) / v);
+	tmp = ((m + -1.0) / v) * (((m + -1.0) * m) + v);
 end
-</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[m_, v_] := N[(N[(v - N[(m * N[(1.0 - m), $MachinePrecision]), $MachinePrecision]), $MachinePrecision] * N[(N[(m - 1.0), $MachinePrecision] / v), $MachinePrecision]), $MachinePrecision]
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[m_, v_] := N[(N[(N[(m + -1.0), $MachinePrecision] / v), $MachinePrecision] * N[(N[(N[(m + -1.0), $MachinePrecision] * m), $MachinePrecision] + v), $MachinePrecision]), $MachinePrecision]
 </pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(m, v):
 	m in [-inf, +inf],
 	v in [-inf, +inf]
 code: THEORY
 BEGIN
 f(m, v: real): real =
-	(v - (m * ((1) - m))) * ((m - (1)) / v)
-END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\left(v - m \cdot \left(1 - m\right)\right) \cdot \frac{m - 1}{v}
+	((m + (-1)) / v) * (((m + (-1)) * m) + v)
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\frac{m + -1}{v} \cdot \left(\left(m + -1\right) \cdot m + v\right)
 </pre></div></div></section><section id="reproduce"><details><summary><h2>Reproduce</h2><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#reproduction" target="_blank">?</a></summary><pre class="shell"><code>herbie shell --seed 1 
 (FPCore (m v)
   :name "beta_b"
@@ -446,7 +446,7 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
   :pre (and (and (&lt;= 2/5 m) (&lt;= m 3/5)) (and (&lt;= 1/5 v) (&lt;= v 1/4)))
 
   :alt
-  (* (- v (* m (- 1 m))) (/ (- m 1) v))
+  (* (/ (+ m -1) v) (+ (* (+ m -1) m) v))
 
   (* (- (/ (* m (- 1.0 m)) v) 1.0) (- 1.0 m)))
 </code></pre></details></section></body></html>

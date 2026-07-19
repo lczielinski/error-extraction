@@ -1,5 +1,5 @@
 <!doctype html>
-<html><head><meta charset="utf-8"/><title>Result for nmse_problem_3_2_1_negative</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>nmse_problem_3_2_1_negative</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 92.7% → 92.7%">99.5%<span class="unit"> → </span>99.5%</span></div><div>Time: <span class="number">765.0ms</span></div><div>Alternatives: <span class="number">6</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.0×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(\left(1 \leq a \land a \leq 100\right) \land \left(-100 \leq b2 \land b2 \leq 100\right)\right) \land \left(-100 \leq c \land c \leq -1\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\frac{\left(\mathsf{neg}\left(b2\right)\right) - \sqrt{b2 \cdot b2 - a \cdot c}}{a}
+<html><head><meta charset="utf-8"/><title>Result for nmse_problem_3_2_1_negative</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>nmse_problem_3_2_1_negative</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 92.7% → 92.7%">99.5%<span class="unit"> → </span>99.5%</span></div><div>Time: <span class="number">736.0ms</span></div><div>Alternatives: <span class="number">6</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.0×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(\left(1 \leq a \land a \leq 100\right) \land \left(-100 \leq b2 \land b2 \leq 100\right)\right) \land \left(-100 \leq c \land c \leq -1\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\frac{\left(\mathsf{neg}\left(b2\right)\right) - \sqrt{b2 \cdot b2 - a \cdot c}}{a}
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (a b2 c)
   :precision binary64
   :pre (and (and (and (&lt;= 1 a) (&lt;= a 100))
@@ -305,8 +305,43 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
 </pre></div></div><details><summary>Derivation</summary><ol class="history"><li><p>Initial program <span class="error">99.5%</span></p><div class="math">\[\frac{\left(-b2\right) - \sqrt{b2 \cdot b2 - a \cdot c}}{a}
 \]</div></li><li><p>Taylor expanded in b2 around -inf to order 0</p><div class="math">\[\leadsto -0.5 \cdot \frac{c}{b2}
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">3.3%</span></p><div class="math">\[\leadsto -0.5 \cdot \frac{c}{b2}
-\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>99.6%</data> accurate, <data>0.9×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\begin{array}{l}
-t_0 := \sqrt{b2 \cdot b2 - a \cdot c}\\
+\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>99.5%</data> accurate, <data>1.0×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\frac{b2 + \sqrt{b2 \cdot b2 - c \cdot a}}{-a}
+\]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (a b2 c)
+  :precision binary64
+  :pre TRUE
+  (/ (+ b2 (sqrt (- (* b2 b2) (* c a)))) (- a)))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double a, double b2, double c) {
+	return (b2 + sqrt(((b2 * b2) - (c * a)))) / -a;
+}
+</pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(a, b2, c)
+use fmin_fmax_functions
+    real(8), intent (in) :: a
+    real(8), intent (in) :: b2
+    real(8), intent (in) :: c
+    code = (b2 + sqrt(((b2 * b2) - (c * a)))) / -a
+end function
+</pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double a, double b2, double c) {
+	return (b2 + Math.sqrt(((b2 * b2) - (c * a)))) / -a;
+}
+</pre></div><div class="implementation" data-language="Python"><pre class="program">def code(a, b2, c):
+	return (b2 + math.sqrt(((b2 * b2) - (c * a)))) / -a
+</pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(a, b2, c)
+	return Float64(Float64(b2 + sqrt(Float64(Float64(b2 * b2) - Float64(c * a)))) / Float64(-a))
+end
+</pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(a, b2, c)
+	tmp = (b2 + sqrt(((b2 * b2) - (c * a)))) / -a;
+end
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[a_, b2_, c_] := N[(N[(b2 + N[Sqrt[N[(N[(b2 * b2), $MachinePrecision] - N[(c * a), $MachinePrecision]), $MachinePrecision]], $MachinePrecision]), $MachinePrecision] / (-a)), $MachinePrecision]
+</pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(a, b2, c):
+	a in [-inf, +inf],
+	b2 in [-inf, +inf],
+	c in [-inf, +inf]
+code: THEORY
+BEGIN
+f(a, b2, c: real): real =
+	(b2 + (sqrt(((b2 * b2) - (c * a))))) / (- a)
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\frac{b2 + \sqrt{b2 \cdot b2 - c \cdot a}}{-a}
+</pre></div></div></section><section id="target2" class="programs"><h2>Developer Target 2: <span class="subhead"><data>99.6%</data> accurate, <data>0.9×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\begin{array}{l}
+t_0 := \sqrt{b2 \cdot b2 - c \cdot a}\\
 \mathbf{if}\;b2 \leq 0:\\
 \;\;\;\;\frac{c}{t\_0 - b2}\\
 
@@ -318,9 +353,9 @@ t_0 := \sqrt{b2 \cdot b2 - a \cdot c}\\
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (a b2 c)
   :precision binary64
   :pre TRUE
-  (let* ((t_0 (sqrt (- (* b2 b2) (* a c)))))
+  (let* ((t_0 (sqrt (- (* b2 b2) (* c a)))))
   (if (&lt;= b2 0.0) (/ c (- t_0 b2)) (/ (- (- t_0) b2) a))))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double a, double b2, double c) {
-	double t_0 = sqrt(((b2 * b2) - (a * c)));
+	double t_0 = sqrt(((b2 * b2) - (c * a)));
 	double tmp;
 	if (b2 &lt;= 0.0) {
 		tmp = c / (t_0 - b2);
@@ -336,7 +371,7 @@ use fmin_fmax_functions
     real(8), intent (in) :: c
     real(8) :: t_0
     real(8) :: tmp
-    t_0 = sqrt(((b2 * b2) - (a * c)))
+    t_0 = sqrt(((b2 * b2) - (c * a)))
     if (b2 &lt;= 0.0d0) then
         tmp = c / (t_0 - b2)
     else
@@ -345,7 +380,7 @@ use fmin_fmax_functions
     code = tmp
 end function
 </pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double a, double b2, double c) {
-	double t_0 = Math.sqrt(((b2 * b2) - (a * c)));
+	double t_0 = Math.sqrt(((b2 * b2) - (c * a)));
 	double tmp;
 	if (b2 &lt;= 0.0) {
 		tmp = c / (t_0 - b2);
@@ -355,7 +390,7 @@ end function
 	return tmp;
 }
 </pre></div><div class="implementation" data-language="Python"><pre class="program">def code(a, b2, c):
-	t_0 = math.sqrt(((b2 * b2) - (a * c)))
+	t_0 = math.sqrt(((b2 * b2) - (c * a)))
 	tmp = 0
 	if b2 &lt;= 0.0:
 		tmp = c / (t_0 - b2)
@@ -363,7 +398,7 @@ end function
 		tmp = (-t_0 - b2) / a
 	return tmp
 </pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(a, b2, c)
-	t_0 = sqrt(Float64(Float64(b2 * b2) - Float64(a * c)))
+	t_0 = sqrt(Float64(Float64(b2 * b2) - Float64(c * a)))
 	tmp = 0.0
 	if (b2 &lt;= 0.0)
 		tmp = Float64(c / Float64(t_0 - b2));
@@ -373,7 +408,7 @@ end function
 	return tmp
 end
 </pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp_2 = code(a, b2, c)
-	t_0 = sqrt(((b2 * b2) - (a * c)));
+	t_0 = sqrt(((b2 * b2) - (c * a)));
 	tmp = 0.0;
 	if (b2 &lt;= 0.0)
 		tmp = c / (t_0 - b2);
@@ -382,7 +417,7 @@ end
 	end
 	tmp_2 = tmp;
 end
-</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[a_, b2_, c_] := Block[{t$95$0 = N[Sqrt[N[(N[(b2 * b2), $MachinePrecision] - N[(a * c), $MachinePrecision]), $MachinePrecision]], $MachinePrecision]}, If[LessEqual[b2, 0.0], N[(c / N[(t$95$0 - b2), $MachinePrecision]), $MachinePrecision], N[(N[((-t$95$0) - b2), $MachinePrecision] / a), $MachinePrecision]]]
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[a_, b2_, c_] := Block[{t$95$0 = N[Sqrt[N[(N[(b2 * b2), $MachinePrecision] - N[(c * a), $MachinePrecision]), $MachinePrecision]], $MachinePrecision]}, If[LessEqual[b2, 0.0], N[(c / N[(t$95$0 - b2), $MachinePrecision]), $MachinePrecision], N[(N[((-t$95$0) - b2), $MachinePrecision] / a), $MachinePrecision]]]
 </pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(a, b2, c):
 	a in [-inf, +inf],
 	b2 in [-inf, +inf],
@@ -390,11 +425,11 @@ end
 code: THEORY
 BEGIN
 f(a, b2, c: real): real =
-	LET t_0 = (sqrt(((b2 * b2) - (a * c)))) IN
+	LET t_0 = (sqrt(((b2 * b2) - (c * a)))) IN
 		LET tmp = IF (b2 &lt;= (0)) THEN (c / (t_0 - b2)) ELSE (((- t_0) - b2) / a) ENDIF IN
 	tmp
 END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\begin{array}{l}
-t_0 := \sqrt{b2 \cdot b2 - a \cdot c}\\
+t_0 := \sqrt{b2 \cdot b2 - c \cdot a}\\
 \mathbf{if}\;b2 \leq 0:\\
 \;\;\;\;\frac{c}{t\_0 - b2}\\
 
@@ -410,7 +445,10 @@ t_0 := \sqrt{b2 \cdot b2 - a \cdot c}\\
   :pre (and (and (and (&lt;= 1 a) (&lt;= a 100)) (and (&lt;= -100 b2) (&lt;= b2 100))) (and (&lt;= -100 c) (&lt;= c -1)))
 
   :alt
-  (if (&lt;= b2 0) (/ c (- (sqrt (- (* b2 b2) (* a c))) b2)) (/ (- (- (sqrt (- (* b2 b2) (* a c)))) b2) a))
+  (/ (+ b2 (sqrt (- (* b2 b2) (* c a)))) (- a))
+
+  :alt
+  (if (&lt;= b2 0) (/ c (- (sqrt (- (* b2 b2) (* c a))) b2)) (/ (- (- (sqrt (- (* b2 b2) (* c a)))) b2) a))
 
   (/ (- (- b2) (sqrt (- (* b2 b2) (* a c)))) a))
 </code></pre></details></section></body></html>

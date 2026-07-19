@@ -2895,18 +2895,18 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
 \]</div></li><li><p>Taylor expanded in x6 around inf to order 0</p><div class="math">\[\leadsto -1 \cdot \left(x6 \cdot x6\right)
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">4.2%</span></p><div class="math">\[\leadsto -1 \cdot \left(x6 \cdot x6\right)
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">4.2%</span></p><div class="math">\[\leadsto -x6 \cdot x6
-\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>99.7%</data> accurate, <data>1.0×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\left(\left(2 - x1\right) \cdot 25\right) \cdot \left(x1 + -2\right) - \left(\left(\left(\left(-2 + x2\right) \cdot \left(-2 + x2\right) - \left(x5 + \left(x5 - 1\right)\right)\right) + x5 \cdot x5\right) + \left(\left(\left(4 - x4\right) \cdot \left(4 - x4\right) - \left(x3 + -1\right) \cdot \left(1 - x3\right)\right) + \left(x6 - 4\right) \cdot \left(x6 - 4\right)\right)\right)
+\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>99.7%</data> accurate, <data>1.0×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\left(\left(\left(\left(x5 + \left(x5 + -1\right)\right) + \left(x4 - 4\right) \cdot \left(4 - x4\right)\right) - x5 \cdot x5\right) + \left(\left(x6 - 4\right) \cdot \left(4 - x6\right) - \left(\left(x2 + -2\right) \cdot \left(x2 + -2\right) - \left(1 - x3\right) \cdot \left(x3 - 1\right)\right)\right)\right) + \left(-25 \cdot \left(2 - x1\right)\right) \cdot \left(2 - x1\right)
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (x1 x2 x3 x4 x5 x6)
   :precision binary64
   :pre TRUE
-  (-
- (* (* (- 2.0 x1) 25.0) (+ x1 -2.0))
- (+
-  (+ (- (* (+ -2.0 x2) (+ -2.0 x2)) (+ x5 (- x5 1.0))) (* x5 x5))
   (+
-   (- (* (- 4.0 x4) (- 4.0 x4)) (* (+ x3 -1.0) (- 1.0 x3)))
-   (* (- x6 4.0) (- x6 4.0))))))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double x1, double x2, double x3, double x4, double x5, double x6) {
-	return (((2.0 - x1) * 25.0) * (x1 + -2.0)) - (((((-2.0 + x2) * (-2.0 + x2)) - (x5 + (x5 - 1.0))) + (x5 * x5)) + ((((4.0 - x4) * (4.0 - x4)) - ((x3 + -1.0) * (1.0 - x3))) + ((x6 - 4.0) * (x6 - 4.0))));
+ (+
+  (- (+ (+ x5 (+ x5 -1.0)) (* (- x4 4.0) (- 4.0 x4))) (* x5 x5))
+  (-
+   (* (- x6 4.0) (- 4.0 x6))
+   (- (* (+ x2 -2.0) (+ x2 -2.0)) (* (- 1.0 x3) (- x3 1.0)))))
+ (* (* -25.0 (- 2.0 x1)) (- 2.0 x1))))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double x1, double x2, double x3, double x4, double x5, double x6) {
+	return ((((x5 + (x5 + -1.0)) + ((x4 - 4.0) * (4.0 - x4))) - (x5 * x5)) + (((x6 - 4.0) * (4.0 - x6)) - (((x2 + -2.0) * (x2 + -2.0)) - ((1.0 - x3) * (x3 - 1.0))))) + ((-25.0 * (2.0 - x1)) * (2.0 - x1));
 }
 </pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(x1, x2, x3, x4, x5, x6)
 use fmin_fmax_functions
@@ -2916,20 +2916,20 @@ use fmin_fmax_functions
     real(8), intent (in) :: x4
     real(8), intent (in) :: x5
     real(8), intent (in) :: x6
-    code = (((2.0d0 - x1) * 25.0d0) * (x1 + (-2.0d0))) - ((((((-2.0d0) + x2) * ((-2.0d0) + x2)) - (x5 + (x5 - 1.0d0))) + (x5 * x5)) + ((((4.0d0 - x4) * (4.0d0 - x4)) - ((x3 + (-1.0d0)) * (1.0d0 - x3))) + ((x6 - 4.0d0) * (x6 - 4.0d0))))
+    code = ((((x5 + (x5 + (-1.0d0))) + ((x4 - 4.0d0) * (4.0d0 - x4))) - (x5 * x5)) + (((x6 - 4.0d0) * (4.0d0 - x6)) - (((x2 + (-2.0d0)) * (x2 + (-2.0d0))) - ((1.0d0 - x3) * (x3 - 1.0d0))))) + (((-25.0d0) * (2.0d0 - x1)) * (2.0d0 - x1))
 end function
 </pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double x1, double x2, double x3, double x4, double x5, double x6) {
-	return (((2.0 - x1) * 25.0) * (x1 + -2.0)) - (((((-2.0 + x2) * (-2.0 + x2)) - (x5 + (x5 - 1.0))) + (x5 * x5)) + ((((4.0 - x4) * (4.0 - x4)) - ((x3 + -1.0) * (1.0 - x3))) + ((x6 - 4.0) * (x6 - 4.0))));
+	return ((((x5 + (x5 + -1.0)) + ((x4 - 4.0) * (4.0 - x4))) - (x5 * x5)) + (((x6 - 4.0) * (4.0 - x6)) - (((x2 + -2.0) * (x2 + -2.0)) - ((1.0 - x3) * (x3 - 1.0))))) + ((-25.0 * (2.0 - x1)) * (2.0 - x1));
 }
 </pre></div><div class="implementation" data-language="Python"><pre class="program">def code(x1, x2, x3, x4, x5, x6):
-	return (((2.0 - x1) * 25.0) * (x1 + -2.0)) - (((((-2.0 + x2) * (-2.0 + x2)) - (x5 + (x5 - 1.0))) + (x5 * x5)) + ((((4.0 - x4) * (4.0 - x4)) - ((x3 + -1.0) * (1.0 - x3))) + ((x6 - 4.0) * (x6 - 4.0))))
+	return ((((x5 + (x5 + -1.0)) + ((x4 - 4.0) * (4.0 - x4))) - (x5 * x5)) + (((x6 - 4.0) * (4.0 - x6)) - (((x2 + -2.0) * (x2 + -2.0)) - ((1.0 - x3) * (x3 - 1.0))))) + ((-25.0 * (2.0 - x1)) * (2.0 - x1))
 </pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(x1, x2, x3, x4, x5, x6)
-	return Float64(Float64(Float64(Float64(2.0 - x1) * 25.0) * Float64(x1 + -2.0)) - Float64(Float64(Float64(Float64(Float64(-2.0 + x2) * Float64(-2.0 + x2)) - Float64(x5 + Float64(x5 - 1.0))) + Float64(x5 * x5)) + Float64(Float64(Float64(Float64(4.0 - x4) * Float64(4.0 - x4)) - Float64(Float64(x3 + -1.0) * Float64(1.0 - x3))) + Float64(Float64(x6 - 4.0) * Float64(x6 - 4.0)))))
+	return Float64(Float64(Float64(Float64(Float64(x5 + Float64(x5 + -1.0)) + Float64(Float64(x4 - 4.0) * Float64(4.0 - x4))) - Float64(x5 * x5)) + Float64(Float64(Float64(x6 - 4.0) * Float64(4.0 - x6)) - Float64(Float64(Float64(x2 + -2.0) * Float64(x2 + -2.0)) - Float64(Float64(1.0 - x3) * Float64(x3 - 1.0))))) + Float64(Float64(-25.0 * Float64(2.0 - x1)) * Float64(2.0 - x1)))
 end
 </pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(x1, x2, x3, x4, x5, x6)
-	tmp = (((2.0 - x1) * 25.0) * (x1 + -2.0)) - (((((-2.0 + x2) * (-2.0 + x2)) - (x5 + (x5 - 1.0))) + (x5 * x5)) + ((((4.0 - x4) * (4.0 - x4)) - ((x3 + -1.0) * (1.0 - x3))) + ((x6 - 4.0) * (x6 - 4.0))));
+	tmp = ((((x5 + (x5 + -1.0)) + ((x4 - 4.0) * (4.0 - x4))) - (x5 * x5)) + (((x6 - 4.0) * (4.0 - x6)) - (((x2 + -2.0) * (x2 + -2.0)) - ((1.0 - x3) * (x3 - 1.0))))) + ((-25.0 * (2.0 - x1)) * (2.0 - x1));
 end
-</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[x1_, x2_, x3_, x4_, x5_, x6_] := N[(N[(N[(N[(2.0 - x1), $MachinePrecision] * 25.0), $MachinePrecision] * N[(x1 + -2.0), $MachinePrecision]), $MachinePrecision] - N[(N[(N[(N[(N[(-2.0 + x2), $MachinePrecision] * N[(-2.0 + x2), $MachinePrecision]), $MachinePrecision] - N[(x5 + N[(x5 - 1.0), $MachinePrecision]), $MachinePrecision]), $MachinePrecision] + N[(x5 * x5), $MachinePrecision]), $MachinePrecision] + N[(N[(N[(N[(4.0 - x4), $MachinePrecision] * N[(4.0 - x4), $MachinePrecision]), $MachinePrecision] - N[(N[(x3 + -1.0), $MachinePrecision] * N[(1.0 - x3), $MachinePrecision]), $MachinePrecision]), $MachinePrecision] + N[(N[(x6 - 4.0), $MachinePrecision] * N[(x6 - 4.0), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[x1_, x2_, x3_, x4_, x5_, x6_] := N[(N[(N[(N[(N[(x5 + N[(x5 + -1.0), $MachinePrecision]), $MachinePrecision] + N[(N[(x4 - 4.0), $MachinePrecision] * N[(4.0 - x4), $MachinePrecision]), $MachinePrecision]), $MachinePrecision] - N[(x5 * x5), $MachinePrecision]), $MachinePrecision] + N[(N[(N[(x6 - 4.0), $MachinePrecision] * N[(4.0 - x6), $MachinePrecision]), $MachinePrecision] - N[(N[(N[(x2 + -2.0), $MachinePrecision] * N[(x2 + -2.0), $MachinePrecision]), $MachinePrecision] - N[(N[(1.0 - x3), $MachinePrecision] * N[(x3 - 1.0), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]), $MachinePrecision] + N[(N[(-25.0 * N[(2.0 - x1), $MachinePrecision]), $MachinePrecision] * N[(2.0 - x1), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]
 </pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(x1, x2, x3, x4, x5, x6):
 	x1 in [-inf, +inf],
 	x2 in [-inf, +inf],
@@ -2940,8 +2940,8 @@ end
 code: THEORY
 BEGIN
 f(x1, x2, x3, x4, x5, x6: real): real =
-	((((2) - x1) * (25)) * (x1 + (-2))) - ((((((-2) + x2) * ((-2) + x2)) - (x5 + (x5 - (1)))) + (x5 * x5)) + (((((4) - x4) * ((4) - x4)) - ((x3 + (-1)) * ((1) - x3))) + ((x6 - (4)) * (x6 - (4)))))
-END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\left(\left(2 - x1\right) \cdot 25\right) \cdot \left(x1 + -2\right) - \left(\left(\left(\left(-2 + x2\right) \cdot \left(-2 + x2\right) - \left(x5 + \left(x5 - 1\right)\right)\right) + x5 \cdot x5\right) + \left(\left(\left(4 - x4\right) \cdot \left(4 - x4\right) - \left(x3 + -1\right) \cdot \left(1 - x3\right)\right) + \left(x6 - 4\right) \cdot \left(x6 - 4\right)\right)\right)
+	((((x5 + (x5 + (-1))) + ((x4 - (4)) * ((4) - x4))) - (x5 * x5)) + (((x6 - (4)) * ((4) - x6)) - (((x2 + (-2)) * (x2 + (-2))) - (((1) - x3) * (x3 - (1)))))) + (((-25) * ((2) - x1)) * ((2) - x1))
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\left(\left(\left(\left(x5 + \left(x5 + -1\right)\right) + \left(x4 - 4\right) \cdot \left(4 - x4\right)\right) - x5 \cdot x5\right) + \left(\left(x6 - 4\right) \cdot \left(4 - x6\right) - \left(\left(x2 + -2\right) \cdot \left(x2 + -2\right) - \left(1 - x3\right) \cdot \left(x3 - 1\right)\right)\right)\right) + \left(-25 \cdot \left(2 - x1\right)\right) \cdot \left(2 - x1\right)
 </pre></div></div></section><section id="reproduce"><details><summary><h2>Reproduce</h2><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#reproduction" target="_blank">?</a></summary><pre class="shell"><code>herbie shell --seed 1 
 (FPCore (x1 x2 x3 x4 x5 x6)
   :name "floudas1"
@@ -2949,7 +2949,7 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
   :pre (and (and (and (and (and (and (&lt;= 0 x1) (&lt;= x1 6)) (and (&lt;= 0 x2) (&lt;= x2 6))) (and (&lt;= 1 x3) (&lt;= x3 5))) (and (&lt;= 0 x4) (&lt;= x4 6))) (and (&lt;= 0 x5) (&lt;= x5 6))) (and (&lt;= 0 x6) (&lt;= x6 10)))
 
   :alt
-  (- (* (* (- 2 x1) 25) (+ x1 -2)) (+ (+ (- (* (+ -2 x2) (+ -2 x2)) (+ x5 (- x5 1))) (* x5 x5)) (+ (- (* (- 4 x4) (- 4 x4)) (* (+ x3 -1) (- 1 x3))) (* (- x6 4) (- x6 4)))))
+  (+ (+ (- (+ (+ x5 (+ x5 -1)) (* (- x4 4) (- 4 x4))) (* x5 x5)) (- (* (- x6 4) (- 4 x6)) (- (* (+ x2 -2) (+ x2 -2)) (* (- 1 x3) (- x3 1))))) (* (* -25 (- 2 x1)) (- 2 x1)))
 
   (- (- (- (- (- (* -25.0 (* (- x1 2.0) (- x1 2.0))) (* (- x2 2.0) (- x2 2.0))) (* (- x3 1.0) (- x3 1.0))) (* (- x4 4.0) (- x4 4.0))) (* (- x5 1.0) (- x5 1.0))) (* (- x6 4.0) (- x6 4.0))))
 </code></pre></details></section></body></html>

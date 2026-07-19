@@ -1,0 +1,147 @@
+Base path: /Users/laura.zielinski/FPTaylor
+Config file: /Users/laura.zielinski/FPTaylor/default.cfg
+Config file: /var/folders/38/q_vgzzt959nfc63ldktzz1gr0000gp/T/tmp5uvqfnc_.cfg
+default-rnd = rnd64
+nlopt-cc = gcc -std=c99 -O3
+opt-exact = true
+develop = false
+log-append-date = start
+uncertainty = false
+rel-error = true
+opt-approx = false
+proof-record = false
+find-bounds = false
+proof-dir = proofs
+opt-f-abs-tol = 0.01
+fail-on-exception = true
+print-opt-lower-bounds = true
+bb-compile = {base}/b_and_b/compile.sh {base} {input} {out}
+z3-python-lib = 
+opt-x-abs-tol = 0.01
+export-error-bounds = 
+opt-f-rel-tol = 0.01
+export-options = 
+opt-x-rel-tol = 0.0
+rel-error-threshold = 0.0001
+bb-alg = opt0
+log-base-dir = log
+intermediate-opt = false
+z3-interval-bounds = true
+opt-max-iters = 1000000
+abs-error = true
+z3-bin = 
+maxima-simplification = false
+print-hex-floats = true
+debug = true
+print-precision = 7
+export-error-bounds-data = 
+fp-power2-model = true
+opt = auto
+default-var-type = float64
+verbosity = 2
+ulp-error = false
+opt-timeout = 10000
+nlopt-lib = -lnlopt -lm
+tmp-base-dir = tmp
+unique-indices = false
+z3-seed = 0
+tmp-date = false
+z3-python-cmd = python
+const-approx-real-vars = false
+print-second-order-errors = false
+Resetting input_parser_env
+eval_const_expr: 0
+result: 0
+eval_const_expr: 1
+result: 1
+eval_const_expr: 0
+result: 0
+eval_const_expr: 1
+result: 1
+eval_const_expr: 0
+result: 0
+eval_const_expr: 2
+result: 2
+eval_const_expr: 1000
+result: 1000
+eval_const_expr: 0
+result: 0
+eval_const_expr: 1000
+result: 1000
+eval_const_expr: 2
+result: 2
+Resetting input_parser_env
+|tasks| = 1
+Processing: result
+
+*************************************
+Taylor form for: rnd64((rnd64(x) - rnd64(sqrt(rnd64((rnd64((rnd64(x) * rnd64(x))) - rnd64(eps)))))))
+
+Conservative bound: [-998.000000, 998.267949]
+
+Simplified rounding: rnd[64,ne,1.00,-53,0]((x - rnd[64,ne,1.00,-53,0](sqrt(rnd[64,ne,1.00,-53,0]((rnd64((x * x)) - eps))))))
+Building Taylor forms...
+var_form
+mul_form
+rounded_form
+var_form
+sub_form
+rounded_form
+sqrt_form
+rounded_form
+sub_form
+rounded_form
+Taylor forms cache stats: num_bindings = 10, num_buckets = 1024, max_bucket_length = 1
+Expr cache stats: num_bindings = 26, num_buckets = 65536, max_bucket_length = 1
+Simplifying Taylor forms...
+success
+v0 = (x - sqrt(((x * x) - eps)))
+-1: exp = -53: (1733436304890671/590295810358705651712)
+1: exp = -53: (-((floor_power2(((x * x) + 0)) / (2 * sqrt(((x * x) - eps))))))
+2: exp = -53: (-((floor_power2((((x * x) - eps) + interval(-5.82076609134674201513e-11, 5.82076609134674201513e-11))) / (2 * sqrt(((x * x) - eps))))))
+3: exp = -53: (-(floor_power2((sqrt(((x * x) - eps)) + interval(-3.36062086976148954849e-11, 3.36062086976148954849e-11)))))
+4: exp = -53: floor_power2(((x - sqrt(((x * x) - eps))) + interval(-3.36630521164757034998e-11, 3.36630521164757034998e-11)))
+
+Corresponding original subexpressions:
+1: rnd64((x * x))
+2: rnd[64,ne,1.00,-53,0]((rnd64((x * x)) - eps))
+3: rnd[64,ne,1.00,-53,0](sqrt(rnd[64,ne,1.00,-53,0]((rnd64((x * x)) - eps))))
+4: rnd[64,ne,1.00,-53,0]((x - rnd[64,ne,1.00,-53,0](sqrt(rnd[64,ne,1.00,-53,0]((rnd64((x * x)) - eps))))))
+
+Selected optimization method: bb-eval
+bb-eval_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+bounds: [-5.839748e-02, 2.755633e-01]
+
+Computing absolute errors
+Selected optimization method: bb-eval
+bb-eval_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+rmin(result = 2.936555e-06, lower = 2.936555e-06), rmax(result = 2.936555e-06, lower = 2.936555e-06)
+-1: exp = -53: 2.936555e-06 (low = 2.936555e-06, subopt = 0.0%)
+
+Solving the exact optimization problem
+Selected optimization method: bb-eval
+bb-eval_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+exact bound (exp = -53): 1.244874e+03 (low = 1.233059e+03, subopt = 0.9%)
+total2: 3.260231e-22 (low = 3.260231e-22, subopt = 0.0%)
+exact total: 1.382088e-13 (low = 1.368971e-13, subopt = 0.9%)
+
+Computing relative errors
+**WARNING**: 
+Cannot compute the relative error: values of the function are close to zero
+
+Elapsed time: 8.53479
+*************************************
+
+-------------------------------------------------------------------------------
+Problem: result
+
+Optimization lower bounds for error models:
+The absolute error (exact) model: 1.368970e-13 (0x1.3443c8c736464p-43) (suboptimality = 0.9%)
+
+Bounds (without rounding): [-5.839749e-2, 2.755634e-1]
+Bounds (floating-point): [-5.839749e-2, 2.755634e-1]
+
+Absolute error (exact): 1.382089e-13 (0x1.3737f71fca144p-43)
+
+Elapsed time: 8.53
+

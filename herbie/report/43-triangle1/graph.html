@@ -1,5 +1,5 @@
 <!doctype html>
-<html><head><meta charset="utf-8"/><title>Result for triangle1</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>triangle1</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 95.6% → 97.5%">98.2%<span class="unit"> → </span>99.3%</span></div><div>Time: <span class="number">2.6s</span></div><div>Alternatives: <span class="number">18</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.2×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(\left(6 \leq a \land a \leq 8\right) \land \left(6 \leq b \land b \leq 8\right)\right) \land \left(6 \leq c \land c \leq 8\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\begin{array}{l}
+<html><head><meta charset="utf-8"/><title>Result for triangle1</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>triangle1</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 95.6% → 97.5%">98.2%<span class="unit"> → </span>99.3%</span></div><div>Time: <span class="number">2.5s</span></div><div>Alternatives: <span class="number">18</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.2×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(\left(6 \leq a \land a \leq 8\right) \land \left(6 \leq b \land b \leq 8\right)\right) \land \left(6 \leq c \land c \leq 8\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\begin{array}{l}
 t_0 := \frac{\left(a + b\right) + c}{2}\\
 \sqrt{\left(\left(t\_0 \cdot \left(t\_0 - a\right)\right) \cdot \left(t\_0 - b\right)\right) \cdot \left(t\_0 - c\right)}
 \end{array}
@@ -1033,35 +1033,37 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
 </pre></div></div><details><summary>Derivation</summary><ol class="history"><li><p>Initial program <span class="error">98.2%</span></p><div class="math">\[\sqrt{\left(\left(\frac{\left(a + b\right) + c}{2} \cdot \left(\frac{\left(a + b\right) + c}{2} - a\right)\right) \cdot \left(\frac{\left(a + b\right) + c}{2} - b\right)\right) \cdot \left(\frac{\left(a + b\right) + c}{2} - c\right)}
 \]</div></li><li><p>Taylor expanded in a around inf to order 0</p><div class="math">\[\leadsto \left(a \cdot a\right) \cdot \sqrt{-0.0625}
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">0.0%</span></p><div class="math">\[\leadsto \left(a \cdot a\right) \cdot \sqrt{-0.0625}
-\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>99.5%</data> accurate, <data>1.0×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\sqrt{\left(\frac{\left(\left(-2 \cdot b + a\right) + b\right) + c}{4} \cdot \left(\left(\left(2 \cdot c - a\right) - b\right) - c\right)\right) \cdot \left(\left(\left(\left(a \cdot -2 + a\right) + b\right) + c\right) \cdot \frac{\left(b + c\right) + a}{-4}\right)}
+\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>99.5%</data> accurate, <data>1.0×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\sqrt{\left(\frac{\left(a + c\right) + b}{4} \cdot \left(\left(\left(2 \cdot a - a\right) - c\right) - b\right)\right) \cdot \left(\left(\left(\left(2 \cdot c - b\right) - c\right) - a\right) \cdot \frac{\left(\left(-2 \cdot b + a\right) + b\right) + c}{4}\right)}
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (a b c)
   :precision binary64
   :pre TRUE
   (sqrt
  (*
-  (* (/ (+ (+ (+ (* -2.0 b) a) b) c) 4.0) (- (- (- (* 2.0 c) a) b) c))
-  (* (+ (+ (+ (* a -2.0) a) b) c) (/ (+ (+ b c) a) -4.0)))))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double a, double b, double c) {
-	return sqrt((((((((-2.0 * b) + a) + b) + c) / 4.0) * ((((2.0 * c) - a) - b) - c)) * (((((a * -2.0) + a) + b) + c) * (((b + c) + a) / -4.0))));
+  (* (/ (+ (+ a c) b) 4.0) (- (- (- (* 2.0 a) a) c) b))
+  (*
+   (- (- (- (* 2.0 c) b) c) a)
+   (/ (+ (+ (+ (* -2.0 b) a) b) c) 4.0)))))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double a, double b, double c) {
+	return sqrt((((((a + c) + b) / 4.0) * ((((2.0 * a) - a) - c) - b)) * (((((2.0 * c) - b) - c) - a) * (((((-2.0 * b) + a) + b) + c) / 4.0))));
 }
 </pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(a, b, c)
 use fmin_fmax_functions
     real(8), intent (in) :: a
     real(8), intent (in) :: b
     real(8), intent (in) :: c
-    code = sqrt(((((((((-2.0d0) * b) + a) + b) + c) / 4.0d0) * ((((2.0d0 * c) - a) - b) - c)) * (((((a * (-2.0d0)) + a) + b) + c) * (((b + c) + a) / (-4.0d0)))))
+    code = sqrt((((((a + c) + b) / 4.0d0) * ((((2.0d0 * a) - a) - c) - b)) * (((((2.0d0 * c) - b) - c) - a) * ((((((-2.0d0) * b) + a) + b) + c) / 4.0d0))))
 end function
 </pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double a, double b, double c) {
-	return Math.sqrt((((((((-2.0 * b) + a) + b) + c) / 4.0) * ((((2.0 * c) - a) - b) - c)) * (((((a * -2.0) + a) + b) + c) * (((b + c) + a) / -4.0))));
+	return Math.sqrt((((((a + c) + b) / 4.0) * ((((2.0 * a) - a) - c) - b)) * (((((2.0 * c) - b) - c) - a) * (((((-2.0 * b) + a) + b) + c) / 4.0))));
 }
 </pre></div><div class="implementation" data-language="Python"><pre class="program">def code(a, b, c):
-	return math.sqrt((((((((-2.0 * b) + a) + b) + c) / 4.0) * ((((2.0 * c) - a) - b) - c)) * (((((a * -2.0) + a) + b) + c) * (((b + c) + a) / -4.0))))
+	return math.sqrt((((((a + c) + b) / 4.0) * ((((2.0 * a) - a) - c) - b)) * (((((2.0 * c) - b) - c) - a) * (((((-2.0 * b) + a) + b) + c) / 4.0))))
 </pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(a, b, c)
-	return sqrt(Float64(Float64(Float64(Float64(Float64(Float64(Float64(-2.0 * b) + a) + b) + c) / 4.0) * Float64(Float64(Float64(Float64(2.0 * c) - a) - b) - c)) * Float64(Float64(Float64(Float64(Float64(a * -2.0) + a) + b) + c) * Float64(Float64(Float64(b + c) + a) / -4.0))))
+	return sqrt(Float64(Float64(Float64(Float64(Float64(a + c) + b) / 4.0) * Float64(Float64(Float64(Float64(2.0 * a) - a) - c) - b)) * Float64(Float64(Float64(Float64(Float64(2.0 * c) - b) - c) - a) * Float64(Float64(Float64(Float64(Float64(-2.0 * b) + a) + b) + c) / 4.0))))
 end
 </pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(a, b, c)
-	tmp = sqrt((((((((-2.0 * b) + a) + b) + c) / 4.0) * ((((2.0 * c) - a) - b) - c)) * (((((a * -2.0) + a) + b) + c) * (((b + c) + a) / -4.0))));
+	tmp = sqrt((((((a + c) + b) / 4.0) * ((((2.0 * a) - a) - c) - b)) * (((((2.0 * c) - b) - c) - a) * (((((-2.0 * b) + a) + b) + c) / 4.0))));
 end
-</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[a_, b_, c_] := N[Sqrt[N[(N[(N[(N[(N[(N[(N[(-2.0 * b), $MachinePrecision] + a), $MachinePrecision] + b), $MachinePrecision] + c), $MachinePrecision] / 4.0), $MachinePrecision] * N[(N[(N[(N[(2.0 * c), $MachinePrecision] - a), $MachinePrecision] - b), $MachinePrecision] - c), $MachinePrecision]), $MachinePrecision] * N[(N[(N[(N[(N[(a * -2.0), $MachinePrecision] + a), $MachinePrecision] + b), $MachinePrecision] + c), $MachinePrecision] * N[(N[(N[(b + c), $MachinePrecision] + a), $MachinePrecision] / -4.0), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]], $MachinePrecision]
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[a_, b_, c_] := N[Sqrt[N[(N[(N[(N[(N[(a + c), $MachinePrecision] + b), $MachinePrecision] / 4.0), $MachinePrecision] * N[(N[(N[(N[(2.0 * a), $MachinePrecision] - a), $MachinePrecision] - c), $MachinePrecision] - b), $MachinePrecision]), $MachinePrecision] * N[(N[(N[(N[(N[(2.0 * c), $MachinePrecision] - b), $MachinePrecision] - c), $MachinePrecision] - a), $MachinePrecision] * N[(N[(N[(N[(N[(-2.0 * b), $MachinePrecision] + a), $MachinePrecision] + b), $MachinePrecision] + c), $MachinePrecision] / 4.0), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]], $MachinePrecision]
 </pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(a, b, c):
 	a in [-inf, +inf],
 	b in [-inf, +inf],
@@ -1069,8 +1071,174 @@ end
 code: THEORY
 BEGIN
 f(a, b, c: real): real =
-	sqrt(((((((((-2) * b) + a) + b) + c) / (4)) * (((((2) * c) - a) - b) - c)) * (((((a * (-2)) + a) + b) + c) * (((b + c) + a) / (-4)))))
-END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\sqrt{\left(\frac{\left(\left(-2 \cdot b + a\right) + b\right) + c}{4} \cdot \left(\left(\left(2 \cdot c - a\right) - b\right) - c\right)\right) \cdot \left(\left(\left(\left(a \cdot -2 + a\right) + b\right) + c\right) \cdot \frac{\left(b + c\right) + a}{-4}\right)}
+	sqrt((((((a + c) + b) / (4)) * (((((2) * a) - a) - c) - b)) * ((((((2) * c) - b) - c) - a) * ((((((-2) * b) + a) + b) + c) / (4)))))
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\sqrt{\left(\frac{\left(a + c\right) + b}{4} \cdot \left(\left(\left(2 \cdot a - a\right) - c\right) - b\right)\right) \cdot \left(\left(\left(\left(2 \cdot c - b\right) - c\right) - a\right) \cdot \frac{\left(\left(-2 \cdot b + a\right) + b\right) + c}{4}\right)}
+</pre></div></div></section><section id="target2" class="programs"><h2>Developer Target 2: <span class="subhead"><data>99.4%</data> accurate, <data>0.4×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\begin{array}{l}
+t_0 := \left(a + c\right) + b\\
+\sqrt{\left(\frac{t\_0 \cdot \left(c - \left(\left(2 \cdot a - b\right) - a\right)\right)}{-8} \cdot \left(\left(\left(-2 \cdot b + a\right) + b\right) + c\right)\right) \cdot \left(\left(c - \frac{b}{2}\right) + \frac{a}{-2}\right) - \frac{\left(t\_0 \cdot \left(b \cdot \left(\frac{b}{-2} - \left(\frac{a}{2} - \left(a - \frac{c}{2}\right)\right)\right) + \left(\left(\left(2 \cdot a - a\right) - c\right) - b\right) \cdot \left(\frac{a}{2} - \left(b + \frac{c}{-2}\right)\right)\right)\right) \cdot c}{8}}
+\end{array}
+\]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (a b c)
+  :precision binary64
+  :pre TRUE
+  (let* ((t_0 (+ (+ a c) b)))
+  (sqrt
+   (-
+    (*
+     (*
+      (/ (* t_0 (- c (- (- (* 2.0 a) b) a))) -8.0)
+      (+ (+ (+ (* -2.0 b) a) b) c))
+     (+ (- c (/ b 2.0)) (/ a -2.0)))
+    (/
+     (*
+      (*
+       t_0
+       (+
+        (* b (- (/ b -2.0) (- (/ a 2.0) (- a (/ c 2.0)))))
+        (*
+         (- (- (- (* 2.0 a) a) c) b)
+         (- (/ a 2.0) (+ b (/ c -2.0))))))
+      c)
+     8.0)))))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double a, double b, double c) {
+	double t_0 = (a + c) + b;
+	return sqrt((((((t_0 * (c - (((2.0 * a) - b) - a))) / -8.0) * ((((-2.0 * b) + a) + b) + c)) * ((c - (b / 2.0)) + (a / -2.0))) - (((t_0 * ((b * ((b / -2.0) - ((a / 2.0) - (a - (c / 2.0))))) + (((((2.0 * a) - a) - c) - b) * ((a / 2.0) - (b + (c / -2.0)))))) * c) / 8.0)));
+}
+</pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(a, b, c)
+use fmin_fmax_functions
+    real(8), intent (in) :: a
+    real(8), intent (in) :: b
+    real(8), intent (in) :: c
+    real(8) :: t_0
+    t_0 = (a + c) + b
+    code = sqrt((((((t_0 * (c - (((2.0d0 * a) - b) - a))) / (-8.0d0)) * (((((-2.0d0) * b) + a) + b) + c)) * ((c - (b / 2.0d0)) + (a / (-2.0d0)))) - (((t_0 * ((b * ((b / (-2.0d0)) - ((a / 2.0d0) - (a - (c / 2.0d0))))) + (((((2.0d0 * a) - a) - c) - b) * ((a / 2.0d0) - (b + (c / (-2.0d0))))))) * c) / 8.0d0)))
+end function
+</pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double a, double b, double c) {
+	double t_0 = (a + c) + b;
+	return Math.sqrt((((((t_0 * (c - (((2.0 * a) - b) - a))) / -8.0) * ((((-2.0 * b) + a) + b) + c)) * ((c - (b / 2.0)) + (a / -2.0))) - (((t_0 * ((b * ((b / -2.0) - ((a / 2.0) - (a - (c / 2.0))))) + (((((2.0 * a) - a) - c) - b) * ((a / 2.0) - (b + (c / -2.0)))))) * c) / 8.0)));
+}
+</pre></div><div class="implementation" data-language="Python"><pre class="program">def code(a, b, c):
+	t_0 = (a + c) + b
+	return math.sqrt((((((t_0 * (c - (((2.0 * a) - b) - a))) / -8.0) * ((((-2.0 * b) + a) + b) + c)) * ((c - (b / 2.0)) + (a / -2.0))) - (((t_0 * ((b * ((b / -2.0) - ((a / 2.0) - (a - (c / 2.0))))) + (((((2.0 * a) - a) - c) - b) * ((a / 2.0) - (b + (c / -2.0)))))) * c) / 8.0)))
+</pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(a, b, c)
+	t_0 = Float64(Float64(a + c) + b)
+	return sqrt(Float64(Float64(Float64(Float64(Float64(t_0 * Float64(c - Float64(Float64(Float64(2.0 * a) - b) - a))) / -8.0) * Float64(Float64(Float64(Float64(-2.0 * b) + a) + b) + c)) * Float64(Float64(c - Float64(b / 2.0)) + Float64(a / -2.0))) - Float64(Float64(Float64(t_0 * Float64(Float64(b * Float64(Float64(b / -2.0) - Float64(Float64(a / 2.0) - Float64(a - Float64(c / 2.0))))) + Float64(Float64(Float64(Float64(Float64(2.0 * a) - a) - c) - b) * Float64(Float64(a / 2.0) - Float64(b + Float64(c / -2.0)))))) * c) / 8.0)))
+end
+</pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(a, b, c)
+	t_0 = (a + c) + b;
+	tmp = sqrt((((((t_0 * (c - (((2.0 * a) - b) - a))) / -8.0) * ((((-2.0 * b) + a) + b) + c)) * ((c - (b / 2.0)) + (a / -2.0))) - (((t_0 * ((b * ((b / -2.0) - ((a / 2.0) - (a - (c / 2.0))))) + (((((2.0 * a) - a) - c) - b) * ((a / 2.0) - (b + (c / -2.0)))))) * c) / 8.0)));
+end
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[a_, b_, c_] := Block[{t$95$0 = N[(N[(a + c), $MachinePrecision] + b), $MachinePrecision]}, N[Sqrt[N[(N[(N[(N[(N[(t$95$0 * N[(c - N[(N[(N[(2.0 * a), $MachinePrecision] - b), $MachinePrecision] - a), $MachinePrecision]), $MachinePrecision]), $MachinePrecision] / -8.0), $MachinePrecision] * N[(N[(N[(N[(-2.0 * b), $MachinePrecision] + a), $MachinePrecision] + b), $MachinePrecision] + c), $MachinePrecision]), $MachinePrecision] * N[(N[(c - N[(b / 2.0), $MachinePrecision]), $MachinePrecision] + N[(a / -2.0), $MachinePrecision]), $MachinePrecision]), $MachinePrecision] - N[(N[(N[(t$95$0 * N[(N[(b * N[(N[(b / -2.0), $MachinePrecision] - N[(N[(a / 2.0), $MachinePrecision] - N[(a - N[(c / 2.0), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]), $MachinePrecision] + N[(N[(N[(N[(N[(2.0 * a), $MachinePrecision] - a), $MachinePrecision] - c), $MachinePrecision] - b), $MachinePrecision] * N[(N[(a / 2.0), $MachinePrecision] - N[(b + N[(c / -2.0), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]), $MachinePrecision] * c), $MachinePrecision] / 8.0), $MachinePrecision]), $MachinePrecision]], $MachinePrecision]]
+</pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(a, b, c):
+	a in [-inf, +inf],
+	b in [-inf, +inf],
+	c in [-inf, +inf]
+code: THEORY
+BEGIN
+f(a, b, c: real): real =
+	LET t_0 = ((a + c) + b) IN
+	sqrt((((((t_0 * (c - ((((2) * a) - b) - a))) / (-8)) * (((((-2) * b) + a) + b) + c)) * ((c - (b / (2))) + (a / (-2)))) - (((t_0 * ((b * ((b / (-2)) - ((a / (2)) - (a - (c / (2)))))) + ((((((2) * a) - a) - c) - b) * ((a / (2)) - (b + (c / (-2))))))) * c) / (8))))
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\begin{array}{l}
+t_0 := \left(a + c\right) + b\\
+\sqrt{\left(\frac{t\_0 \cdot \left(c - \left(\left(2 \cdot a - b\right) - a\right)\right)}{-8} \cdot \left(\left(\left(-2 \cdot b + a\right) + b\right) + c\right)\right) \cdot \left(\left(c - \frac{b}{2}\right) + \frac{a}{-2}\right) - \frac{\left(t\_0 \cdot \left(b \cdot \left(\frac{b}{-2} - \left(\frac{a}{2} - \left(a - \frac{c}{2}\right)\right)\right) + \left(\left(\left(2 \cdot a - a\right) - c\right) - b\right) \cdot \left(\frac{a}{2} - \left(b + \frac{c}{-2}\right)\right)\right)\right) \cdot c}{8}}
+\end{array}
+</pre></div></div></section><section id="target3" class="programs"><h2>Developer Target 3: <span class="subhead"><data>99.6%</data> accurate, <data>1.0×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\sqrt{\left(\frac{\left(a + c\right) + b}{4} \cdot \left(\left(\left(2 \cdot a - a\right) - c\right) - b\right)\right) \cdot \left(\left(\left(\left(2 \cdot c - c\right) - b\right) - a\right) \cdot \frac{c - \left(\left(2 \cdot b - b\right) - a\right)}{4}\right)}
+\]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (a b c)
+  :precision binary64
+  :pre TRUE
+  (sqrt
+ (*
+  (* (/ (+ (+ a c) b) 4.0) (- (- (- (* 2.0 a) a) c) b))
+  (*
+   (- (- (- (* 2.0 c) c) b) a)
+   (/ (- c (- (- (* 2.0 b) b) a)) 4.0)))))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double a, double b, double c) {
+	return sqrt((((((a + c) + b) / 4.0) * ((((2.0 * a) - a) - c) - b)) * (((((2.0 * c) - c) - b) - a) * ((c - (((2.0 * b) - b) - a)) / 4.0))));
+}
+</pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(a, b, c)
+use fmin_fmax_functions
+    real(8), intent (in) :: a
+    real(8), intent (in) :: b
+    real(8), intent (in) :: c
+    code = sqrt((((((a + c) + b) / 4.0d0) * ((((2.0d0 * a) - a) - c) - b)) * (((((2.0d0 * c) - c) - b) - a) * ((c - (((2.0d0 * b) - b) - a)) / 4.0d0))))
+end function
+</pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double a, double b, double c) {
+	return Math.sqrt((((((a + c) + b) / 4.0) * ((((2.0 * a) - a) - c) - b)) * (((((2.0 * c) - c) - b) - a) * ((c - (((2.0 * b) - b) - a)) / 4.0))));
+}
+</pre></div><div class="implementation" data-language="Python"><pre class="program">def code(a, b, c):
+	return math.sqrt((((((a + c) + b) / 4.0) * ((((2.0 * a) - a) - c) - b)) * (((((2.0 * c) - c) - b) - a) * ((c - (((2.0 * b) - b) - a)) / 4.0))))
+</pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(a, b, c)
+	return sqrt(Float64(Float64(Float64(Float64(Float64(a + c) + b) / 4.0) * Float64(Float64(Float64(Float64(2.0 * a) - a) - c) - b)) * Float64(Float64(Float64(Float64(Float64(2.0 * c) - c) - b) - a) * Float64(Float64(c - Float64(Float64(Float64(2.0 * b) - b) - a)) / 4.0))))
+end
+</pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(a, b, c)
+	tmp = sqrt((((((a + c) + b) / 4.0) * ((((2.0 * a) - a) - c) - b)) * (((((2.0 * c) - c) - b) - a) * ((c - (((2.0 * b) - b) - a)) / 4.0))));
+end
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[a_, b_, c_] := N[Sqrt[N[(N[(N[(N[(N[(a + c), $MachinePrecision] + b), $MachinePrecision] / 4.0), $MachinePrecision] * N[(N[(N[(N[(2.0 * a), $MachinePrecision] - a), $MachinePrecision] - c), $MachinePrecision] - b), $MachinePrecision]), $MachinePrecision] * N[(N[(N[(N[(N[(2.0 * c), $MachinePrecision] - c), $MachinePrecision] - b), $MachinePrecision] - a), $MachinePrecision] * N[(N[(c - N[(N[(N[(2.0 * b), $MachinePrecision] - b), $MachinePrecision] - a), $MachinePrecision]), $MachinePrecision] / 4.0), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]], $MachinePrecision]
+</pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(a, b, c):
+	a in [-inf, +inf],
+	b in [-inf, +inf],
+	c in [-inf, +inf]
+code: THEORY
+BEGIN
+f(a, b, c: real): real =
+	sqrt((((((a + c) + b) / (4)) * (((((2) * a) - a) - c) - b)) * ((((((2) * c) - c) - b) - a) * ((c - ((((2) * b) - b) - a)) / (4)))))
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\sqrt{\left(\frac{\left(a + c\right) + b}{4} \cdot \left(\left(\left(2 \cdot a - a\right) - c\right) - b\right)\right) \cdot \left(\left(\left(\left(2 \cdot c - c\right) - b\right) - a\right) \cdot \frac{c - \left(\left(2 \cdot b - b\right) - a\right)}{4}\right)}
+</pre></div></div></section><section id="target4" class="programs"><h2>Developer Target 4: <span class="subhead"><data>99.6%</data> accurate, <data>0.5×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\begin{array}{l}
+t_0 := 2 \cdot a - a\\
+\sqrt{\frac{\left(a - \left(\left(2 \cdot c - c\right) - b\right)\right) \cdot \left(c - \left(\left(2 \cdot b - b\right) - a\right)\right)}{4} \cdot \left(b \cdot \left(\frac{c}{4} - \frac{\left(a + \frac{a}{-2}\right) - \frac{b}{2}}{2}\right) + \left(\frac{\left(c - \left(t\_0 - b\right)\right) \cdot a}{4} - \left(\left(t\_0 - c\right) - b\right) \cdot \frac{c}{4}\right)\right)}
+\end{array}
+\]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (a b c)
+  :precision binary64
+  :pre TRUE
+  (let* ((t_0 (- (* 2.0 a) a)))
+  (sqrt
+   (*
+    (/
+     (* (- a (- (- (* 2.0 c) c) b)) (- c (- (- (* 2.0 b) b) a)))
+     4.0)
+    (+
+     (* b (- (/ c 4.0) (/ (- (+ a (/ a -2.0)) (/ b 2.0)) 2.0)))
+     (-
+      (/ (* (- c (- t_0 b)) a) 4.0)
+      (* (- (- t_0 c) b) (/ c 4.0))))))))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double a, double b, double c) {
+	double t_0 = (2.0 * a) - a;
+	return sqrt(((((a - (((2.0 * c) - c) - b)) * (c - (((2.0 * b) - b) - a))) / 4.0) * ((b * ((c / 4.0) - (((a + (a / -2.0)) - (b / 2.0)) / 2.0))) + ((((c - (t_0 - b)) * a) / 4.0) - (((t_0 - c) - b) * (c / 4.0))))));
+}
+</pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(a, b, c)
+use fmin_fmax_functions
+    real(8), intent (in) :: a
+    real(8), intent (in) :: b
+    real(8), intent (in) :: c
+    real(8) :: t_0
+    t_0 = (2.0d0 * a) - a
+    code = sqrt(((((a - (((2.0d0 * c) - c) - b)) * (c - (((2.0d0 * b) - b) - a))) / 4.0d0) * ((b * ((c / 4.0d0) - (((a + (a / (-2.0d0))) - (b / 2.0d0)) / 2.0d0))) + ((((c - (t_0 - b)) * a) / 4.0d0) - (((t_0 - c) - b) * (c / 4.0d0))))))
+end function
+</pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double a, double b, double c) {
+	double t_0 = (2.0 * a) - a;
+	return Math.sqrt(((((a - (((2.0 * c) - c) - b)) * (c - (((2.0 * b) - b) - a))) / 4.0) * ((b * ((c / 4.0) - (((a + (a / -2.0)) - (b / 2.0)) / 2.0))) + ((((c - (t_0 - b)) * a) / 4.0) - (((t_0 - c) - b) * (c / 4.0))))));
+}
+</pre></div><div class="implementation" data-language="Python"><pre class="program">def code(a, b, c):
+	t_0 = (2.0 * a) - a
+	return math.sqrt(((((a - (((2.0 * c) - c) - b)) * (c - (((2.0 * b) - b) - a))) / 4.0) * ((b * ((c / 4.0) - (((a + (a / -2.0)) - (b / 2.0)) / 2.0))) + ((((c - (t_0 - b)) * a) / 4.0) - (((t_0 - c) - b) * (c / 4.0))))))
+</pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(a, b, c)
+	t_0 = Float64(Float64(2.0 * a) - a)
+	return sqrt(Float64(Float64(Float64(Float64(a - Float64(Float64(Float64(2.0 * c) - c) - b)) * Float64(c - Float64(Float64(Float64(2.0 * b) - b) - a))) / 4.0) * Float64(Float64(b * Float64(Float64(c / 4.0) - Float64(Float64(Float64(a + Float64(a / -2.0)) - Float64(b / 2.0)) / 2.0))) + Float64(Float64(Float64(Float64(c - Float64(t_0 - b)) * a) / 4.0) - Float64(Float64(Float64(t_0 - c) - b) * Float64(c / 4.0))))))
+end
+</pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(a, b, c)
+	t_0 = (2.0 * a) - a;
+	tmp = sqrt(((((a - (((2.0 * c) - c) - b)) * (c - (((2.0 * b) - b) - a))) / 4.0) * ((b * ((c / 4.0) - (((a + (a / -2.0)) - (b / 2.0)) / 2.0))) + ((((c - (t_0 - b)) * a) / 4.0) - (((t_0 - c) - b) * (c / 4.0))))));
+end
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[a_, b_, c_] := Block[{t$95$0 = N[(N[(2.0 * a), $MachinePrecision] - a), $MachinePrecision]}, N[Sqrt[N[(N[(N[(N[(a - N[(N[(N[(2.0 * c), $MachinePrecision] - c), $MachinePrecision] - b), $MachinePrecision]), $MachinePrecision] * N[(c - N[(N[(N[(2.0 * b), $MachinePrecision] - b), $MachinePrecision] - a), $MachinePrecision]), $MachinePrecision]), $MachinePrecision] / 4.0), $MachinePrecision] * N[(N[(b * N[(N[(c / 4.0), $MachinePrecision] - N[(N[(N[(a + N[(a / -2.0), $MachinePrecision]), $MachinePrecision] - N[(b / 2.0), $MachinePrecision]), $MachinePrecision] / 2.0), $MachinePrecision]), $MachinePrecision]), $MachinePrecision] + N[(N[(N[(N[(c - N[(t$95$0 - b), $MachinePrecision]), $MachinePrecision] * a), $MachinePrecision] / 4.0), $MachinePrecision] - N[(N[(N[(t$95$0 - c), $MachinePrecision] - b), $MachinePrecision] * N[(c / 4.0), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]], $MachinePrecision]]
+</pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(a, b, c):
+	a in [-inf, +inf],
+	b in [-inf, +inf],
+	c in [-inf, +inf]
+code: THEORY
+BEGIN
+f(a, b, c: real): real =
+	LET t_0 = (((2) * a) - a) IN
+	sqrt(((((a - ((((2) * c) - c) - b)) * (c - ((((2) * b) - b) - a))) / (4)) * ((b * ((c / (4)) - (((a + (a / (-2))) - (b / (2))) / (2)))) + ((((c - (t_0 - b)) * a) / (4)) - (((t_0 - c) - b) * (c / (4)))))))
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\begin{array}{l}
+t_0 := 2 \cdot a - a\\
+\sqrt{\frac{\left(a - \left(\left(2 \cdot c - c\right) - b\right)\right) \cdot \left(c - \left(\left(2 \cdot b - b\right) - a\right)\right)}{4} \cdot \left(b \cdot \left(\frac{c}{4} - \frac{\left(a + \frac{a}{-2}\right) - \frac{b}{2}}{2}\right) + \left(\frac{\left(c - \left(t\_0 - b\right)\right) \cdot a}{4} - \left(\left(t\_0 - c\right) - b\right) \cdot \frac{c}{4}\right)\right)}
+\end{array}
 </pre></div></div></section><section id="reproduce"><details><summary><h2>Reproduce</h2><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#reproduction" target="_blank">?</a></summary><pre class="shell"><code>herbie shell --seed 1 
 (FPCore (a b c)
   :name "triangle1"
@@ -1078,7 +1246,16 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
   :pre (and (and (and (&lt;= 6 a) (&lt;= a 8)) (and (&lt;= 6 b) (&lt;= b 8))) (and (&lt;= 6 c) (&lt;= c 8)))
 
   :alt
-  (sqrt (* (* (/ (+ (+ (+ (* -2 b) a) b) c) 4) (- (- (- (* 2 c) a) b) c)) (* (+ (+ (+ (* a -2) a) b) c) (/ (+ (+ b c) a) -4))))
+  (sqrt (* (* (/ (+ (+ a c) b) 4) (- (- (- (* 2 a) a) c) b)) (* (- (- (- (* 2 c) b) c) a) (/ (+ (+ (+ (* -2 b) a) b) c) 4))))
+
+  :alt
+  (sqrt (- (* (* (/ (* (+ (+ a c) b) (- c (- (- (* 2 a) b) a))) -8) (+ (+ (+ (* -2 b) a) b) c)) (+ (- c (/ b 2)) (/ a -2))) (/ (* (* (+ (+ a c) b) (+ (* b (- (/ b -2) (- (/ a 2) (- a (/ c 2))))) (* (- (- (- (* 2 a) a) c) b) (- (/ a 2) (+ b (/ c -2)))))) c) 8)))
+
+  :alt
+  (sqrt (* (* (/ (+ (+ a c) b) 4) (- (- (- (* 2 a) a) c) b)) (* (- (- (- (* 2 c) c) b) a) (/ (- c (- (- (* 2 b) b) a)) 4))))
+
+  :alt
+  (sqrt (* (/ (* (- a (- (- (* 2 c) c) b)) (- c (- (- (* 2 b) b) a))) 4) (+ (* b (- (/ c 4) (/ (- (+ a (/ a -2)) (/ b 2)) 2))) (- (/ (* (- c (- (- (* 2 a) a) b)) a) 4) (* (- (- (- (* 2 a) a) c) b) (/ c 4))))))
 
   (sqrt (* (* (* (/ (+ (+ a b) c) 2.0) (- (/ (+ (+ a b) c) 2.0) a)) (- (/ (+ (+ a b) c) 2.0) b)) (- (/ (+ (+ a b) c) 2.0) c))))
 </code></pre></details></section></body></html>

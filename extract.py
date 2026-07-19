@@ -161,8 +161,8 @@ def interval(spelling, itv, leaf, box):
     raise ValueError(op)
 
 
-def analyze_intervals(classes, leaf, box):
-    itv = {c: TOP for c in classes}
+def analyze_intervals(classes, leaf, box, start=None):
+    itv = dict(start) if start else {c: TOP for c in classes}
     changed = True
     while changed:  # rerun until no enclosure narrows any further
         changed = False
@@ -174,6 +174,100 @@ def analyze_intervals(classes, leaf, box):
             if lo <= hi and (lo, hi) != itv[c]:
                 itv[c], changed = (lo, hi), True
     return itv
+
+
+# ---------------------------------------------------------------------------
+# 3b. Affine tightening: plain intervals treat every operand as independent,
+#     so `x - y` where x and y share structure looks like it can cancel even
+#     when it can't. An affine form  x0 + sum(xi * ei), ei in [-1,1]  keeps
+#     one shared noise symbol per input variable, so correlated terms cancel
+#     symbolically. Linear ops (+ - neg) are exact on forms; * adds one fresh
+#     symbol for its quadratic remainder; / and sqrt keep their interval
+#     enclosure. Each form also carries a fresh "slack" symbol absorbing the
+#     float rounding of computing its own coefficients, and each class's form
+#     is set exactly once (leaves upward) so every symbol keeps one meaning.
+#     The result only *tightens* the intervals the cost model reads.
+# ---------------------------------------------------------------------------
+
+SLACK = 2.0 ** -45  # covers the rounding of the coefficient arithmetic
+
+
+def _radius(f) -> float:
+    return up(sum(abs(v) for k, v in f.items() if k != 0))
+
+
+def _finish(f, key):
+    f = {k: v for k, v in f.items() if v != 0.0 or k == 0}
+    if len(f) > 32:  # condense: fold the smallest terms into a fresh symbol
+        noise = sorted((k for k in f if k != 0), key=lambda k: abs(f[k]))
+        f[("fold", key)] = up(sum(abs(f.pop(k)) for k in noise[:len(f) - 32]))
+    total = up(abs(f.get(0, 0.0)) + _radius(f))
+    if not math.isfinite(total):
+        return None
+    f[("slack", key)] = up(total * SLACK)
+    return f
+
+
+def _aff_spelling(spelling, forms, leaf, box):
+    op, kids = spelling
+    if op == "Num":
+        n = int(leaf[kids[0]])
+        f0 = float(n)
+        return {0: f0} if f0 == n else {0: f0, ("num", n): up(abs(f0) * U)}
+    if op == "Var":
+        lo, hi = box.get(leaf[kids[0]], TOP)
+        if not (math.isfinite(lo) and math.isfinite(hi)):
+            return None
+        c = (lo + hi) / 2
+        return {0: c, ("var", leaf[kids[0]]): max(up(hi - c), up(c - lo))}
+    fa = forms.get(kids[0])
+    if fa is None:
+        return None
+    if op == "Neg":
+        return {k: -v for k, v in fa.items()}  # exact, no new rounding
+    if op not in ("Add", "Sub", "Mul"):
+        return None  # Div/Sqrt: the interval analysis covers these
+    fb = forms.get(kids[1])
+    if fb is None:
+        return None
+    if op == "Mul":
+        a0, b0 = fa.get(0, 0.0), fb.get(0, 0.0)
+        f = {k: v * b0 for k, v in fa.items()}
+        for k, v in fb.items():
+            f[k] = f.get(k, 0.0) + (v * a0 if k != 0 else 0.0)
+        f[0] = a0 * b0
+        f[("mul", op, kids)] = _radius(fa) * _radius(fb)  # quadratic remainder
+    else:
+        sign = 1.0 if op == "Add" else -1.0
+        f = {k: fa.get(k, 0.0) + sign * fb.get(k, 0.0)
+             for k in fa.keys() | fb.keys()}
+    return _finish(f, (op, kids))
+
+
+def affine_tighten(classes, leaf, box, itv):
+    """`itv` intersected with each class's best (smallest-radius) affine
+    enclosure, built once per class from the first spellings that resolve."""
+    forms = {}
+    changed = True
+    while changed:
+        changed = False
+        for c, spellings in classes.items():
+            if c in forms:
+                continue
+            done = [f for s in spellings
+                    if (f := _aff_spelling(s, forms, leaf, box)) is not None]
+            if done:
+                forms[c] = min(done, key=_radius)
+                changed = True
+    out = dict(itv)
+    for c, f in forms.items():
+        rad = _radius(f)
+        lo = math.nextafter(f[0] - rad, -INF)
+        hi = math.nextafter(f[0] + rad, INF)
+        olo, ohi = out[c]
+        if max(olo, lo) <= min(ohi, hi):
+            out[c] = (max(olo, lo), min(ohi, hi))
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -306,14 +400,19 @@ def spelling_cost(spelling, cls, cost, itv, leaf):
             1 + sum(cost[k][2] for k in kids))
 
 
-def cost_table(classes, itv, leaf):
+REL_FIRST = lambda t: t                      # noqa: E731 -- (rel, abs, size)
+ABS_FIRST = lambda t: (t[1], t[0], t[2])     # noqa: E731 -- (abs, rel, size)
+
+
+def cost_table(classes, itv, leaf, key=REL_FIRST):
     cost = {c: (INF, INF, INF) for c in classes}
     changed = True
     while changed:  # rerun until no class finds a cheaper spelling
         changed = False
         for c, spellings in classes.items():
-            best = min(spelling_cost(s, c, cost, itv, leaf) for s in spellings)
-            if best < cost[c]:
+            best = min((spelling_cost(s, c, cost, itv, leaf) for s in spellings),
+                       key=key)
+            if key(best) < key(cost[c]):
                 cost[c], changed = best, True
     return cost
 
@@ -323,9 +422,9 @@ def cost_table(classes, itv, leaf):
 #    The returned bound is recomputed on the emitted tree itself.
 # ---------------------------------------------------------------------------
 
-def build(cls, classes, cost, itv, leaf, ancestors=frozenset()):
+def build(cls, classes, cost, itv, leaf, key=REL_FIRST, ancestors=frozenset()):
     ranked = sorted(classes[cls],
-                    key=lambda s: spelling_cost(s, cls, cost, itv, leaf))
+                    key=lambda s: key(spelling_cost(s, cls, cost, itv, leaf)))
     for op, kids in ranked:
         if op in ("Var", "Num"):
             return (leaf[kids[0]],
@@ -333,25 +432,59 @@ def build(cls, classes, cost, itv, leaf, ancestors=frozenset()):
                     abs_bound((op, kids), cls, {}, itv, leaf))
         if any(k == cls or k in ancestors for k in kids):
             continue  # a self-referential spelling would never terminate
-        parts = [build(k, classes, cost, itv, leaf, ancestors | {cls})
+        parts = [build(k, classes, cost, itv, leaf, key, ancestors | {cls})
                  for k in kids]
+        if any(p is None for p in parts):
+            continue  # dead end further down; backtrack to the next spelling
         rel = {k: r for k, (_, r, _) in zip(kids, parts)}
         ab = {k: a for k, (_, _, a) in zip(kids, parts)}
         return (f"({SPELLING[op]} {' '.join(p[0] for p in parts)})",
                 rel_bound((op, kids), cls, rel, ab, itv, leaf),
                 abs_bound((op, kids), cls, ab, itv, leaf))
-    raise RuntimeError(f"every spelling of {cls} loops back on itself")
+    return None  # every spelling loops back through this path
+
+
+def _analyses(source: str, box: dict, rounds: int):
+    root, classes, leaf = read_egraph(saturate(source, box, rounds))
+    itv = analyze_intervals(classes, leaf, box)
+    itv_affine = analyze_intervals(  # push the tightened ranges through / and sqrt
+        classes, leaf, box, start=affine_tighten(classes, leaf, box, itv))
+    literals = {float(leaf[kids[0]]) for spellings in classes.values()
+                for op, kids in spellings if op == "Num"}
+    return root, classes, leaf, itv, itv_affine, literals
 
 
 def extract(source: str, box: dict, rounds: int):
-    """Stages 1-5: (best term over `box`, its two bounds, e-graph literals)."""
-    root, classes, leaf = read_egraph(saturate(source, box, rounds))
-    itv = analyze_intervals(classes, leaf, box)
+    """Single extraction (rel objective, affine intervals -- the strongest
+    single config; the split search uses this per arm)."""
+    root, classes, leaf, _, itv, literals = _analyses(source, box, rounds)
     cost = cost_table(classes, itv, leaf)
-    term, rel, ab = build(root, classes, cost, itv, leaf)
-    literals = {float(leaf[kids[0]]) for spellings in classes.values()
-                for op, kids in spellings if op == "Num"}
-    return term, rel, ab, literals
+    built = build(root, classes, cost, itv, leaf)
+    if built is None:
+        raise RuntimeError("no acyclic program in the e-graph")
+    return *built, literals
+
+
+CONFIGS = (("rel", REL_FIRST, False), ("abs", ABS_FIRST, False),
+           ("rel+affine", REL_FIRST, True), ("abs+affine", ABS_FIRST, True))
+
+
+def extract_all(source: str, box: dict, rounds: int):
+    """One extraction per objective x interval-analysis config, sharing a
+    single saturation: a portfolio of candidates to measure side by side."""
+    root, classes, leaf, itv, itv_affine, literals = _analyses(source, box, rounds)
+    candidates = []
+    for label, key, use_affine in CONFIGS:
+        iv = itv_affine if use_affine else itv
+        cost = cost_table(classes, iv, leaf, key)
+        built = build(root, classes, cost, iv, leaf, key)
+        if built is not None:
+            term, rel, ab = built
+            candidates.append({"label": label, "body": term,
+                               "rel": rel, "abs": ab})
+    if not candidates:
+        raise RuntimeError("no acyclic program in the e-graph")
+    return candidates, literals
 
 
 # ---------------------------------------------------------------------------
@@ -402,28 +535,44 @@ def run(name: str, rounds: int) -> dict:
     source, reference, box = read_benchmark(name)
     print(f"\n{name}   box: {box or '(none)'}\n  reference: {reference}")
 
-    term, rel, ab, literals = extract(source, box, rounds)
-    branches = None
-    if not math.isfinite(rel) and box:
+    raw, literals = extract_all(source, box, rounds)
+    candidates = []
+    for c in raw:  # distinct programs only; remember which configs agree
+        dup = next((d for d in candidates if d["body"] == c["body"]), None)
+        if dup:
+            dup["label"] += f" {c['label']}"
+        else:
+            candidates.append({**c, "branches": None})
+
+    best = min(candidates, key=lambda c: (c["rel"], c["abs"]))
+    if not math.isfinite(best["rel"]) and box:
         if (found := split_search(source, box, rounds, literals)) is not None:
             var, t, ((then_term, tr, ta, _), (else_term, er, ea, _)) = found
-            rel, ab = max(tr, er), max(ta, ea)
-            if then_term == else_term:  # same form on both sides: skip the if
-                term = then_term
-            else:
-                term = f"(if (<= {var} {fmt(t)}) {then_term} {else_term})"
-                branches = {"var": var, "threshold": t,
-                            "then": then_term, "else": else_term}
+            split = {"label": "split", "rel": max(tr, er), "abs": max(ta, ea),
+                     "body": then_term, "branches": None}
+            if then_term != else_term:  # same form on both sides: skip the if
+                split["body"] = f"(if (<= {var} {fmt(t)}) {then_term} {else_term})"
+                split["branches"] = {"var": var, "threshold": t,
+                                     "then": then_term, "else": else_term}
+            candidates.append(split)
+            best = split
 
     variables = re.match(r"\(FPCore \(([^)]*)\)", reference).group(1)
-    program = f"(FPCore ({variables}) {term})"
-    bound = (f"~{growth(rel) / ULP:.1f} ulp" if math.isfinite(rel) else
-             f"abs {ab:.1e}" if math.isfinite(ab) else "unbounded")
-    print(f"  extracted ({bound}): {program}")
-    return {"reference": reference, "box": box, "program": program,
-            "body": term, "branches": branches,
-            "predicted_ulps": growth(rel) / ULP if math.isfinite(rel) else None,
-            "predicted_abs": ab if math.isfinite(ab) else None}
+    for c in candidates:
+        c["program"] = f"(FPCore ({variables}) {c['body']})"
+        c["predicted_ulps"] = (growth(c["rel"]) / ULP
+                               if math.isfinite(c["rel"]) else None)
+        c["predicted_abs"] = c["abs"] if math.isfinite(c["abs"]) else None
+        rel, ab = c.pop("rel"), c.pop("abs")
+        bound = (f"~{growth(rel) / ULP:.1f} ulp" if math.isfinite(rel)
+                 else f"abs {ab:.1e}" if math.isfinite(ab) else "unbounded")
+        marker = " <-- best predicted" if c is best else ""
+        print(f"  {c['label']:12s} ({bound}): {c['program']}{marker}")
+    return {"reference": reference, "box": box,
+            "program": best["program"], "branches": best["branches"],
+            "predicted_ulps": best["predicted_ulps"],
+            "predicted_abs": best["predicted_abs"],
+            "candidates": candidates}
 
 
 def main() -> None:

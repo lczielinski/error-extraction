@@ -34,13 +34,18 @@ analysis in the loop rather than e-graph extraction against a compositional
 cost; `daisy.md` compares both tools' certified bounds and their output
 programs measured by FPTaylor as the neutral judge.
 
-Every `extract.py` run merges its records into `results.json` (benchmark,
-box, extracted program, predicted bound). `check.py` then bounds each
-extracted program *and its reference* with FPTaylor over the same box —
-branching programs per arm over their half of the box — writes the
-measurements back into `results.json`, and writes the comparison table to
-`summary.md` (predicted vs measured vs reference, in ulps, with a verdict
-per benchmark).
+Every `extract.py` run merges its records into `results.json`. Extraction is
+a **portfolio**: one program per objective × interval-analysis config
+(relative or absolute error as the primary objective, plain or
+affine-tightened intervals — four configs, one shared saturation, plus the
+split program when nothing whole-box is relatively bounded). Duplicates are
+collapsed with their config labels merged. `check.py` then bounds *every*
+candidate and the reference with FPTaylor over the same box — branching
+programs per arm — keeps the best measurement per metric as the benchmark's
+headline (recording which config won), writes everything back into
+`results.json`, and writes the comparison table to `summary.md`. The Herbie
+comparison attaches all distinct candidates as `:alt` targets and scores the
+best.
 
 ## How it works
 
@@ -55,6 +60,15 @@ per benchmark).
    class's exact value. Because every spelling of a class has the same value,
    the enclosures each spelling implies are *intersected*. Endpoints are
    rounded outward, so the truth is never shaved off.
+   **affine_tighten** then intersects in an affine-arithmetic enclosure:
+   each class gets a form `x0 + Σ xi·εi` (`εi ∈ [−1,1]`) with one *shared*
+   noise symbol per input variable, so correlated operands cancel
+   symbolically where rectangles cannot (`x − y` when both contain `x`).
+   Linear ops are exact on forms; `*` adds one fresh symbol carrying its
+   quadratic remainder plus a slack term for coefficient rounding; `/` and
+   `sqrt` fall back to the interval enclosure. Forms are assigned once,
+   leaves upward, so every symbol keeps a single meaning; the result can
+   only tighten what the cost model reads.
 4. **cost_table** — a fixpoint computes, per class, the cheapest
    `(relative error bound, term size)` any spelling achieves, where the bound
    `d` guarantees `computed = exact · (1 + e)` with `|e| ≤ d` everywhere in

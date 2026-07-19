@@ -100,17 +100,14 @@ def fptaylor(expr: str, box: dict) -> dict:
             "rel_err_ulps": rel_err / ULP if rel_err is not None else None}
 
 
-def measure(record: dict) -> dict:
-    """The extracted program's bound; a split program is the worst of its arms."""
-    box = record["box"]
-    if not record["branches"]:
-        return fptaylor(infix(parse(record["body"])), box)
-    var, t = record["branches"]["var"], record["branches"]["threshold"]
+def measure_one(body: str, branches: dict | None, box: dict) -> dict:
+    """One program's bound; a split program is the worst of its arms."""
+    if not branches:
+        return fptaylor(infix(parse(body)), box)
+    var, t = branches["var"], branches["threshold"]
     lo, hi = box[var]
-    arms = [fptaylor(infix(parse(record["branches"]["then"])),
-                     box | {var: (lo, min(hi, t))}),
-            fptaylor(infix(parse(record["branches"]["else"])),
-                     box | {var: (max(lo, t), hi)})]
+    arms = [fptaylor(infix(parse(branches["then"])), box | {var: (lo, min(hi, t))}),
+            fptaylor(infix(parse(branches["else"])), box | {var: (max(lo, t), hi)})]
     worst = {}
     for key in ("abs_err", "rel_err"):  # a bound needs one from *every* arm
         vals = [a.get(key) for a in arms]
@@ -121,6 +118,31 @@ def measure(record: dict) -> dict:
     worst["timeout"] = any(a.get("timeout") for a in arms)
     worst["arms"] = arms
     return worst
+
+
+def measure(record: dict) -> dict:
+    """Measure every candidate in the portfolio; the record's headline
+    numbers are the best per metric (that's the point of extracting under
+    several objectives: measure them all, keep the winners)."""
+    cands = record.get("candidates") or [
+        {"label": "program", "body": record["body"],
+         "branches": record.get("branches")}]
+    for c in cands:
+        c["measured"] = measure_one(c["body"], c.get("branches"), record["box"])
+    best = {"rel_err": None, "abs_err": None, "rel_err_ulps": None,
+            "derived": False,
+            "timeout": all(c["measured"].get("timeout") for c in cands)}
+    for key in ("rel_err", "abs_err"):
+        scored = [c for c in cands if c["measured"].get(key) is not None]
+        if scored:
+            w = min(scored, key=lambda c: c["measured"][key])
+            best[key] = w["measured"][key]
+            best[f"best_{key}_candidate"] = w["label"]
+            if key == "rel_err":
+                best["derived"] = w["measured"].get("derived", False)
+    if best["rel_err"] is not None:
+        best["rel_err_ulps"] = best["rel_err"] / ULP
+    return best
 
 
 # ---------------------------------------------------------------------------
@@ -146,21 +168,24 @@ def ulps(measured: dict) -> str:
 
 def cells(r: dict) -> tuple[str, str, str]:
     """(predicted, measured, reference) in the row's metric: relative ulps
-    when both sides have a relative bound, else absolute error (scientific)."""
+    when both sides have a relative bound, else absolute error (scientific).
+    Predicted is the portfolio's best certificate for that metric."""
+    cands = r.get("candidates") or [r]
     ours, ref = r["measured"], r["measured_reference"]
     if ours.get("rel_err") is not None and ref.get("rel_err") is not None:
-        pred = (f"{r['predicted_ulps']:.1f}"
-                if r.get("predicted_ulps") is not None else "-")
-        return pred, ulps(ours), ulps(ref)
+        pred = min((c["predicted_ulps"] for c in cands
+                    if c.get("predicted_ulps") is not None), default=None)
+        return (f"{pred:.1f}" if pred is not None else "-",
+                ulps(ours), ulps(ref))
 
     def sci(m):
         if m.get("timeout"):
             return "timeout"
         return f"{m['abs_err']:.1e}" if m.get("abs_err") is not None else "-"
 
-    pred = (f"{r['predicted_abs']:.1e}"
-            if r.get("predicted_abs") is not None else "-")
-    return pred, sci(ours), sci(ref)
+    pred = min((c["predicted_abs"] for c in cands
+                if c.get("predicted_abs") is not None), default=None)
+    return (f"{pred:.1e}" if pred is not None else "-", sci(ours), sci(ref))
 
 
 def main() -> None:

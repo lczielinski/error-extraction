@@ -1,5 +1,5 @@
 <!doctype html>
-<html><head><meta charset="utf-8"/><title>Result for martel_p6</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>martel_p6</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 74.1% → 96.4%">94.3%<span class="unit"> → </span>100.0%</span></div><div>Time: <span class="number">318.0ms</span></div><div>Alternatives: <span class="number">5</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.0×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(\left(\left(-14 \leq a \land a \leq -13\right) \land \left(-3 \leq b \land b \leq -2\right)\right) \land \left(3 \leq c \land c \leq \frac{7}{2}\right)\right) \land \left(\frac{25}{2} \leq d \land d \leq \frac{27}{2}\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\left(a + \left(b + \left(c + d\right)\right)\right) \cdot 2
+<html><head><meta charset="utf-8"/><title>Result for martel_p6</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>martel_p6</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 74.1% → 96.4%">94.3%<span class="unit"> → </span>100.0%</span></div><div>Time: <span class="number">298.0ms</span></div><div>Alternatives: <span class="number">5</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.0×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(\left(\left(-14 \leq a \land a \leq -13\right) \land \left(-3 \leq b \land b \leq -2\right)\right) \land \left(3 \leq c \land c \leq \frac{7}{2}\right)\right) \land \left(\frac{25}{2} \leq d \land d \leq \frac{27}{2}\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[\left(a + \left(b + \left(c + d\right)\right)\right) \cdot 2
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (a b c d)
   :precision binary64
   :pre (and (and (and (and (&lt;= -14 a) (&lt;= a -13))
@@ -366,12 +366,12 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
 \]</div></li><li><p>Taylor expanded in b around inf to order 0</p><div class="math">\[\leadsto 2 \cdot b
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">6.2%</span></p><div class="math">\[\leadsto 2 \cdot b
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">6.2%</span></p><div class="math">\[\leadsto b + b
-\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>100.0%</data> accurate, <data>1.0×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[2 \cdot \left(\left(a + d\right) + \left(b + c\right)\right)
+\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>100.0%</data> accurate, <data>1.0×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\left(\left(c + b\right) + \left(d + a\right)\right) \cdot 2
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (a b c d)
   :precision binary64
   :pre TRUE
-  (* 2.0 (+ (+ a d) (+ b c))))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double a, double b, double c, double d) {
-	return 2.0 * ((a + d) + (b + c));
+  (* (+ (+ c b) (+ d a)) 2.0))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double a, double b, double c, double d) {
+	return ((c + b) + (d + a)) * 2.0;
 }
 </pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(a, b, c, d)
 use fmin_fmax_functions
@@ -379,20 +379,20 @@ use fmin_fmax_functions
     real(8), intent (in) :: b
     real(8), intent (in) :: c
     real(8), intent (in) :: d
-    code = 2.0d0 * ((a + d) + (b + c))
+    code = ((c + b) + (d + a)) * 2.0d0
 end function
 </pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double a, double b, double c, double d) {
-	return 2.0 * ((a + d) + (b + c));
+	return ((c + b) + (d + a)) * 2.0;
 }
 </pre></div><div class="implementation" data-language="Python"><pre class="program">def code(a, b, c, d):
-	return 2.0 * ((a + d) + (b + c))
+	return ((c + b) + (d + a)) * 2.0
 </pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(a, b, c, d)
-	return Float64(2.0 * Float64(Float64(a + d) + Float64(b + c)))
+	return Float64(Float64(Float64(c + b) + Float64(d + a)) * 2.0)
 end
 </pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(a, b, c, d)
-	tmp = 2.0 * ((a + d) + (b + c));
+	tmp = ((c + b) + (d + a)) * 2.0;
 end
-</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[a_, b_, c_, d_] := N[(2.0 * N[(N[(a + d), $MachinePrecision] + N[(b + c), $MachinePrecision]), $MachinePrecision]), $MachinePrecision]
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[a_, b_, c_, d_] := N[(N[(N[(c + b), $MachinePrecision] + N[(d + a), $MachinePrecision]), $MachinePrecision] * 2.0), $MachinePrecision]
 </pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(a, b, c, d):
 	a in [-inf, +inf],
 	b in [-inf, +inf],
@@ -401,8 +401,8 @@ end
 code: THEORY
 BEGIN
 f(a, b, c, d: real): real =
-	(2) * ((a + d) + (b + c))
-END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">2 \cdot \left(\left(a + d\right) + \left(b + c\right)\right)
+	((c + b) + (d + a)) * (2)
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\left(\left(c + b\right) + \left(d + a\right)\right) \cdot 2
 </pre></div></div></section><section id="reproduce"><details><summary><h2>Reproduce</h2><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#reproduction" target="_blank">?</a></summary><pre class="shell"><code>herbie shell --seed 1 
 (FPCore (a b c d)
   :name "martel_p6"
@@ -410,7 +410,7 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
   :pre (and (and (and (and (&lt;= -14 a) (&lt;= a -13)) (and (&lt;= -3 b) (&lt;= b -2))) (and (&lt;= 3 c) (&lt;= c 7/2))) (and (&lt;= 25/2 d) (&lt;= d 27/2)))
 
   :alt
-  (* 2 (+ (+ a d) (+ b c)))
+  (* (+ (+ c b) (+ d a)) 2)
 
   (* (+ a (+ b (+ c d))) 2.0))
 </code></pre></details></section></body></html>

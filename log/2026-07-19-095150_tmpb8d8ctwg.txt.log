@@ -1,0 +1,191 @@
+Base path: /Users/laura.zielinski/FPTaylor
+Config file: /Users/laura.zielinski/FPTaylor/default.cfg
+Config file: /var/folders/38/q_vgzzt959nfc63ldktzz1gr0000gp/T/tmpjj6u1uqk.cfg
+default-rnd = rnd64
+nlopt-cc = gcc -std=c99 -O3
+opt-exact = true
+develop = false
+log-append-date = start
+uncertainty = false
+rel-error = true
+opt-approx = false
+proof-record = false
+find-bounds = false
+proof-dir = proofs
+opt-f-abs-tol = 0.01
+fail-on-exception = true
+print-opt-lower-bounds = true
+bb-compile = {base}/b_and_b/compile.sh {base} {input} {out}
+z3-python-lib = 
+opt-x-abs-tol = 0.01
+export-error-bounds = 
+opt-f-rel-tol = 0.01
+export-options = 
+opt-x-rel-tol = 0.0
+rel-error-threshold = 0.0001
+bb-alg = opt0
+log-base-dir = log
+intermediate-opt = false
+z3-interval-bounds = true
+opt-max-iters = 1000000
+abs-error = true
+z3-bin = 
+maxima-simplification = false
+print-hex-floats = true
+debug = true
+print-precision = 7
+export-error-bounds-data = 
+fp-power2-model = true
+opt = auto
+default-var-type = float64
+verbosity = 2
+ulp-error = false
+opt-timeout = 10000
+nlopt-lib = -lnlopt -lm
+tmp-base-dir = tmp
+unique-indices = false
+z3-seed = 0
+tmp-date = false
+z3-python-cmd = python
+const-approx-real-vars = false
+print-second-order-errors = false
+Resetting input_parser_env
+eval_const_expr: 1
+result: 1
+eval_const_expr: 100
+result: 100
+eval_const_expr: 0
+result: 0
+eval_const_expr: 100
+result: 100
+eval_const_expr: 1
+result: 1
+eval_const_expr: (-(100))
+result: -100
+eval_const_expr: 0
+result: 0
+eval_const_expr: 0
+result: 0
+eval_const_expr: 0
+result: 0
+eval_const_expr: (-(100))
+result: -100
+eval_const_expr: (-(100))
+result: -100
+eval_const_expr: (-(1))
+result: -1
+eval_const_expr: 0
+result: 0
+eval_const_expr: (-(1))
+result: -1
+eval_const_expr: (-(100))
+result: -100
+Resetting input_parser_env
+|tasks| = 1
+Processing: result
+
+*************************************
+Taylor form for: rnd64((rnd64(c) / rnd64((rnd64(sqrt(rnd64((rnd64((rnd64(b2) * rnd64(b2))) - rnd64((rnd64(c) * rnd64(a))))))) - rnd64(b2)))))
+
+Conservative bound: [-100.000000, -0.004142]
+
+Simplified rounding: rnd64((c / rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](sqrt(rnd[64,ne,1.00,-53,0]((rnd64((b2 * b2)) - rnd64((c * a)))))) - b2))))
+Building Taylor forms...
+var_form
+var_form
+mul_form
+rounded_form
+var_form
+mul_form
+rounded_form
+sub_form
+rounded_form
+sqrt_form
+rounded_form
+sub_form
+rounded_form
+div_form
+inv_form
+mul_form
+rounded_form
+Taylor forms cache stats: num_bindings = 15, num_buckets = 1024, max_bucket_length = 1
+Expr cache stats: num_bindings = 56, num_buckets = 65536, max_bucket_length = 2
+Simplifying Taylor forms...
+success
+v0 = (c * (1 / (sqrt(((b2 * b2) - (c * a))) - b2)))
+-1: exp = -53: (5388465969597823/1180591620717411303424)
+1: exp = -53: (c * (-(((floor_power2(((b2 * b2) + 0)) / (2 * sqrt(((b2 * b2) - (c * a))))) / ((sqrt(((b2 * b2) - (c * a))) - b2) * (sqrt(((b2 * b2) - (c * a))) - b2))))))
+2: exp = -53: (c * (-((((-(floor_power2(((c * a) + 0)))) / (2 * sqrt(((b2 * b2) - (c * a))))) / ((sqrt(((b2 * b2) - (c * a))) - b2) * (sqrt(((b2 * b2) - (c * a))) - b2))))))
+3: exp = -53: (c * (-(((floor_power2((((b2 * b2) - (c * a)) + interval(-1.81898940354585687973e-12, 1.81898940354585687973e-12))) / (2 * sqrt(((b2 * b2) - (c * a))))) / ((sqrt(((b2 * b2) - (c * a))) - b2) * (sqrt(((b2 * b2) - (c * a))) - b2))))))
+4: exp = -53: (c * (-((floor_power2((sqrt(((b2 * b2) - (c * a))) + interval(-1.81898940354751124095e-12, 1.81898940354751124095e-12))) / ((sqrt(((b2 * b2) - (c * a))) - b2) * (sqrt(((b2 * b2) - (c * a))) - b2))))))
+5: exp = -53: (c * (-((floor_power2(((sqrt(((b2 * b2) - (c * a))) - b2) + interval(-1.83320025826271324467e-12, 1.83320025826271324467e-12))) / ((sqrt(((b2 * b2) - (c * a))) - b2) * (sqrt(((b2 * b2) - (c * a))) - b2))))))
+6: exp = -53: floor_power2(((c * (1 / (sqrt(((b2 * b2) - (c * a))) - b2))) + interval(-1.84741111298132799849e-10, 1.84741111298132799849e-10)))
+
+Corresponding original subexpressions:
+1: rnd64((b2 * b2))
+2: rnd64((c * a))
+3: rnd[64,ne,1.00,-53,0]((rnd64((b2 * b2)) - rnd64((c * a))))
+4: rnd[64,ne,1.00,-53,0](sqrt(rnd[64,ne,1.00,-53,0]((rnd64((b2 * b2)) - rnd64((c * a))))))
+5: rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](sqrt(rnd[64,ne,1.00,-53,0]((rnd64((b2 * b2)) - rnd64((c * a)))))) - b2))
+6: rnd64((c / rnd[64,ne,1.00,-53,0]((rnd[64,ne,1.00,-53,0](sqrt(rnd[64,ne,1.00,-53,0]((rnd64((b2 * b2)) - rnd64((c * a)))))) - b2))))
+
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 358, max = 13): 358
+min = -1.000968e+01 (lower_min = -9.902821e+00)
+max = -4.142136e-03 (lower_max = -9.901951e-03)
+subopt = 1.068614e-01 (1.1%)
+bounds: [-1.000968e+01, -4.142136e-03]
+
+Computing absolute errors
+Selected optimization method: bb-eval
+bb-eval_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+rmin(result = 4.564208e-06, lower = 4.564208e-06), rmax(result = 4.564208e-06, lower = 4.564208e-06)
+-1: exp = -53: 4.564208e-06 (low = 4.564208e-06, subopt = 0.0%)
+
+Solving the exact optimization problem
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 0, max = 2632): 2632
+min = 0.000000e+00 (lower_min = 0.000000e+00)
+max = 3.200271e+01 (lower_max = 3.195673e+01)
+subopt = 4.598776e-02 (0.1%)
+exact bound (exp = -53): 3.200271e+01 (low = 3.195673e+01, subopt = 0.1%)
+total2: 5.067289e-22 (low = 5.067289e-22, subopt = 0.0%)
+exact total: 3.553016e-15 (low = 3.547910e-15, subopt = 0.1%)
+
+Computing relative errors
+Selected optimization method: bb-eval
+bb-eval_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+rmin(result = 4.564208e-06, lower = 4.564208e-06), rmax(result = 4.564208e-06, lower = 4.564208e-06)
+-1: exp = -53: 4.564208e-06 (low = 4.564208e-06, subopt = 0.0%)
+
+Solving the exact optimization problem
+Selected optimization method: bb
+bb_opt: x_abs_tol = 1.000000e-02, f_rel_tol = 1.000000e-02, f_abs_tol = 1.000000e-02, iters = 1000000
+iterations(min = 0, max = 413086): 413086
+min = 0.000000e+00 (lower_min = 0.000000e+00)
+max = 4.067022e+00 (lower_max = 3.999833e+00)
+subopt = 6.718889e-02 (1.7%)
+exact bound-rel (exp = -53): 4.067022e+00 (low = 3.999833e+00, subopt = 1.7%)
+total2: 1.223352e-19 (low = 5.062388e-23, subopt = 100.0%)
+exact total-rel: 4.516524e-16 (low = 4.440707e-16, subopt = 1.7%)
+
+Elapsed time: 4.02930
+*************************************
+
+-------------------------------------------------------------------------------
+Problem: result
+
+Optimization lower bounds for error models:
+The absolute error (exact) model: 3.547909e-15 (0x1.ff4ec578a4f48p-49) (suboptimality = 0.1%)
+The relative error (exact) model: 4.440706e-16 (0x1.fffa87ebe7ebp-52) (suboptimality = 1.7%)
+
+Bounds (without rounding): [-1.000969e+1, -4.142135e-3]
+Bounds (floating-point): [-1.000969e+1, -4.142135e-3]
+
+Absolute error (exact): 3.553016e-15 (0x1.000591913eafbp-48)
+Relative error (exact): 4.516525e-16 (0x1.045c225fe7a48p-51)
+
+Elapsed time: 4.03
+

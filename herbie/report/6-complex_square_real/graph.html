@@ -1,5 +1,5 @@
 <!doctype html>
-<html><head><meta charset="utf-8"/><title>Result for complex_square_real</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>complex_square_real</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 79.1% → 98.4%">98.3%<span class="unit"> → </span>99.6%</span></div><div>Time: <span class="number">530.0ms</span></div><div>Alternatives: <span class="number">4</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.1×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(1 \leq im \land im \leq 2\right) \land \left(1 \leq re \land re \leq 2\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[re \cdot re - im \cdot im
+<html><head><meta charset="utf-8"/><title>Result for complex_square_real</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" integrity="sha384-5TcZemv2l/9On385z///+d7MSYlvIEw9FuZTIdZ14vJLqWphw7e7ZPuOiCHJcFCP" crossorigin="anonymous"/><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" integrity="sha384-cMkvdD8LoxVzGF/RPUKAcvmm49FQ0oxwDF3BGKtDXcEc+T1b2N+teh/OJfpU0jr6" crossorigin="anonymous"></script><script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/d3@7" defer=""></script><script src="https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6" defer=""></script><link rel="stylesheet" type="text/css" href="../report.css"/><script src="../report.js"></script></head><body><header><h1>complex_square_real</h1><img src="../logo-car.png"/><nav><ul><li><a href="../index.html">Report</a></li><li><a href="timeline.html">Metrics</a></li></ul></nav></header><div id="large"><div>Percentage Accurate: <span class="number" title="Minimum Accuracy: 79.1% → 98.4%">98.3%<span class="unit"> → </span>99.6%</span></div><div>Time: <span class="number">509.0ms</span></div><div>Alternatives: <span class="number">4</span></div><div>Speedup: <span class="number" title="Relative speed of fastest alternative that improves accuracy.">1.1×</span></div></div><section><details id="specification" class="programs"><summary><h2>Specification</h2><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#spec" target="_blank">?</a></summary><div><div id="precondition"><div class="program math">\[\left(1 \leq im \land im \leq 2\right) \land \left(1 \leq re \land re \leq 2\right)\]</div></div><div class="implementation" data-language="Math"><div class="program math">\[re \cdot re - im \cdot im
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (re im)
   :precision binary64
   :pre (and (and (&lt;= 1 im) (&lt;= im 2)) (and (&lt;= 1 re) (&lt;= re 2)))
@@ -271,39 +271,72 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">98.2%</span></p><div class="math">\[\leadsto re \cdot \left(re - \frac{im \cdot im}{re}\right)
 \]</div></li><li><p>Taylor expanded in re around inf to order 0</p><div class="math">\[\leadsto re \cdot re
 \]</div></li><li><div class="proof"><details><summary>Step-by-step derivation</summary><ol></ol></details></div></li><li><p>Applied rewrites<span class="error">9.6%</span></p><div class="math">\[\leadsto re \cdot re
-\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>99.6%</data> accurate, <data>1.1×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\left(re - im\right) \cdot \left(re + im\right)
+\]</div></li><li>Add Preprocessing</li></ol></details></section><section id="target1" class="programs"><h2>Developer Target 1: <span class="subhead"><data>99.6%</data> accurate, <data>1.1×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[\left(re - im\right) \cdot \left(im + re\right)
 \]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (re im)
   :precision binary64
   :pre TRUE
-  (* (- re im) (+ re im)))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double re, double im) {
-	return (re - im) * (re + im);
+  (* (- re im) (+ im re)))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double re, double im) {
+	return (re - im) * (im + re);
 }
 </pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(re, im)
 use fmin_fmax_functions
     real(8), intent (in) :: re
     real(8), intent (in) :: im
-    code = (re - im) * (re + im)
+    code = (re - im) * (im + re)
 end function
 </pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double re, double im) {
-	return (re - im) * (re + im);
+	return (re - im) * (im + re);
 }
 </pre></div><div class="implementation" data-language="Python"><pre class="program">def code(re, im):
-	return (re - im) * (re + im)
+	return (re - im) * (im + re)
 </pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(re, im)
-	return Float64(Float64(re - im) * Float64(re + im))
+	return Float64(Float64(re - im) * Float64(im + re))
 end
 </pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(re, im)
-	tmp = (re - im) * (re + im);
+	tmp = (re - im) * (im + re);
 end
-</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[re_, im_] := N[(N[(re - im), $MachinePrecision] * N[(re + im), $MachinePrecision]), $MachinePrecision]
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[re_, im_] := N[(N[(re - im), $MachinePrecision] * N[(im + re), $MachinePrecision]), $MachinePrecision]
 </pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(re, im):
 	re in [-inf, +inf],
 	im in [-inf, +inf]
 code: THEORY
 BEGIN
 f(re, im: real): real =
-	(re - im) * (re + im)
-END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\left(re - im\right) \cdot \left(re + im\right)
+	(re - im) * (im + re)
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">\left(re - im\right) \cdot \left(im + re\right)
+</pre></div></div></section><section id="target2" class="programs"><h2>Developer Target 2: <span class="subhead"><data>98.3%</data> accurate, <data>1.0×</data> speedup</span><select><option>Math</option><option>FPCore</option><option>C</option><option>Fortran</option><option>Java</option><option>Python</option><option>Julia</option><option>MATLAB</option><option>Wolfram</option><option>ReFlow</option><option>TeX</option></select><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#target" target="_blank">?</a></h2><div><div class="implementation" data-language="Math"><div class="program math">\[re \cdot re - im \cdot im
+\]</div></div><div class="implementation" data-language="FPCore"><pre class="program">(FPCore (re im)
+  :precision binary64
+  :pre TRUE
+  (- (* re re) (* im im)))</pre></div><div class="implementation" data-language="C"><pre class="program">double code(double re, double im) {
+	return (re * re) - (im * im);
+}
+</pre></div><div class="implementation" data-language="Fortran"><pre class="program">real(8) function code(re, im)
+use fmin_fmax_functions
+    real(8), intent (in) :: re
+    real(8), intent (in) :: im
+    code = (re * re) - (im * im)
+end function
+</pre></div><div class="implementation" data-language="Java"><pre class="program">public static double code(double re, double im) {
+	return (re * re) - (im * im);
+}
+</pre></div><div class="implementation" data-language="Python"><pre class="program">def code(re, im):
+	return (re * re) - (im * im)
+</pre></div><div class="implementation" data-language="Julia"><pre class="program">function code(re, im)
+	return Float64(Float64(re * re) - Float64(im * im))
+end
+</pre></div><div class="implementation" data-language="MATLAB"><pre class="program">function tmp = code(re, im)
+	tmp = (re * re) - (im * im);
+end
+</pre></div><div class="implementation" data-language="Wolfram"><pre class="program">code[re_, im_] := N[(N[(re * re), $MachinePrecision] - N[(im * im), $MachinePrecision]), $MachinePrecision]
+</pre></div><div class="implementation" data-language="ReFlow"><pre class="program">f(re, im):
+	re in [-inf, +inf],
+	im in [-inf, +inf]
+code: THEORY
+BEGIN
+f(re, im: real): real =
+	(re * re) - (im * im)
+END code</pre></div><div class="implementation" data-language="TeX"><pre class="program">re \cdot re - im \cdot im
 </pre></div></div></section><section id="reproduce"><details><summary><h2>Reproduce</h2><a class="help-button float" href="https://herbie.uwplse.org/doc/2.3/report.html#reproduction" target="_blank">?</a></summary><pre class="shell"><code>herbie shell --seed 1 
 (FPCore (re im)
   :name "complex_square_real"
@@ -311,7 +344,10 @@ END code</pre></div><div class="implementation" data-language="TeX"><pre class="
   :pre (and (and (&lt;= 1 im) (&lt;= im 2)) (and (&lt;= 1 re) (&lt;= re 2)))
 
   :alt
-  (* (- re im) (+ re im))
+  (* (- re im) (+ im re))
+
+  :alt
+  (- (* re re) (* im im))
 
   (- (* re re) (* im im)))
 </code></pre></details></section></body></html>
