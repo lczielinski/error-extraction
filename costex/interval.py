@@ -1,4 +1,4 @@
-"""Intervals over MPFR"""
+"""Intervals over MPFR."""
 
 from __future__ import annotations
 
@@ -38,14 +38,14 @@ def _mul(a, b):
 
 
 def _recip(x):
-    """1/x with 1/inf = 0"""
+    """1/x with 1/inf = 0."""
     if x == INF or x == NINF:
         return mpfr(0)
     return 1 / x
 
 
 def _signed_sqrt(t):
-    """sgn(t) * sqrt(|t|)"""
+    """sgn(t) * sqrt(|t|)."""
     if t < 0:
         return -gmpy2.sqrt(-t)
     return gmpy2.sqrt(t)
@@ -148,7 +148,7 @@ class Iv:
         return Iv(min(corners), max(corners))
 
     def recip(self) -> "Iv":
-        """1/self, widened to TOP when self straddles zero"""
+        """1/self, widened to TOP when self straddles zero."""
         if self.is_empty:
             return EMPTY
         if self.contains_zero:
