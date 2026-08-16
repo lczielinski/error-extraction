@@ -47,14 +47,31 @@ class ENode:
 
 
 class EGraph:
-    def __init__(self, nodes, interval, lits, root):
+    def __init__(self, nodes, interval, lits, root=None):
         self.nodes = nodes        # class id -> [ENode]
         self.interval = interval  # class id -> Iv
         self.lits = lits          # Lit index -> AST leaf
         self.root = root
+        self._index = None
 
     def __repr__(self):
         return f"EGraph({len(self.nodes)} classes, {sum(map(len, self.nodes.values()))} nodes)"
+
+    def locate(self, e) -> str:
+        """The class of a program tree, found by structure."""
+        if self._index is None:
+            self._index = {n.key(): cls for cls, ns in self.nodes.items() for n in ns}
+        if e[0] == "var":
+            key = ("Var", e[1], ())
+        elif e[0] == "num" and representable(e[1]):
+            key = ("Num", float(e[1]), ())
+        elif e[0] in ("num", "const"):
+            key = ("Lit", self.lits.index(e), ())
+        else:
+            key = (OPS[e[0]], None, tuple(self.locate(a) for a in e[1:]))
+        if key not in self._index:
+            raise RuntimeError(f"term missing from the e-graph: {key}")
+        return self._index[key]
 
 
 # -- emitting -----------------------------------------------------------
@@ -203,29 +220,6 @@ def parse_dump(text: str, lits: list) -> tuple:
     return nodes, interval
 
 
-def _find_root(body, nodes: dict, lits: list) -> str:
-    """Locate the seed expression's class by structure."""
-    index = {}
-    for cls, ns in nodes.items():
-        for n in ns:
-            index[n.key()] = cls
-
-    def look(e) -> str:
-        if e[0] == "var":
-            key = ("Var", e[1], ())
-        elif e[0] == "num" and representable(e[1]):
-            key = ("Num", float(e[1]), ())
-        elif e[0] in ("num", "const"):
-            key = ("Lit", lits.index(e), ())
-        else:
-            key = (OPS[e[0]], None, tuple(look(a) for a in e[1:]))
-        if key not in index:
-            raise RuntimeError(f"seed subterm missing from the e-graph: {key}")
-        return index[key]
-
-    return look(body)
-
-
 def build(body, box: dict, iters: int = DEFAULT_ITERS, out_path: str = None) -> EGraph:
     src, lits = program(body, box, iters)
     path = out_path or os.path.join(tempfile.mkdtemp(prefix="costex-"), "model.egg")
@@ -235,4 +229,6 @@ def build(body, box: dict, iters: int = DEFAULT_ITERS, out_path: str = None) -> 
     if run.returncode != 0 or "[ERROR]" in run.stderr:
         raise RuntimeError(f"egglog failed ({path}):\n{run.stderr[:2000]}")
     nodes, interval = parse_dump(run.stdout, lits)
-    return EGraph(nodes, interval, lits, _find_root(body, nodes, lits))
+    g = EGraph(nodes, interval, lits)
+    g.root = g.locate(body)
+    return g
