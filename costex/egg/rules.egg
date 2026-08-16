@@ -1,0 +1,79 @@
+; Rewrite rules.
+;
+; Every rule must preserve the real value at every v in B. Two things license a rule:
+;   1. Definedness of the left hand side.  If (Div a b) is an e-node then b is
+;      nonzero on all of B, and if (Sqrt a) is an e-node then a >= 0 on all of B.  
+;      So a rule may use those facts for free.
+;
+;   2. The interval analysis, for the facts definedness does not give:
+;      sqrt(x*x) = x needs x >= 0, and a rule that invents a divisor needs that
+;      divisor to be nonzero. Those rules are marked GATED below.
+
+(relation Nonzero (Math))
+(relation Nonneg (Math))
+(relation Pos (Math))
+
+(rule ((= l (lo c)) (> l 0.0)) ((Nonzero c) (Nonneg c) (Pos c)) :ruleset ana)
+(rule ((= h (hi c)) (< h 0.0)) ((Nonzero c)) :ruleset ana)
+(rule ((= l (lo c)) (>= l 0.0)) ((Nonneg c)) :ruleset ana)
+
+; -- structural ---------------------------------------------------------
+
+(birewrite (Add a b) (Add b a) :ruleset opt)
+(birewrite (Mul a b) (Mul b a) :ruleset opt)
+(birewrite (Add (Add a b) c) (Add a (Add b c)) :ruleset opt)
+(birewrite (Mul (Mul a b) c) (Mul a (Mul b c)) :ruleset opt)
+(birewrite (Sub a b) (Add a (Neg b)) :ruleset opt)
+(birewrite (Neg (Add a b)) (Add (Neg a) (Neg b)) :ruleset opt)
+(birewrite (Mul (Neg a) b) (Neg (Mul a b)) :ruleset opt)
+(rewrite (Neg (Neg a)) a :ruleset opt)
+(rewrite (Neg (Sub a b)) (Sub b a) :ruleset opt)
+
+(rewrite (Add a (Num 0.0)) a :ruleset opt)
+(rewrite (Mul a (Num 1.0)) a :ruleset opt)
+(rewrite (Mul a (Num 0.0)) (Num 0.0) :ruleset opt)
+(rewrite (Div a (Num 1.0)) a :ruleset opt)
+(rewrite (Div (Num 0.0) a) (Num 0.0) :ruleset opt)
+(rewrite (Sub a a) (Num 0.0) :ruleset opt)
+(rewrite (Sub (Add a b) a) b :ruleset opt)
+(rewrite (Sub (Add a b) b) a :ruleset opt)
+
+(birewrite (Mul a (Add b c)) (Add (Mul a b) (Mul a c)) :ruleset opt)
+(birewrite (Mul a (Sub b c)) (Sub (Mul a b) (Mul a c)) :ruleset opt)
+(birewrite (Sub (Mul a a) (Mul b b)) (Mul (Add a b) (Sub a b)) :ruleset opt)
+
+; -- division -----------------------------------------------------------
+
+(rewrite (Div a a) (Num 1.0) :ruleset opt)
+(rewrite (Div (Mul a b) b) a :ruleset opt)
+(rewrite (Div (Mul a b) a) b :ruleset opt)
+(rewrite (Mul b (Div a b)) a :ruleset opt)
+(rewrite (Div (Mul a b) (Mul a c)) (Div b c) :ruleset opt)
+(rewrite (Div (Num 1.0) (Div (Num 1.0) a)) a :ruleset opt)
+(birewrite (Div a b) (Mul a (Div (Num 1.0) b)) :ruleset opt)
+(birewrite (Div (Div a b) c) (Div a (Mul b c)) :ruleset opt)
+(birewrite (Div (Add a b) c) (Add (Div a c) (Div b c)) :ruleset opt)
+(birewrite (Div (Sub a b) c) (Sub (Div a c) (Div b c)) :ruleset opt)
+(rewrite (Sub (Div a b) (Div c d)) (Div (Sub (Mul a d) (Mul c b)) (Mul b d)) :ruleset opt)
+
+; -- square root --------------------------------------------------------
+
+(rewrite (Mul (Sqrt a) (Sqrt a)) a :ruleset opt)
+(rewrite (Mul (Sqrt a) (Sqrt b)) (Sqrt (Mul a b)) :ruleset opt)
+(rewrite (Div (Sqrt a) (Sqrt b)) (Sqrt (Div a b)) :ruleset opt)
+
+; GATED: splitting a root needs each factor non-negative on its own, which
+; a*b >= 0 does not give.
+
+(rule ((= e (Sqrt (Mul a a))) (Nonneg a))
+      ((union e a)) :ruleset opt)
+(rule ((= e (Sqrt (Mul a b))) (Nonneg a) (Nonneg b))
+      ((union e (Mul (Sqrt a) (Sqrt b)))) :ruleset opt)
+(rule ((= e (Sqrt (Div a b))) (Pos b))
+      ((union e (Div (Sqrt a) (Sqrt b)))) :ruleset opt)
+
+; GATED: the conjugate rule, a - c = (a*a - c*c) / (a + c).
+
+(rule ((= e (Sub a c))) ((Add a c)) :ruleset opt)
+(rule ((= e (Sub a c)) (= s (Add a c)) (Nonzero s))
+      ((union e (Div (Sub (Mul a a) (Mul c c)) s))) :ruleset opt)
