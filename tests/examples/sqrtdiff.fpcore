@@ -1,0 +1,4 @@
+(FPCore (x)
+  :name "sqrt difference"
+  :pre (< 1 x 1e6)
+  (- (sqrt (+ x 1)) (sqrt x)))
