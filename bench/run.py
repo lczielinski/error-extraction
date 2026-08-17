@@ -84,7 +84,7 @@ def _metric_lines(group: list, m: str) -> list:
     equal = [r for r in live if r[seed] is not None and r[best] == r[seed]]
     ratios = sorted(r[seed] / r[best] for r in improved if r[seed] and r[best])
     out = [f"    mu_{m:<3} bounded for {len(live):3}, improved {len(improved):3},"
-           f" already optimal {len(equal):3}"]
+           f" unchanged {len(equal):3}"]
     if ratios:
         out.append(f"           median {ratios[len(ratios) // 2]:.3g}x, "
                    f"90th pct {ratios[int(0.9 * (len(ratios) - 1))]:.3g}x, "
