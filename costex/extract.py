@@ -12,13 +12,10 @@ from fractions import Fraction
 from itertools import product
 
 from . import analysis as A
-from .egg import representable
+from .egg import OP_NAME, is_exact
 from .interval import TOP
 
 DEFAULT_MAX_STEPS = 200_000
-
-WITNESS_OP = {"Add": "add", "Sub": "sub", "Mul": "mul", "Div": "div",
-              "Neg": "neg", "Sqrt": "sqrt"}
 
 
 class Frontier:
@@ -27,9 +24,9 @@ class Frontier:
         self.steps = steps
         self.truncated = truncated  # hit a cap, so optimality is not guaranteed
 
-    def best(self, cls: str, Ic, metric):
+    def best(self, cls: str, Ic, metric: str):
         """The minimizing entry for a readout, or None if the class has no program."""
-        mu = A.METRICS[metric] if isinstance(metric, str) else metric
+        mu = A.METRICS[metric]
         out = None
         for pair, witness in self.entries.get(cls, ()):
             value = mu(pair, Ic)
@@ -44,15 +41,10 @@ def analyze_program(g, e):
     if e[0] == "var":
         return A.EXACT
     if e[0] in ("num", "const"):
-        return A.constant(e[0] == "num" and representable(e[1]), Ic)
+        return A.constant(is_exact(e), Ic)
     kids = [analyze_program(g, a) for a in e[1:]]
     ivs = [g.interval[g.locate(a)] for a in e[1:]]
-    if e[0] == "neg":
-        return A.neg(kids[0], Ic)
-    if e[0] == "sqrt":
-        return A.sqrt(kids[0], ivs[0], Ic)
-    f = {"add": A.add, "sub": A.sub, "mul": A.mul, "div": A.div}[e[0]]
-    return f(kids[0], kids[1], ivs[0], ivs[1], Ic)
+    return A.transfer(e[0], kids, ivs, Ic)
 
 
 def _leaf_witness(node, lits):
@@ -61,6 +53,11 @@ def _leaf_witness(node, lits):
     if node.op == "Num":
         return ("num", Fraction(node.payload))
     return lits[node.payload]
+
+
+def _leaf_pair(node, Ic):
+    """A Var reads exactly and a Num is representable; a Lit rounds."""
+    return A.EXACT if node.op in ("Var", "Num") else A.constant(False, Ic)
 
 
 def _score(pair):
@@ -103,7 +100,7 @@ def extract(g, max_steps: int = DEFAULT_MAX_STEPS, max_frontier: int = None,
     for cls, nodes in g.nodes.items():
         for node in nodes:
             if not node.children:
-                pair = A.transfer(node, [], [], g.interval[cls])
+                pair = _leaf_pair(node, g.interval[cls])
                 if pair is not A.BOTTOM and _insert(F[cls], pair, _leaf_witness(node, g.lits),
                                                    max_frontier):
                     enqueue(cls)
@@ -119,11 +116,12 @@ def extract(g, max_steps: int = DEFAULT_MAX_STEPS, max_frontier: int = None,
         Ic = g.interval[cls]
         ivs = [g.interval[c] for c in node.children]
         changed = False
+        op = OP_NAME[node.op]
         for combo in product(*(F[c] for c in node.children)):
-            pair = A.transfer(node, [e[0] for e in combo], ivs, Ic)
+            pair = A.transfer(op, [e[0] for e in combo], ivs, Ic)
             if pair is A.BOTTOM:
                 continue
-            witness = (WITNESS_OP[node.op],) + tuple(e[1] for e in combo)
+            witness = (op,) + tuple(e[1] for e in combo)
             changed |= _insert(F[cls], pair, witness, max_frontier)
         if changed:
             enqueue(cls)

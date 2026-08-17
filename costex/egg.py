@@ -13,7 +13,7 @@ import gmpy2
 
 from . import analysis as A
 from .fpcore import Str, parse_sexps
-from .interval import TOP, Iv
+from .interval import INF, NINF, Iv
 
 EGGLOG = os.environ.get("EGGLOG", os.path.expanduser("~/.cargo/bin/egglog-experimental"))
 EGG_DIR = os.path.join(os.path.dirname(__file__), "egg")
@@ -21,10 +21,12 @@ EGG_DIR = os.path.join(os.path.dirname(__file__), "egg")
 DEFAULT_ITERS = 4
 ANA_ROUNDS = 30
 
-# printed in this order, so the output blocks can be matched up positionally
-TABLES = ("Num", "Lit", "Var", "Add", "Sub", "Mul", "Div", "Neg", "Sqrt", "lo", "hi", "Bad")
-CONSTRUCTORS = {"Num", "Lit", "Var", "Add", "Sub", "Mul", "Div", "Neg", "Sqrt"}
 OPS = {"add": "Add", "sub": "Sub", "mul": "Mul", "div": "Div", "neg": "Neg", "sqrt": "Sqrt"}
+OP_NAME = {v: k for k, v in OPS.items()}          # e-node op -> AST op
+LEAVES = ("Num", "Lit", "Var")
+CONSTRUCTORS = LEAVES + tuple(OPS.values())
+# printed in this order, so the output blocks can be matched up positionally
+TABLES = CONSTRUCTORS + ("lo", "hi", "Bad")
 
 
 class BadBox(Exception):
@@ -43,9 +45,8 @@ class ENode:
         return (self.op, self.payload, self.children)
 
     def __repr__(self):
-        inner = " ".join([self.op] + [str(p) for p in (self.payload,) if p is not None]
-                         + list(self.children))
-        return f"({inner})"
+        args = self.children if self.payload is None else (str(self.payload),)
+        return "(" + " ".join((self.op,) + tuple(args)) + ")"
 
 
 class EGraph:
@@ -65,7 +66,7 @@ class EGraph:
             self._index = {n.key(): cls for cls, ns in self.nodes.items() for n in ns}
         if e[0] == "var":
             key = ("Var", e[1], ())
-        elif e[0] == "num" and representable(e[1]):
+        elif is_exact(e):
             key = ("Num", float(e[1]), ())
         elif e[0] in ("num", "const"):
             key = ("Lit", self.lits.index(e), ())
@@ -105,6 +106,11 @@ def _f64(x: float) -> str:
     return repr(float(x)).replace("e+", "e")
 
 
+def is_exact(e) -> bool:
+    """Is this leaf a literal the target format holds exactly, so unrounded?"""
+    return e[0] == "num" and representable(e[1])
+
+
 def _lit_bounds(leaf) -> tuple:
     """A float interval enclosing an inexact constant."""
     if leaf[0] == "const":
@@ -126,13 +132,15 @@ class _Emitter:
         """Bind e to a global and return its name, sharing subterms."""
         if e in self.memo:
             return self.memo[e]
+        bounds = None
         if e[0] == "var":
             body = f'(Var "{e[1]}")'
-        elif e[0] == "num" and representable(e[1]):
+        elif is_exact(e):
             body = f"(Num {_f64(float(e[1]))})"
         elif e[0] in ("num", "const"):
             self.lits.append(e)
             body = f"(Lit {len(self.lits) - 1})"
+            bounds = _lit_bounds(e)      # an inexact constant needs its own box
         else:
             kids = [self.term(a) for a in e[1:]]
             body = f"({OPS[e[0]]} {' '.join(kids)})"
@@ -140,20 +148,20 @@ class _Emitter:
         self.n += 1
         self.lines.append(f"(let {name} {body})")
         self.memo[e] = name
-        if e[0] in ("num", "const") and not (e[0] == "num" and representable(e[1])):
-            lo, hi = _lit_bounds(e)
-            self.lines.append(f"(set (lo {name}) {_f64(lo)})")
-            self.lines.append(f"(set (hi {name}) {_f64(hi)})")
+        if bounds is not None:
+            self.bound(name, *bounds)
         return name
+
+    def bound(self, name: str, lo: float, hi: float) -> None:
+        self.lines.append(f"(set (lo {name}) {_f64(lo)})")
+        self.lines.append(f"(set (hi {name}) {_f64(hi)})")
 
 
 def program(body, box: dict, iters: int = DEFAULT_ITERS) -> tuple:
     """The .egg source, and the Lit table it refers to by index."""
     em = _Emitter()
     for name, (lo, hi) in box.items():
-        var = em.term(("var", name))
-        em.lines.append(f"(set (lo {var}) {_f64(lo)})")
-        em.lines.append(f"(set (hi {var}) {_f64(hi)})")
+        em.bound(em.term(("var", name)), lo, hi)
     root = em.term(body)
 
     src = [open(os.path.join(EGG_DIR, "analysis.egg")).read(),
@@ -204,30 +212,27 @@ def parse_dump(text: str) -> tuple:
     if len(blocks) != len(TABLES):
         raise RuntimeError(f"expected {len(TABLES)} tables in the dump, got {len(blocks)}")
 
-    nodes, interval, bad = {}, {}, []
+    nodes, ends, bad = {}, {"lo": {}, "hi": {}}, []
     for table, rows in zip(TABLES, blocks):
         for row in rows:
             lhs, rhs = row.rsplit(" -> ", 1)
             args = parse_sexps(lhs)[0][1:]
             if table in CONSTRUCTORS:
                 cls = _norm(parse_sexps(rhs)[0])
-                if table in ("Num", "Lit", "Var"):
-                    node = ENode(table, (), _payload(table, args[0]))
-                else:
-                    node = ENode(table, tuple(_norm(a) for a in args))
-                nodes.setdefault(cls, []).append(node)
-            elif table in ("lo", "hi"):
+                payload = _payload(table, args[0]) if table in LEAVES else None
+                children = () if table in LEAVES else tuple(_norm(a) for a in args)
+                nodes.setdefault(cls, []).append(ENode(table, children, payload))
+            elif table in ends:
                 cls, val = _norm(args[0]), float(rhs)
                 if math.isnan(val):
                     raise RuntimeError(f"NaN interval endpoint on {cls}")
-                old = interval.get(cls, TOP)
-                interval[cls] = (Iv(val, old.hi) if table == "lo" else Iv(old.lo, val))
+                ends[table][cls] = val
             else:
                 bad.append(_norm(args[0]))
     if bad:
         raise BadBox("empty interval on " + "; ".join(sorted(bad)[:5]))
-    for cls in nodes:
-        interval.setdefault(cls, TOP)
+    # a class the analysis never bounded stays at top
+    interval = {cls: Iv(ends["lo"].get(cls, NINF), ends["hi"].get(cls, INF)) for cls in nodes}
     return nodes, interval
 
 

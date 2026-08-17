@@ -16,8 +16,9 @@ import os
 import subprocess
 import sys
 import time
-from concurrent.futures import ProcessPoolExecutor
 from collections import Counter
+from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -35,8 +36,7 @@ def _f(x):
     return None if math.isinf(x) else x
 
 
-def run_one(task) -> dict:
-    path, iters, timeout, max_steps, prec, extract_timeout = task
+def run_one(path, *, iters, timeout, max_steps, prec, extract_timeout) -> dict:
     name = os.path.basename(path)
     out = {"file": name}
     t0 = time.time()
@@ -76,8 +76,6 @@ def run_one(task) -> dict:
 
 
 def _metric_lines(group: list, m: str) -> list:
-    """mu_rel is infinite whenever 0 is in I_c however good the program is, so
-    each metric is reported over the cores where it says anything at all."""
     seed, best = f"seed_{m}", f"best_{m}"
     live = [r for r in group if r[best] is not None]
     improved = [r for r in live if r[seed] is None or r[best] < r[seed]]
@@ -151,15 +149,15 @@ def main(argv=None) -> int:
     files = sorted(os.path.join(CORES, f) for f in os.listdir(CORES) if f.endswith(".fpcore"))
     if args.limit:
         files = files[:args.limit]
-    tasks = [(f, args.iters, args.timeout, args.max_steps, args.prec,
-              args.extract_timeout) for f in files]
+    work = partial(run_one, iters=args.iters, timeout=args.timeout, max_steps=args.max_steps,
+                   prec=args.prec, extract_timeout=args.extract_timeout)
     t0 = time.time()
     with ProcessPoolExecutor(max_workers=args.jobs) as pool:
         results = []
-        for i, r in enumerate(pool.map(run_one, tasks), 1):
+        for i, r in enumerate(pool.map(work, files), 1):
             results.append(r)
             if i % 25 == 0:
-                print(f"  {i}/{len(tasks)}", flush=True)
+                print(f"  {i}/{len(files)}", flush=True)
     elapsed = time.time() - t0
 
     with open(args.out, "w") as fh:

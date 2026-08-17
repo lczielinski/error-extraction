@@ -21,6 +21,18 @@ class Str(str):
     """A quoted string."""
 
 
+class _Paren:
+    """A delimiter.  Not a str, so it cannot be confused with a symbol."""
+
+    def __init__(self, text):
+        self.text = text
+
+    def __repr__(self):
+        return self.text
+
+
+OPEN, CLOSE = _Paren("("), _Paren(")")
+
 # [ and ] are interchangeable with ( and ), as in Scheme
 _TOKEN = re.compile(r'\s*(?:;[^\n]*|([(\[])|([)\]])|"((?:[^"\\]|\\.)*)"|([^\s()\[\]";]+))')
 
@@ -36,9 +48,9 @@ def tokenize(text: str):
         pos = m.end()
         lparen, rparen, string, atom = m.groups()
         if lparen:
-            out.append("(")
+            out.append(OPEN)
         elif rparen:
-            out.append(")")
+            out.append(CLOSE)
         elif string is not None:
             out.append(Str(string))
         elif atom is not None:
@@ -55,18 +67,18 @@ def parse_sexps(text: str) -> list:
         nonlocal pos
         tok = toks[pos]
         pos += 1
-        if tok == "(" and type(tok) is str:
-            items = []
-            while True:
-                if pos >= len(toks):
-                    raise SyntaxError("unexpected end of input")
-                if toks[pos] == ")" and type(toks[pos]) is str:
-                    pos += 1
-                    return items
-                items.append(parse())
-        if tok == ")" and type(tok) is str:
+        if tok is CLOSE:
             raise SyntaxError("unbalanced )")
-        return tok
+        if tok is not OPEN:
+            return tok
+        items = []
+        while True:
+            if pos >= len(toks):
+                raise SyntaxError("unexpected end of input")
+            if toks[pos] is CLOSE:
+                pos += 1
+                return items
+            items.append(parse())
 
     out = []
     while pos < len(toks):
@@ -130,8 +142,8 @@ def desugar(s, env: dict = None):
         return s
     head = str(s[0])
     if head == "!":
-        props = [str(p) for p in s[1:-1:2]]
-        if any(p == ":precision" for p in props) and str(s[s.index(Sym(":precision")) + 1]) != "binary64":
+        props = dict(zip((str(p) for p in s[1:-1:2]), s[2:-1:2]))
+        if str(props.get(":precision", "binary64")) != "binary64":
             raise SyntaxError("annotation changes precision")
         return desugar(s[-1], env)
     if head in ("let", "let*"):

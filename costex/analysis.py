@@ -190,19 +190,15 @@ def sqrt(p1: Pair, I1: Iv, Ic: Iv) -> Pair:
     return _round(Sh, Dh, Ic)
 
 
-def transfer(node, pairs: list, ivs: list, Ic: Iv) -> Pair:
-    """Apply op_f for one e-node, given its children's pairs and intervals."""
-    op = node.op
-    if op in ("Var", "Num"):
-        return EXACT
-    if op == "Lit":
-        return constant(False, Ic)
-    if op == "Neg":
+_BINARY = {"add": add, "sub": sub, "mul": mul, "div": div}
+
+
+def transfer(op: str, pairs: list, ivs: list, Ic: Iv) -> Pair:
+    if op == "neg":
         return neg(pairs[0], Ic)
-    if op == "Sqrt":
+    if op == "sqrt":
         return sqrt(pairs[0], ivs[0], Ic)
-    f = {"Add": add, "Sub": sub, "Mul": mul, "Div": div}[op]
-    return f(pairs[0], pairs[1], ivs[0], ivs[1], Ic)
+    return _BINARY[op](pairs[0], pairs[1], ivs[0], ivs[1], Ic)
 
 
 # -- readouts -----------------------------------------------------------
