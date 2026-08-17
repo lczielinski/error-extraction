@@ -93,6 +93,18 @@ class Iv:
     def contains_zero(self) -> bool:
         return self.lo <= 0 <= self.hi
 
+    @property
+    def mag(self):
+        """max |t| over the interval."""
+        return max(abs(self.lo), abs(self.hi))
+
+    @property
+    def mig(self):
+        """min |t| over the interval; 0 exactly when the interval contains 0."""
+        if self.contains_zero:
+            return mpfr(0)
+        return min(abs(self.lo), abs(self.hi))
+
     def issubset(self, other: "Iv") -> bool:
         if self.is_empty:
             return True

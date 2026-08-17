@@ -16,21 +16,45 @@ BOTTOM = None
 
 NONNEG = Iv(0, INF)
 
-u = mpfr(2) ** -53   # unit roundoff of the target format
-U = Iv(1 - u, 1 + u)
-UE = Iv(-u, u)
+mantissa = 53              # of the target format, not of the bound arithmetic
+u = mpfr(2) ** -53         # unit roundoff
+eta = mpfr(2) ** -1075     # half the smallest subnormal
 
-
-mantissa = 53        # of the target format, not of the bound arithmetic
+EMIN = {53: -1022, 24: -126}
 
 
 def set_target(mantissa_bits: int) -> None:
     """53 for binary64, 24 for binary32."""
-    global u, U, UE, mantissa
+    global u, eta, mantissa
     mantissa = mantissa_bits
     u = mpfr(2) ** -mantissa_bits
-    U = Iv(1 - u, 1 + u)
-    UE = Iv(-u, u)
+    eta = mpfr(2) ** (EMIN[mantissa_bits] - mantissa_bits)
+
+
+def ufp(x):
+    """2^floor(log2|x|), the unit in the first place."""
+    x = abs(x)
+    if x == 0:
+        return mpfr(0)
+    if not gmpy2.is_finite(x):
+        return INF
+    return mpfr(2) ** (gmpy2.frexp(x)[0] - 1)
+
+
+def gamma(I: Iv) -> Iv:
+    """Absolute rounding term: fl(t) - t is in gamma(I) for every t in I."""
+    m = I.mag
+    if m == 0:
+        return ZERO
+    g = max(u * ufp(m), eta)
+    return Iv(-g, g)
+
+
+def urel(I: Iv) -> Iv:
+    """Relative rounding factor: fl(t)/t is in urel(I) for every nonzero t in I."""
+    q = I.mig
+    r = mpfr(1) if q == 0 else min(mpfr(1), max(u, eta / q))
+    return Iv(1 - r, 1 + r)
 
 
 class Pair:
@@ -79,7 +103,7 @@ def _round(Sh: Iv, Dh: Iv, Ic: Iv) -> Pair:
     """Reduce the pre-rounding pair, then add the operation's own rounding."""
     Sh, Dh = rho(Sh, Dh, Ic)
     Ih = enc(Sh, Dh, Ic)
-    S, D = rho(Sh * U, Dh + UE * Ih, Ic)
+    S, D = rho(Sh * urel(Ih), Dh + gamma(Ih), Ic)
     return Pair(S, D)
 
 
@@ -89,7 +113,7 @@ def _round(Sh: Iv, Dh: Iv, Ic: Iv) -> Pair:
 def constant(exact: bool, Ic: Iv) -> Pair:
     if exact:
         return EXACT
-    return Pair(*rho(U, UE * Ic, Ic))
+    return Pair(*rho(urel(Ic), gamma(Ic), Ic))
 
 
 def neg(p: Pair, Ic: Iv) -> Pair:
