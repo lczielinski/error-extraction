@@ -8,6 +8,7 @@ minimised over F(c) (theorem 3).
 
 from __future__ import annotations
 
+import time
 from collections import deque
 from fractions import Fraction
 from itertools import product
@@ -82,7 +83,9 @@ def _insert(entries, pair, witness, cap):
     return True
 
 
-def extract(g, max_steps: int = DEFAULT_MAX_STEPS, max_frontier: int = None) -> Frontier:
+def extract(g, max_steps: int = DEFAULT_MAX_STEPS, max_frontier: int = None,
+            time_limit: float = None) -> Frontier:
+    deadline = None if time_limit is None else time.monotonic() + time_limit
     parents = {}
     for cls, nodes in g.nodes.items():
         for node in nodes:
@@ -109,7 +112,7 @@ def extract(g, max_steps: int = DEFAULT_MAX_STEPS, max_frontier: int = None) -> 
 
     steps, truncated = 0, False
     while queue:
-        if steps >= max_steps:
+        if steps >= max_steps or (deadline is not None and time.monotonic() > deadline):
             truncated = True
             break
         cls, node = queue.popleft()

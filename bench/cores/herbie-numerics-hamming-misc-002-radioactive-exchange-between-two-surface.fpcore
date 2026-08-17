@@ -1,0 +1,8 @@
+; from herbie numerics/hamming-misc.fpcore core 2
+; box: default
+(FPCore (x y)
+  :name "Radioactive exchange between two surfaces"
+  :cx-source "herbie:numerics/hamming-misc.fpcore:2"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  (- (* (* (* x x) x) x) (* (* (* y y) y) y)))

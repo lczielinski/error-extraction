@@ -1,0 +1,8 @@
+; from herbie libraries/coolprop.fpcore core 8
+; box: default
+(FPCore (tau ti du_dtau d2u_dtau2 d3u_dtau3)
+  :name "B-tau3"
+  :cx-source "herbie:libraries/coolprop.fpcore:8"
+  :cx-box "default"
+  :pre (and (<= 1.0 tau 2.0) (<= 4.0 ti 8.0) (<= 16.0 du_dtau 32.0) (<= 64.0 d2u_dtau2 128.0) (<= 256.0 d3u_dtau3 512.0))
+  (+ (* tau (+ (* tau (+ (* tau d3u_dtau3) (* 2 d2u_dtau2))) (* (* 2 (+ (* tau du_dtau) ti)) (+ (* tau d2u_dtau2) du_dtau)))) (* (- (+ (* tau du_dtau) ti) 2) (+ (* tau (+ (* tau d2u_dtau2) du_dtau)) (* (- (+ (* tau du_dtau) ti) 1) (+ (* tau du_dtau) ti))))))

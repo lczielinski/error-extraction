@@ -1,0 +1,8 @@
+; from herbie proj/krovak.fpcore core 8
+; box: default
+(FPCore (Xr Yr)
+  :name "mod-dX"
+  :cx-source "herbie:proj/krovak.fpcore:8"
+  :cx-box "default"
+  :pre (and (<= 1.0 Xr 2.0) (<= 4.0 Yr 8.0))
+  (+ 0.02946529277 (+ (* 1.193845912E-7 Xr) (+ (* (- -4.668270147E-7) Yr) (+ (* -2 (* 1.523735715E-12 (* Xr Yr))) (+ (* 9.233980362E-12 (- (* Xr Xr) (* Yr Yr))) (+ (* 1.696780024E-18 (* Xr (- (* Xr Xr) (* 3 (* Yr Yr))))) (+ (* (- 4.408314235E-18) (* Yr (- (* 3 (* Xr Xr)) (* Yr Yr)))) (+ (* 4 (* -8.331083518E-24 (* Xr (* Yr (- (* Xr Xr) (* Yr Yr)))))) (* -3.689471323E-24 (+ (* (* Xr Xr) (* Xr Xr)) (+ (* (* Yr Yr) (* Yr Yr)) (* -6 (* (* Xr Xr) (* Yr Yr)))))))))))))))

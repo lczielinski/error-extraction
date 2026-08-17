@@ -1,0 +1,8 @@
+; from fpbench graphics.fpcore core 0
+; box: default
+(FPCore (a b c d)
+  :name "An eigenvalue calculation from TNG"
+  :cx-source "fpbench:graphics.fpcore:0"
+  :cx-box "default"
+  :pre (and (<= 1.0 a 2.0) (<= 4.0 b 8.0) (<= 16.0 c 32.0) (<= 64.0 d 128.0))
+  (- (sqrt (+ (* (+ a d) (+ a d)) (* (- b c) (- b c)))) (sqrt (+ (* (- a d) (- a d)) (* (+ b c) (+ b c))))))

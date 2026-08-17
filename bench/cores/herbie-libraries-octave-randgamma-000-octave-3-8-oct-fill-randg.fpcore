@@ -1,0 +1,8 @@
+; from herbie libraries/octave/randgamma.fpcore core 0
+; box: default
+(FPCore (a rand)
+  :name "Octave 3.8, oct_fill_randg"
+  :cx-source "herbie:libraries/octave/randgamma.fpcore:0"
+  :cx-box "default"
+  :pre (and (<= 1.0 a 2.0) (<= 4.0 rand 8.0))
+  (* (- a (/ 1 3)) (+ 1 (* (/ 1 (sqrt (* 9 (- a (/ 1 3))))) rand))))

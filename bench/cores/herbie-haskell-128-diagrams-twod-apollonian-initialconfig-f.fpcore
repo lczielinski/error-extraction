@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 128
+; box: default
+(FPCore (x y z)
+  :name "Diagrams.TwoD.Apollonian:initialConfig from diagrams-contrib-1.3.0.5, A"
+  :cx-source "herbie:haskell.fpcore:128"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0) (<= 16.0 z 32.0))
+  (/ (- (+ (* x x) (* y y)) (* z z)) (* y 2)))

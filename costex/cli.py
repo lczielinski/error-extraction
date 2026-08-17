@@ -33,8 +33,8 @@ def main(argv=None) -> int:
                     help="interleaved analysis/rewrite passes (default %(default)s)")
     ap.add_argument("--prec", type=int, default=interval.DEFAULT_PRECISION,
                     help="MPFR working precision in bits (default %(default)s)")
-    ap.add_argument("--format", choices=("binary64", "binary32"), default="binary64",
-                    help="target format the program runs in")
+    ap.add_argument("--format", choices=("binary64", "binary32"), default=None,
+                    help="target format (default: the core's :precision)")
     ap.add_argument("--max-steps", type=int, default=extract.DEFAULT_MAX_STEPS)
     ap.add_argument("--max-frontier", type=int, default=None,
                     help="cap entries per class; forfeits optimality")
@@ -42,9 +42,8 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     interval.set_precision(args.prec)
-    A.set_target(53 if args.format == "binary64" else 24)
-
     core = parse_fpcore(open(args.file).read())
+    A.set_target(53 if (args.format or core.precision) == "binary64" else 24)
     try:
         g = egg.build(core.body, core.box, iters=args.iters, out_path=args.emit)
     except egg.BadBox as e:
@@ -54,7 +53,7 @@ def main(argv=None) -> int:
     front = extract.extract(g, max_steps=args.max_steps, max_frontier=args.max_frontier)
     Ic = g.interval[g.root]
 
-    print(core.name or args.file)
+    print(f"{core.name or args.file}   [{args.format or core.precision}]")
     for v, (lo, hi) in core.box.items():
         print(f"  {v} in [{lo!r}, {hi!r}]")
     print(f"  I_root  {Ic}")

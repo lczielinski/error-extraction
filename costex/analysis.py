@@ -21,9 +21,13 @@ U = Iv(1 - u, 1 + u)
 UE = Iv(-u, u)
 
 
+mantissa = 53        # of the target format, not of the bound arithmetic
+
+
 def set_target(mantissa_bits: int) -> None:
     """53 for binary64, 24 for binary32."""
-    global u, U, UE
+    global u, U, UE, mantissa
+    mantissa = mantissa_bits
     u = mpfr(2) ** -mantissa_bits
     U = Iv(1 - u, 1 + u)
     UE = Iv(-u, u)

@@ -1,0 +1,8 @@
+; from herbie numerics/every-cs.fpcore core 2
+; box: default
+(FPCore (a b)
+  :name "Difference of squares"
+  :cx-source "herbie:numerics/every-cs.fpcore:2"
+  :cx-box "default"
+  :pre (and (<= 1.0 a 2.0) (<= 4.0 b 8.0))
+  (- (* a a) (* b b)))

@@ -1,0 +1,8 @@
+; from fpbench rosa.fpcore core 14
+; box: pre
+(FPCore (x)
+  :name "sineOrder3"
+  :cx-source "fpbench:rosa.fpcore:14"
+  :cx-box "pre"
+  :pre (<= -1.9999999999999997779553950749686919152736663818359375 x 1.9999999999999997779553950749686919152736663818359375)
+  (- (* 0.954929658551372 x) (* 0.12900613773279798 (* (* x x) x))))

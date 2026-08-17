@@ -1,0 +1,9 @@
+; from herbie numerics/rump.fpcore core 0
+; 2 precondition conjunct(s) dropped, widening the box
+; box: default
+(FPCore (x y)
+  :name "Rump's expression from Stadtherr's award speech"
+  :cx-source "herbie:numerics/rump.fpcore:0"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  (+ (+ (+ (* 333.75 (* (* (* (* (* y y) y) y) y) y)) (* (* x x) (- (- (- (* (* (* (* 11 x) x) y) y) (* (* (* (* (* y y) y) y) y) y)) (* 121 (* (* (* y y) y) y))) 2))) (* 5.5 (* (* (* (* (* (* (* y y) y) y) y) y) y) y))) (/ x (* 2 y))))

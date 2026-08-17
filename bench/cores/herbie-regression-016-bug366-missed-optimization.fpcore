@@ -1,0 +1,8 @@
+; from herbie regression.fpcore core 16
+; box: default
+(FPCore (x y z)
+  :name "bug366 (missed optimization)"
+  :cx-source "herbie:regression.fpcore:16"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0) (<= 16.0 z 32.0))
+  (sqrt (+ (* x x) (+ (* y y) (* z z)))))

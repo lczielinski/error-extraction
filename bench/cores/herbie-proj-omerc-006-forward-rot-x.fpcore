@@ -1,0 +1,8 @@
+; from herbie proj/omerc.fpcore core 6
+; box: default
+(FPCore (u v cosrot sinrot u0)
+  :name "forward-rot-x"
+  :cx-source "herbie:proj/omerc.fpcore:6"
+  :cx-box "default"
+  :pre (and (<= 1.0 u 2.0) (<= 4.0 v 8.0) (<= 16.0 cosrot 32.0) (<= 64.0 sinrot 128.0) (<= 256.0 u0 512.0))
+  (+ (* v cosrot) (* (- u u0) sinrot)))

@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 225
+; box: default
+(FPCore (x y)
+  :name "Examples.Basics.BasicTests:f2 from sbv-4.4"
+  :cx-source "herbie:haskell.fpcore:225"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  (- (* x x) (* y y)))

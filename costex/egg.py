@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import math
 import os
+import struct
 import subprocess
 import tempfile
 from fractions import Fraction
 
 import gmpy2
 
+from . import analysis as A
 from .fpcore import Str, parse_sexps
 from .interval import TOP, Iv
 
@@ -78,12 +80,21 @@ class EGraph:
 
 
 def representable(v: Fraction) -> bool:
-    """Is this exact value a binary64 number?"""
+    """Is this exact value a number of the target format?"""
     try:
         f = float(v)
     except OverflowError:
         return False
-    return math.isfinite(f) and Fraction(f) == v
+    if not math.isfinite(f):
+        return False
+    if A.mantissa < 53:                      # binary32
+        try:
+            f = struct.unpack("f", struct.pack("f", f))[0]
+        except OverflowError:
+            return False
+        if not math.isfinite(f):
+            return False
+    return Fraction(f) == v
 
 
 def _f64(x: float) -> str:
@@ -220,12 +231,13 @@ def parse_dump(text: str, lits: list) -> tuple:
     return nodes, interval
 
 
-def build(body, box: dict, iters: int = DEFAULT_ITERS, out_path: str = None) -> EGraph:
+def build(body, box: dict, iters: int = DEFAULT_ITERS, out_path: str = None,
+          timeout: float = None) -> EGraph:
     src, lits = program(body, box, iters)
     path = out_path or os.path.join(tempfile.mkdtemp(prefix="costex-"), "model.egg")
     with open(path, "w") as f:
         f.write(src)
-    run = subprocess.run([EGGLOG, path], capture_output=True, text=True)
+    run = subprocess.run([EGGLOG, path], capture_output=True, text=True, timeout=timeout)
     if run.returncode != 0 or "[ERROR]" in run.stderr:
         raise RuntimeError(f"egglog failed ({path}):\n{run.stderr[:2000]}")
     nodes, interval = parse_dump(run.stdout, lits)

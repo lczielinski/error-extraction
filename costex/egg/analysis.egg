@@ -8,6 +8,17 @@
 ; e-nodes of a class, and iteration runs downward from top. Intervals therefore
 ; only ever shrink, so a rewrite gated on an interval stays valid once it fires.
 ;
+; OUTWARD ROUNDING.  egglog computes f64 round to nearest, and the merge is an
+; intersection over e-nodes that are equal as reals but not as floats: 1657/5
+; rounds to 331.4 while 1657*(1/5) rounds to 331.40000000000003, and
+; intersecting those two points gives the empty interval -- excluding the true
+; value.  So every computed endpoint is widened outward by a relative 2^-52,
+; which is more than the single rounding each formula performs.  Widening by
+; multiplication rather than addition keeps it correct at 0 and at +-inf, and
+; min/max of the two signed products picks the right direction without a case
+; split.  The bindings live in the actions, not the query, because the planner
+; may reorder query atoms and a division must not be evaluated before its guard.
+;
 ; egglog's f64 primitives panic on (/ x 0.0) and (sqrt -1.0), and 0.0*inf is NaN
 ; whose min/max behaviour is order dependent. Every rule below is guarded so
 ; that no such call is ever evaluated:
@@ -38,6 +49,10 @@
 (ruleset ana)
 (ruleset opt)
 
+; 1 -+ 2^-52, the outward rounding factors
+(let $down 0.9999999999999998)
+(let $up 1.0000000000000002)
+
 ; -- top ----------------------------------------------------------------
 ; Every node starts at top so that consumers always have something to match.
 ; -inf/inf are the identities of the merges, so these never lose information.
@@ -50,15 +65,14 @@
 (rule ((= e (Sqrt a)))  ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
 
 ; -- leaves and the radicand constraint ---------------------------------
-; Var and Lit bounds are seeded by the driver.
+; Var and Lit bounds are seeded by the driver.  A Num is exactly representable
+; and negation is exact, so neither needs widening.
 
 (rule ((= e (Num n))) ((set (lo e) n) (set (hi e) n)) :ruleset ana)
 
 (rule ((= e (Sqrt a))) ((set (lo a) 0.0)) :ruleset ana)
 
 (rule ((= la (lo e)) (= ha (hi e)) (> la ha)) ((Bad e)) :ruleset ana)
-
-; -- neg ----------------------------------------------------------------
 
 (rule ((= e (Neg a)) (= ha (hi a))) ((set (lo e) (neg ha))) :ruleset ana)
 (rule ((= e (Neg a)) (= la (lo a))) ((set (hi e) (neg la))) :ruleset ana)
@@ -67,14 +81,18 @@
 ; guards keep inf + -inf from being evaluated
 
 (rule ((= e (Add a b)) (= la (lo a)) (= lb (lo b)) (< la inf) (< lb inf))
-      ((set (lo e) (+ la lb))) :ruleset ana)
+      ((let l (+ la lb))
+       (set (lo e) (min (* l $down) (* l $up)))) :ruleset ana)
 (rule ((= e (Add a b)) (= ha (hi a)) (= hb (hi b)) (> ha -inf) (> hb -inf))
-      ((set (hi e) (+ ha hb))) :ruleset ana)
+      ((let h (+ ha hb))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 
 (rule ((= e (Sub a b)) (= la (lo a)) (= hb (hi b)) (< la inf) (> hb -inf))
-      ((set (lo e) (- la hb))) :ruleset ana)
+      ((let l (- la hb))
+       (set (lo e) (min (* l $down) (* l $up)))) :ruleset ana)
 (rule ((= e (Sub a b)) (= ha (hi a)) (= lb (lo b)) (> ha -inf) (< lb inf))
-      ((set (hi e) (- ha lb))) :ruleset ana)
+      ((let h (- ha lb))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 
 ; -- mul ----------------------------------------------------------------
 ; a zero operand pins the product to zero, whatever the other operand is
@@ -88,87 +106,119 @@
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (>= la 0.0) (> ha 0.0) (>= lb 0.0) (> hb 0.0))
-      ((set (lo e) (* la lb)) (set (hi e) (* ha hb))) :ruleset ana)
+      ((let l (* la lb)) (let h (* ha hb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; P * N
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (>= la 0.0) (> ha 0.0) (<= hb 0.0) (< lb 0.0))
-      ((set (lo e) (* ha lb)) (set (hi e) (* la hb))) :ruleset ana)
+      ((let l (* ha lb)) (let h (* la hb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; P * M
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (>= la 0.0) (> ha 0.0) (< lb 0.0) (> hb 0.0))
-      ((set (lo e) (* ha lb)) (set (hi e) (* ha hb))) :ruleset ana)
+      ((let l (* ha lb)) (let h (* ha hb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; N * P
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (<= ha 0.0) (< la 0.0) (>= lb 0.0) (> hb 0.0))
-      ((set (lo e) (* la hb)) (set (hi e) (* ha lb))) :ruleset ana)
+      ((let l (* la hb)) (let h (* ha lb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; N * N
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (<= ha 0.0) (< la 0.0) (<= hb 0.0) (< lb 0.0))
-      ((set (lo e) (* ha hb)) (set (hi e) (* la lb))) :ruleset ana)
+      ((let l (* ha hb)) (let h (* la lb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; N * M
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (<= ha 0.0) (< la 0.0) (< lb 0.0) (> hb 0.0))
-      ((set (lo e) (* la hb)) (set (hi e) (* la lb))) :ruleset ana)
+      ((let l (* la hb)) (let h (* la lb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; M * P
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< la 0.0) (> ha 0.0) (>= lb 0.0) (> hb 0.0))
-      ((set (lo e) (* la hb)) (set (hi e) (* ha hb))) :ruleset ana)
+      ((let l (* la hb)) (let h (* ha hb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; M * N
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< la 0.0) (> ha 0.0) (<= hb 0.0) (< lb 0.0))
-      ((set (lo e) (* ha lb)) (set (hi e) (* la lb))) :ruleset ana)
+      ((let l (* ha lb)) (let h (* la lb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; M * M
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< la 0.0) (> ha 0.0) (< lb 0.0) (> hb 0.0))
-      ((set (lo e) (min (* la hb) (* ha lb)))
-       (set (hi e) (max (* la lb) (* ha hb)))) :ruleset ana)
+      ((let l (min (* la hb) (* ha lb))) (let h (max (* la lb) (* ha hb)))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 
 ; -- div ----------------------------------------------------------------
 ; Only fires when the divisor excludes zero; otherwise the quotient stays top.
-; Here P is just lo >= 0 and N is hi <= 0: they overlap only on the zero interval, 
-; where both formulas give [0,0].  Every quotient divides by a finite endpoint.
+; Here P is just lo >= 0 and N is hi <= 0: they overlap only on the zero
+; interval, where both formulas give [0,0].  Every quotient divides by a finite
+; endpoint, and the guards have all matched before the actions run.
 
 ; P / positive
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (> lb 0.0) (>= la 0.0))
-      ((set (lo e) (/ la hb)) (set (hi e) (/ ha lb))) :ruleset ana)
+      ((let l (/ la hb)) (let h (/ ha lb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; N / positive
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (> lb 0.0) (<= ha 0.0))
-      ((set (lo e) (/ la lb)) (set (hi e) (/ ha hb))) :ruleset ana)
+      ((let l (/ la lb)) (let h (/ ha hb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; M / positive
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (> lb 0.0) (< la 0.0) (> ha 0.0))
-      ((set (lo e) (/ la lb)) (set (hi e) (/ ha lb))) :ruleset ana)
+      ((let l (/ la lb)) (let h (/ ha lb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; P / negative
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< hb 0.0) (>= la 0.0))
-      ((set (lo e) (/ ha hb)) (set (hi e) (/ la lb))) :ruleset ana)
+      ((let l (/ ha hb)) (let h (/ la lb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; N / negative
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< hb 0.0) (<= ha 0.0))
-      ((set (lo e) (/ ha lb)) (set (hi e) (/ la hb))) :ruleset ana)
+      ((let l (/ ha lb)) (let h (/ la hb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 ; M / negative
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< hb 0.0) (< la 0.0) (> ha 0.0))
-      ((set (lo e) (/ ha hb)) (set (hi e) (/ la hb))) :ruleset ana)
+      ((let l (/ ha hb)) (let h (/ la hb))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)
 
 ; -- sqrt ---------------------------------------------------------------
 ; (max la 0.0) is load bearing: the radicand rule above may not have fired yet.
 
 (rule ((= e (Sqrt a)) (= la (lo a)) (= ha (hi a)) (>= ha 0.0))
-      ((set (lo e) (sqrt (max la 0.0))) (set (hi e) (sqrt ha))) :ruleset ana)
+      ((let l (sqrt (max la 0.0))) (let h (sqrt ha))
+       (set (lo e) (min (* l $down) (* l $up)))
+       (set (hi e) (max (* h $down) (* h $up)))) :ruleset ana)

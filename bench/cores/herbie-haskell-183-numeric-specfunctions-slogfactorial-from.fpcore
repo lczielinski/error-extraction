@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 183
+; box: default
+(FPCore (x)
+  :name "Numeric.SpecFunctions:$slogFactorial from math-functions-0.1.5.2, A"
+  :cx-source "herbie:haskell.fpcore:183"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (/ 1 (* x x)))

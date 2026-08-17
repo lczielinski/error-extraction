@@ -1,0 +1,8 @@
+; from herbie physics/universal-linear-optics.fpcore core 0
+; box: default
+(FPCore (a b)
+  :name "Bouland and Aaronson, Equation (24)"
+  :cx-source "herbie:physics/universal-linear-optics.fpcore:0"
+  :cx-box "default"
+  :pre (and (<= 1.0 a 2.0) (<= 4.0 b 8.0))
+  (- (+ (* (+ (* a a) (* b b)) (+ (* a a) (* b b))) (* 4 (+ (* (* a a) (- 1 a)) (* (* b b) (+ 3 a))))) 1))

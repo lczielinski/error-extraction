@@ -1,0 +1,8 @@
+; from herbie libraries/basilisk.fpcore core 18
+; box: default
+(FPCore (density Cd A m v)
+  :name "drag_accel_mag"
+  :cx-source "herbie:libraries/basilisk.fpcore:18"
+  :cx-box "default"
+  :pre (and (<= 1.0 density 2.0) (<= 4.0 Cd 8.0) (<= 16.0 A 32.0) (<= 64.0 m 128.0) (<= 256.0 v 512.0))
+  (/ (* (* (* (- 0.5) density) (/ (* Cd A) m)) (* (* v 1000) (* v 1000))) 1000))

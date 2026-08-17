@@ -1,0 +1,174 @@
+"""Run the tool over the benchmark corpus in bench/cores.
+
+    uv run python bench/run.py                     # everything, 4 iterations
+    uv run python bench/run.py --iters 3 --limit 50
+    uv run python bench/run.py --report bench/results.json
+
+Writes bench/results.json and prints a summary.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import math
+import os
+import subprocess
+import sys
+import time
+from concurrent.futures import ProcessPoolExecutor
+from collections import Counter
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from costex import analysis as A                              # noqa: E402
+from costex import egg, extract, interval                     # noqa: E402
+from costex.fpcore import parse_fpcore, to_sexp               # noqa: E402
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+CORES = os.path.join(HERE, "cores")
+METRICS = ("d", "rel", "abs")
+
+
+def _f(x):
+    x = float(x)
+    return None if math.isinf(x) else x
+
+
+def run_one(task) -> dict:
+    path, iters, timeout, max_steps, prec, extract_timeout = task
+    name = os.path.basename(path)
+    out = {"file": name}
+    t0 = time.time()
+    try:
+        interval.set_precision(prec)
+        core = parse_fpcore(open(path).read())
+        A.set_target(53 if core.precision == "binary64" else 24)
+        out.update(name=core.name, vars=len(core.args),
+                   box_source=str(core.props.get(":cx-box", "pre")),
+                   source=str(core.props.get(":cx-source", "")),
+                   expr=to_sexp(core.body), precision=core.precision)
+        g = egg.build(core.body, core.box, iters=iters, timeout=timeout)
+        t1 = time.time()
+        front = extract.extract(g, max_steps=max_steps, time_limit=extract_timeout)
+        Ic = g.interval[g.root]
+        seed = extract.analyze_program(g, core.body)
+
+        out.update(status="ok",
+                   classes=len(g.nodes), nodes=sum(map(len, g.nodes.values())),
+                   egglog_s=round(t1 - t0, 3), extract_s=round(time.time() - t1, 3),
+                   steps=front.steps, truncated=front.truncated,
+                   frontier=len(front.entries.get(g.root, [])),
+                   root_interval=[_f(Ic.lo), _f(Ic.hi)])
+        for m in METRICS:
+            out[f"seed_{m}"] = None if seed is A.BOTTOM else _f(A.METRICS[m](seed, Ic))
+            best = front.best(g.root, Ic, m)
+            out[f"best_{m}"] = _f(best[0]) if best else None
+            if m == "rel" and best:
+                out["best_expr"] = to_sexp(best[2])
+    except subprocess.TimeoutExpired:
+        out.update(status="timeout", egglog_s=round(time.time() - t0, 3))
+    except egg.BadBox as ex:
+        out.update(status="badbox", error=str(ex)[:200])
+    except Exception as ex:                    # noqa: BLE001
+        out.update(status="error", error=f"{type(ex).__name__}: {ex}"[:200])
+    return out
+
+
+def _metric_lines(group: list, m: str) -> list:
+    """mu_rel is infinite whenever 0 is in I_c, however good the program is, so
+    each metric is reported over the cores where it says anything at all."""
+    seed, best = f"seed_{m}", f"best_{m}"
+    live = [r for r in group if r[best] is not None]
+    improved = [r for r in live if r[seed] is None or r[best] < r[seed]]
+    equal = [r for r in live if r[seed] is not None and r[best] == r[seed]]
+    ratios = sorted(r[seed] / r[best] for r in improved if r[seed] and r[best])
+    out = [f"    mu_{m:<3} bounded for {len(live):3}, improved {len(improved):3},"
+           f" already optimal {len(equal):3}"]
+    if ratios:
+        out.append(f"           median {ratios[len(ratios) // 2]:.3g}x, "
+                   f"90th pct {ratios[int(0.9 * (len(ratios) - 1))]:.3g}x, "
+                   f"max {ratios[-1]:.3g}x")
+    return out
+
+
+def summarise(results: list) -> None:
+    st = Counter(r["status"] for r in results)
+    print(f"\n{len(results)} cores: " + ", ".join(f"{v} {k}" for k, v in st.most_common()))
+
+    ok = [r for r in results if r["status"] == "ok"]
+    if not ok:
+        return
+    trunc = sum(1 for r in ok if r.get("truncated"))
+    for label, group in (("all", ok),
+                         ("box=pre", [r for r in ok if r.get("box_source") == "pre"]),
+                         ("box=default", [r for r in ok if r.get("box_source") == "default"])):
+        if not group:
+            continue
+        print(f"\n  {label}: {len(group)} cores")
+        for m in METRICS:
+            print("\n".join(_metric_lines(group, m)))
+    print(f"\n  extractions stopped early (not provably optimal): {trunc}")
+
+    slow = sorted(ok, key=lambda r: -(r["egglog_s"] + r["extract_s"]))[:3]
+    print("\n  slowest: " + ", ".join(f"{r['file'][:34]} {r['egglog_s'] + r['extract_s']:.1f}s"
+                                      for r in slow))
+
+    def gain(r):
+        out = 1.0
+        for m in METRICS:
+            if r.get(f"seed_{m}") and r.get(f"best_{m}"):
+                out = max(out, r[f"seed_{m}"] / r[f"best_{m}"])
+        return out
+
+    best = sorted((r for r in ok if gain(r) > 1.0), key=lambda r: -gain(r))[:10]
+    if best:
+        print("\n  largest improvements")
+        for r in best:
+            print(f"    {gain(r):10.3g}x  {r['file'][:44]}")
+            print(f"                 {r['expr'][:90]}")
+            print(f"              -> {r.get('best_expr', '')[:90]}")
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--iters", type=int, default=egg.DEFAULT_ITERS)
+    ap.add_argument("--timeout", type=float, default=60.0, help="egglog seconds per core")
+    ap.add_argument("--max-steps", type=int, default=extract.DEFAULT_MAX_STEPS)
+    ap.add_argument("--extract-timeout", type=float, default=30.0,
+                    help="extraction seconds per core; a step cap alone does not bound it")
+    ap.add_argument("--prec", type=int, default=interval.DEFAULT_PRECISION)
+    ap.add_argument("--jobs", type=int, default=os.cpu_count())
+    ap.add_argument("--limit", type=int)
+    ap.add_argument("--out", default=os.path.join(HERE, "results.json"))
+    ap.add_argument("--report", metavar="JSON", help="re-summarise an existing results file")
+    args = ap.parse_args(argv)
+
+    if args.report:
+        summarise(json.load(open(args.report))["results"])
+        return 0
+
+    files = sorted(os.path.join(CORES, f) for f in os.listdir(CORES) if f.endswith(".fpcore"))
+    if args.limit:
+        files = files[:args.limit]
+    tasks = [(f, args.iters, args.timeout, args.max_steps, args.prec,
+              args.extract_timeout) for f in files]
+    t0 = time.time()
+    with ProcessPoolExecutor(max_workers=args.jobs) as pool:
+        results = []
+        for i, r in enumerate(pool.map(run_one, tasks), 1):
+            results.append(r)
+            if i % 25 == 0:
+                print(f"  {i}/{len(tasks)}", flush=True)
+    elapsed = time.time() - t0
+
+    with open(args.out, "w") as fh:
+        json.dump({"iters": args.iters, "elapsed_s": round(elapsed, 1),
+                   "results": results}, fh, indent=1)
+    summarise(results)
+    print(f"\n  {elapsed:.1f}s wall, {args.jobs} jobs -> {os.path.relpath(args.out)}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
