@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 34
+; box: default
+(FPCore (x)
+  :name "Data.Colour.CIE:cieLAB from colour-2.3.3, B"
+  :cx-source "herbie:haskell.fpcore:34"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (/ (+ x 16) 116))

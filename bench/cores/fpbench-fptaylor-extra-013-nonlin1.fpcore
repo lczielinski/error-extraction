@@ -1,0 +1,8 @@
+; from fpbench fptaylor-extra.fpcore core 13
+; box: pre
+(FPCore (z)
+  :name "nonlin1"
+  :cx-source "fpbench:fptaylor-extra.fpcore:13"
+  :cx-box "pre"
+  :pre (<= 0.0 z 999.0)
+  (/ z (+ z 1)))

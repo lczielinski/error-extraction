@@ -1,0 +1,8 @@
+; from fpbench rosa.fpcore core 32
+; box: pre
+(FPCore (u)
+  :name "bspline3"
+  :cx-source "fpbench:rosa.fpcore:32"
+  :cx-box "pre"
+  :pre (<= 0.0 u 1.0)
+  (/ (- (* (* u u) u)) 6))

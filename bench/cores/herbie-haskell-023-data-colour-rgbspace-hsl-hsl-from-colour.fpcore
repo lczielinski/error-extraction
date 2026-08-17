@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 23
+; box: default
+(FPCore (x)
+  :name "Data.Colour.RGBSpace.HSL:hsl from colour-2.3.3, G"
+  :cx-source "herbie:haskell.fpcore:23"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (- x (/ 1 3)))

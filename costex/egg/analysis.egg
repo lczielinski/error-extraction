@@ -9,23 +9,7 @@
 ; only ever shrink, so a rewrite gated on an interval stays valid once it fires.
 ;
 ; Endpoints are widened outward by a relative 2^-52 ($down/$up), more than the
-; one rounding each formula performs. Without it the merge intersects e-nodes
-; that agree as reals but not as floats -- 1657/5 gives 331.4, 1657*(1/5) gives
-; 331.40000000000003 -- and the intersection comes out empty, excluding the true
-; value. Widening by multiplication, then min/max of the two signed products,
-; stays correct at 0 and at +-inf without a case split.
-;
-; egglog's f64 primitives panic on (/ x 0.0) and (sqrt -1.0), and 0.0*inf is NaN
-; whose min/max behaviour is order dependent. Every rule below is guarded so
-; that no such call is ever evaluated:
-;   - each operand carries (< lo inf) and (> hi -inf), ruling out an interval
-;     degenerate at infinity (reachable by overflow)
-;   - the sign cases P/N/M/Z below are disjoint and exhaustive, and are stated
-;     so that every product has a nonzero factor or two finite ones
-;       P: lo >= 0, hi > 0      N: hi <= 0, lo < 0
-;       M: lo < 0, hi > 0       Z: lo = 0, hi = 0
-; The bindings sit in the actions, not the query: the planner may reorder query
-; atoms, and a division must not be evaluated before its guard.
+; one rounding each formula performs.
 
 (datatype Math
   (Num f64)          ; a value exactly representable in the target format

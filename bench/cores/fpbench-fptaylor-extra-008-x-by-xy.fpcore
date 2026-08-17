@@ -1,0 +1,9 @@
+; from fpbench fptaylor-extra.fpcore core 8
+; box: pre
+(FPCore (x y)
+  :name "x_by_xy"
+  :cx-source "fpbench:fptaylor-extra.fpcore:8"
+  :cx-box "pre"
+  :precision binary32
+  :pre (and (<= 1.0 x 4.0) (<= 1.0 y 4.0))
+  (/ x (+ x y)))

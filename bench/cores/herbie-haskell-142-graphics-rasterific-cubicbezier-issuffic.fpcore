@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 142
+; box: default
+(FPCore (x)
+  :name "Graphics.Rasterific.CubicBezier:isSufficientlyFlat from Rasterific-0.6.1"
+  :cx-source "herbie:haskell.fpcore:142"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (* (* x 16) x))

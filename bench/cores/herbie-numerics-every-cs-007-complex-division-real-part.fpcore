@@ -1,0 +1,8 @@
+; from herbie numerics/every-cs.fpcore core 7
+; box: default
+(FPCore (a b c d)
+  :name "Complex division, real part"
+  :cx-source "herbie:numerics/every-cs.fpcore:7"
+  :cx-box "default"
+  :pre (and (<= 1.0 a 2.0) (<= 4.0 b 8.0) (<= 16.0 c 32.0) (<= 64.0 d 128.0))
+  (/ (+ (* a c) (* b d)) (+ (* c c) (* d d))))

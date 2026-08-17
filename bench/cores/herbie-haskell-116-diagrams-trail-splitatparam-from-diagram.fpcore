@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 116
+; box: default
+(FPCore (x y)
+  :name "Diagrams.Trail:splitAtParam  from diagrams-lib-1.3.0.3, C"
+  :cx-source "herbie:haskell.fpcore:116"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  (/ (- x y) (- 1 y)))

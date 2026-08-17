@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 233
+; box: default
+(FPCore (x y z t)
+  :name "Data.Random.Distribution.Triangular:triangularCDF from random-fu-0.2.6.2, A"
+  :cx-source "herbie:haskell.fpcore:233"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0) (<= 16.0 z 32.0) (<= 64.0 t 128.0))
+  (- 1 (/ x (* (- y z) (- y t)))))

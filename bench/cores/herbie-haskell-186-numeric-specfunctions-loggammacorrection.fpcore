@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 186
+; box: default
+(FPCore (x)
+  :name "Numeric.SpecFunctions:logGammaCorrection from math-functions-0.1.5.2"
+  :cx-source "herbie:haskell.fpcore:186"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (- (* (* x x) 2) 1))

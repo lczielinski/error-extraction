@@ -1,0 +1,8 @@
+; from herbie regression.fpcore core 6
+; box: default
+(FPCore (x)
+  :name "sqrt A (should all be same)"
+  :cx-source "herbie:regression.fpcore:6"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (sqrt (+ (* x x) (* x x))))

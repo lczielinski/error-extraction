@@ -1,0 +1,8 @@
+; from herbie libraries/mathjs/arithmetic.fpcore core 0
+; box: default
+(FPCore (re im)
+  :name "modulus"
+  :cx-source "herbie:libraries/mathjs/arithmetic.fpcore:0"
+  :cx-box "default"
+  :pre (and (<= 1.0 re 2.0) (<= 4.0 im 8.0))
+  (sqrt (+ (* re re) (* im im))))

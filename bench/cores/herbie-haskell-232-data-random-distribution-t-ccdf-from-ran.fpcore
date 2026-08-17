@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 232
+; box: default
+(FPCore (x y)
+  :name "Data.Random.Distribution.T:$ccdf from random-fu-0.2.6.2"
+  :cx-source "herbie:haskell.fpcore:232"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  (/ (+ x y) (+ y y)))

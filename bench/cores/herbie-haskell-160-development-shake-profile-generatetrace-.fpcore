@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 160
+; box: default
+(FPCore (x)
+  :name "Development.Shake.Profile:generateTrace from shake-0.15.5"
+  :cx-source "herbie:haskell.fpcore:160"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (* 1000000 (- x x)))

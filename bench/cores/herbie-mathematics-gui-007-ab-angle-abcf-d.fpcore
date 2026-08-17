@@ -1,0 +1,8 @@
+; from herbie mathematics/gui.fpcore core 7
+; box: default
+(FPCore (a b)
+  :name "ab-angle->ABCF D"
+  :cx-source "herbie:mathematics/gui.fpcore:7"
+  :cx-box "default"
+  :pre (and (<= 1.0 a 2.0) (<= 4.0 b 8.0))
+  (- (* (* (* a a) b) b)))
