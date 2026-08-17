@@ -10,7 +10,7 @@ from __future__ import annotations
 import gmpy2
 from gmpy2 import mpfr
 
-from .interval import EMPTY, INF, ONE, TOP, ZERO, Iv
+from .interval import INF, ONE, TOP, ZERO, Iv
 
 BOTTOM = None
 
@@ -76,7 +76,7 @@ def rho(S: Iv, D: Iv, Ic: Iv) -> tuple:
 
 
 def _round(Sh: Iv, Dh: Iv, Ic: Iv) -> Pair:
-    """Reduce the pre-rounding pair, then account for the operation's own rounding."""
+    """Reduce the pre-rounding pair, then add the operation's own rounding."""
     Sh, Dh = rho(Sh, Dh, Ic)
     Ih = enc(Sh, Dh, Ic)
     S, D = rho(Sh * U, Dh + UE * Ih, Ic)
@@ -120,8 +120,8 @@ def add(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
     same_sign = (I1.lo > 0 and I2.lo > 0) or (I1.hi < 0 and I2.hi < 0)
     Sh = TOP
     if same_sign:
-        # alpha^ is the convex combination lambda*alpha_1 + (1-lambda)*alpha_2,
-        # affine in lambda, so its extremes sit at the ends of Lambda
+        # the convex combination is affine in lambda, so its extremes sit at
+        # the ends of Lambda
         lam = Iv(0, 1).intersect(I1 / Ic)
         if not lam.is_empty:
             Sh = _combine(lam.lo, p1.S, p2.S).hull(_combine(lam.hi, p1.S, p2.S))

@@ -1,9 +1,7 @@
 """Frontier extraction.
 
 F(c) holds the minimal (S,D) pairs reachable by any program of c, each with a
-witness program achieving it.  Because the order is partial there is no single
-best pair, so a class keeps a whole antichain; any monotone readout mu is then
-minimised over F(c) (theorem 3).
+witness program achieving it. 
 """
 
 from __future__ import annotations

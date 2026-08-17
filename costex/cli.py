@@ -44,6 +44,7 @@ def main(argv=None) -> int:
     interval.set_precision(args.prec)
     core = parse_fpcore(open(args.file).read())
     A.set_target(53 if (args.format or core.precision) == "binary64" else 24)
+
     try:
         g = egg.build(core.body, core.box, iters=args.iters, out_path=args.emit)
     except egg.BadBox as e:

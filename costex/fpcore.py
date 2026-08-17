@@ -12,9 +12,6 @@ import math
 import re
 from fractions import Fraction
 
-import gmpy2
-from gmpy2 import mpfr
-
 
 class Sym(str):
     """A bare symbol."""
@@ -202,75 +199,25 @@ def variables(e) -> set:
     return out
 
 
-# -- evaluation ---------------------------------------------------------
-
-
-def eval_real(e, env: dict):
-    """Exact-arithmetic evaluation at the current MPFR precision."""
-    op = e[0]
-    if op == "var":
-        return mpfr(env[e[1]])
-    if op == "num":
-        return mpfr(e[1].numerator) / mpfr(e[1].denominator)
-    if op == "const":
-        return gmpy2.const_pi() if e[1] == "PI" else gmpy2.exp(mpfr(1))
-    if op == "neg":
-        return -eval_real(e[1], env)
-    if op == "sqrt":
-        return gmpy2.sqrt(eval_real(e[1], env))
-    a, b = eval_real(e[1], env), eval_real(e[2], env)
-    return {"add": lambda: a + b, "sub": lambda: a - b,
-            "mul": lambda: a * b, "div": lambda: a / b}[op]()
-
-
-def eval_fp(e, env: dict) -> float:
-    """The program: the same tree evaluated in binary64."""
-    op = e[0]
-    if op == "var":
-        return float(env[e[1]])
-    if op == "num":
-        return e[1].numerator / e[1].denominator
-    if op == "const":
-        return math.pi if e[1] == "PI" else math.e
-    if op == "neg":
-        return -eval_fp(e[1], env)
-    if op == "sqrt":
-        x = eval_fp(e[1], env)
-        return math.sqrt(x) if x >= 0 else math.nan
-    a, b = eval_fp(e[1], env), eval_fp(e[2], env)
-    if op == "add":
-        return a + b
-    if op == "sub":
-        return a - b
-    if op == "mul":
-        return a * b
-    return a / b if b != 0 else math.nan
-
-
 # -- FPCore -------------------------------------------------------------
 
 _NEG_INF, _POS_INF = -math.inf, math.inf
 
 
 class Core:
-    def __init__(self, name, args, box, body, dropped=0, source=None, precision="binary64",
-                 props=None):
+    def __init__(self, name, args, box, body, precision="binary64", props=None):
         self.name = name
         self.precision = precision
-        self.props = props or {}   # raw FPCore properties, keyed with the leading colon
+        self.props = props or {}   # raw properties, keyed with the leading colon
         self.args = args
-        self.box = box          # var -> (float lo, float hi)
+        self.box = box             # var -> (float lo, float hi)
         self.body = body
-        self.dropped = dropped  # precondition conjuncts we could not read
-        self.source = source
 
     def __repr__(self):
         return f"Core({self.name!r}, {self.args}, {self.box}, {to_sexp(self.body)})"
 
 
-def core_from_form(form, strict: bool = True, source=None) -> Core:
-    """One (FPCore ...) form.  strict=False drops unreadable precondition
-    conjuncts (widening the box) and records how many, instead of failing."""
+def core_from_form(form) -> Core:
     if not (isinstance(form, list) and form and str(form[0]) == "FPCore"):
         raise SyntaxError("not an FPCore form")
     i = 1
@@ -305,16 +252,11 @@ def core_from_form(form, strict: bool = True, source=None) -> Core:
         raise SyntaxError(f"free variables: {sorted(unknown)}")
 
     box = {a: (_NEG_INF, _POS_INF) for a in args}
-    dropped = 0
     if ":pre" in props:
-        for item in _parse_pre(props[":pre"], set(args), strict):
-            if item is None:
-                dropped += 1
-                continue
-            var, lo, hi = item
+        for var, lo, hi in _parse_pre(props[":pre"], set(args)):
             olo, ohi = box[var]
             box[var] = (max(olo, lo), min(ohi, hi))
-    return Core(name, args, box, body, dropped, source, precision, props)
+    return Core(name, args, box, body, precision, props)
 
 
 def parse_fpcore(text: str) -> Core:
@@ -325,37 +267,21 @@ def parse_fpcore(text: str) -> Core:
     return core_from_form(forms[0])
 
 
-def parse_all(text: str, source=None):
-    """Every core in a file, as (Core, None) or (None, reason)."""
-    out = []
-    for form in parse_sexps(text):
-        if not (isinstance(form, list) and form and str(form[0]) == "FPCore"):
-            continue
-        try:
-            out.append((core_from_form(form, strict=False, source=source), None))
-        except (SyntaxError, ValueError, IndexError, KeyError) as ex:
-            out.append((None, str(ex) or type(ex).__name__))
-    return out
-
-
-def _parse_pre(pre, args: set, strict: bool = True):
-    """Yield (var, lo, hi) constraints, or None for a conjunct we cannot read."""
-    def bail(what):
-        if strict:
-            raise SyntaxError(f"unsupported precondition {what!r}")
-        return None
+def _parse_pre(pre, args: set):
+    """Yield (var, lo, hi) constraints.  A conjunct we cannot read is an error:
+    silently dropping it would widen the box past what was asked for."""
+    def bail():
+        raise SyntaxError(f"unsupported precondition {pre!r}")
 
     if not isinstance(pre, list) or not pre:
-        yield bail(pre)
-        return
+        bail()
     head = str(pre[0])
     if head == "and":
         for p in pre[1:]:
-            yield from _parse_pre(p, args, strict)
+            yield from _parse_pre(p, args)
         return
     if head not in ("<", "<=", ">", ">=") or len(pre) < 3:
-        yield bail(pre)
-        return
+        bail()
     terms = list(reversed(pre[1:])) if head.startswith(">") else pre[1:]
     is_strict = head in ("<", ">")
     for left, right in zip(terms, terms[1:]):
@@ -365,50 +291,11 @@ def _parse_pre(pre, args: set, strict: bool = True):
         elif rv in args and _is_number(left):
             yield rv, _bound(Fraction(lv), upper=False, strict=is_strict), _POS_INF
         else:
-            yield bail(pre)
-
-
-class Undefined(Exception):
-    """The box does not keep every subexpression defined."""
-
-
-def interval_eval(e, box: dict):
-    """Interval-evaluate a program tree, checking the definedness assumption.
-
-    Raises Undefined if a divisor's interval contains zero or a radicand's dips
-    below it -- the box then cannot certify what the whole analysis assumes.
-    """
-    from .interval import Iv
-
-    if e[0] == "var":
-        return Iv(*box[e[1]])
-    if e[0] in ("num", "const"):
-        if e[0] == "const":
-            v = gmpy2.const_pi() if e[1] == "PI" else gmpy2.exp(mpfr(1))
-        else:
-            v = mpfr(e[1].numerator) / mpfr(e[1].denominator)
-        return Iv(gmpy2.next_below(v), gmpy2.next_above(v))
-    if e[0] == "neg":
-        return -interval_eval(e[1], box)
-    if e[0] == "sqrt":
-        I = interval_eval(e[1], box)
-        if I.lo < 0:
-            raise Undefined(f"radicand may be negative: {to_sexp(e[1])}")
-        return I.sqrt()
-    a, b = interval_eval(e[1], box), interval_eval(e[2], box)
-    if e[0] == "add":
-        return a + b
-    if e[0] == "sub":
-        return a - b
-    if e[0] == "mul":
-        return a * b
-    if b.contains_zero:
-        raise Undefined(f"divisor may be zero: {to_sexp(e[2])}")
-    return a / b
+            bail()
 
 
 def _bound(value: Fraction, upper: bool, strict: bool) -> float:
-    """A float bound for the closed box: widened outward, or nudged inward if strict."""
+    """A float bound for the closed box: widened outward, nudged inward if strict."""
     x = float(value)
     if strict:
         return math.nextafter(x, _NEG_INF) if upper else math.nextafter(x, _POS_INF)

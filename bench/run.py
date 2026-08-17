@@ -76,7 +76,7 @@ def run_one(task) -> dict:
 
 
 def _metric_lines(group: list, m: str) -> list:
-    """mu_rel is infinite whenever 0 is in I_c, however good the program is, so
+    """mu_rel is infinite whenever 0 is in I_c however good the program is, so
     each metric is reported over the cores where it says anything at all."""
     seed, best = f"seed_{m}", f"best_{m}"
     live = [r for r in group if r[best] is not None]

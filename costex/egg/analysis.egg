@@ -8,16 +8,12 @@
 ; e-nodes of a class, and iteration runs downward from top. Intervals therefore
 ; only ever shrink, so a rewrite gated on an interval stays valid once it fires.
 ;
-; OUTWARD ROUNDING.  egglog computes f64 round to nearest, and the merge is an
-; intersection over e-nodes that are equal as reals but not as floats: 1657/5
-; rounds to 331.4 while 1657*(1/5) rounds to 331.40000000000003, and
-; intersecting those two points gives the empty interval -- excluding the true
-; value.  So every computed endpoint is widened outward by a relative 2^-52,
-; which is more than the single rounding each formula performs.  Widening by
-; multiplication rather than addition keeps it correct at 0 and at +-inf, and
-; min/max of the two signed products picks the right direction without a case
-; split.  The bindings live in the actions, not the query, because the planner
-; may reorder query atoms and a division must not be evaluated before its guard.
+; Endpoints are widened outward by a relative 2^-52 ($down/$up), more than the
+; one rounding each formula performs. Without it the merge intersects e-nodes
+; that agree as reals but not as floats -- 1657/5 gives 331.4, 1657*(1/5) gives
+; 331.40000000000003 -- and the intersection comes out empty, excluding the true
+; value. Widening by multiplication, then min/max of the two signed products,
+; stays correct at 0 and at +-inf without a case split.
 ;
 ; egglog's f64 primitives panic on (/ x 0.0) and (sqrt -1.0), and 0.0*inf is NaN
 ; whose min/max behaviour is order dependent. Every rule below is guarded so
@@ -28,6 +24,8 @@
 ;     so that every product has a nonzero factor or two finite ones
 ;       P: lo >= 0, hi > 0      N: hi <= 0, lo < 0
 ;       M: lo < 0, hi > 0       Z: lo = 0, hi = 0
+; The bindings sit in the actions, not the query: the planner may reorder query
+; atoms, and a division must not be evaluated before its guard.
 
 (datatype Math
   (Num f64)          ; a value exactly representable in the target format
@@ -65,7 +63,7 @@
 (rule ((= e (Sqrt a)))  ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
 
 ; -- leaves and the radicand constraint ---------------------------------
-; Var and Lit bounds are seeded by the driver.  A Num is exactly representable
+; Var and Lit bounds are seeded by the driver. A Num is exactly representable
 ; and negation is exact, so neither needs widening.
 
 (rule ((= e (Num n))) ((set (lo e) n) (set (hi e) n)) :ruleset ana)
@@ -168,9 +166,8 @@
 
 ; -- div ----------------------------------------------------------------
 ; Only fires when the divisor excludes zero; otherwise the quotient stays top.
-; Here P is just lo >= 0 and N is hi <= 0: they overlap only on the zero
-; interval, where both formulas give [0,0].  Every quotient divides by a finite
-; endpoint, and the guards have all matched before the actions run.
+; P is just lo >= 0 and N just hi <= 0: they overlap only on the zero interval,
+; where both formulas give [0,0].
 
 ; P / positive
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))

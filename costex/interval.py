@@ -68,10 +68,6 @@ class Iv:
         self.lo = mpfr(lo)
         self.hi = mpfr(hi)
 
-    @staticmethod
-    def point(x) -> "Iv":
-        return Iv(x, x)
-
     @property
     def is_empty(self) -> bool:
         return self.lo > self.hi
@@ -92,9 +88,6 @@ class Iv:
         if self.is_empty:
             return hash("empty")
         return hash((float(self.lo), float(self.hi)))
-
-    def contains(self, x) -> bool:
-        return self.lo <= x <= self.hi
 
     @property
     def contains_zero(self) -> bool:

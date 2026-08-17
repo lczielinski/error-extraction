@@ -106,7 +106,7 @@ def _f64(x: float) -> str:
 
 
 def _lit_bounds(leaf) -> tuple:
-    """A float interval enclosing an inexact constant, widened by an ulp."""
+    """A float interval enclosing an inexact constant."""
     if leaf[0] == "const":
         v = gmpy2.const_pi() if leaf[1] == "PI" else gmpy2.exp(gmpy2.mpfr(1))
     else:
@@ -148,7 +148,7 @@ class _Emitter:
 
 
 def program(body, box: dict, iters: int = DEFAULT_ITERS) -> tuple:
-    """The full .egg source, plus the Lit table and the emitter's memo."""
+    """The .egg source, and the Lit table it refers to by index."""
     em = _Emitter()
     for name, (lo, hi) in box.items():
         var = em.term(("var", name))
@@ -199,7 +199,7 @@ def _payload(op: str, tok):
     return str(tok)
 
 
-def parse_dump(text: str, lits: list) -> tuple:
+def parse_dump(text: str) -> tuple:
     blocks = _blocks(text)
     if len(blocks) != len(TABLES):
         raise RuntimeError(f"expected {len(TABLES)} tables in the dump, got {len(blocks)}")
@@ -240,7 +240,7 @@ def build(body, box: dict, iters: int = DEFAULT_ITERS, out_path: str = None,
     run = subprocess.run([EGGLOG, path], capture_output=True, text=True, timeout=timeout)
     if run.returncode != 0 or "[ERROR]" in run.stderr:
         raise RuntimeError(f"egglog failed ({path}):\n{run.stderr[:2000]}")
-    nodes, interval = parse_dump(run.stdout, lits)
+    nodes, interval = parse_dump(run.stdout)
     g = EGraph(nodes, interval, lits)
     g.root = g.locate(body)
     return g
