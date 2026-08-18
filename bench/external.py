@@ -38,7 +38,7 @@ STUBLIBS = os.path.expanduser(
     os.environ.get("FPTAYLOR_STUBLIBS", "~/.opam/fptaylor/lib/stublibs"))
 
 OPTS = ("-v", "0", "-abs", "true", "-rel", "true")
-VARIANTS = ("seed", "best_abs", "best_rel", "best_d")
+VARIANTS = ("seed", "best_abs", "best_rel")
 METRICS = ("abs", "rel")
 
 
@@ -277,8 +277,8 @@ def collect(results: list, us: list, reports: dict) -> list:
         for v in u["variants"]:
             per_core.setdefault(u["file"], {})[v] = reports[u["name"]]
     keep = ("name", "expr", "root_interval",
-            "best_expr_abs", "best_expr_rel", "best_expr_d",
-            "seed_abs", "best_abs", "seed_rel", "best_rel", "seed_d", "best_d")
+            "best_expr_abs", "best_expr_rel",
+            "seed_abs", "best_abs", "seed_rel", "best_rel")
     return [{"file": r["file"], "costex": {k: r.get(k) for k in keep},
              "ft": per_core[r["file"]]}
             for r in results if r["file"] in per_core]

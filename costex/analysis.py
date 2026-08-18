@@ -204,13 +204,6 @@ def transfer(op: str, pairs: list, ivs: list, Ic: Iv) -> Pair:
 # -- readouts -----------------------------------------------------------
 
 
-def mu_d(p: Pair, Ic: Iv):
-    """Bounds |ln(z~/z)|."""
-    if Ic.contains_zero or p.S.lo <= 0:
-        return INF
-    return max(-gmpy2.log(p.S.lo), gmpy2.log(p.S.hi))
-
-
 def mu_rel(p: Pair, Ic: Iv):
     """Bounds |z~ - z|/|z|."""
     if Ic.contains_zero:
@@ -223,4 +216,4 @@ def mu_abs(p: Pair, Ic: Iv):
     return max(-p.D.lo, p.D.hi)
 
 
-METRICS = {"d": mu_d, "rel": mu_rel, "abs": mu_abs}
+METRICS = {"rel": mu_rel, "abs": mu_abs}

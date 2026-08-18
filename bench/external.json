@@ -10,7 +10,7 @@
   "--fail-on-exception",
   "true"
  ],
- "elapsed_s": 45.5,
+ "elapsed_s": 0.0,
  "results": [
   {
    "file": "fpbench-daisy-000-carthesiantopolar-radius.fpcore",
@@ -23,13 +23,10 @@
     ],
     "best_expr_abs": "(sqrt (+ (* x x) (* y y)))",
     "best_expr_rel": "(sqrt (+ (* x x) (* y y)))",
-    "best_expr_d": "(sqrt (+ (* x x) (* y y)))",
     "seed_abs": 2.991177930203976e-14,
     "best_abs": 2.991177930203976e-14,
     "seed_rel": 2.220446049250313e-16,
-    "best_rel": 2.220446049250313e-16,
-    "seed_d": 2.220446049250313e-16,
-    "best_d": 2.220446049250313e-16
+    "best_rel": 2.220446049250313e-16
    },
    "ft": {
     "seed": {
@@ -61,16 +58,6 @@
       1.414213,
       141.4214
      ]
-    },
-    "best_d": {
-     "status": "ok",
-     "seconds": 0.06,
-     "abs": 2.863491e-14,
-     "rel": 2.244901e-16,
-     "range": [
-      1.414213,
-      141.4214
-     ]
     }
    }
   },
@@ -85,13 +72,10 @@
     ],
     "best_expr_abs": "(- (+ (+ (* f (* b g)) (* d (* c h))) (+ (* e (* a i)) (* (* (- a) f) h))) (+ (* e (* c g)) (* d (* b i))))",
     "best_expr_rel": "(- (+ (+ (* f (* b g)) (* d (* c h))) (+ (* e (* a i)) (* (* (- a) f) h))) (+ (* e (* c g)) (* d (* b i))))",
-    "best_expr_d": "(- (+ (+ (* f (* b g)) (* d (* c h))) (+ (* e (* a i)) (* (* (- a) f) h))) (+ (* e (* c g)) (* d (* b i))))",
     "seed_abs": 1.9042545318370685e-12,
     "best_abs": 1.7905676941154525e-12,
     "seed_rel": null,
-    "best_rel": null,
-    "seed_d": null,
-    "best_d": null
+    "best_rel": null
    },
    "ft": {
     "seed": {
@@ -123,16 +107,6 @@
       -4176.026,
       4176.026
      ]
-    },
-    "best_d": {
-     "status": "ok",
-     "seconds": 17.24,
-     "abs": 1.733725e-12,
-     "rel": null,
-     "range": [
-      -4176.026,
-      4176.026
-     ]
     }
    }
   },
@@ -147,13 +121,10 @@
     ],
     "best_expr_abs": "(- (+ (+ (* (* g b) f) (* d (* h c))) (+ (* e (* i a)) (* (* (- c) e) g))) (+ (* (* i b) d) (* f (* h a))))",
     "best_expr_rel": "(- (+ (+ (* (* g b) f) (* d (* h c))) (+ (* e (* i a)) (* (* (- c) e) g))) (+ (* (* i b) d) (* f (* h a))))",
-    "best_expr_d": "(- (+ (+ (* (* g b) f) (* d (* h c))) (+ (* e (* i a)) (* (* (- c) e) g))) (+ (* (* i b) d) (* f (* h a))))",
     "seed_abs": 1.9042545318370685e-12,
     "best_abs": 1.7905676941154525e-12,
     "seed_rel": null,
-    "best_rel": null,
-    "seed_d": null,
-    "best_d": null
+    "best_rel": null
    },
    "ft": {
     "seed": {
@@ -185,16 +156,6 @@
       -4176.026,
       4176.026
      ]
-    },
-    "best_d": {
-     "status": "ok",
-     "seconds": 17.39,
-     "abs": 1.733725e-12,
-     "rel": null,
-     "range": [
-      -4176.026,
-      4176.026
-     ]
     }
    }
   },
@@ -209,13 +170,10 @@
     ],
     "best_expr_abs": "(+ (+ (* x1 (- x2 x1)) (* x1 (- x3 x4))) (+ (+ (* x1 (- x5 x4)) (* x1 x6)) (+ (* x2 (- x5 x3)) (* x6 (- x3 x5)))))",
     "best_expr_rel": "(+ (+ (* x1 (- x2 x1)) (* x1 (- x3 x4))) (+ (+ (* x1 (- x5 x4)) (* x1 x6)) (+ (* x2 (- x5 x3)) (* x6 (- x3 x5)))))",
-    "best_expr_d": "(+ (+ (* x1 (- x2 x1)) (* x1 (- x3 x4))) (+ (+ (* x1 (- x5 x4)) (* x1 x6)) (+ (* x2 (- x5 x3)) (* x6 (- x3 x5)))))",
     "seed_abs": 8.008207430520997e-14,
     "best_abs": 3.636024814568373e-14,
     "seed_rel": null,
-    "best_rel": null,
-    "seed_d": null,
-    "best_d": null
+    "best_rel": null
    },
    "ft": {
     "seed": {
@@ -247,16 +205,6 @@
       -19.48669,
       70.64598
      ]
-    },
-    "best_d": {
-     "status": "ok",
-     "seconds": 3.87,
-     "abs": 2.554353e-14,
-     "rel": null,
-     "range": [
-      -19.48669,
-      70.64598
-     ]
     }
    }
   },
@@ -271,13 +219,10 @@
     ],
     "best_expr_abs": "(+ (+ (* x6 (+ (+ (+ (* x3 (- x2 x3)) (* x1 x3)) (+ (* x3 x5) (* x3 (- x4 x6)))) (- (* (- x4) x5) (* x1 x2)))) (+ (* x4 (* x1 x5)) (* x4 (+ (* x1 (- x2 x4)) (* x1 (- x3 x1)))))) (+ (* x2 (+ (+ (* x5 x6) (* x5 (- x1 x2))) (+ (* x3 x5) (* x5 (- x4 x5))))) (+ (* x4 (+ (* (- x2) x3) (* x1 x6))) (* (* (- x1) x3) x5))))",
     "best_expr_rel": "(+ (+ (* x6 (+ (+ (+ (* x3 (- x2 x3)) (* x1 x3)) (+ (* x3 x5) (* x3 (- x4 x6)))) (- (* (- x4) x5) (* x1 x2)))) (+ (* x4 (* x1 x5)) (* x4 (+ (* x1 (- x2 x4)) (* x1 (- x3 x1)))))) (+ (* x2 (+ (+ (* x5 x6) (* x5 (- x1 x2))) (+ (* x3 x5) (* x5 (- x4 x5))))) (+ (* x4 (+ (* (- x2) x3) (* x1 x6))) (* (* (- x1) x3) x5))))",
-    "best_expr_d": "(+ (+ (* x6 (+ (+ (+ (* x3 (- x2 x3)) (* x1 x3)) (+ (* x3 x5) (* x3 (- x4 x6)))) (- (* (- x4) x5) (* x1 x2)))) (+ (* x4 (* x1 x5)) (* x4 (+ (* x1 (- x2 x4)) (* x1 (- x3 x1)))))) (+ (* x2 (+ (+ (* x5 x6) (* x5 (- x1 x2))) (+ (* x3 x5) (* x5 (- x4 x5))))) (+ (* x4 (+ (* (- x2) x3) (* x1 x6))) (* (* (- x1) x3) x5))))",
     "seed_abs": 1.9646457462840774e-12,
     "best_abs": 1.0612227276851627e-12,
     "seed_rel": null,
-    "best_rel": null,
-    "seed_d": null,
-    "best_d": null
+    "best_rel": null
    },
    "ft": {
     "seed": {
@@ -309,16 +254,6 @@
       55.81785,
       519.9632
      ]
-    },
-    "best_d": {
-     "status": "ok",
-     "seconds": 44.92,
-     "abs": 7.416121e-13,
-     "rel": 7.825377e-15,
-     "range": [
-      55.81785,
-      519.9632
-     ]
     }
    }
   },
@@ -333,13 +268,10 @@
     ],
     "best_expr_abs": "(/ 1 (+ (sqrt x) (sqrt (+ x 1))))",
     "best_expr_rel": "(/ 1 (+ (sqrt x) (sqrt (+ x 1))))",
-    "best_expr_d": "(/ 1 (+ (sqrt x) (sqrt (+ x 1))))",
     "seed_abs": 1.427229341302836e-16,
     "best_abs": 1.4235946626506506e-16,
     "seed_rel": 3.885780586188049e-16,
-    "best_rel": 3.8770056956910747e-16,
-    "seed_d": 3.885780586188048e-16,
-    "best_d": 3.877005695691074e-16
+    "best_rel": 3.8770056956910747e-16
    },
    "ft": {
     "seed": {
@@ -363,16 +295,6 @@
      ]
     },
     "best_rel": {
-     "status": "ok",
-     "seconds": 0.02,
-     "abs": 1.174186e-16,
-     "rel": 3.330453e-16,
-     "range": [
-      0.01580743,
-      0.4142136
-     ]
-    },
-    "best_d": {
      "status": "ok",
      "seconds": 0.02,
      "abs": 1.174186e-16,
@@ -395,13 +317,10 @@
     ],
     "best_expr_abs": "(+ x1 x2)",
     "best_expr_rel": "(+ x1 x2)",
-    "best_expr_d": "(+ x1 x2)",
     "seed_abs": 4.440892098500626e-16,
     "best_abs": 4.440892098500626e-16,
     "seed_rel": null,
-    "best_rel": null,
-    "seed_d": null,
-    "best_d": null
+    "best_rel": null
    },
    "ft": {
     "seed": {
@@ -425,16 +344,6 @@
      ]
     },
     "best_rel": {
-     "status": "ok",
-     "seconds": 0.01,
-     "abs": 4.440893e-16,
-     "rel": null,
-     "range": [
-      0.0,
-      5.0
-     ]
-    },
-    "best_d": {
      "status": "ok",
      "seconds": 0.01,
      "abs": 4.440893e-16,
@@ -457,13 +366,10 @@
     ],
     "best_expr_abs": "(/ x (+ x y))",
     "best_expr_rel": "(/ x (+ x y))",
-    "best_expr_d": "(/ x (+ x y))",
     "seed_abs": 2.3841858620699033e-07,
     "best_abs": 2.3841858620699033e-07,
     "seed_rel": 1.1920929665620903e-07,
-    "best_rel": 1.1920929665620903e-07,
-    "seed_d": 1.1920928955078138e-07,
-    "best_d": 1.1920928955078138e-07
+    "best_rel": 1.1920929665620903e-07
    },
    "ft": {
     "seed": {
@@ -487,16 +393,6 @@
      ]
     },
     "best_rel": {
-     "status": "ok",
-     "seconds": 0.03,
-     "abs": 7.509435e-08,
-     "rel": 1.207233e-07,
-     "range": [
-      0.192771,
-      0.807571
-     ]
-    },
-    "best_d": {
      "status": "ok",
      "seconds": 0.03,
      "abs": 7.509435e-08,
@@ -519,13 +415,10 @@
     ],
     "best_expr_abs": "(sqrt (+ (* x1 x1) (* x2 x2)))",
     "best_expr_rel": "(sqrt (+ (* x1 x1) (* x2 x2)))",
-    "best_expr_d": "(sqrt (+ (* x1 x1) (* x2 x2)))",
     "seed_abs": 2.991177930203976e-14,
     "best_abs": 2.991177930203976e-14,
     "seed_rel": 2.220446049250313e-16,
-    "best_rel": 2.220446049250313e-16,
-    "seed_d": 2.220446049250313e-16,
-    "best_d": 2.220446049250313e-16
+    "best_rel": 2.220446049250313e-16
    },
    "ft": {
     "seed": {
@@ -549,16 +442,6 @@
      ]
     },
     "best_rel": {
-     "status": "ok",
-     "seconds": 0.03,
-     "abs": 2.863491e-14,
-     "rel": 2.244901e-16,
-     "range": [
-      1.414213,
-      141.4214
-     ]
-    },
-    "best_d": {
      "status": "ok",
      "seconds": 0.03,
      "abs": 2.863491e-14,
@@ -581,13 +464,10 @@
     ],
     "best_expr_abs": "(sqrt (+ (* x1 x1) (* x2 x2)))",
     "best_expr_rel": "(sqrt (+ (* x1 x1) (* x2 x2)))",
-    "best_expr_d": "(sqrt (+ (* x1 x1) (* x2 x2)))",
     "seed_abs": 1.605876423342881e-05,
     "best_abs": 1.605876423342881e-05,
     "seed_rel": 1.1920929310349493e-07,
-    "best_rel": 1.1920929310349493e-07,
-    "seed_d": 1.1920929310349506e-07,
-    "best_d": 1.1920929310349506e-07
+    "best_rel": 1.1920929310349493e-07
    },
    "ft": {
     "seed": {
@@ -611,16 +491,6 @@
      ]
     },
     "best_rel": {
-     "status": "ok",
-     "seconds": 0.03,
-     "abs": 1.554209e-05,
-     "rel": 2.399064e-07,
-     "range": [
-      1.414213,
-      141.4214
-     ]
-    },
-    "best_d": {
      "status": "ok",
      "seconds": 0.03,
      "abs": 1.554209e-05,

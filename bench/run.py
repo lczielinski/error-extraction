@@ -28,7 +28,7 @@ from costex.fpcore import parse_fpcore, to_sexp               # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CORES = os.path.join(HERE, "cores")
-METRICS = ("d", "rel", "abs")
+METRICS = ("rel", "abs")
 
 
 def _f(x):

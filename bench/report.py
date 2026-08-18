@@ -40,7 +40,7 @@ def programs(r: dict) -> list:
     order, labels, variant = [], {}, {}
     entries = [("seed", "seed", r["expr"])]
     entries += [(m, f"best_{m}", r.get(f"best_expr_{m}"))
-                for m in ("abs", "rel", "d")]
+                for m in ("abs", "rel")]
     for label, v, expr in entries:
         if not expr:
             continue

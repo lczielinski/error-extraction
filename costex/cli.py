@@ -23,7 +23,7 @@ def _fmt_S(S) -> str:
 
 
 def _mus(pair, Ic) -> str:
-    return "  ".join(f"mu_{m} = {_fmt(A.METRICS[m](pair, Ic))}" for m in ("d", "rel", "abs"))
+    return "  ".join(f"mu_{m} = {_fmt(A.METRICS[m](pair, Ic))}" for m in ("rel", "abs"))
 
 
 def main(argv=None) -> int:
@@ -71,7 +71,7 @@ def main(argv=None) -> int:
         return 1
 
     print()
-    for m in ("d", "rel", "abs"):
+    for m in ("rel", "abs"):
         value, _, witness = front.best(g.root, Ic, m)
         print(f"  best mu_{m:<3} {_fmt(value)}   {to_sexp(witness)}")
 
