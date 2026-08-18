@@ -10,7 +10,7 @@
   "--fail-on-exception",
   "true"
  ],
- "elapsed_s": 0.0,
+ "elapsed_s": 45.5,
  "results": [
   {
    "file": "fpbench-daisy-000-carthesiantopolar-radius.fpcore",
@@ -34,7 +34,7 @@
    "ft": {
     "seed": {
      "status": "ok",
-     "seconds": 0.07,
+     "seconds": 0.06,
      "abs": 2.863491e-14,
      "rel": 2.244901e-16,
      "range": [
@@ -44,7 +44,7 @@
     },
     "best_abs": {
      "status": "ok",
-     "seconds": 0.07,
+     "seconds": 0.06,
      "abs": 2.863491e-14,
      "rel": 2.244901e-16,
      "range": [
@@ -54,7 +54,7 @@
     },
     "best_rel": {
      "status": "ok",
-     "seconds": 0.07,
+     "seconds": 0.06,
      "abs": 2.863491e-14,
      "rel": 2.244901e-16,
      "range": [
@@ -64,7 +64,7 @@
     },
     "best_d": {
      "status": "ok",
-     "seconds": 0.07,
+     "seconds": 0.06,
      "abs": 2.863491e-14,
      "rel": 2.244901e-16,
      "range": [
@@ -96,7 +96,7 @@
    "ft": {
     "seed": {
      "status": "ok",
-     "seconds": 15.87,
+     "seconds": 12.44,
      "abs": 1.563195e-12,
      "rel": null,
      "range": [
@@ -106,7 +106,7 @@
     },
     "best_abs": {
      "status": "ok",
-     "seconds": 20.17,
+     "seconds": 17.24,
      "abs": 1.733725e-12,
      "rel": null,
      "range": [
@@ -116,7 +116,7 @@
     },
     "best_rel": {
      "status": "ok",
-     "seconds": 20.17,
+     "seconds": 17.24,
      "abs": 1.733725e-12,
      "rel": null,
      "range": [
@@ -126,7 +126,7 @@
     },
     "best_d": {
      "status": "ok",
-     "seconds": 20.17,
+     "seconds": 17.24,
      "abs": 1.733725e-12,
      "rel": null,
      "range": [
@@ -158,7 +158,7 @@
    "ft": {
     "seed": {
      "status": "ok",
-     "seconds": 21.21,
+     "seconds": 17.22,
      "abs": 1.563195e-12,
      "rel": null,
      "range": [
@@ -168,7 +168,7 @@
     },
     "best_abs": {
      "status": "ok",
-     "seconds": 21.65,
+     "seconds": 17.39,
      "abs": 1.733725e-12,
      "rel": null,
      "range": [
@@ -178,7 +178,7 @@
     },
     "best_rel": {
      "status": "ok",
-     "seconds": 21.65,
+     "seconds": 17.39,
      "abs": 1.733725e-12,
      "rel": null,
      "range": [
@@ -188,7 +188,7 @@
     },
     "best_d": {
      "status": "ok",
-     "seconds": 21.65,
+     "seconds": 17.39,
      "abs": 1.733725e-12,
      "rel": null,
      "range": [
@@ -220,7 +220,7 @@
    "ft": {
     "seed": {
      "status": "ok",
-     "seconds": 6.7,
+     "seconds": 3.73,
      "abs": 5.770726e-14,
      "rel": null,
      "range": [
@@ -230,7 +230,7 @@
     },
     "best_abs": {
      "status": "ok",
-     "seconds": 6.87,
+     "seconds": 3.87,
      "abs": 2.554353e-14,
      "rel": null,
      "range": [
@@ -240,7 +240,7 @@
     },
     "best_rel": {
      "status": "ok",
-     "seconds": 6.87,
+     "seconds": 3.87,
      "abs": 2.554353e-14,
      "rel": null,
      "range": [
@@ -250,7 +250,7 @@
     },
     "best_d": {
      "status": "ok",
-     "seconds": 6.87,
+     "seconds": 3.87,
      "abs": 2.554353e-14,
      "rel": null,
      "range": [
@@ -282,7 +282,7 @@
    "ft": {
     "seed": {
      "status": "ok",
-     "seconds": 44.11,
+     "seconds": 36.33,
      "abs": 1.468225e-12,
      "rel": 1.523371e-14,
      "range": [
@@ -292,7 +292,7 @@
     },
     "best_abs": {
      "status": "ok",
-     "seconds": 54.71,
+     "seconds": 44.92,
      "abs": 7.416121e-13,
      "rel": 7.825377e-15,
      "range": [
@@ -302,7 +302,7 @@
     },
     "best_rel": {
      "status": "ok",
-     "seconds": 54.71,
+     "seconds": 44.92,
      "abs": 7.416121e-13,
      "rel": 7.825377e-15,
      "range": [
@@ -312,7 +312,7 @@
     },
     "best_d": {
      "status": "ok",
-     "seconds": 54.71,
+     "seconds": 44.92,
      "abs": 7.416121e-13,
      "rel": 7.825377e-15,
      "range": [
@@ -469,8 +469,8 @@
     "seed": {
      "status": "ok",
      "seconds": 0.03,
-     "abs": 1.398741e-16,
-     "rel": 2.248643e-16,
+     "abs": 7.509435e-08,
+     "rel": 1.207233e-07,
      "range": [
       0.192771,
       0.807571
@@ -479,8 +479,8 @@
     "best_abs": {
      "status": "ok",
      "seconds": 0.03,
-     "abs": 1.398741e-16,
-     "rel": 2.248643e-16,
+     "abs": 7.509435e-08,
+     "rel": 1.207233e-07,
      "range": [
       0.192771,
       0.807571
@@ -489,8 +489,8 @@
     "best_rel": {
      "status": "ok",
      "seconds": 0.03,
-     "abs": 1.398741e-16,
-     "rel": 2.248643e-16,
+     "abs": 7.509435e-08,
+     "rel": 1.207233e-07,
      "range": [
       0.192771,
       0.807571
@@ -499,8 +499,8 @@
     "best_d": {
      "status": "ok",
      "seconds": 0.03,
-     "abs": 1.398741e-16,
-     "rel": 2.248643e-16,
+     "abs": 7.509435e-08,
+     "rel": 1.207233e-07,
      "range": [
       0.192771,
       0.807571
@@ -593,8 +593,8 @@
     "seed": {
      "status": "ok",
      "seconds": 0.03,
-     "abs": 2.863491e-14,
-     "rel": 2.244901e-16,
+     "abs": 1.554209e-05,
+     "rel": 2.399064e-07,
      "range": [
       1.414213,
       141.4214
@@ -603,8 +603,8 @@
     "best_abs": {
      "status": "ok",
      "seconds": 0.03,
-     "abs": 2.863491e-14,
-     "rel": 2.244901e-16,
+     "abs": 1.554209e-05,
+     "rel": 2.399064e-07,
      "range": [
       1.414213,
       141.4214
@@ -613,8 +613,8 @@
     "best_rel": {
      "status": "ok",
      "seconds": 0.03,
-     "abs": 2.863491e-14,
-     "rel": 2.244901e-16,
+     "abs": 1.554209e-05,
+     "rel": 2.399064e-07,
      "range": [
       1.414213,
       141.4214
@@ -623,8 +623,8 @@
     "best_d": {
      "status": "ok",
      "seconds": 0.03,
-     "abs": 2.863491e-14,
-     "rel": 2.244901e-16,
+     "abs": 1.554209e-05,
+     "rel": 2.399064e-07,
      "range": [
       1.414213,
       141.4214

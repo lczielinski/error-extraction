@@ -86,12 +86,14 @@ def units(results: list, limit: int = None, only: str = None) -> list:
         for expr, variants in shared.items():
             out.append({"name": f"cx{len(out):05d}", "file": r["file"],
                         "args": core.args, "box": core.box,
+                        "precision": core.precision,
                         "expr": expr, "variants": variants})
     return out
 
 
 def _key(unit: dict, ver: str, opts: tuple) -> str:
-    payload = repr((unit["expr"], sorted(unit["box"].items()), opts, ver))
+    payload = repr((unit["expr"], sorted(unit["box"].items()),
+                    unit["precision"], opts, ver))
     return hashlib.sha256(payload.encode()).hexdigest()[:32]
 
 
@@ -114,7 +116,7 @@ def _store(key: str, report: dict) -> None:
 
 def export(batch: list, stem: str) -> str:
     """FPCore -> FPTaylor input for the whole batch, in one racket call."""
-    src = "".join(to_fpcore(u["name"], u["args"], u["box"], u["expr"]) for u in batch)
+    src = "".join(to_fpcore(u["name"], u["args"], u["box"], u["expr"], u["precision"]) for u in batch)
     with open(stem + ".fpcore", "w") as f:
         f.write(src)
     run = subprocess.run(["racket", os.path.join(FPBENCH, "fpbench.rkt"), "export",
