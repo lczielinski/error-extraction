@@ -33,7 +33,6 @@ class _Paren:
 
 OPEN, CLOSE = _Paren("("), _Paren(")")
 
-# [ and ] are interchangeable with ( and ), as in Scheme
 _TOKEN = re.compile(r'\s*(?:;[^\n]*|([(\[])|([)\]])|"((?:[^"\\]|\\.)*)"|([^\s()\[\]";]+))')
 
 
@@ -199,6 +198,24 @@ def to_sexp(e) -> str:
         return f"(sqrt {to_sexp(e[1])})"
     sym = {"add": "+", "sub": "-", "mul": "*", "div": "/"}[op]
     return f"({sym} {to_sexp(e[1])} {to_sexp(e[2])})"
+
+
+def to_fpcore(name: str, args: list, box: dict, body: str) -> str:
+    """One (FPCore ...) form for the s-expression `body` over `box`.
+
+    The box written out is the float box the analysis actually used, not the
+    source :pre, whose strict inequalities were nudged inward on the way in.
+    """
+    for v, (lo, hi) in box.items():
+        if not (math.isfinite(lo) and math.isfinite(hi)):
+            raise ValueError(f"unbounded box on {v}: [{lo!r}, {hi!r}]")
+    bounds = [f"(<= {lo!r} {v} {hi!r})" for v, (lo, hi) in box.items()]
+    out = [f'(FPCore ({" ".join(args)})', f'  :name "{name}"']
+    if bounds:
+        out.append("  :pre " + (bounds[0] if len(bounds) == 1
+                                else f"(and {' '.join(bounds)})"))
+    out.append(f"  {body})")
+    return "\n".join(out) + "\n"
 
 
 def variables(e) -> set:

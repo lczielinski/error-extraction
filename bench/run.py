@@ -2,7 +2,7 @@
 
     uv run python bench/run.py                     # everything, 4 iterations
     uv run python bench/run.py --iters 3 --limit 50
-    uv run python bench/run.py --report bench/results.json
+    uv run python bench/run.py --summarize          # re-read results.json, run nothing
 
 Writes bench/results.json and prints a summary.
 """
@@ -64,8 +64,7 @@ def run_one(path, *, iters, timeout, max_steps, prec, extract_timeout) -> dict:
             out[f"seed_{m}"] = None if seed is A.BOTTOM else _f(A.METRICS[m](seed, Ic))
             best = front.best(g.root, Ic, m)
             out[f"best_{m}"] = _f(best[0]) if best else None
-            if m == "rel" and best:
-                out["best_expr"] = to_sexp(best[2])
+            out[f"best_expr_{m}"] = to_sexp(best[2]) if best else None
     except subprocess.TimeoutExpired:
         out.update(status="timeout", egglog_s=round(time.time() - t0, 3))
     except egg.BadBox as ex:
@@ -90,7 +89,7 @@ def _metric_lines(group: list, m: str) -> list:
     return out
 
 
-def summarise(results: list) -> None:
+def summarize(results: list) -> None:
     st = Counter(r["status"] for r in results)
     print(f"\n{len(results)} cores: " + ", ".join(f"{v} {k}" for k, v in st.most_common()))
 
@@ -98,34 +97,14 @@ def summarise(results: list) -> None:
     if not ok:
         return
     trunc = sum(1 for r in ok if r.get("truncated"))
-    for label, group in (("all", ok),
-                         ("box=pre", [r for r in ok if r.get("box_source") == "pre"]),
-                         ("box=default", [r for r in ok if r.get("box_source") == "default"])):
-        if not group:
-            continue
-        print(f"\n  {label}: {len(group)} cores")
-        for m in METRICS:
-            print("\n".join(_metric_lines(group, m)))
+    print()
+    for m in METRICS:
+        print("\n".join(_metric_lines(ok, m)))
     print(f"\n  extractions stopped early (not provably optimal): {trunc}")
 
     slow = sorted(ok, key=lambda r: -(r["egglog_s"] + r["extract_s"]))[:3]
     print("\n  slowest: " + ", ".join(f"{r['file'][:34]} {r['egglog_s'] + r['extract_s']:.1f}s"
                                       for r in slow))
-
-    def gain(r):
-        out = 1.0
-        for m in METRICS:
-            if r.get(f"seed_{m}") and r.get(f"best_{m}"):
-                out = max(out, r[f"seed_{m}"] / r[f"best_{m}"])
-        return out
-
-    best = sorted((r for r in ok if gain(r) > 1.0), key=lambda r: -gain(r))[:10]
-    if best:
-        print("\n  largest improvements")
-        for r in best:
-            print(f"    {gain(r):10.3g}x  {r['file'][:44]}")
-            print(f"                 {r['expr'][:90]}")
-            print(f"              -> {r.get('best_expr', '')[:90]}")
 
 
 def main(argv=None) -> int:
@@ -139,11 +118,12 @@ def main(argv=None) -> int:
     ap.add_argument("--jobs", type=int, default=os.cpu_count())
     ap.add_argument("--limit", type=int)
     ap.add_argument("--out", default=os.path.join(HERE, "results.json"))
-    ap.add_argument("--report", metavar="JSON", help="re-summarise an existing results file")
+    ap.add_argument("--summarize", action="store_true",
+                    help="re-summarize the existing --out file without running anything")
     args = ap.parse_args(argv)
 
-    if args.report:
-        summarise(json.load(open(args.report))["results"])
+    if args.summarize:
+        summarize(json.load(open(args.out))["results"])
         return 0
 
     files = sorted(os.path.join(CORES, f) for f in os.listdir(CORES) if f.endswith(".fpcore"))
@@ -163,7 +143,7 @@ def main(argv=None) -> int:
     with open(args.out, "w") as fh:
         json.dump({"iters": args.iters, "elapsed_s": round(elapsed, 1),
                    "results": results}, fh, indent=1)
-    summarise(results)
+    summarize(results)
     print(f"\n  {elapsed:.1f}s wall, {args.jobs} jobs -> {os.path.relpath(args.out)}")
     return 0
 

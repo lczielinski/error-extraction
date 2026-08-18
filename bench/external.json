@@ -1,0 +1,636 @@
+{
+ "fptaylor_version": "0.9.4+dev",
+ "options": [
+  "-v",
+  "0",
+  "-abs",
+  "true",
+  "-rel",
+  "true",
+  "--fail-on-exception",
+  "true"
+ ],
+ "elapsed_s": 0.0,
+ "results": [
+  {
+   "file": "fpbench-daisy-000-carthesiantopolar-radius.fpcore",
+   "costex": {
+    "name": "carthesianToPolar, radius",
+    "expr": "(sqrt (+ (* x x) (* y y)))",
+    "root_interval": [
+     1.4142135623730945,
+     141.42135623730957
+    ],
+    "best_expr_abs": "(sqrt (+ (* x x) (* y y)))",
+    "best_expr_rel": "(sqrt (+ (* x x) (* y y)))",
+    "best_expr_d": "(sqrt (+ (* x x) (* y y)))",
+    "seed_abs": 2.991177930203976e-14,
+    "best_abs": 2.991177930203976e-14,
+    "seed_rel": 2.220446049250313e-16,
+    "best_rel": 2.220446049250313e-16,
+    "seed_d": 2.220446049250313e-16,
+    "best_d": 2.220446049250313e-16
+   },
+   "ft": {
+    "seed": {
+     "status": "ok",
+     "seconds": 0.07,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    },
+    "best_abs": {
+     "status": "ok",
+     "seconds": 0.07,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    },
+    "best_rel": {
+     "status": "ok",
+     "seconds": 0.07,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    },
+    "best_d": {
+     "status": "ok",
+     "seconds": 0.07,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    }
+   }
+  },
+  {
+   "file": "fpbench-daisy-005-matrixdeterminant.fpcore",
+   "costex": {
+    "name": "matrixDeterminant",
+    "expr": "(- (+ (+ (* (* a e) i) (* (* b f) g)) (* (* c d) h)) (+ (+ (* (* c e) g) (* (* b d) i)) (* (* a f) h)))",
+    "root_interval": [
+     -6000.0000000000055,
+     6000.0000000000055
+    ],
+    "best_expr_abs": "(- (+ (+ (* f (* b g)) (* d (* c h))) (+ (* e (* a i)) (* (* (- a) f) h))) (+ (* e (* c g)) (* d (* b i))))",
+    "best_expr_rel": "(- (+ (+ (* f (* b g)) (* d (* c h))) (+ (* e (* a i)) (* (* (- a) f) h))) (+ (* e (* c g)) (* d (* b i))))",
+    "best_expr_d": "(- (+ (+ (* f (* b g)) (* d (* c h))) (+ (* e (* a i)) (* (* (- a) f) h))) (+ (* e (* c g)) (* d (* b i))))",
+    "seed_abs": 1.9042545318370685e-12,
+    "best_abs": 1.7905676941154525e-12,
+    "seed_rel": null,
+    "best_rel": null,
+    "seed_d": null,
+    "best_d": null
+   },
+   "ft": {
+    "seed": {
+     "status": "ok",
+     "seconds": 15.87,
+     "abs": 1.563195e-12,
+     "rel": null,
+     "range": [
+      -4176.026,
+      4176.026
+     ]
+    },
+    "best_abs": {
+     "status": "ok",
+     "seconds": 20.17,
+     "abs": 1.733725e-12,
+     "rel": null,
+     "range": [
+      -4176.026,
+      4176.026
+     ]
+    },
+    "best_rel": {
+     "status": "ok",
+     "seconds": 20.17,
+     "abs": 1.733725e-12,
+     "rel": null,
+     "range": [
+      -4176.026,
+      4176.026
+     ]
+    },
+    "best_d": {
+     "status": "ok",
+     "seconds": 20.17,
+     "abs": 1.733725e-12,
+     "rel": null,
+     "range": [
+      -4176.026,
+      4176.026
+     ]
+    }
+   }
+  },
+  {
+   "file": "fpbench-daisy-006-matrixdeterminant2.fpcore",
+   "costex": {
+    "name": "matrixDeterminant2",
+    "expr": "(- (+ (* a (* e i)) (+ (* g (* b f)) (* c (* d h)))) (+ (* e (* c g)) (+ (* i (* b d)) (* a (* f h)))))",
+    "root_interval": [
+     -6000.0000000000055,
+     6000.0000000000055
+    ],
+    "best_expr_abs": "(- (+ (+ (* (* g b) f) (* d (* h c))) (+ (* e (* i a)) (* (* (- c) e) g))) (+ (* (* i b) d) (* f (* h a))))",
+    "best_expr_rel": "(- (+ (+ (* (* g b) f) (* d (* h c))) (+ (* e (* i a)) (* (* (- c) e) g))) (+ (* (* i b) d) (* f (* h a))))",
+    "best_expr_d": "(- (+ (+ (* (* g b) f) (* d (* h c))) (+ (* e (* i a)) (* (* (- c) e) g))) (+ (* (* i b) d) (* f (* h a))))",
+    "seed_abs": 1.9042545318370685e-12,
+    "best_abs": 1.7905676941154525e-12,
+    "seed_rel": null,
+    "best_rel": null,
+    "seed_d": null,
+    "best_d": null
+   },
+   "ft": {
+    "seed": {
+     "status": "ok",
+     "seconds": 21.21,
+     "abs": 1.563195e-12,
+     "rel": null,
+     "range": [
+      -4176.026,
+      4176.026
+     ]
+    },
+    "best_abs": {
+     "status": "ok",
+     "seconds": 21.65,
+     "abs": 1.733725e-12,
+     "rel": null,
+     "range": [
+      -4176.026,
+      4176.026
+     ]
+    },
+    "best_rel": {
+     "status": "ok",
+     "seconds": 21.65,
+     "abs": 1.733725e-12,
+     "rel": null,
+     "range": [
+      -4176.026,
+      4176.026
+     ]
+    },
+    "best_d": {
+     "status": "ok",
+     "seconds": 21.65,
+     "abs": 1.733725e-12,
+     "rel": null,
+     "range": [
+      -4176.026,
+      4176.026
+     ]
+    }
+   }
+  },
+  {
+   "file": "fpbench-fptaylor-extra-001-delta4.fpcore",
+   "costex": {
+    "name": "delta4",
+    "expr": "(+ (- (+ (+ (- (* (- x2) x3) (* x1 x4)) (* x2 x5)) (* x3 x6)) (* x5 x6)) (* x1 (+ (+ (- (+ (+ (- x1) x2) x3) x4) x5) x6)))",
+    "root_interval": [
+     -53.10552064000008,
+     114.95748096000014
+    ],
+    "best_expr_abs": "(+ (+ (* x1 (- x2 x1)) (* x1 (- x3 x4))) (+ (+ (* x1 (- x5 x4)) (* x1 x6)) (+ (* x2 (- x5 x3)) (* x6 (- x3 x5)))))",
+    "best_expr_rel": "(+ (+ (* x1 (- x2 x1)) (* x1 (- x3 x4))) (+ (+ (* x1 (- x5 x4)) (* x1 x6)) (+ (* x2 (- x5 x3)) (* x6 (- x3 x5)))))",
+    "best_expr_d": "(+ (+ (* x1 (- x2 x1)) (* x1 (- x3 x4))) (+ (+ (* x1 (- x5 x4)) (* x1 x6)) (+ (* x2 (- x5 x3)) (* x6 (- x3 x5)))))",
+    "seed_abs": 8.008207430520997e-14,
+    "best_abs": 3.636024814568373e-14,
+    "seed_rel": null,
+    "best_rel": null,
+    "seed_d": null,
+    "best_d": null
+   },
+   "ft": {
+    "seed": {
+     "status": "ok",
+     "seconds": 6.7,
+     "abs": 5.770726e-14,
+     "rel": null,
+     "range": [
+      -19.5537,
+      70.7191
+     ]
+    },
+    "best_abs": {
+     "status": "ok",
+     "seconds": 6.87,
+     "abs": 2.554353e-14,
+     "rel": null,
+     "range": [
+      -19.48669,
+      70.64598
+     ]
+    },
+    "best_rel": {
+     "status": "ok",
+     "seconds": 6.87,
+     "abs": 2.554353e-14,
+     "rel": null,
+     "range": [
+      -19.48669,
+      70.64598
+     ]
+    },
+    "best_d": {
+     "status": "ok",
+     "seconds": 6.87,
+     "abs": 2.554353e-14,
+     "rel": null,
+     "range": [
+      -19.48669,
+      70.64598
+     ]
+    }
+   }
+  },
+  {
+   "file": "fpbench-fptaylor-extra-002-delta.fpcore",
+   "costex": {
+    "name": "delta",
+    "expr": "(+ (+ (+ (+ (+ (+ (* (* x1 x4) (+ (+ (- (+ (+ (- x1) x2) x3) x4) x5) x6)) (* (* x2 x5) (+ (- (+ (+ (- x1 x2) x3) x4) x5) x6))) (* (* x3 x6) (- (+ (+ (- (+ x1 x2) x3) x4) x5) x6))) (* (* (- x2) x3) x4)) (* (* (- x1) x3) x5)) (* (* (- x1) x2) x6)) (* (* (- x4) x5) x6))",
+    "root_interval": [
+     -772.9701840322573,
+     1698.867656736771
+    ],
+    "best_expr_abs": "(+ (+ (* x6 (+ (+ (+ (* x3 (- x2 x3)) (* x1 x3)) (+ (* x3 x5) (* x3 (- x4 x6)))) (- (* (- x4) x5) (* x1 x2)))) (+ (* x4 (* x1 x5)) (* x4 (+ (* x1 (- x2 x4)) (* x1 (- x3 x1)))))) (+ (* x2 (+ (+ (* x5 x6) (* x5 (- x1 x2))) (+ (* x3 x5) (* x5 (- x4 x5))))) (+ (* x4 (+ (* (- x2) x3) (* x1 x6))) (* (* (- x1) x3) x5))))",
+    "best_expr_rel": "(+ (+ (* x6 (+ (+ (+ (* x3 (- x2 x3)) (* x1 x3)) (+ (* x3 x5) (* x3 (- x4 x6)))) (- (* (- x4) x5) (* x1 x2)))) (+ (* x4 (* x1 x5)) (* x4 (+ (* x1 (- x2 x4)) (* x1 (- x3 x1)))))) (+ (* x2 (+ (+ (* x5 x6) (* x5 (- x1 x2))) (+ (* x3 x5) (* x5 (- x4 x5))))) (+ (* x4 (+ (* (- x2) x3) (* x1 x6))) (* (* (- x1) x3) x5))))",
+    "best_expr_d": "(+ (+ (* x6 (+ (+ (+ (* x3 (- x2 x3)) (* x1 x3)) (+ (* x3 x5) (* x3 (- x4 x6)))) (- (* (- x4) x5) (* x1 x2)))) (+ (* x4 (* x1 x5)) (* x4 (+ (* x1 (- x2 x4)) (* x1 (- x3 x1)))))) (+ (* x2 (+ (+ (* x5 x6) (* x5 (- x1 x2))) (+ (* x3 x5) (* x5 (- x4 x5))))) (+ (* x4 (+ (* (- x2) x3) (* x1 x6))) (* (* (- x1) x3) x5))))",
+    "seed_abs": 1.9646457462840774e-12,
+    "best_abs": 1.0612227276851627e-12,
+    "seed_rel": null,
+    "best_rel": null,
+    "seed_d": null,
+    "best_d": null
+   },
+   "ft": {
+    "seed": {
+     "status": "ok",
+     "seconds": 44.11,
+     "abs": 1.468225e-12,
+     "rel": 1.523371e-14,
+     "range": [
+      49.74183,
+      556.3417
+     ]
+    },
+    "best_abs": {
+     "status": "ok",
+     "seconds": 54.71,
+     "abs": 7.416121e-13,
+     "rel": 7.825377e-15,
+     "range": [
+      55.81785,
+      519.9632
+     ]
+    },
+    "best_rel": {
+     "status": "ok",
+     "seconds": 54.71,
+     "abs": 7.416121e-13,
+     "rel": 7.825377e-15,
+     "range": [
+      55.81785,
+      519.9632
+     ]
+    },
+    "best_d": {
+     "status": "ok",
+     "seconds": 54.71,
+     "abs": 7.416121e-13,
+     "rel": 7.825377e-15,
+     "range": [
+      55.81785,
+      519.9632
+     ]
+    }
+   }
+  },
+  {
+   "file": "fpbench-fptaylor-extra-003-sqrt-add.fpcore",
+   "costex": {
+    "name": "sqrt_add",
+    "expr": "(/ 1 (+ (sqrt (+ x 1)) (sqrt x)))",
+    "root_interval": [
+     0.015807437428955812,
+     0.4142135623730953
+    ],
+    "best_expr_abs": "(/ 1 (+ (sqrt x) (sqrt (+ x 1))))",
+    "best_expr_rel": "(/ 1 (+ (sqrt x) (sqrt (+ x 1))))",
+    "best_expr_d": "(/ 1 (+ (sqrt x) (sqrt (+ x 1))))",
+    "seed_abs": 1.427229341302836e-16,
+    "best_abs": 1.4235946626506506e-16,
+    "seed_rel": 3.885780586188049e-16,
+    "best_rel": 3.8770056956910747e-16,
+    "seed_d": 3.885780586188048e-16,
+    "best_d": 3.877005695691074e-16
+   },
+   "ft": {
+    "seed": {
+     "status": "ok",
+     "seconds": 0.02,
+     "abs": 1.174186e-16,
+     "rel": 3.330453e-16,
+     "range": [
+      0.01580743,
+      0.4142136
+     ]
+    },
+    "best_abs": {
+     "status": "ok",
+     "seconds": 0.02,
+     "abs": 1.174186e-16,
+     "rel": 3.330453e-16,
+     "range": [
+      0.01580743,
+      0.4142136
+     ]
+    },
+    "best_rel": {
+     "status": "ok",
+     "seconds": 0.02,
+     "abs": 1.174186e-16,
+     "rel": 3.330453e-16,
+     "range": [
+      0.01580743,
+      0.4142136
+     ]
+    },
+    "best_d": {
+     "status": "ok",
+     "seconds": 0.02,
+     "abs": 1.174186e-16,
+     "rel": 3.330453e-16,
+     "range": [
+      0.01580743,
+      0.4142136
+     ]
+    }
+   }
+  },
+  {
+   "file": "fpbench-fptaylor-extra-006-floudas.fpcore",
+   "costex": {
+    "name": "floudas",
+    "expr": "(+ x1 x2)",
+    "root_interval": [
+     0.0,
+     5.000000000000001
+    ],
+    "best_expr_abs": "(+ x1 x2)",
+    "best_expr_rel": "(+ x1 x2)",
+    "best_expr_d": "(+ x1 x2)",
+    "seed_abs": 4.440892098500626e-16,
+    "best_abs": 4.440892098500626e-16,
+    "seed_rel": null,
+    "best_rel": null,
+    "seed_d": null,
+    "best_d": null
+   },
+   "ft": {
+    "seed": {
+     "status": "ok",
+     "seconds": 0.01,
+     "abs": 4.440893e-16,
+     "rel": null,
+     "range": [
+      0.0,
+      5.0
+     ]
+    },
+    "best_abs": {
+     "status": "ok",
+     "seconds": 0.01,
+     "abs": 4.440893e-16,
+     "rel": null,
+     "range": [
+      0.0,
+      5.0
+     ]
+    },
+    "best_rel": {
+     "status": "ok",
+     "seconds": 0.01,
+     "abs": 4.440893e-16,
+     "rel": null,
+     "range": [
+      0.0,
+      5.0
+     ]
+    },
+    "best_d": {
+     "status": "ok",
+     "seconds": 0.01,
+     "abs": 4.440893e-16,
+     "rel": null,
+     "range": [
+      0.0,
+      5.0
+     ]
+    }
+   }
+  },
+  {
+   "file": "fpbench-fptaylor-extra-008-x-by-xy.fpcore",
+   "costex": {
+    "name": "x_by_xy",
+    "expr": "(/ x (+ x y))",
+    "root_interval": [
+     0.12499999999999994,
+     2.000000000000001
+    ],
+    "best_expr_abs": "(/ x (+ x y))",
+    "best_expr_rel": "(/ x (+ x y))",
+    "best_expr_d": "(/ x (+ x y))",
+    "seed_abs": 2.3841858620699033e-07,
+    "best_abs": 2.3841858620699033e-07,
+    "seed_rel": 1.1920929665620903e-07,
+    "best_rel": 1.1920929665620903e-07,
+    "seed_d": 1.1920928955078138e-07,
+    "best_d": 1.1920928955078138e-07
+   },
+   "ft": {
+    "seed": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 1.398741e-16,
+     "rel": 2.248643e-16,
+     "range": [
+      0.192771,
+      0.807571
+     ]
+    },
+    "best_abs": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 1.398741e-16,
+     "rel": 2.248643e-16,
+     "range": [
+      0.192771,
+      0.807571
+     ]
+    },
+    "best_rel": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 1.398741e-16,
+     "rel": 2.248643e-16,
+     "range": [
+      0.192771,
+      0.807571
+     ]
+    },
+    "best_d": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 1.398741e-16,
+     "rel": 2.248643e-16,
+     "range": [
+      0.192771,
+      0.807571
+     ]
+    }
+   }
+  },
+  {
+   "file": "fpbench-fptaylor-extra-009-hypot.fpcore",
+   "costex": {
+    "name": "hypot",
+    "expr": "(sqrt (+ (* x1 x1) (* x2 x2)))",
+    "root_interval": [
+     1.4142135623730945,
+     141.42135623730957
+    ],
+    "best_expr_abs": "(sqrt (+ (* x1 x1) (* x2 x2)))",
+    "best_expr_rel": "(sqrt (+ (* x1 x1) (* x2 x2)))",
+    "best_expr_d": "(sqrt (+ (* x1 x1) (* x2 x2)))",
+    "seed_abs": 2.991177930203976e-14,
+    "best_abs": 2.991177930203976e-14,
+    "seed_rel": 2.220446049250313e-16,
+    "best_rel": 2.220446049250313e-16,
+    "seed_d": 2.220446049250313e-16,
+    "best_d": 2.220446049250313e-16
+   },
+   "ft": {
+    "seed": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    },
+    "best_abs": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    },
+    "best_rel": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    },
+    "best_d": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    }
+   }
+  },
+  {
+   "file": "fpbench-fptaylor-extra-010-hypot32.fpcore",
+   "costex": {
+    "name": "hypot32",
+    "expr": "(sqrt (+ (* x1 x1) (* x2 x2)))",
+    "root_interval": [
+     1.4142135623730945,
+     141.42135623730957
+    ],
+    "best_expr_abs": "(sqrt (+ (* x1 x1) (* x2 x2)))",
+    "best_expr_rel": "(sqrt (+ (* x1 x1) (* x2 x2)))",
+    "best_expr_d": "(sqrt (+ (* x1 x1) (* x2 x2)))",
+    "seed_abs": 1.605876423342881e-05,
+    "best_abs": 1.605876423342881e-05,
+    "seed_rel": 1.1920929310349493e-07,
+    "best_rel": 1.1920929310349493e-07,
+    "seed_d": 1.1920929310349506e-07,
+    "best_d": 1.1920929310349506e-07
+   },
+   "ft": {
+    "seed": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    },
+    "best_abs": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    },
+    "best_rel": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    },
+    "best_d": {
+     "status": "ok",
+     "seconds": 0.03,
+     "abs": 2.863491e-14,
+     "rel": 2.244901e-16,
+     "range": [
+      1.414213,
+      141.4214
+     ]
+    }
+   }
+  }
+ ]
+}
