@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 96
+; box: default
+(FPCore (x y)
+  :name "Physics.ForceLayout:coulombForce from force-layout-0.4.0.2"
+  :cx-source "herbie:haskell.fpcore:96"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  (/ x (* y y)))

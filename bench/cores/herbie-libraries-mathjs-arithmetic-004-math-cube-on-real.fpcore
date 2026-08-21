@@ -1,0 +1,8 @@
+; from herbie libraries/mathjs/arithmetic.fpcore core 4
+; box: default
+(FPCore (x)
+  :name "math.cube on real"
+  :cx-source "herbie:libraries/mathjs/arithmetic.fpcore:4"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (* (* x x) x))

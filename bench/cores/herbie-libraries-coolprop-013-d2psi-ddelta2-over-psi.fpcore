@@ -1,0 +1,8 @@
+; from herbie libraries/coolprop.fpcore core 13
+; box: default
+(FPCore (delta Ci)
+  :name "d2PSI-dDelta2-over-PSI"
+  :cx-source "herbie:libraries/coolprop.fpcore:13"
+  :cx-box "default"
+  :pre (and (<= 1.0 delta 2.0) (<= 4.0 Ci 8.0))
+  (* (- (* 2 (* Ci (* (- delta 1) (- delta 1)))) 1) (* 2 Ci)))

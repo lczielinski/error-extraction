@@ -1,0 +1,8 @@
+; from herbie libraries/mathjs/arithmetic.fpcore core 17
+; box: default
+(FPCore (x.re x.im y.re y.im)
+  :name "_multiplyComplex, real part"
+  :cx-source "herbie:libraries/mathjs/arithmetic.fpcore:17"
+  :cx-box "default"
+  :pre (and (<= 1.0 x.re 2.0) (<= 4.0 x.im 8.0) (<= 16.0 y.re 32.0) (<= 64.0 y.im 128.0))
+  (- (* x.re y.re) (* x.im y.im)))

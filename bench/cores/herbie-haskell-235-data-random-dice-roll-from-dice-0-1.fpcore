@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 235
+; box: default
+(FPCore (x)
+  :name "Data.Random.Dice:roll from dice-0.1"
+  :cx-source "herbie:haskell.fpcore:235"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (- (* x x) 1))

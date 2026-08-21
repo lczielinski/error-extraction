@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 54
+; box: default
+(FPCore (x y z t a b c)
+  :name "Diagrams.Solve.Polynomial:cubForm  from diagrams-solve-0.1, J"
+  :cx-source "herbie:haskell.fpcore:54"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0) (<= 16.0 z 32.0) (<= 64.0 t 128.0) (<= 256.0 a 512.0) (<= 1024.0 b 2048.0) (<= 4096.0 c 8192.0))
+  (/ (+ (- (* (* x 9) y) (* (* (* z 4) t) a)) b) (* z c)))

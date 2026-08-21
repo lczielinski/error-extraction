@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 203
+; box: default
+(FPCore (x)
+  :name "Numeric.SpecFunctions:invIncompleteBetaWorker from math-functions-0.1.5.2, D"
+  :cx-source "herbie:haskell.fpcore:203"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (- x (/ (+ 2.30753 (* x 0.27061)) (+ 1 (* (+ 0.99229 (* x 0.04481)) x)))))

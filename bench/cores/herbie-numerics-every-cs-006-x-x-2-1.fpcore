@@ -1,0 +1,8 @@
+; from herbie numerics/every-cs.fpcore core 6
+; box: default
+(FPCore (x)
+  :name "x / (x^2 + 1)"
+  :cx-source "herbie:numerics/every-cs.fpcore:6"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (/ x (+ (* x x) 1)))

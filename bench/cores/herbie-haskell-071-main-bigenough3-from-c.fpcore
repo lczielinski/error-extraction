@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 71
+; box: default
+(FPCore (x)
+  :name "Main:bigenough3 from C"
+  :cx-source "herbie:haskell.fpcore:71"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (- (sqrt (+ x 1)) (sqrt x)))

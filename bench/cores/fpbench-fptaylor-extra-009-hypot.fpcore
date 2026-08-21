@@ -1,0 +1,8 @@
+; from fpbench fptaylor-extra.fpcore core 9
+; box: pre
+(FPCore (x1 x2)
+  :name "hypot"
+  :cx-source "fpbench:fptaylor-extra.fpcore:9"
+  :cx-box "pre"
+  :pre (and (<= 1.0 x1 100.0) (<= 1.0 x2 100.0))
+  (sqrt (+ (* x1 x1) (* x2 x2))))

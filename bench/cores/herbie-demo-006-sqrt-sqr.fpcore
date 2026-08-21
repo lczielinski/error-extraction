@@ -1,0 +1,8 @@
+; from herbie demo.fpcore core 6
+; box: default
+(FPCore (x)
+  :name "sqrt sqr"
+  :cx-source "herbie:demo.fpcore:6"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (- (/ x x) (* (/ 1 x) (sqrt (* x x)))))

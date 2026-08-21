@@ -1,0 +1,9 @@
+; from herbie mathematics/excel.fpcore core 0
+; 1 precondition conjunct(s) dropped, widening the box
+; box: default
+(FPCore (x0 x1)
+  :name "(- (/ x0 (- 1 x1)) x0)"
+  :cx-source "herbie:mathematics/excel.fpcore:0"
+  :cx-box "default"
+  :pre (and (<= 1.0 x0 2.0) (<= 4.0 x1 8.0))
+  (- (/ x0 (- 1 x1)) x0))

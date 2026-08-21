@@ -1,0 +1,8 @@
+; from herbie proj/omerc.fpcore core 20
+; box: default
+(FPCore (E_var L H)
+  :name "init-J"
+  :cx-source "herbie:proj/omerc.fpcore:20"
+  :cx-box "default"
+  :pre (and (<= 1.0 E_var 2.0) (<= 4.0 L 8.0) (<= 16.0 H 32.0))
+  (/ (- (* E_var E_var) (* L H)) (+ (* E_var E_var) (* L H))))

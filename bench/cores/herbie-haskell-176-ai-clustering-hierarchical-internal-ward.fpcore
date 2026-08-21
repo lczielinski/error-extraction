@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 176
+; box: default
+(FPCore (x y z t a b)
+  :name "AI.Clustering.Hierarchical.Internal:ward from clustering-0.2.1"
+  :cx-source "herbie:haskell.fpcore:176"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0) (<= 16.0 z 32.0) (<= 64.0 t 128.0) (<= 256.0 a 512.0) (<= 1024.0 b 2048.0))
+  (/ (- (+ (* (+ x y) z) (* (+ t y) a)) (* y b)) (+ (+ x t) y)))

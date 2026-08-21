@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 238
+; box: default
+(FPCore (x y z t a)
+  :name "Hakyll.Web.Tags:renderTagCloud from hakyll-4.7.2.3"
+  :cx-source "herbie:haskell.fpcore:238"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0) (<= 16.0 z 32.0) (<= 64.0 t 128.0) (<= 256.0 a 512.0))
+  (+ x (* (/ (- y z) (- (+ t 1) z)) (- a x))))

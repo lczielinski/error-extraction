@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 155
+; box: default
+(FPCore (x)
+  :name "Data.Approximate.Numerics:blog from approximate-0.2.2.1"
+  :cx-source "herbie:haskell.fpcore:155"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (/ (* 6 (- x 1)) (+ (+ x 1) (* 4 (sqrt x)))))

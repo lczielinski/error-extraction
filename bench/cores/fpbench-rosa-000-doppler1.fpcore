@@ -1,0 +1,8 @@
+; from fpbench rosa.fpcore core 0
+; box: pre
+(FPCore (u v T)
+  :name "doppler1"
+  :cx-source "fpbench:rosa.fpcore:0"
+  :cx-box "pre"
+  :pre (and (<= -100.0 u 100.0) (<= 20.0 v 20000.0) (<= -30.0 T 50.0))
+  (/ (* (- (+ 331.4 (* 0.6 T))) v) (* (+ (+ 331.4 (* 0.6 T)) u) (+ (+ 331.4 (* 0.6 T)) u))))

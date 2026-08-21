@@ -1,0 +1,8 @@
+; from herbie libraries/basilisk.fpcore core 10
+; box: default
+(FPCore (mu p)
+  :name "angular_momentum"
+  :cx-source "herbie:libraries/basilisk.fpcore:10"
+  :cx-box "default"
+  :pre (and (<= 1.0 mu 2.0) (<= 4.0 p 8.0))
+  (sqrt (* mu p)))

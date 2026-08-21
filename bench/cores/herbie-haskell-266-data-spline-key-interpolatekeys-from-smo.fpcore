@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 266
+; box: default
+(FPCore (x)
+  :name "Data.Spline.Key:interpolateKeys from smoothie-0.4.0.2"
+  :cx-source "herbie:haskell.fpcore:266"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (* (* x x) (- 3 (* x 2))))

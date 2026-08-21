@@ -1,0 +1,8 @@
+; from fpbench rosa.fpcore core 9
+; box: pre
+(FPCore (x)
+  :name "verhulst"
+  :cx-source "fpbench:rosa.fpcore:9"
+  :cx-box "pre"
+  :pre (<= 0.09999999999999999167332731531132594682276248931884765625 x 0.3000000000000000444089209850062616169452667236328125)
+  (/ (* 4 x) (+ 1 (/ x 1.11))))

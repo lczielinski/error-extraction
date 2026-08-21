@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 134
+; box: default
+(FPCore (x y)
+  :name "System.Random.MWC.Distributions:standard from mwc-random-0.13.3.2"
+  :cx-source "herbie:haskell.fpcore:134"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  (* 0.5 (- (* x x) y)))

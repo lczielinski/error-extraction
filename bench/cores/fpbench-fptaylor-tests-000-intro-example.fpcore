@@ -1,0 +1,8 @@
+; from fpbench fptaylor-tests.fpcore core 0
+; box: pre
+(FPCore (t)
+  :name "intro-example"
+  :cx-source "fpbench:fptaylor-tests.fpcore:0"
+  :cx-box "pre"
+  :pre (<= 0.0 t 999.0)
+  (/ t (+ t 1)))

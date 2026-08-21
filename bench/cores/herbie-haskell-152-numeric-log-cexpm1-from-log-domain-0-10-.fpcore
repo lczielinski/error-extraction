@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 152
+; box: default
+(FPCore (x y)
+  :name "Numeric.Log:$cexpm1 from log-domain-0.10.2.1, B"
+  :cx-source "herbie:haskell.fpcore:152"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  (+ (+ (* x y) x) y))

@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 56
+; box: default
+(FPCore (x y)
+  :name "Diagrams.Solve.Polynomial:quartForm  from diagrams-solve-0.1, A"
+  :cx-source "herbie:haskell.fpcore:56"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  (- x (* (/ 3 8) y)))

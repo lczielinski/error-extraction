@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 162
+; box: default
+(FPCore (x y)
+  :name "Development.Shake.Progress:message from shake-0.15.5"
+  :cx-source "herbie:haskell.fpcore:162"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  (/ (* x 100) (+ x y)))

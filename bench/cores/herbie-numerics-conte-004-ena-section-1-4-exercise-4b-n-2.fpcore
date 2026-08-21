@@ -1,0 +1,8 @@
+; from herbie numerics/conte.fpcore core 4
+; box: pre
+(FPCore (x eps)
+  :name "ENA, Section 1.4, Exercise 4b, n=2"
+  :cx-source "herbie:numerics/conte.fpcore:4"
+  :cx-box "pre"
+  :pre (and (<= -1000000000.0 x 1000000000.0) (<= -1.0 eps 1.0))
+  (- (* (+ x eps) (+ x eps)) (* x x)))

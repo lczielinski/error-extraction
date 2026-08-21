@@ -1,0 +1,8 @@
+; from herbie numerics/martel.fpcore core 3
+; box: pre
+(FPCore (x)
+  :name "Expression 2, p15"
+  :cx-source "herbie:numerics/martel.fpcore:3"
+  :cx-box "pre"
+  :pre (<= 0.0 x 2.0)
+  (+ x (* x x)))

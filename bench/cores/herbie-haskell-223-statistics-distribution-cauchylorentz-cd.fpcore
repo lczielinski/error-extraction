@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 223
+; box: default
+(FPCore (x y z)
+  :name "Statistics.Distribution.CauchyLorentz:$cdensity from math-functions-0.1.5.2"
+  :cx-source "herbie:haskell.fpcore:223"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0) (<= 16.0 z 32.0))
+  (/ (/ 1 x) (* y (+ 1 (* z z)))))

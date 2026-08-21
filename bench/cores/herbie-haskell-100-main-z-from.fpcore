@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 100
+; box: default
+(FPCore (x y z t)
+  :name "Main:z from "
+  :cx-source "herbie:haskell.fpcore:100"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0) (<= 16.0 z 32.0) (<= 64.0 t 128.0))
+  (+ (+ (+ (- (sqrt (+ x 1)) (sqrt x)) (- (sqrt (+ y 1)) (sqrt y))) (- (sqrt (+ z 1)) (sqrt z))) (- (sqrt (+ t 1)) (sqrt t))))

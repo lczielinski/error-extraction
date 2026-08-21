@@ -1,0 +1,8 @@
+; from fpbench rosa.fpcore core 11
+; box: pre
+(FPCore (v)
+  :name "carbonGas"
+  :cx-source "fpbench:rosa.fpcore:11"
+  :cx-box "pre"
+  :pre (<= 0.09999999999999999167332731531132594682276248931884765625 v 0.5)
+  (- (* (+ 35000000 (* (* 0.401 (/ 1000 v)) (/ 1000 v))) (- v (* 1000 0.0000427))) (* (* 1.3806503E-23 1000) 300)))

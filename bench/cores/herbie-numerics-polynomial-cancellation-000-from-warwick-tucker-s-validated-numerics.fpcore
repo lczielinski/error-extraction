@@ -1,0 +1,7 @@
+; from herbie numerics/polynomial-cancellation.fpcore core 0
+; box: pre
+(FPCore ()
+  :name "From Warwick Tucker's Validated Numerics"
+  :cx-source "herbie:numerics/polynomial-cancellation.fpcore:0"
+  :cx-box "pre"
+  (+ (+ (+ (* 333.75 (* (* (* (* (* 33096 33096) 33096) 33096) 33096) 33096)) (* (* 77617 77617) (+ (+ (+ (* (* 11 (* 77617 77617)) (* 33096 33096)) (- (* (* (* (* (* 33096 33096) 33096) 33096) 33096) 33096))) (* -121 (* (* (* 33096 33096) 33096) 33096))) -2))) (* 5.5 (* (* (* (* (* (* (* 33096 33096) 33096) 33096) 33096) 33096) 33096) 33096))) (/ 77617 (* 2 33096))))

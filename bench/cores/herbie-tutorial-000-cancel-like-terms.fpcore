@@ -1,0 +1,8 @@
+; from herbie tutorial.fpcore core 0
+; box: default
+(FPCore (x)
+  :name "Cancel like terms"
+  :cx-source "herbie:tutorial.fpcore:0"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (- (+ 1 x) x))

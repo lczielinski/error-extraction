@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 231
+; box: default
+(FPCore (x)
+  :name "Data.Random.Distribution.Normal:doubleStdNormalZ from random-fu-0.2.6.2"
+  :cx-source "herbie:haskell.fpcore:231"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (- (+ x x) 1))

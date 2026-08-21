@@ -1,0 +1,8 @@
+; from fpbench hamming-ch3.fpcore core 0
+; box: default
+(FPCore (x)
+  :name "NMSE example 3.1"
+  :cx-source "fpbench:hamming-ch3.fpcore:0"
+  :cx-box "default"
+  :pre (<= 0.0 x 2.0)
+  (- (sqrt (+ x 1)) (sqrt x)))

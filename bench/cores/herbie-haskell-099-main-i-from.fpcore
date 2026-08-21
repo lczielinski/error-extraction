@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 99
+; box: default
+(FPCore (x)
+  :name "Main:i from "
+  :cx-source "herbie:haskell.fpcore:99"
+  :cx-box "default"
+  :pre (<= 1.0 x 2.0)
+  (+ (+ (+ (+ x x) x) x) x))

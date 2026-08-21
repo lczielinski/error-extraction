@@ -1,0 +1,8 @@
+; from herbie physics/tea-whistle.fpcore core 0
+; box: default
+(FPCore (c0 A V l)
+  :name "Henrywood and Agarwal, Equation (3)"
+  :cx-source "herbie:physics/tea-whistle.fpcore:0"
+  :cx-box "default"
+  :pre (and (<= 1.0 c0 2.0) (<= 4.0 A 8.0) (<= 16.0 V 32.0) (<= 64.0 l 128.0))
+  (* c0 (sqrt (/ A (* V l)))))

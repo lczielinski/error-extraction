@@ -1,0 +1,8 @@
+; from herbie haskell.fpcore core 251
+; box: default
+(FPCore (x y)
+  :name "Graphics.Rendering.Plot.Render.Plot.Legend:renderLegendOutside from plot-0.2.3.4, A"
+  :cx-source "herbie:haskell.fpcore:251"
+  :cx-box "default"
+  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  (+ (+ x y) x))
