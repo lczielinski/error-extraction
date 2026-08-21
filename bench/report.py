@@ -61,8 +61,8 @@ def _costex(r: dict, labels: list, m: str) -> str:
     return NA
 
 
-def _fptaylor(ft: dict, variant: str, m: str) -> str:
-    rep = (ft or {}).get(variant)
+def _tool(reps: dict, variant: str, m: str) -> str:
+    rep = (reps or {}).get(variant)
     if rep is None:
         return NA
     if rep["status"] != "ok":
@@ -80,7 +80,7 @@ def gain(r: dict) -> float:
     return out
 
 
-def row(r: dict, ft: dict, width: int) -> str:
+def row(r: dict, tools: dict, names: list, width: int) -> str:
     progs = programs(r)
     cells = [
         f"**{r.get('name') or r['file']}**",
@@ -91,26 +91,30 @@ def row(r: dict, ft: dict, width: int) -> str:
     ]
     for m in METRICS:
         cells.append("<br>".join(_costex(r, labels, m) for labels, _, _ in progs))
-        cells.append("<br>".join(_fptaylor(ft, v, m) for _, v, _ in progs))
+        for t in names:
+            cells.append("<br>".join(_tool((tools or {}).get(t), v, m)
+                                     for _, v, _ in progs))
     return "| " + " | ".join(cells) + " |"
 
 
 def markdown(res: dict, ext: dict, sort: str, width: int) -> str:
-    ft_by_file = {r["file"]: r["ft"] for r in ext["results"]}
+    by_file = {r["file"]: r["tools"] for r in ext["results"]}
+    names = sorted({t for r in ext["results"] for t in r["tools"]})
     rows = [r for r in res["results"] if r["status"] == "ok"]
     rows.sort(key=(lambda r: -gain(r)) if sort == "gain" else (lambda r: r["file"]))
 
-    out = ["# costex vs FPTaylor", "",
+    out = ["# costex vs " + " vs ".join(names), "",
            f"- {len(rows)} cores, costex at {res.get('iters')} iterations",
-           f"- FPTaylor {ext.get('fptaylor_version')}, "
-           f"`{' '.join(ext.get('options', []))}`",
-           f"- FPTaylor data for {sum(1 for r in rows if r['file'] in ft_by_file)} of them",
+           *[f"- {t} {ext.get('versions', {}).get(t, '?')}, "
+             f"`{' '.join(ext.get('options', {}).get(t, []))}`" for t in names],
+           f"- external data for {sum(1 for r in rows if r['file'] in by_file)} of them",
            f"- sorted by {'costex claimed gain' if sort == 'gain' else 'file name'}",
            "",
-           "| Core | Program | costex mu_abs | FPTaylor abs "
-           "| costex mu_rel | FPTaylor rel |",
-           "|---|---|---:|---:|---:|---:|"]
-    out += [row(r, ft_by_file.get(r["file"]), width) for r in rows]
+           "| Core | Program | "
+           + " | ".join(f"{lbl} {t}" for m, lbl in (("abs", "mu_abs"), ("rel", "mu_rel"))
+                        for t in ["costex"] + names) + " |",
+           "|---|---|" + "---:|" * (2 * (len(names) + 1))]
+    out += [row(r, by_file.get(r["file"]), names, width) for r in rows]
     return "\n".join(out) + "\n"
 
 
@@ -132,7 +136,7 @@ def main(argv=None) -> int:
     text = markdown(res, ext, args.sort, args.width)
     with open(args.out, "w") as f:
         f.write(text)
-    print(f"{text.count(chr(10)) } lines -> {os.path.relpath(args.out)}")
+    print(f"{text.count(chr(10))} lines -> {os.path.relpath(args.out)}")
     return 0
 
 
