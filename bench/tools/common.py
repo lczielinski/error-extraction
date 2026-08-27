@@ -12,6 +12,7 @@ import sys
 BENCH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(BENCH))
 
+from costex.analysis import METRICS as _MU                                   # noqa: E402
 from costex.fpcore import parse_expr, parse_sexps, parse_fpcore, to_fpcore   # noqa: E402
 
 CORES = os.path.join(BENCH, "cores")
@@ -20,7 +21,35 @@ CACHE = os.path.join(BENCH, ".cache")
 
 FPBENCH = os.path.expanduser(os.environ.get("FPBENCH", "~/fpbench"))
 
-VARIANTS = ("seed", "best_abs", "best_rel")
+
+class Metric:
+    """An error metric, and every key that spells its name.  The name is written
+    into results.json, external.json and rewrite.json keys and into the tables'
+    headers; deriving them all from one place is what keeps the three files and
+    the two reports from drifting apart."""
+
+    __slots__ = ("name", "label", "seed", "best", "best_expr", "variant",
+                 "judge", "judge_expr")
+
+    def __init__(self, name: str):
+        self.name = name
+        self.label = f"mu_{name}"              # a table's column header
+        self.seed = f"seed_{name}"             # results.json: the input's bound
+        self.best = f"best_{name}"             # results.json: the frontier's best
+        self.best_expr = f"best_expr_{name}"   # results.json: the witness program
+        self.variant = f"best_{name}"          # external.json: the program a report covers
+        self.judge = f"costex_{name}"          # rewrite.json: the judge's score
+        self.judge_expr = f"costex_{name}_expr"
+
+    def __repr__(self):
+        return f"Metric({self.name!r})"
+
+
+METRICS = tuple(Metric(m) for m in _MU)     # costex's order is the reports' order
+BY_NAME = {m.name: m for m in METRICS}
+
+SEED = "seed"                # the input program, as a variant and as a judge name
+VARIANTS = (SEED,) + tuple(m.variant for m in METRICS)
 
 
 def has_const(expr: str) -> bool:
@@ -50,8 +79,8 @@ def units(results: list) -> list:
         if r["status"] != "ok":
             continue
         shared = {}
-        for v in VARIANTS:
-            e = r["expr"] if v == "seed" else r.get(f"best_expr_{v[len('best_'):]}")
+        for v, e in [(SEED, r["expr"])] + [(m.variant, r.get(m.best_expr))
+                                           for m in METRICS]:
             if e:
                 shared.setdefault(e, []).append(v)
         for expr, variants in shared.items():

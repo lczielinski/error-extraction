@@ -41,7 +41,8 @@ from costex import analysis as A                               # noqa: E402
 from costex import egg, extract                                # noqa: E402
 from costex.fpcore import parse_fpcore, to_sexp                # noqa: E402
 
-METRICS = ("abs", "rel")     # the table's order; A.METRICS is the record's
+# The head-to-head and the tool-tightness check are on absolute error alone.
+JUDGED = common.BY_NAME["abs"]
 KINDS = ("rewrite", "analysis")
 SLACK = 0.999                # a bound has to beat another by this much to count
 EGGLOG_TIMEOUT = 60.0        # seconds per core
@@ -123,11 +124,11 @@ def run_one(path, *, iters, max_steps) -> dict:
                    steps=front.steps, truncated=front.truncated,
                    frontier=len(front.entries.get(g.root, [])),
                    root_interval=[_f(Ic.lo), _f(Ic.hi)])
-        for m in A.METRICS:
-            out[f"seed_{m}"] = None if seed is A.BOTTOM else _f(A.METRICS[m](seed, Ic))
-            best = front.best(g.root, Ic, m)
-            out[f"best_{m}"] = _f(best[0]) if best else None
-            out[f"best_expr_{m}"] = to_sexp(best[2]) if best else None
+        for m in common.METRICS:
+            out[m.seed] = None if seed is A.BOTTOM else _f(A.METRICS[m.name](seed, Ic))
+            best = front.best(g.root, Ic, m.name)
+            out[m.best] = _f(best[0]) if best else None
+            out[m.best_expr] = to_sexp(best[2]) if best else None
     except subprocess.TimeoutExpired:
         out.update(status="timeout", egglog_s=round(time.time() - t0, 3))
     except egg.BadBox as ex:
@@ -137,12 +138,12 @@ def run_one(path, *, iters, max_steps) -> dict:
     return out
 
 
-def _metric_lines(group: list, m: str) -> list:
-    seed, best = f"seed_{m}", f"best_{m}"
+def _metric_lines(group: list, m) -> list:
+    seed, best = m.seed, m.best
     live = [r for r in group if r[best] is not None]
     gains = sorted(r[seed] / r[best] for r in live
                    if r[seed] and r[best] and r[best] < r[seed])
-    out = [f"    mu_{m:<3} bounded {len(live)} of {len(group)}"]
+    out = [f"    {m.label:<6} bounded {len(live)} of {len(group)}"]
     if gains:
         out.append(f"           {len(gains)} improved, median {gains[len(gains) // 2]:.3g}x, "
                    f"90th pct {gains[int(0.9 * (len(gains) - 1))]:.3g}x, max {gains[-1]:.3g}x")
@@ -162,7 +163,7 @@ def summarize(results: list) -> None:
     for k in KINDS:
         if groups[k]:
             print(f"\n  {k}")
-            for m in A.METRICS:
+            for m in common.METRICS:
                 print("\n".join(_metric_lines(groups[k], m)))
 
     trunc = sum(1 for r in ok if r.get("truncated"))
@@ -201,8 +202,8 @@ def collect(results: list, us: list, per_tool: dict) -> list:
             per_core.setdefault(u["file"], {}).setdefault(tool, {})
             for v in u["variants"]:
                 per_core[u["file"]][tool][v] = reports[u["name"]]
-    keep = ("name", "expr", "root_interval", "best_expr_abs", "best_expr_rel",
-            "seed_abs", "best_abs", "seed_rel", "best_rel")
+    keep = ("name", "expr", "root_interval") + tuple(
+        k for m in common.METRICS for k in (m.best_expr, m.seed, m.best))
     return [{"file": r["file"], "costex": {k: r.get(k) for k in keep},
              "tools": per_core[r["file"]]}
             for r in results if r["file"] in per_core]
@@ -213,8 +214,8 @@ def _seed_bounds(records: list, tool: str) -> str:
     n = Counter()
     for r in records:
         rep = r["tools"].get(tool, {}).get("seed")
-        ours = r["costex"].get("seed_abs")
-        theirs = rep.get("abs") if rep and rep["status"] == "ok" else None
+        ours = r["costex"].get(JUDGED.seed)
+        theirs = rep.get(JUDGED.name) if rep and rep["status"] == "ok" else None
         if ours is None:
             n["no costex bound"] += 1
         elif theirs is None:
@@ -237,7 +238,8 @@ def _health(records: list) -> None:
                       if rep["status"] in ("nobound", "crash", "unsupported"))
         for reason, n in why.most_common(6):
             print(f"      {n:4} x {reason}")
-        print(f"      mu_abs on the analysis cores' seed: {_seed_bounds(analysis, tool)}")
+        print(f"      {JUDGED.label} on the analysis cores' seed: "
+              f"{_seed_bounds(analysis, tool)}")
 
 
 def phase_external(args) -> None:
@@ -269,11 +271,14 @@ def phase_external(args) -> None:
 # -- the two rewriters, head to head --
 
 
-WHO = ("seed", "costex_abs", "costex_rel", "daisy")
+WHO = (common.SEED,) + tuple(m.judge for m in common.METRICS) + ("daisy",)
 
 
-def _abs(rep):
-    return rep["abs"] if rep and rep.get("status") == "ok" and rep.get("abs") else None
+def _score(rep):
+    """The judge's bound for one program; a zero bound counts as none, since
+    every ratio downstream divides by it."""
+    v = rep.get(JUDGED.name) if rep and rep.get("status") == "ok" else None
+    return v or None
 
 
 def candidates(results: list, seeds: list, rewrites: dict) -> tuple:
@@ -282,8 +287,8 @@ def candidates(results: list, seeds: list, rewrites: dict) -> tuple:
     cands, index = [], {}
     for u in seeds:
         r = by_file[u["file"]]
-        progs = {"seed": r["expr"], "costex_abs": r.get("best_expr_abs"),
-                 "costex_rel": r.get("best_expr_rel")}
+        progs = {common.SEED: r["expr"]}
+        progs.update({m.judge: r.get(m.best_expr) for m in common.METRICS})
         rw = rewrites.get(u["name"], {})
         if rw.get("status") == "ok":
             progs["daisy"] = rw["expr"]
@@ -302,13 +307,13 @@ def _judged(e: dict, who: str) -> tuple:
     """(score, program, note) for one side; None and a reason if it has no bound."""
     j = e["judge"]
     if who == "costex":
-        got = [(v, e.get(f"costex_{m}_expr")) for m in METRICS
-               if (v := _abs(j.get(f"costex_{m}")))]
+        got = [(v, e.get(m.judge_expr)) for m in common.METRICS
+               if (v := _score(j.get(m.judge)))]
         if got:
             return (*min(got), "")
-        rep = j.get("costex_abs") or j.get("costex_rel") or {}
+        rep = next((j[m.judge] for m in common.METRICS if j.get(m.judge)), {})
         return None, None, rep.get("status", "no program")
-    v = _abs(j.get("daisy"))
+    v = _score(j.get("daisy"))
     if v:
         return v, e.get("daisy_expr"), ""
     note = e["daisy_status"] if e["daisy_status"] != "ok" else \
@@ -329,7 +334,8 @@ def h2h(out: list) -> list:
         if cx is None and dy is None:
             continue
         rows.append({"file": e["file"], "name": e.get("name"), "kind": kind(e["file"]),
-                     "seed": _abs(e["judge"].get("seed")), "seed_expr": e["seed_expr"],
+                     "seed": _score(e["judge"].get(common.SEED)),
+                     "seed_expr": e["seed_expr"],
                      "cx": cx, "cx_expr": cx_expr, "cx_note": cx_note,
                      "dy": dy, "dy_expr": dy_expr, "dy_note": dy_note})
     return rows
@@ -404,8 +410,7 @@ def phase_rewrite(args) -> None:
     for u, r in zip(seeds, results):
         rw = rewrites.get(u["name"], {})
         entry = {"file": u["file"], "name": r.get("name"), "seed_expr": r["expr"],
-                 "costex_abs_expr": r.get("best_expr_abs"),
-                 "costex_rel_expr": r.get("best_expr_rel"),
+                 **{m.judge_expr: r.get(m.best_expr) for m in common.METRICS},
                  "daisy_expr": rw.get("expr"), "daisy_status": rw.get("status"),
                  "daisy_error": rw.get("error"),
                  "daisy_before": rw.get("daisy_before"),
@@ -451,8 +456,8 @@ def _code(expr: str) -> str:
 def programs(r: dict) -> list:
     """(labels, variant, expression) per distinct program, seed first."""
     order, labels, variant = [], {}, {}
-    entries = [("seed", "seed", r["expr"])]
-    entries += [(m, f"best_{m}", r.get(f"best_expr_{m}")) for m in METRICS]
+    entries = [(common.SEED, common.SEED, r["expr"])]
+    entries += [(m.name, m.variant, r.get(m.best_expr)) for m in common.METRICS]
     for label, v, expr in entries:
         if not expr:
             continue
@@ -463,29 +468,29 @@ def programs(r: dict) -> list:
     return [(labels[e], variant[e], e) for e in order]
 
 
-def _costex(r: dict, labels: list, m: str) -> str:
+def _costex(r: dict, labels: list, m) -> str:
     """costex bounds only the metric it optimised for."""
-    if m in labels:
-        return _num(r.get(f"best_{m}"))
-    if "seed" in labels:
-        return _num(r.get(f"seed_{m}"))
+    if m.name in labels:
+        return _num(r.get(m.best))
+    if common.SEED in labels:
+        return _num(r.get(m.seed))
     return NA
 
 
-def _tool(reps: dict, variant: str, m: str) -> str:
+def _tool(reps: dict, variant: str, m) -> str:
     rep = (reps or {}).get(variant)
     if rep is None:
         return NA
     if rep["status"] != "ok":
         return STATUS.get(rep["status"], rep["status"])
-    return _num(rep.get(m))
+    return _num(rep.get(m.name))
 
 
 def gain(r: dict) -> float:
     """The best ratio costex claims, for sorting."""
     out = 1.0
-    for m in METRICS:
-        seed, best = r.get(f"seed_{m}"), r.get(f"best_{m}")
+    for m in common.METRICS:
+        seed, best = r.get(m.seed), r.get(m.best)
         if seed and best and best > 0:
             out = max(out, seed / best)
     return out
@@ -499,7 +504,7 @@ def row(r: dict, tools: dict, names: list) -> str:
         "<br>".join(f"{', '.join(labels)}: {_code(expr)}"
                     for labels, _, expr in progs),
     ]
-    for m in METRICS:
+    for m in common.METRICS:
         cells.append("<br>".join(_costex(r, labels, m) for labels, _, _ in progs))
         for t in names:
             cells.append("<br>".join(_tool((tools or {}).get(t), v, m)
@@ -526,9 +531,9 @@ def markdown(rows: list, res: dict, ext: dict, sort: str) -> str:
     out += [f"- sorted by {'costex claimed gain' if sort == 'gain' else 'file name'}",
             "",
             "| Core | Program | "
-            + " | ".join(f"{lbl} {t}" for lbl in ("mu_abs", "mu_rel")
+            + " | ".join(f"{m.label} {t}" for m in common.METRICS
                          for t in ["costex"] + names) + " |",
-            "|---|---|" + "---:|" * (2 * (len(names) + 1))]
+            "|---|---|" + "---:|" * (len(common.METRICS) * (len(names) + 1))]
     out += [row(r, by_file.get(r["file"]), names) for r in rows]
     return "\n".join(out) + "\n"
 
@@ -560,7 +565,8 @@ def h2h_markdown(rw: dict) -> str:
            f"{sum(1 for r in every if r['kind'] == 'analysis')} tagged optimal are left "
            f"out, as are {len(rw['results']) - len(every)} where neither side produced a "
            "program the judge could bound",
-           f"- judged by fptaylor {rw.get('fptaylor_version')}, on mu_abs: the same "
+           f"- judged by fptaylor {rw.get('fptaylor_version')}, on {JUDGED.label}: "
+           "the same "
            "analyser over the same box, so this compares rewriters and not analyses",
            f"- daisy {rw.get('daisy_version')}, seed {rw.get('rewrite_seed')}, "
            f"`{' '.join(rw.get('daisy_options', []))}`",
@@ -575,17 +581,17 @@ def h2h_markdown(rw: dict) -> str:
            f"daisy {len(_improves(rows, 'dy'))}",
            "- sorted by how far costex's rewrite beats Daisy's, so Daisy's wins are last",
            "",
-           "| Core | Program | mu_abs | vs seed |",
+           f"| Core | Program | {JUDGED.label} | vs seed |",
            "|---|---|---:|---:|"]
     for r in sorted(rows, key=lambda r: -_edge(r)):
-        progs = [("seed", r["seed_expr"], r["seed"], ""),
+        progs = [(common.SEED, r["seed_expr"], r["seed"], ""),
                  ("costex", r["cx_expr"], r["cx"], r["cx_note"]),
                  ("daisy", r["dy_expr"], r["dy"], r["dy_note"])]
         out.append("| " + " | ".join([
             f"**{r['name'] or r['file']}**",
             "<br>".join(f"{who}: {_code(e) if e else NONE}" for who, e, _, _ in progs),
             "<br>".join(note or _num(v) for _, _, v, note in progs),
-            "<br>".join(NONE if who == "seed" or v is None or not r["seed"]
+            "<br>".join(NONE if who == common.SEED or v is None or not r["seed"]
                         else _gain(r["seed"], v) for who, _, v, _ in progs),
         ]) + " |")
     return "\n".join(out) + "\n"

@@ -204,4 +204,4 @@ def mu_abs(p: Pair, Ic: Iv):
     return max(-p.D.lo, p.D.hi)
 
 
-METRICS = {"rel": mu_rel, "abs": mu_abs}
+METRICS = {"abs": mu_abs, "rel": mu_rel}
