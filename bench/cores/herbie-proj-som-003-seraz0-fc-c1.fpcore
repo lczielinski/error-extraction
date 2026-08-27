@@ -4,5 +4,6 @@
   :name "seraz0-fc-c1"
   :cx-source "herbie:proj/som.fpcore:3"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 mult 2.0) (<= 4.0 h 8.0) (<= 16.0 xj 32.0) (<= 64.0 s 128.0))
   (* mult (/ (* s (+ h xj)) (sqrt (+ (* xj xj) (* s s))))))

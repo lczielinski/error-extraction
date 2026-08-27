@@ -4,5 +4,6 @@
   :name "Data.Random.Distribution.Normal:doubleStdNormalZ from random-fu-0.2.6.2"
   :cx-source "herbie:haskell.fpcore:231"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (- (+ x x) 1))

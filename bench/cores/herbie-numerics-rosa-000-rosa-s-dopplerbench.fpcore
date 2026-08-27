@@ -4,5 +4,6 @@
   :name "Rosa's DopplerBench"
   :cx-source "herbie:numerics/rosa.fpcore:0"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 u 2.0) (<= 4.0 v 8.0) (<= 16.0 t1 32.0))
   (/ (* (- t1) v) (* (+ t1 u) (+ t1 u))))

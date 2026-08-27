@@ -4,5 +4,6 @@
   :name "B-delta2"
   :cx-source "herbie:libraries/coolprop.fpcore:7"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 delta 2.0) (<= 4.0 di 8.0) (<= 16.0 du_ddelta 32.0) (<= 64.0 d2u_ddelta2 128.0))
   (+ (* delta (+ (* delta d2u_ddelta2) du_ddelta)) (* (- (+ (* delta du_ddelta) di) 1) (+ (* delta du_ddelta) di))))

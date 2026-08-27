@@ -4,5 +4,6 @@
   :name "clenshaw-final-imag"
   :cx-source "herbie:proj/tmerc.fpcore:13"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 sin_arg_r 2.0) (<= 4.0 cosh_arg_i 8.0) (<= 16.0 cos_arg_r 32.0) (<= 64.0 sinh_arg_i 128.0) (<= 256.0 hr 512.0) (<= 1024.0 hi 2048.0))
   (+ (* (* sin_arg_r cosh_arg_i) hi) (* (* cos_arg_r sinh_arg_i) hr)))

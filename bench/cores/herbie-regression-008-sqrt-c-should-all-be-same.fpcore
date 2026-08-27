@@ -4,5 +4,6 @@
   :name "sqrt C (should all be same)"
   :cx-source "herbie:regression.fpcore:8"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (sqrt (* 2 (* x x))))

@@ -4,5 +4,6 @@
   :name "Complex square root"
   :cx-source "fpbench:herbie.fpcore:0"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 re 2.0) (<= 4.0 im 8.0))
   (* 0.5 (sqrt (* 2 (+ (sqrt (+ (* re re) (* im im))) re)))))

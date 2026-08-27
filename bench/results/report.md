@@ -1,6 +1,7 @@
 # costex vs daisy vs fptaylor
 
 - 371 cores, costex at 4 iterations
+- 347 rewrite cores, 24 analysis cores (:cx-kind)
 - daisy 2b306ad, `--analysis=dataflow --rangeMethod=interval --errorMethod=affine`
 - fptaylor 0.9.4+dev, `-v 0 -abs true -rel true`
 - external data for 371 of them

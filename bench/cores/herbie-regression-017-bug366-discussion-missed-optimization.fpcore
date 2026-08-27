@@ -4,5 +4,6 @@
   :name "bug366, discussion (missed optimization)"
   :cx-source "herbie:regression.fpcore:17"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 4.0 a 8.0) (<= 1.0 b 2.0))
   (sqrt (- (* a a) (* b b))))

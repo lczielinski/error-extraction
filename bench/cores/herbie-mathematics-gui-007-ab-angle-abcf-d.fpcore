@@ -4,5 +4,6 @@
   :name "ab-angle->ABCF D"
   :cx-source "herbie:mathematics/gui.fpcore:7"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 a 2.0) (<= 4.0 b 8.0))
   (- (* (* (* a a) b) b)))

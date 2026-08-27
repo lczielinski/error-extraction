@@ -4,5 +4,6 @@
   :name "Numeric.Log:$clog1p from log-domain-0.10.2.1, B"
   :cx-source "herbie:haskell.fpcore:154"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (/ x (+ 1 (sqrt (+ x 1)))))

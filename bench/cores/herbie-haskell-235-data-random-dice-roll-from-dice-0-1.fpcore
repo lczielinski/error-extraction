@@ -4,5 +4,6 @@
   :name "Data.Random.Dice:roll from dice-0.1"
   :cx-source "herbie:haskell.fpcore:235"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (- (* x x) 1))

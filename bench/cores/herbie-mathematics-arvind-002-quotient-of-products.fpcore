@@ -4,5 +4,6 @@
   :name "Quotient of products"
   :cx-source "herbie:mathematics/arvind.fpcore:2"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 a1 2.0) (<= 4.0 a2 8.0) (<= 16.0 b1 32.0) (<= 64.0 b2 128.0))
   (/ (* a1 a2) (* b1 b2)))

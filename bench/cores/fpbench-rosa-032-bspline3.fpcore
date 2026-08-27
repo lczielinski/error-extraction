@@ -4,5 +4,6 @@
   :name "bspline3"
   :cx-source "fpbench:rosa.fpcore:32"
   :cx-box "pre"
+  :cx-kind "rewrite"
   :pre (<= 0.0 u 1.0)
   (/ (- (* (* u u) u)) 6))

@@ -4,5 +4,6 @@
   :name "Diagrams.Solve.Polynomial:cubForm  from diagrams-solve-0.1, F"
   :cx-source "herbie:haskell.fpcore:50"
   :cx-box "default"
+  :cx-kind "analysis"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
   (* (* x 27) y))

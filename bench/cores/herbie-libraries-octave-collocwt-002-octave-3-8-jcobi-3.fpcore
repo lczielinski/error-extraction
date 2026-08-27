@@ -4,5 +4,6 @@
   :name "Octave 3.8, jcobi/3"
   :cx-source "herbie:libraries/octave/CollocWt.fpcore:2"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= -0.99999999999999988897769753748434595763683319091796875 alpha 1.0) (<= -0.99999999999999988897769753748434595763683319091796875 beta 7.0))
   (/ (/ (/ (+ (+ (+ alpha beta) (* beta alpha)) 1) (+ (+ alpha beta) (* 2 1))) (+ (+ alpha beta) (* 2 1))) (+ (+ (+ alpha beta) (* 2 1)) 1)))

@@ -4,5 +4,6 @@
   :name "Codec.Picture.Types:toneMapping from JuicyPixels-3.2.6.1"
   :cx-source "herbie:haskell.fpcore:97"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
   (/ (* x (+ (/ x y) 1)) (+ x 1)))

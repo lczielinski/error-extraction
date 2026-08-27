@@ -5,5 +5,6 @@
   :name "Given's Rotation SVD example"
   :cx-source "herbie:physics/sidey.fpcore:0"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 p 2.0) (<= 4.0 x 8.0))
   (sqrt (* 0.5 (+ 1 (/ x (sqrt (+ (* (* 4 p) p) (* x x))))))))

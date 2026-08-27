@@ -5,5 +5,6 @@
   :name "x (used to be hard to sample)"
   :cx-source "herbie:regression.fpcore:3"
   :cx-box "default"
+  :cx-kind "analysis"
   :pre (<= 1.0 x 2.0)
   x)

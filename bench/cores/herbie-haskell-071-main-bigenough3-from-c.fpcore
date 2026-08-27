@@ -4,5 +4,6 @@
   :name "Main:bigenough3 from C"
   :cx-source "herbie:haskell.fpcore:71"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (- (sqrt (+ x 1)) (sqrt x)))

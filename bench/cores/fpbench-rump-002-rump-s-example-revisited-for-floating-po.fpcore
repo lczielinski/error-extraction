@@ -4,5 +4,6 @@
   :name "Rump's example revisited for floating point"
   :cx-source "fpbench:rump.fpcore:2"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 a 2.0) (<= 4.0 b 8.0))
   (+ (+ (+ (* (- 333.75 (* a a)) (* (* (* b b) (* b b)) (* b b))) (* (* a a) (- (- (* (* 11 (* a a)) (* b b)) (* 121 (* (* b b) (* b b)))) 2))) (* 5.5 (* (* (* b b) (* b b)) (* (* b b) (* b b))))) (/ a (* 2 b))))

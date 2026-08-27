@@ -4,5 +4,6 @@
   :name "Data.Colour.CIE:lightness from colour-2.3.3"
   :cx-source "herbie:haskell.fpcore:29"
   :cx-box "default"
+  :cx-kind "analysis"
   :pre (<= 1.0 x 2.0)
   (- (* x 116) 16))

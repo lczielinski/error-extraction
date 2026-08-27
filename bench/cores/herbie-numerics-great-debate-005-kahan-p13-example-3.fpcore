@@ -4,5 +4,6 @@
   :name "Kahan p13 Example 3"
   :cx-source "herbie:numerics/great-debate.fpcore:5"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 t 2.0)
   (- 1 (/ 1 (+ 2 (* (- 2 (/ (/ 2 t) (+ 1 (/ 1 t)))) (- 2 (/ (/ 2 t) (+ 1 (/ 1 t)))))))))

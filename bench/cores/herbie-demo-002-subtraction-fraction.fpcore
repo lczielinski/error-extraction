@@ -4,5 +4,6 @@
   :name "subtraction fraction"
   :cx-source "herbie:demo.fpcore:2"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 f 2.0) (<= 4.0 n 8.0))
   (/ (- (+ f n)) (- f n)))

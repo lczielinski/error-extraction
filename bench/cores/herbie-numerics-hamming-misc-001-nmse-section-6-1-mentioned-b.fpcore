@@ -4,5 +4,6 @@
   :name "NMSE Section 6.1 mentioned, B"
   :cx-source "herbie:numerics/hamming-misc.fpcore:1"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 a 2.0) (<= 4.0 b 8.0))
   (* (* (/ PI 2) (/ 1 (- (* b b) (* a a)))) (- (/ 1 a) (/ 1 b))))

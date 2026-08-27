@@ -4,5 +4,6 @@
   :name "init-p"
   :cx-source "herbie:proj/omerc.fpcore:19"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 L 2.0) (<= 4.0 H 8.0))
   (/ (- L H) (+ L H)))

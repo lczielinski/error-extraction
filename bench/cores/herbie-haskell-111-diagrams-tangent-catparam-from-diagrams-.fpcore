@@ -4,5 +4,6 @@
   :name "Diagrams.Tangent:$catParam from diagrams-lib-1.3.0.3, D"
   :cx-source "herbie:haskell.fpcore:111"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (* 3 (+ (- (* (* x 3) x) (* x 4)) 1)))

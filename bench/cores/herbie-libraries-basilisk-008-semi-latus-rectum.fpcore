@@ -4,5 +4,6 @@
   :name "semi_latus_rectum"
   :cx-source "herbie:libraries/basilisk.fpcore:8"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 a 2.0) (<= 4.0 e 8.0))
   (* a (- 1 (* e e))))

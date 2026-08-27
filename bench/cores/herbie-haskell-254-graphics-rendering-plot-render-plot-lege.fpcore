@@ -4,5 +4,6 @@
   :name "Graphics.Rendering.Plot.Render.Plot.Legend:renderLegendOutside from plot-0.2.3.4, C"
   :cx-source "herbie:haskell.fpcore:254"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0) (<= 16.0 z 32.0))
   (+ (* x (+ y z)) (* z 5)))

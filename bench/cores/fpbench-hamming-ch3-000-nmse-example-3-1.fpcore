@@ -4,5 +4,6 @@
   :name "NMSE example 3.1"
   :cx-source "fpbench:hamming-ch3.fpcore:0"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 0.0 x 2.0)
   (- (sqrt (+ x 1)) (sqrt x)))

@@ -31,14 +31,14 @@ def _add_hi(a, b):
 
 
 def _mul(a, b):
-    """0 * inf = 0"""
+    """0 * inf = 0."""
     if a == 0 or b == 0:
         return mpfr(0)
     return a * b
 
 
 def _recip(x):
-    """1/x with 1/inf = 0."""
+    """1/inf = 0."""
     if x == INF or x == NINF:
         return mpfr(0)
     return 1 / x
@@ -95,12 +95,12 @@ class Iv:
 
     @property
     def mag(self):
-        """max |t| over the interval."""
+        """max |t|."""
         return max(abs(self.lo), abs(self.hi))
 
     @property
     def mig(self):
-        """min |t| over the interval; 0 exactly when the interval contains 0."""
+        """min |t|, so 0 exactly when the interval contains 0."""
         if self.contains_zero:
             return mpfr(0)
         return min(abs(self.lo), abs(self.hi))
@@ -111,8 +111,6 @@ class Iv:
         if other.is_empty:
             return False
         return other.lo <= self.lo and self.hi <= other.hi
-
-    # -- lattice --------------------------------------------------------
 
     def hull(self, other: "Iv") -> "Iv":
         if self.is_empty:
@@ -125,8 +123,6 @@ class Iv:
         if self.is_empty or other.is_empty:
             return EMPTY
         return Iv(max(self.lo, other.lo), min(self.hi, other.hi))
-
-    # -- arithmetic -----------------------------------------------------
 
     def __neg__(self) -> "Iv":
         if self.is_empty:
@@ -144,16 +140,12 @@ class Iv:
     def __mul__(self, other: "Iv") -> "Iv":
         if self.is_empty or other.is_empty:
             return EMPTY
-        corners = (
-            _mul(self.lo, other.lo),
-            _mul(self.lo, other.hi),
-            _mul(self.hi, other.lo),
-            _mul(self.hi, other.hi),
-        )
+        corners = (_mul(self.lo, other.lo), _mul(self.lo, other.hi),
+                   _mul(self.hi, other.lo), _mul(self.hi, other.hi))
         return Iv(min(corners), max(corners))
 
     def recip(self) -> "Iv":
-        """1/self, widened to TOP when self straddles zero."""
+        """TOP when self straddles zero."""
         if self.is_empty:
             return EMPTY
         if self.contains_zero:

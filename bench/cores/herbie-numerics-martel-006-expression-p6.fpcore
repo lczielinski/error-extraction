@@ -4,5 +4,6 @@
   :name "Expression, p6"
   :cx-source "herbie:numerics/martel.fpcore:6"
   :cx-box "pre"
+  :cx-kind "rewrite"
   :pre (and (<= -14.0 a -13.0) (<= -3.0 b -2.0) (<= 3.0 c 3.5) (<= 12.5 d 13.5))
   (* (+ a (+ b (+ c d))) 2))

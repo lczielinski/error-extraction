@@ -5,5 +5,6 @@
   :name "floudas3"
   :cx-source "fpbench:fptaylor-real2float.fpcore:5"
   :cx-box "pre"
+  :cx-kind "rewrite"
   :pre (and (<= 0.0 x1 2.0) (<= 0.0 x2 3.0))
   (+ (- (* -12 x1) (* 7 x2)) (* x2 x2)))

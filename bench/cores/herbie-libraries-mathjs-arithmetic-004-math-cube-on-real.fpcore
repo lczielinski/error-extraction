@@ -4,5 +4,6 @@
   :name "math.cube on real"
   :cx-source "herbie:libraries/mathjs/arithmetic.fpcore:4"
   :cx-box "default"
+  :cx-kind "analysis"
   :pre (<= 1.0 x 2.0)
   (* (* x x) x))

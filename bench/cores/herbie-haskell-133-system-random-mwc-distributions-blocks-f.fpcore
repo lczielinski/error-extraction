@@ -4,5 +4,6 @@
   :name "System.Random.MWC.Distributions:blocks from mwc-random-0.13.3.2"
   :cx-source "herbie:haskell.fpcore:133"
   :cx-box "default"
+  :cx-kind "analysis"
   :pre (<= 1.0 x 2.0)
   (* (* x 0.5) x))

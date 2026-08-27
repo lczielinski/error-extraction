@@ -4,5 +4,6 @@
   :name "Rosa's FloatVsDoubleBenchmark"
   :cx-source "herbie:numerics/rosa.fpcore:2"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 x1 2.0) (<= 4.0 x2 8.0))
   (+ x1 (+ (+ (+ (+ (* (+ (* (* (* 2 x1) (/ (- (+ (* (* 3 x1) x1) (* 2 x2)) x1) (+ (* x1 x1) 1))) (- (/ (- (+ (* (* 3 x1) x1) (* 2 x2)) x1) (+ (* x1 x1) 1)) 3)) (* (* x1 x1) (- (* 4 (/ (- (+ (* (* 3 x1) x1) (* 2 x2)) x1) (+ (* x1 x1) 1))) 6))) (+ (* x1 x1) 1)) (* (* (* 3 x1) x1) (/ (- (+ (* (* 3 x1) x1) (* 2 x2)) x1) (+ (* x1 x1) 1)))) (* (* x1 x1) x1)) x1) (* 3 (/ (- (- (* (* 3 x1) x1) (* 2 x2)) x1) (+ (* x1 x1) 1))))))

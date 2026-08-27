@@ -4,5 +4,6 @@
   :name "Examples.Basics.BasicTests:f1 from sbv-4.4"
   :cx-source "herbie:haskell.fpcore:226"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
   (* (+ x y) (- x y)))

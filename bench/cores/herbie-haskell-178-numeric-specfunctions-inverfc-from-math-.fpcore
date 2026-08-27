@@ -4,5 +4,6 @@
   :name "Numeric.SpecFunctions:invErfc from math-functions-0.1.5.2, B"
   :cx-source "herbie:haskell.fpcore:178"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (* 0.70711 (- (/ (+ 2.30753 (* x 0.27061)) (+ 1 (* x (+ 0.99229 (* x 0.04481))))) x)))

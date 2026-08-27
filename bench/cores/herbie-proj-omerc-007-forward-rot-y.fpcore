@@ -4,5 +4,6 @@
   :name "forward-rot-y"
   :cx-source "herbie:proj/omerc.fpcore:7"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 u 2.0) (<= 4.0 v 8.0) (<= 16.0 cosrot 32.0) (<= 64.0 sinrot 128.0) (<= 256.0 u0 512.0))
   (- (* (- u u0) cosrot) (* v sinrot)))

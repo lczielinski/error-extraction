@@ -4,5 +4,6 @@
   :name "Numeric.SpecFunctions:invIncompleteGamma from math-functions-0.1.5.2, A"
   :cx-source "herbie:haskell.fpcore:194"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (- 1 (* x (+ 0.253 (* x 0.12)))))

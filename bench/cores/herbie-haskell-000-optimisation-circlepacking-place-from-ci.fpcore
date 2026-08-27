@@ -4,5 +4,6 @@
   :name "Optimisation.CirclePacking:place from circle-packing-0.1.0.4, A"
   :cx-source "herbie:haskell.fpcore:0"
   :cx-box "default"
+  :cx-kind "analysis"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
   (sqrt (+ x y)))

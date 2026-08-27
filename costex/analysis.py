@@ -1,8 +1,7 @@
 """The (S, D) domain and its transfer functions.
 
-A pair (S, D) for a program z~ of class c means: z~ is defined at every v in B,
-    z~ - z  in D    everywhere on B,   and   z~/z  in S   wherever z != 0.
-BOTTOM (None) means the program may be undefined somewhere on B.
+(S, D) for a program z~ of class c: z~ is defined everywhere on B,
+z~ - z in D on B, and z~/z in S wherever z != 0.  BOTTOM: may be undefined.
 """
 
 from __future__ import annotations
@@ -17,8 +16,8 @@ BOTTOM = None
 NONNEG = Iv(0, INF)
 
 mantissa = 53              # of the target format, not of the bound arithmetic
-u = mpfr(2) ** -53         # unit roundoff
-eta = mpfr(2) ** -1075     # half the smallest subnormal
+u = mpfr(2) ** -53
+eta = mpfr(2) ** -1075
 
 EMIN = {53: -1022, 24: -126}
 
@@ -32,7 +31,7 @@ def set_target(mantissa_bits: int) -> None:
 
 
 def ufp(x):
-    """2^floor(log2|x|), the unit in the first place."""
+    """2^floor(log2|x|)."""
     x = abs(x)
     if x == 0:
         return mpfr(0)
@@ -42,7 +41,7 @@ def ufp(x):
 
 
 def gamma(I: Iv) -> Iv:
-    """Absolute rounding term: fl(t) - t is in gamma(I) for every t in I."""
+    """fl(t) - t for every t in I."""
     m = I.mag
     if m == 0:
         return ZERO
@@ -51,7 +50,7 @@ def gamma(I: Iv) -> Iv:
 
 
 def urel(I: Iv) -> Iv:
-    """Relative rounding factor: fl(t)/t is in urel(I) for every nonzero t in I."""
+    """fl(t)/t for every nonzero t in I."""
     q = I.mig
     r = mpfr(1) if q == 0 else min(mpfr(1), max(u, eta / q))
     return Iv(1 - r, 1 + r)
@@ -84,30 +83,24 @@ EXACT = Pair(ONE, ZERO)
 TOP_PAIR = Pair(TOP, TOP)
 
 
-# -- reduced product ----------------------------------------------------
-
-
 def enc(S: Iv, D: Iv, Ic: Iv) -> Iv:
-    """enc_c(S,D): an enclosure of the computed value itself."""
+    """An enclosure of the computed value itself."""
     return (Ic + D).intersect(TOP if Ic.contains_zero else Ic * S)
 
 
 def rho(S: Iv, D: Iv, Ic: Iv) -> tuple:
-    """Refine each component by the other.  Needs alpha defined on all of B."""
+    """Refine each component by the other."""
     if Ic.contains_zero:
         return S, D
     return S.intersect(ONE + D / Ic), D.intersect(Ic * (S - ONE))
 
 
 def _round(Sh: Iv, Dh: Iv, Ic: Iv) -> Pair:
-    """Reduce the pre-rounding pair, then add the operation's own rounding."""
+    """Reduce the pre-rounding pair, then add this operation's rounding."""
     Sh, Dh = rho(Sh, Dh, Ic)
     Ih = enc(Sh, Dh, Ic)
     S, D = rho(Sh * urel(Ih), Dh + gamma(Ih), Ic)
     return Pair(S, D)
-
-
-# -- transfer functions -------------------------------------------------
 
 
 def constant(exact: bool, Ic: Iv) -> Pair:
@@ -144,8 +137,7 @@ def add(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
     same_sign = (I1.lo > 0 and I2.lo > 0) or (I1.hi < 0 and I2.hi < 0)
     Sh = TOP
     if same_sign:
-        # the convex combination is affine in lambda, so its extremes sit at
-        # the ends of Lambda
+        # affine in lambda, so the extremes sit at the ends of Lambda
         lam = Iv(0, 1).intersect(I1 / Ic)
         if not lam.is_empty:
             Sh = _combine(lam.lo, p1.S, p2.S).hull(_combine(lam.hi, p1.S, p2.S))
@@ -158,7 +150,6 @@ def _combine(t, S1: Iv, S2: Iv) -> Iv:
 
 
 def sub(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
-    """x - y is x + (-y), with the right operand's pair and interval negated."""
     if p2 is BOTTOM:
         return BOTTOM
     return add(p1, Pair(p2.S, -p2.D), I1, -I2, Ic)
@@ -199,9 +190,6 @@ def transfer(op: str, pairs: list, ivs: list, Ic: Iv) -> Pair:
     if op == "sqrt":
         return sqrt(pairs[0], ivs[0], Ic)
     return _BINARY[op](pairs[0], pairs[1], ivs[0], ivs[1], Ic)
-
-
-# -- readouts -----------------------------------------------------------
 
 
 def mu_rel(p: Pair, Ic: Iv):

@@ -4,5 +4,6 @@
   :name "Graphics.Rasterific.Shading:$sgradientColorAt from Rasterific-0.6.1"
   :cx-source "herbie:haskell.fpcore:143"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0) (<= 16.0 z 32.0))
   (/ (- x y) (- z y)))

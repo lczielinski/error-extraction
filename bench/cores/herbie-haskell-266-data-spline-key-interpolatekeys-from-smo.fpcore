@@ -4,5 +4,6 @@
   :name "Data.Spline.Key:interpolateKeys from smoothie-0.4.0.2"
   :cx-source "herbie:haskell.fpcore:266"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (* (* x x) (- 3 (* x 2))))

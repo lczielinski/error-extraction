@@ -4,5 +4,6 @@
   :name "Graphics.Rasterific.Shading:$sradialGradientWithFocusShader from Rasterific-0.6.1, A"
   :cx-source "herbie:haskell.fpcore:144"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (+ (* x x) 1))

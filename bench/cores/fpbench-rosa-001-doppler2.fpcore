@@ -4,5 +4,6 @@
   :name "doppler2"
   :cx-source "fpbench:rosa.fpcore:1"
   :cx-box "pre"
+  :cx-kind "rewrite"
   :pre (and (<= -125.0 u 125.0) (<= 15.0 v 25000.0) (<= -40.0 T 60.0))
   (/ (* (- (+ 331.4 (* 0.6 T))) v) (* (+ (+ 331.4 (* 0.6 T)) u) (+ (+ 331.4 (* 0.6 T)) u))))

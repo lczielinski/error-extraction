@@ -4,5 +4,6 @@
   :name "ReportTypes:explainFloat from gipeda-0.1.2.1"
   :cx-source "herbie:haskell.fpcore:237"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (* 100 (/ (- x x) x)))

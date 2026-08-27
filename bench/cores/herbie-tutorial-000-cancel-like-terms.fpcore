@@ -4,5 +4,6 @@
   :name "Cancel like terms"
   :cx-source "herbie:tutorial.fpcore:0"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 x 2.0)
   (- (+ 1 x) x))

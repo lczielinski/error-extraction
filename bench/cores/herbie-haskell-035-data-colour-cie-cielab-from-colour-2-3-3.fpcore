@@ -4,5 +4,6 @@
   :name "Data.Colour.CIE:cieLAB from colour-2.3.3, C"
   :cx-source "herbie:haskell.fpcore:35"
   :cx-box "default"
+  :cx-kind "analysis"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
   (+ x (/ y 500)))

@@ -4,5 +4,6 @@
   :name "Data.Histogram.Bin.LogBinD:$cbinSizeN from histogram-fill-0.8.4.1"
   :cx-source "herbie:haskell.fpcore:240"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
   (- (* x y) x))

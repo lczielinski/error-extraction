@@ -4,5 +4,6 @@
   :name "_multiplyComplex, imaginary part"
   :cx-source "herbie:libraries/mathjs/arithmetic.fpcore:18"
   :cx-box "default"
+  :cx-kind "analysis"
   :pre (and (<= 1.0 x.re 2.0) (<= 4.0 x.im 8.0) (<= 16.0 y.re 32.0) (<= 64.0 y.im 128.0))
   (+ (* x.re y.im) (* x.im y.re)))

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 import os
+import shutil
 import struct
 import subprocess
 import tempfile
@@ -22,15 +23,14 @@ DEFAULT_ITERS = 4
 ANA_ROUNDS = 30
 
 OPS = {"add": "Add", "sub": "Sub", "mul": "Mul", "div": "Div", "neg": "Neg", "sqrt": "Sqrt"}
-OP_NAME = {v: k for k, v in OPS.items()}          # e-node op -> AST op
+OP_NAME = {v: k for k, v in OPS.items()}
 LEAVES = ("Num", "Lit", "Var")
 CONSTRUCTORS = LEAVES + tuple(OPS.values())
-# printed in this order, so the output blocks can be matched up positionally
-TABLES = CONSTRUCTORS + ("lo", "hi", "Bad")
+TABLES = CONSTRUCTORS + ("lo", "hi", "Bad")    # dumped in this order
 
 
 class BadBox(Exception):
-    """An e-class got an empty interval: the input box breaks definedness."""
+    """An e-class got an empty interval: the box breaks definedness."""
 
 
 class ENode:
@@ -56,14 +56,19 @@ class EGraph:
         self.lits = lits          # Lit index -> AST leaf
         self.root = root
         self._index = None
+        self._where = {}
 
     def __repr__(self):
-        return f"EGraph({len(self.nodes)} classes, {sum(map(len, self.nodes.values()))} nodes)"
+        nodes = sum(map(len, self.nodes.values()))
+        return f"EGraph({len(self.nodes)} classes, {nodes} nodes)"
 
     def locate(self, e) -> str:
-        """The class of a program tree, found by structure."""
+        """The class of a program tree, by structure.  Memoized: a lookup walks
+        the whole tree, and callers ask for every subterm."""
         if self._index is None:
             self._index = {n.key(): cls for cls, ns in self.nodes.items() for n in ns}
+        if e in self._where:
+            return self._where[e]
         if e[0] == "var":
             key = ("Var", e[1], ())
         elif is_exact(e):
@@ -74,21 +79,23 @@ class EGraph:
             key = (OPS[e[0]], None, tuple(self.locate(a) for a in e[1:]))
         if key not in self._index:
             raise RuntimeError(f"term missing from the e-graph: {key}")
-        return self._index[key]
+        cls = self._index[key]
+        self._where[e] = cls
+        return cls
 
 
-# -- emitting -----------------------------------------------------------
+# -- emitting --
 
 
 def representable(v: Fraction) -> bool:
-    """Is this exact value a number of the target format?"""
+    """Is this value a number of the target format?"""
     try:
         f = float(v)
     except OverflowError:
         return False
     if not math.isfinite(f):
         return False
-    if A.mantissa < 53:                      # binary32
+    if A.mantissa < 53:              # binary32
         try:
             f = struct.unpack("f", struct.pack("f", f))[0]
         except OverflowError:
@@ -107,7 +114,7 @@ def _f64(x: float) -> str:
 
 
 def is_exact(e) -> bool:
-    """Is this leaf a literal the target format holds exactly, so unrounded?"""
+    """A literal the target format holds exactly, so unrounded."""
     return e[0] == "num" and representable(e[1])
 
 
@@ -129,7 +136,7 @@ class _Emitter:
         self.n = 0
 
     def term(self, e) -> str:
-        """Bind e to a global and return its name, sharing subterms."""
+        """Bind e to a global, sharing subterms."""
         if e in self.memo:
             return self.memo[e]
         bounds = None
@@ -157,15 +164,20 @@ class _Emitter:
         self.lines.append(f"(set (hi {name}) {_f64(hi)})")
 
 
+def _source(name: str) -> str:
+    with open(os.path.join(EGG_DIR, name)) as f:
+        return f.read()
+
+
 def program(body, box: dict, iters: int = DEFAULT_ITERS) -> tuple:
-    """The .egg source, and the Lit table it refers to by index."""
+    """The .egg source, and the Lit table it indexes."""
     em = _Emitter()
     for name, (lo, hi) in box.items():
         em.bound(em.term(("var", name)), lo, hi)
     root = em.term(body)
 
-    src = [open(os.path.join(EGG_DIR, "analysis.egg")).read(),
-           open(os.path.join(EGG_DIR, "rules.egg")).read(),
+    src = [_source("analysis.egg"),
+           _source("rules.egg"),
            "\n".join(em.lines),
            f"(let $root {root})",
            f"(run-schedule (repeat {iters} (repeat {ANA_ROUNDS} ana) opt))",
@@ -174,7 +186,7 @@ def program(body, box: dict, iters: int = DEFAULT_ITERS) -> tuple:
     return "\n".join(src) + "\n", em.lits
 
 
-# -- reading back -------------------------------------------------------
+# -- reading back --
 
 
 def _norm(s) -> str:
@@ -232,20 +244,29 @@ def parse_dump(text: str) -> tuple:
     if bad:
         raise BadBox("empty interval on " + "; ".join(sorted(bad)[:5]))
     # a class the analysis never bounded stays at top
-    interval = {cls: Iv(ends["lo"].get(cls, NINF), ends["hi"].get(cls, INF)) for cls in nodes}
+    interval = {cls: Iv(ends["lo"].get(cls, NINF), ends["hi"].get(cls, INF))
+                for cls in nodes}
     return nodes, interval
 
 
 def build(body, box: dict, iters: int = DEFAULT_ITERS, out_path: str = None,
           timeout: float = None) -> EGraph:
     src, lits = program(body, box, iters)
-    path = out_path or os.path.join(tempfile.mkdtemp(prefix="costex-"), "model.egg")
+    tmp = None if out_path else tempfile.mkdtemp(prefix="costex-")
+    path = out_path or os.path.join(tmp, "model.egg")
     with open(path, "w") as f:
         f.write(src)
-    run = subprocess.run([EGGLOG, path], capture_output=True, text=True, timeout=timeout)
-    if run.returncode != 0 or "[ERROR]" in run.stderr:
-        raise RuntimeError(f"egglog failed ({path}):\n{run.stderr[:2000]}")
-    nodes, interval = parse_dump(run.stdout)
-    g = EGraph(nodes, interval, lits)
-    g.root = g.locate(body)
+    try:
+        run = subprocess.run([EGGLOG, path], capture_output=True, text=True, timeout=timeout)
+        if run.returncode != 0 or "[ERROR]" in run.stderr:
+            raise RuntimeError(f"egglog failed ({path}):\n{run.stderr[:2000]}")
+        nodes, interval = parse_dump(run.stdout)
+        g = EGraph(nodes, interval, lits)
+        g.root = g.locate(body)
+    except Exception:
+        tmp = None             # a failed run keeps its model to look at
+        raise
+    finally:
+        if tmp:
+            shutil.rmtree(tmp, ignore_errors=True)
     return g

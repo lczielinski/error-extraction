@@ -4,5 +4,6 @@
   :name "Complex division, imag part"
   :cx-source "herbie:numerics/every-cs.fpcore:8"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 a 2.0) (<= 4.0 b 8.0) (<= 16.0 c 32.0) (<= 64.0 d 128.0))
   (/ (- (* b c) (* a d)) (+ (* c c) (* d d))))

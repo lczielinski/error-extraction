@@ -4,5 +4,6 @@
   :name "Numeric.Interval.Internal:bisect from intervals-0.7.1, A"
   :cx-source "herbie:haskell.fpcore:63"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
   (+ x (/ (- y x) 2)))

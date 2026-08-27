@@ -4,5 +4,6 @@
   :name "Data.Array.Repa.Algorithms.Pixel:doubleRmsOfRGB8 from repa-algorithms-3.4.0.1"
   :cx-source "herbie:haskell.fpcore:262"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0) (<= 16.0 z 32.0))
   (sqrt (/ (+ (+ (* x x) (* y y)) (* z z)) 3)))

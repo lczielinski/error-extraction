@@ -4,5 +4,6 @@
   :name "Statistics.Math.RootFinding:ridders from math-functions-0.1.5.2"
   :cx-source "herbie:haskell.fpcore:211"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 256.0 x 512.0) (<= 64.0 y 128.0) (<= 16.0 z 32.0) (<= 4.0 t 8.0) (<= 1.0 a 2.0))
   (/ (* (* x y) z) (sqrt (- (* z z) (* t a)))))

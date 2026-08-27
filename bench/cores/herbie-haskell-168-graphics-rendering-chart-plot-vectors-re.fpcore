@@ -4,5 +4,6 @@
   :name "Graphics.Rendering.Chart.Plot.Vectors:renderPlotVectors from Chart-1.5.3"
   :cx-source "herbie:haskell.fpcore:168"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
   (+ x (* (- 1 x) (- 1 y))))

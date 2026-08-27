@@ -4,5 +4,6 @@
   :name "Numeric.SpecFunctions:invIncompleteBetaWorker from math-functions-0.1.5.2, E"
   :cx-source "herbie:haskell.fpcore:204"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
   (+ (- 1 x) (* y (sqrt x))))

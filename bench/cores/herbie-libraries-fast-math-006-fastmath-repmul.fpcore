@@ -4,5 +4,6 @@
   :name "FastMath repmul"
   :cx-source "herbie:libraries/fast-math.fpcore:6"
   :cx-box "default"
+  :cx-kind "rewrite"
   :pre (<= 1.0 d1 2.0)
   (* (* (* d1 d1) d1) d1))

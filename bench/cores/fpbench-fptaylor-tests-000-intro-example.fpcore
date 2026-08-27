@@ -4,5 +4,6 @@
   :name "intro-example"
   :cx-source "fpbench:fptaylor-tests.fpcore:0"
   :cx-box "pre"
+  :cx-kind "rewrite"
   :pre (<= 0.0 t 999.0)
   (/ t (+ t 1)))

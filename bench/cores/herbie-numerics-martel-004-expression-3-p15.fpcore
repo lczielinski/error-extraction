@@ -4,5 +4,6 @@
   :name "Expression 3, p15"
   :cx-source "herbie:numerics/martel.fpcore:4"
   :cx-box "pre"
+  :cx-kind "rewrite"
   :pre (<= 0.0 x 2.0)
   (+ (* x (* x x)) (* x x)))
