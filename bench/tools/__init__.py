@@ -45,9 +45,8 @@ def analyze(tool: str, us: list, *, timeout: float, jobs: int, workdir: str) -> 
 
 
 def rewrite(us: list, *, seed: int, timeout: float, jobs: int, workdir: str) -> tuple:
-    """Daisy's rewriter, cached like an analysis.  The seed rides in the key
-    through opts, so changing it re-runs rather than returning another seed's
-    programs."""
+    """Cached like an analysis; the seed rides in the key through opts, so
+    changing it re-runs."""
     ver = daisy.version()
     opts = daisy.REWRITE_OPTS + (f"--rewrite-seed={seed}",)
 

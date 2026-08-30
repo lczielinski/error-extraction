@@ -1,6 +1,10 @@
 """Measured error: a program in the target format against a high-precision
-reference, over points of its box.  A lower bound on the worst case, not a
+reference over points of its box.  A lower bound on the worst case, not a
 bound on it, so it must never be mixed into a minimum with a sound analyser.
+
+Uniform points do not find a worst case, which lives on a thin set.  So each
+program also climbs from the worst of them, in float-ordinal space, and every
+point any climb reaches joins one pool the whole core is scored on.
 """
 
 from __future__ import annotations
@@ -13,8 +17,12 @@ import struct
 import gmpy2
 from gmpy2 import mpfr
 
-VERSION = "sample-11"
+VERSION = "sample-12"
 SAMPLES = 10_000
+SEARCH_SEEDS = 8             # worst uniform points a program climbs from
+SEARCH_LEVELS = 64           # step sizes in the ladder, span down to one float
+SEARCH_EVALS = 4000          # evaluations per program, over all its climbs
+SEARCH_KEEP = 8              # best points a climb contributes to the pool
 REF_BITS = 256
 ZERO_BITS = 4096             # before believing a reference of exactly zero
 MAX_REF_BITS = 16384
@@ -35,8 +43,6 @@ def _f32(x: float) -> float:
 
 
 def _ordinal(x: float, width: int) -> int:
-    """A monotone index over the representable numbers, adjacent floats one
-    apart, so a uniform integer draw is a uniform draw over floats."""
     if width == 32:
         n, sign = struct.unpack("<I", struct.pack("<f", x))[0], 1 << 31
     else:
@@ -53,8 +59,7 @@ def _from_ordinal(o: int, width: int) -> float:
 
 
 def _span(lo: float, hi: float, width: int) -> tuple:
-    """Ordinals of the representable numbers inside [lo, hi].  Narrowing a
-    bound can step outside the box, so nudge inward."""
+    """A narrowed bound can step outside the box, so nudge in."""
     a, b = _ordinal(_f32(lo) if width == 32 else lo, width), \
         _ordinal(_f32(hi) if width == 32 else hi, width)
     if _from_ordinal(a, width) < lo:
@@ -64,6 +69,18 @@ def _span(lo: float, hi: float, width: int) -> tuple:
     return a, b
 
 
+def _spans(box: dict, width: int):
+    spans = {}
+    for v, (lo, hi) in box.items():
+        if not (math.isfinite(lo) and math.isfinite(hi)):
+            return None            # an unbounded box has no uniform measure
+        a, b = _span(lo, hi, width)
+        if a > b:
+            return None            # no representable number inside the box
+        spans[v] = (a, b)
+    return spans
+
+
 def _points(file: str, box: dict, n: int, precision: str) -> list:
     """The same n points for every program of a core."""
     salt = hashlib.sha256(f"{file}|{SEED}|{DISTRIBUTION}".encode()).digest()[:8]
@@ -71,15 +88,13 @@ def _points(file: str, box: dict, n: int, precision: str) -> list:
     width = 32 if precision == "binary32" else 64
     names = sorted(box)
     spans = {}
-    for v in names:
-        lo, hi = box[v]
-        if not (math.isfinite(lo) and math.isfinite(hi)):
-            return []              # an unbounded box has no uniform measure
-        if DISTRIBUTION == "float":
-            a, b = _span(lo, hi, width)
-            if a > b:
-                return []          # no representable number inside the box
-            spans[v] = (a, b)
+    if DISTRIBUTION == "float":
+        spans = _spans(box, width)
+        if spans is None:
+            return []
+    elif any(not (math.isfinite(lo) and math.isfinite(hi))
+             for lo, hi in box.values()):
+        return []
     out = []
     for _ in range(n):
         p = {}
@@ -95,7 +110,6 @@ def _points(file: str, box: dict, n: int, precision: str) -> list:
 
 
 def _target(e, env: dict, rnd):
-    """As the target format computes it, rounding after every operation."""
     op = e[0]
     if op == "var":
         return env[e[1]]
@@ -124,8 +138,6 @@ def _target(e, env: dict, rnd):
 
 
 def _ref(e, env: dict):
-    """Exactly, at the ambient precision.  A point's coordinates are doubles,
-    so they are exact here."""
     op = e[0]
     if op == "var":
         return mpfr(env[e[1]])
@@ -153,9 +165,6 @@ def _ref(e, env: dict):
 
 
 def _ulps(got: float, ref, width: int) -> float:
-    """Representable numbers between the computed value and the rounded exact
-    one, plus one.  Bounded, so no single point dominates a maximum the way an
-    unbounded relative error does."""
     exact = float(ref)
     if width == 32:
         exact = _f32(exact)
@@ -167,9 +176,8 @@ def _ulps(got: float, ref, width: int) -> float:
 
 
 def floor_bits(box: dict) -> int:
-    """Adding values whose exponents differ by k needs more than k bits or the
-    smaller vanishes: x + 1 at x~1e307 becomes x below ~1020 bits, and the
-    reference for sqrt(x+1) - sqrt(x) then collapses to zero."""
+    """Adding values whose exponents differ by k needs more than k bits, or
+    the smaller vanishes and a cancelling reference collapses to zero."""
     mags = [abs(v) for lo, hi in box.values() for v in (lo, hi)
             if v and math.isfinite(v)] + [1.0]
     span = math.log2(max(mags)) - math.log2(min(mags))
@@ -177,9 +185,8 @@ def floor_bits(box: dict) -> int:
 
 
 def _stable_ref(body, env: dict, bits: int, settle=None) -> tuple:
-    """Doubles the precision until two agree on a nonzero value.  Agreement on
-    zero is not believed until ZERO_BITS: two low precisions both losing the
-    value to cancellation agree perfectly, and that is the failure."""
+    """Doubles the precision until two agree.  Agreement on zero waits for
+    ZERO_BITS: two precisions both losing it to cancellation agree perfectly."""
     gmpy2.get_context().precision = bits
     lo = _ref(body, env)
     while True:
@@ -196,37 +203,163 @@ def _stable_ref(body, env: dict, bits: int, settle=None) -> tuple:
             raise ArithmeticError(f"reference unstable past {MAX_REF_BITS} bits")
 
 
-def measure(body, file: str, box: dict, precision: str, n: int = SAMPLES,
-            reference=None) -> dict:
-    """The worst error observed over n points of the box.
+class _Refs:
+    """The seed's exact value, computed once per core and shared by every
+    program of it."""
 
-    The reference is the *seed's* exact value, not the candidate's own.  A
-    rewrite is supposed to compute the same function, so for an honest one the
-    two agree; for a rewrite that quietly changed the function they do not, and
-    measuring against its own exact value would score a wrong answer computed
-    accurately as perfect.  Daisy's rewriter does exactly that on two cores.
-    """
-    reference = body if reference is None else reference
+    __slots__ = ("body", "names", "bits", "cache")
+
+    def __init__(self, body, names: list, bits: int):
+        self.body = body
+        self.names = names
+        self.bits = bits
+        self.cache = {}
+
+    def at(self, env: dict):
+        key = tuple(env[v] for v in self.names)
+        if key in self.cache:
+            got = self.cache[key]
+            if isinstance(got, ArithmeticError):
+                raise got
+            return got
+        try:
+            ref, self.bits = _stable_ref(self.body, env, self.bits)
+        except (ZeroDivisionError, ValueError):
+            ref = None                       # undefined for the reals too
+        except ArithmeticError as ex:
+            self.cache[key] = ex
+            raise
+        else:
+            if not gmpy2.is_finite(ref):
+                ref = None
+        self.cache[key] = ref
+        return ref
+
+    def soft(self, env: dict):
+        """An unsettleable point is unusable rather than fatal: the search
+        reaches nastier regions than a uniform draw does."""
+        try:
+            return self.at(env)
+        except ArithmeticError:
+            return None
+
+
+def _scorer(body, refs: _Refs, rnd, width: int):
+    def score(env: dict):
+        ref = refs.soft(env)
+        if ref is None:
+            return None
+        try:
+            got = _target(body, env, rnd)
+        except (ZeroDivisionError, ValueError, OverflowError):
+            return None
+        if not math.isfinite(got):
+            return None
+        return _ulps(got, ref, width)
+    return score
+
+
+def _neighbours(env: dict, names: list, spans: dict, level: int, width: int):
+    """A step is a fraction of that variable's own span, so wide and narrow
+    boxes descend together."""
+    for v in names:
+        a, b = spans[v]
+        step = max(1, (b - a) >> level)
+        o = _ordinal(env[v], width)
+        for moved in (o - step, o + step):
+            if a <= moved <= b:
+                out = dict(env)
+                out[v] = _from_ordinal(moved, width)
+                yield out
+
+
+def _climb(score, env0: dict, names: list, spans: dict, width: int,
+           budget: int) -> list:
+    """Pattern search for the worst point.  Steps are ordinals, so the finest
+    is one float and a cancellation region is reachable."""
+    best = score(env0)
+    if best is None:
+        return []
+    cur, used, level = env0, 0, 1
+    seen = {}
+    while used < budget:
+        moved = False
+        for env in _neighbours(cur, names, spans, level, width):
+            if used >= budget:
+                break
+            used += 1
+            got = score(env)
+            if got is None:
+                continue
+            seen[tuple(env[v] for v in names)] = (got, env)
+            if got > best:
+                best, cur, moved = got, env, True
+        if moved:
+            continue                 # this level still pays; stay on it
+        level += 1
+        if all((b - a) >> level == 0 for a, b in spans.values()):
+            break                    # every step is now below one float
+    top = sorted(seen.values(), key=lambda pair: -pair[0])[:SEARCH_KEEP]
+    return [env for _, env in top]
+
+
+def measure_group(programs: dict, file: str, box: dict, precision: str,
+                  reference, n: int = SAMPLES) -> dict:
+    """One core's programs on one pool: the uniform points plus everything
+    any climb reached.  Adversarial, and still paired."""
+    width = 32 if precision == "binary32" else 64
     rnd = _f32 if precision == "binary32" else (lambda x: x)
+    names = sorted(box)
     pts = _points(file, box, n, precision)
     if not pts:
-        return {"status": "nopoints", "error": "the box is unbounded"}
+        return {name: {"status": "nopoints", "error": "the box is unbounded"}
+                for name in programs}
 
-    width = 32 if precision == "binary32" else 64
+    refs = _Refs(reference, names, floor_bits(box))
+    base = []
+    for env in pts:
+        try:
+            ref = refs.at(env)
+        except ArithmeticError as ex:
+            return {name: {"status": "unstable", "error": str(ex)}
+                    for name in programs}
+        if ref is not None:
+            base.append(env)
+
+    spans = _spans(box, width)
+    found = {}
+    if spans and base:               # a core with no variables has one point
+        # a ladder costs 2 * vars * levels, so many variables buy depth
+        # by climbing from fewer starts
+        budget = 2 * len(names) * SEARCH_LEVELS
+        seeds = max(1, min(SEARCH_SEEDS, SEARCH_EVALS // budget))
+        for body in programs.values():
+            score = _scorer(body, refs, rnd, width)
+            scored = [(score(env), env) for env in base]
+            starts = [env for got, env in
+                      sorted(((g, e) for g, e in scored if g is not None),
+                             key=lambda pair: -pair[0])[:seeds]]
+            for env in starts:
+                for env2 in _climb(score, env, names, spans, width, budget):
+                    found.setdefault(tuple(env2[v] for v in names), env2)
+
+    extra = [env for env in found.values() if refs.soft(env) is not None]
+    pool = base + extra
+    return {name: _report(body, pool, len(base), refs, rnd, width,
+                          len(pts), reference)
+            for name, body in programs.items()}
+
+
+def _report(body, pool: list, n_uniform: int, refs: _Refs, rnd, width: int,
+            drawn: int, reference) -> dict:
     check = body != reference        # a rewrite: does it agree with its seed?
     abs_errs, rel_errs, ulps, broke, undef = [], [], [], 0, 0
     same, differs = 0, 0
-    bits = floor_bits(box)       # never lowered again: what one point needed, others may
-    for env in pts:
-        try:
-            ref, bits = _stable_ref(reference, env, bits)
-        except (ZeroDivisionError, ValueError):
+    worst, worst_i = 0.0, -1
+    for i, env in enumerate(pool):
+        ref = refs.soft(env)
+        if ref is None:
             undef += 1               # undefined for the real numbers too
-            continue
-        except ArithmeticError as ex:
-            return {"status": "unstable", "error": str(ex)}
-        if not gmpy2.is_finite(ref):
-            undef += 1
             continue
         try:
             got = _target(body, env, rnd)
@@ -238,8 +371,8 @@ def measure(body, file: str, box: dict, precision: str, n: int = SAMPLES,
             continue
         if check and same + differs < EQUIV_POINTS:
             try:
-                mine, _ = _stable_ref(body, env, bits, EQUIV_SETTLE)
-                theirs, _ = _stable_ref(reference, env, bits, EQUIV_SETTLE)
+                mine, _ = _stable_ref(body, env, refs.bits, EQUIV_SETTLE)
+                theirs, _ = _stable_ref(refs.body, env, refs.bits, EQUIV_SETTLE)
             except (ZeroDivisionError, ValueError, ArithmeticError):
                 differs += 1         # defined for the seed, not for the rewrite
             else:
@@ -248,18 +381,31 @@ def measure(body, file: str, box: dict, precision: str, n: int = SAMPLES,
                 same, differs = same + bool(near), differs + (not near)
         d = abs(mpfr(got) - ref)
         abs_errs.append(float(d))
-        ulps.append(_ulps(got, ref, width))
+        u = _ulps(got, ref, width)
+        ulps.append(u)
+        if u > worst:
+            worst, worst_i = u, i
         if ref != 0:
             rel_errs.append(float(d / abs(ref)))
 
     if not abs_errs:
-        return {"status": "nopoints", "sampled": len(pts), "broke": broke,
+        return {"status": "nopoints", "sampled": len(pool), "broke": broke,
                 "undefined": undef,
                 "error": "no point was defined in both the format and the reals"}
-    worst = max(ulps)
     return {"status": "ok", "sampled": len(abs_errs), "broke": broke,
-            "undefined": undef, "ref_bits": bits,
+            "undefined": undef, "ref_bits": refs.bits,
+            "drawn": drawn, "searched": len(pool) - n_uniform,
+            "from_search": worst_i >= n_uniform,
             "ulps": worst, "bits": math.log2(worst),
             "equivalent": (differs == 0) if check else True,
             "equiv_checked": same + differs, "equiv_differs": differs,
             "abs": max(abs_errs), "rel": max(rel_errs) if rel_errs else None}
+
+
+def measure(body, file: str, box: dict, precision: str, n: int = SAMPLES,
+            reference=None) -> dict:
+    """One program alone, so never scored at a rival's worst case; prefer
+    measure_group.  The reference is the *seed's* exact value, so a rewrite
+    that changed the function scores as wrong, not as accurate."""
+    reference = body if reference is None else reference
+    return measure_group({"it": body}, file, box, precision, reference, n)["it"]

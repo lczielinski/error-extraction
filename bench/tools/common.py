@@ -23,9 +23,8 @@ FPBENCH = os.path.expanduser(os.environ.get("FPBENCH", "~/fpbench"))
 
 
 class Metric:
-    """An error metric, and the results.json keys and table header that spell
-    its name.  Derived from one place so the record and the reports cannot
-    drift apart."""
+    """An error metric and the results.json keys naming it, derived in one
+    place so the record and the reports cannot drift apart."""
 
     __slots__ = ("name", "label", "seed", "best", "best_expr")
 
@@ -65,8 +64,7 @@ def unit(name: str, file: str, expr: str, **extra) -> dict:
 
 
 def seed_units(results: list) -> list:
-    """One unit per core that costex analysed: its seed program.  The bounds
-    report compares analysers on the seed alone, so nothing else is exported."""
+    """The bounds report compares analysers on the seed alone."""
     return [unit(f"cx{i:05d}", r["file"], r["expr"])
             for i, r in enumerate(r for r in results if r["status"] == "ok")]
 

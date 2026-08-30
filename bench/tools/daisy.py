@@ -199,7 +199,6 @@ def _rename_object(text: str, name: str) -> str:
 
 def rewrite_one(item: tuple, *, seed: int, precision: str, timeout: float,
                 workdir: str) -> tuple:
-    """Rewrite, and read back the program produced."""
     name, text, args = item
     out_fpcore = os.path.join(DAISY, "output", f"{name}.fpcore")
     if os.path.exists(out_fpcore):

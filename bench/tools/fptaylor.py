@@ -121,7 +121,6 @@ def _root(workdir: str) -> str:
 
 
 def run_one(item: tuple, *, opts: tuple, timeout: float, workdir: str) -> tuple:
-    """One block, in this process's own FPTaylor directory."""
     name, text = item
     root = _root(workdir)
     path = os.path.join(root, "tmp", f"{name}.txt")
