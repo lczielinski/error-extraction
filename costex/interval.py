@@ -1,4 +1,10 @@
-"""Intervals over MPFR."""
+"""Intervals over MPFR, rounded outward.
+
+Every operation returns (down, up), widened by an ulp exactly when it was
+inexact: round to nearest can move an endpoint inward, which would drop a
+value the interval must hold.  An exact result is left alone, since the
+exactness rules in analysis.py turn on it.
+"""
 
 from __future__ import annotations
 
@@ -18,37 +24,57 @@ INF = mpfr("inf")
 NINF = -INF
 
 
+def _out(r):
+    if not gmpy2.get_context().inexact or not gmpy2.is_finite(r):
+        return r, r
+    return gmpy2.next_below(r), gmpy2.next_above(r)
+
+
+def _widen(f, *args):
+    ctx = gmpy2.get_context()
+    ctx.clear_flags()
+    return _out(f(*args))
+
+
+def _add(a, b):
+    return _widen(lambda x, y: x + y, a, b)
+
+
 def _add_lo(a, b):
     if a == NINF or b == NINF:
         return NINF
-    return a + b
+    return _add(a, b)[0]
 
 
 def _add_hi(a, b):
     if a == INF or b == INF:
         return INF
-    return a + b
+    return _add(a, b)[1]
 
 
 def _mul(a, b):
-    """0 * inf = 0."""
+    # 0 * inf = 0
     if a == 0 or b == 0:
-        return mpfr(0)
-    return a * b
+        return mpfr(0), mpfr(0)
+    return _widen(lambda x, y: x * y, a, b)
 
 
 def _recip(x):
-    """1/inf = 0."""
+    # 1/inf = 0
     if x == INF or x == NINF:
-        return mpfr(0)
-    return 1 / x
+        return mpfr(0), mpfr(0)
+    return _widen(lambda t: 1 / t, x)
+
+
+def _sqrt(x):
+    return _widen(gmpy2.sqrt, x)
 
 
 def _signed_sqrt(t):
-    """sgn(t) * sqrt(|t|)."""
     if t < 0:
-        return -gmpy2.sqrt(-t)
-    return gmpy2.sqrt(t)
+        lo, hi = _widen(gmpy2.sqrt, -t)
+        return -hi, -lo
+    return _widen(gmpy2.sqrt, t)
 
 
 def _fmt(x) -> str:
@@ -95,12 +121,10 @@ class Iv:
 
     @property
     def mag(self):
-        """max |t|."""
         return max(abs(self.lo), abs(self.hi))
 
     @property
     def mig(self):
-        """min |t|, so 0 exactly when the interval contains 0."""
         if self.contains_zero:
             return mpfr(0)
         return min(abs(self.lo), abs(self.hi))
@@ -142,15 +166,14 @@ class Iv:
             return EMPTY
         corners = (_mul(self.lo, other.lo), _mul(self.lo, other.hi),
                    _mul(self.hi, other.lo), _mul(self.hi, other.hi))
-        return Iv(min(corners), max(corners))
+        return Iv(min(lo for lo, _ in corners), max(hi for _, hi in corners))
 
     def recip(self) -> "Iv":
-        """TOP when self straddles zero."""
         if self.is_empty:
             return EMPTY
         if self.contains_zero:
             return TOP
-        return Iv(_recip(self.hi), _recip(self.lo))
+        return Iv(_recip(self.hi)[0], _recip(self.lo)[1])
 
     def __truediv__(self, other: "Iv") -> "Iv":
         return self * other.recip()
@@ -159,12 +182,12 @@ class Iv:
         if self.is_empty or self.hi < 0:
             return EMPTY
         lo = self.lo if self.lo > 0 else mpfr(0)
-        return Iv(gmpy2.sqrt(lo), gmpy2.sqrt(self.hi))
+        return Iv(_sqrt(lo)[0], _sqrt(self.hi)[1])
 
     def signed_sqrt(self) -> "Iv":
         if self.is_empty:
             return EMPTY
-        return Iv(_signed_sqrt(self.lo), _signed_sqrt(self.hi))
+        return Iv(_signed_sqrt(self.lo)[0], _signed_sqrt(self.hi)[1])
 
 
 TOP = Iv(NINF, INF)

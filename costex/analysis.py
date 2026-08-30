@@ -18,20 +18,33 @@ NONNEG = Iv(0, INF)
 mantissa = 53              # of the target format, not of the bound arithmetic
 u = mpfr(2) ** -53
 eta = mpfr(2) ** -1075
+tiny = mpfr(2) ** -1022
+omega = (mpfr(2) - mpfr(2) ** -52) * mpfr(2) ** 1023
 
 EMIN = {53: -1022, 24: -126}
 
 
 def set_target(mantissa_bits: int) -> None:
-    """53 for binary64, 24 for binary32."""
-    global u, eta, mantissa
+    global u, eta, mantissa, tiny, omega
     mantissa = mantissa_bits
+    emin = EMIN[mantissa_bits]
     u = mpfr(2) ** -mantissa_bits
-    eta = mpfr(2) ** (EMIN[mantissa_bits] - mantissa_bits)
+    eta = mpfr(2) ** (emin - mantissa_bits)
+    tiny = mpfr(2) ** emin
+    omega = (mpfr(2) - mpfr(2) ** (1 - mantissa_bits)) * mpfr(2) ** (1 - emin)
+
+
+def _div_up(a, b):
+    """A bound on a deviation, so never rounded down."""
+    ctx = gmpy2.get_context()
+    ctx.clear_flags()
+    q = a / b
+    if not ctx.inexact or not gmpy2.is_finite(q):
+        return q
+    return gmpy2.next_above(q)
 
 
 def ufp(x):
-    """2^floor(log2|x|)."""
     x = abs(x)
     if x == 0:
         return mpfr(0)
@@ -41,19 +54,20 @@ def ufp(x):
 
 
 def gamma(I: Iv) -> Iv:
-    """fl(t) - t for every t in I."""
     m = I.mag
     if m == 0:
         return ZERO
-    g = max(u * ufp(m), eta)
+    g = max(u * ufp(m), eta)     # exact: powers of two
     return Iv(-g, g)
 
 
 def urel(I: Iv) -> Iv:
-    """fl(t)/t for every nonzero t in I."""
     q = I.mig
-    r = mpfr(1) if q == 0 else min(mpfr(1), max(u, eta / q))
-    return Iv(1 - r, 1 + r)
+    if q == 0:
+        r = mpfr(1)
+    else:
+        r = min(mpfr(1), max(u, _div_up(eta, q)))
+    return ONE + Iv(-r, r)       # the sum rounds outward
 
 
 class Pair:
@@ -84,23 +98,47 @@ TOP_PAIR = Pair(TOP, TOP)
 
 
 def enc(S: Iv, D: Iv, Ic: Iv) -> Iv:
-    """An enclosure of the computed value itself."""
     return (Ic + D).intersect(TOP if Ic.contains_zero else Ic * S)
 
 
 def rho(S: Iv, D: Iv, Ic: Iv) -> tuple:
-    """Refine each component by the other."""
     if Ic.contains_zero:
         return S, D
     return S.intersect(ONE + D / Ic), D.intersect(Ic * (S - ONE))
 
 
 def _round(Sh: Iv, Dh: Iv, Ic: Iv) -> Pair:
-    """Reduce the pre-rounding pair, then add this operation's rounding."""
     Sh, Dh = rho(Sh, Dh, Ic)
     Ih = enc(Sh, Dh, Ic)
     S, D = rho(Sh * urel(Ih), Dh + gamma(Ih), Ic)
     return Pair(S, D)
+
+
+def pow2(I: Iv):
+    if I.lo != I.hi or I.lo == 0 or not gmpy2.is_finite(I.lo):
+        return None
+    return I.lo if gmpy2.frexp(abs(I.lo))[1] == 0.5 else None
+
+
+def scales_exactly(It: Iv, c) -> bool:
+    out = It * Iv(c, c)
+    if abs(c) >= 1:
+        return out.mag <= omega          # no overflow
+    return out.mig >= tiny or (out.lo == 0 and out.hi == 0)   # not truncated
+
+
+def scaled(p: Pair, c, Ic: Iv) -> Pair:
+    return Pair(*rho(p.S, p.D * Iv(c, c), Ic))
+
+
+def sterbenz(It1: Iv, It2: Iv) -> bool:
+    if It1.lo > 0 and It2.lo > 0:
+        a, b = It1, It2
+    elif It1.hi < 0 and It2.hi < 0:
+        a, b = -It1, -It2
+    else:
+        return False
+    return 2 * a.lo >= b.hi and a.hi <= 2 * b.lo
 
 
 def constant(exact: bool, Ic: Iv) -> Pair:
@@ -123,9 +161,26 @@ def mul(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
     if p1.is_top() or p2.is_top():
         return TOP_PAIR
     It1, It2 = enc(p1.S, p1.D, I1), enc(p2.S, p2.D, I2)
+    for me, me_enc, other, Iother in ((p1, It1, p2, I2), (p2, It2, p1, I1)):
+        if other != EXACT:
+            continue
+        c = pow2(Iother)
+        if c is not None and scales_exactly(me_enc, c):
+            return scaled(me, c, Ic)
     Sh = p1.S * p2.S
     Dh = (It2 * p1.D + I1 * p2.D).intersect(I2 * p1.D + It1 * p2.D)
     return _round(Sh, Dh, Ic)
+
+
+def _ratio(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Iv:
+    if Ic.contains_zero or I1.contains_zero or I2.contains_zero:
+        return TOP
+    lam = (I1 / Ic).intersect(ONE - I2 / Ic)
+    if (I1.lo > 0 and I2.lo > 0) or (I1.hi < 0 and I2.hi < 0):
+        lam = lam.intersect(Iv(0, 1))
+    if lam.is_empty or lam.lo == -INF or lam.hi == INF:
+        return TOP
+    return _combine(lam.lo, p1.S, p2.S).hull(_combine(lam.hi, p1.S, p2.S))
 
 
 def add(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
@@ -134,13 +189,10 @@ def add(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
     if p1.is_top() or p2.is_top():
         return TOP_PAIR
     Dh = p1.D + p2.D
-    same_sign = (I1.lo > 0 and I2.lo > 0) or (I1.hi < 0 and I2.hi < 0)
-    Sh = TOP
-    if same_sign:
-        # affine in lambda, so the extremes sit at the ends of Lambda
-        lam = Iv(0, 1).intersect(I1 / Ic)
-        if not lam.is_empty:
-            Sh = _combine(lam.lo, p1.S, p2.S).hull(_combine(lam.hi, p1.S, p2.S))
+    Sh = _ratio(p1, p2, I1, I2, Ic)
+    It1, It2 = enc(p1.S, p1.D, I1), enc(p2.S, p2.D, I2)
+    if sterbenz(It1, -It2):
+        return Pair(*rho(Sh, Dh, Ic))
     return _round(Sh, Dh, Ic)
 
 
@@ -161,6 +213,12 @@ def div(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
     It2 = enc(p2.S, p2.D, I2)
     if p2.S.contains_zero and It2.contains_zero:
         return BOTTOM          # the divisor may round to zero
+    c = pow2(I2) if p2 == EXACT else None
+    if c is not None:
+        inv = mpfr(1) / c      # exact
+        It1 = enc(p1.S, p1.D, I1)
+        if scales_exactly(It1, inv):
+            return scaled(p1, inv, Ic)
     Sh = TOP if p2.S.contains_zero else p1.S / p2.S
     if It2.contains_zero:
         Dh = TOP
@@ -193,14 +251,12 @@ def transfer(op: str, pairs: list, ivs: list, Ic: Iv) -> Pair:
 
 
 def mu_rel(p: Pair, Ic: Iv):
-    """Bounds |z~ - z|/|z|."""
     if Ic.contains_zero:
         return INF
     return max(1 - p.S.lo, p.S.hi - 1)
 
 
 def mu_abs(p: Pair, Ic: Iv):
-    """Bounds |z~ - z|."""
     return max(-p.D.lo, p.D.hi)
 
 

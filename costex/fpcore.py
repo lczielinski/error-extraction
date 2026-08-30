@@ -13,15 +13,15 @@ from fractions import Fraction
 
 
 class Sym(str):
-    """A bare symbol."""
+    pass
 
 
 class Str(str):
-    """A quoted string."""
+    pass
 
 
 class _Paren:
-    """A delimiter.  Not a str, so no symbol can be one."""
+    """Not a str, so no symbol can be one."""
 
     def __init__(self, text):
         self.text = text
@@ -57,7 +57,6 @@ def tokenize(text: str):
 
 
 def parse_sexps(text: str) -> list:
-    """The top-level s-expressions of text."""
     toks = tokenize(text)
     pos = 0
 
@@ -157,7 +156,6 @@ def to_sexp(e) -> str:
 
 def to_fpcore(name: str, args: list, box: dict, body: str,
               precision: str = "binary64") -> str:
-    """One (FPCore ...) form for `body` over `box`."""
     bounds = []
     for v, (lo, hi) in box.items():
         if not (math.isfinite(lo) and math.isfinite(hi)):
@@ -244,8 +242,7 @@ def parse_fpcore(text: str) -> Core:
 
 
 def _parse_pre(pre, args: set):
-    """(var, lo, hi) constraints.  An unreadable conjunct is an error: dropping
-    it would widen the box past what was asked for."""
+    """An unreadable conjunct is an error: dropping it would widen the box."""
     def bail():
         raise SyntaxError(f"unsupported precondition {pre!r}")
 

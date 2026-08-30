@@ -20,7 +20,6 @@ class Frontier:
         self.truncated = truncated  # hit a cap, so not provably optimal
 
     def best(self, cls: str, Ic, metric: str):
-        """The minimizing entry, or None if the class has no program."""
         mu = A.METRICS[metric]
         out = None
         for pair, witness in self.entries.get(cls, ()):

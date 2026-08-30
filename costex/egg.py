@@ -63,8 +63,8 @@ class EGraph:
         return f"EGraph({len(self.nodes)} classes, {nodes} nodes)"
 
     def locate(self, e) -> str:
-        """The class of a program tree, by structure.  Memoized: a lookup walks
-        the whole tree, and callers ask for every subterm."""
+        """By structure, memoized: a lookup walks the whole tree and callers
+        ask for every subterm."""
         if self._index is None:
             self._index = {n.key(): cls for cls, ns in self.nodes.items() for n in ns}
         if e in self._where:
@@ -88,7 +88,6 @@ class EGraph:
 
 
 def representable(v: Fraction) -> bool:
-    """Is this value a number of the target format?"""
     try:
         f = float(v)
     except OverflowError:
@@ -114,12 +113,10 @@ def _f64(x: float) -> str:
 
 
 def is_exact(e) -> bool:
-    """A literal the target format holds exactly, so unrounded."""
     return e[0] == "num" and representable(e[1])
 
 
 def _lit_bounds(leaf) -> tuple:
-    """A float interval enclosing an inexact constant."""
     if leaf[0] == "const":
         v = gmpy2.const_pi() if leaf[1] == "PI" else gmpy2.exp(gmpy2.mpfr(1))
     else:
