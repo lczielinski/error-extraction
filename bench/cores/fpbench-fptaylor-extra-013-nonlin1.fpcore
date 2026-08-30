@@ -4,6 +4,6 @@
   :name "nonlin1"
   :cx-source "fpbench:fptaylor-extra.fpcore:13"
   :cx-box "pre"
-  :cx-kind "rewrite"
+  :cx-kind "analysis"
   :pre (<= 0.0 z 999.0)
   (/ z (+ z 1)))

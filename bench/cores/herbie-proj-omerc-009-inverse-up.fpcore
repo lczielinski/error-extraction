@@ -4,6 +4,6 @@
   :name "inverse-Up"
   :cx-source "herbie:proj/omerc.fpcore:9"
   :cx-box "default"
-  :cx-kind "rewrite"
+  :cx-kind "analysis"
   :pre (and (<= 1.0 Sp 2.0) (<= 4.0 Tp 8.0) (<= 16.0 Vp 32.0) (<= 64.0 singam 128.0) (<= 256.0 cosgam 512.0))
   (/ (+ (* Vp cosgam) (* Sp singam)) Tp))

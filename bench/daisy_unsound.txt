@@ -1,0 +1,119 @@
+Daisy's rewriter returns programs that are not equal to their input
+===================================================================
+
+daisy 7544e92, macOS arm64, openjdk 17.0.20.1, sbt 1.9.9.
+
+
+CASE 1 -- quartForm
+-------------------
+
+$ cat quartForm.scala
+import daisy.lang._
+import Real._
+
+object quartForm {
+	def quartForm(x: Real, y: Real, z: Real): Real = {
+		require(((1.0 <= x && x <= 2.0) && (4.0 <= y && y <= 8.0) && (16.0 <= z && z <= 32.0)))
+		((x * y) / 2.0) - (z / 8.0)
+	}
+}
+
+$ cd ~/daisy
+$ ./daisy --analysis=dataflow --rangeMethod=interval --errorMethod=affine \
+          --rewrite --codegen --lang=FPCore --rewrite-seed=1490 \
+          /tmp/dz/quartForm.scala
+
+[  Info  ] Going to rewrite quartForm
+[  Info  ] error before: 4.884981308350689e-15
+[  Info  ] error after: 3.552713678800502e-15
+
+$ cat output/quartForm.fpcore
+(FPCore ( x  y  z )
+:name "quartForm"
+  :pre (and ( <= 1.0 x) ( <= x 2.0) ( <= 4.0 y) ( <= y 8.0) ( <= 16.0 z) ( <= z 32.0))
+:precision binary64
+  ( - ( * 4.0 ( * x ( / y z))) 16.0)
+)
+
+    in    (x * y) / 2 - z / 8
+    out   4 * x * (y / z) - 16
+
+The multiplication by y became a division by z.  At x=1.5, y=6, z=24, which is
+inside the stated precondition:
+
+    in    (1.5 * 6) / 2 - 24 / 8   =   4.5 - 3    =    1.5
+    out   4 * 1.5 * (6 / 24) - 16  =   1.5 - 16   =  -14.5
+
+Off by 16.  Daisy reports the error falling from 4.88e-15 to 3.55e-15 for it.
+
+
+CASE 2 -- hBufferRect
+---------------------
+
+$ cat hBufferRect.scala
+import daisy.lang._
+import Real._
+
+object hBufferRect {
+	def hBufferRect(x: Real, y: Real): Real = {
+		require(((1.0 <= x && x <= 2.0) && (4.0 <= y && y <= 8.0)))
+		x + ((x - y) / 2.0)
+	}
+}
+
+$ ./daisy --analysis=dataflow --rangeMethod=interval --errorMethod=affine \
+          --rewrite --codegen --lang=FPCore --rewrite-seed=1490 \
+          /tmp/dz/hBufferRect.scala
+
+[  Info  ] Going to rewrite hBufferRect
+[  Info  ] error before: 1.4432899320127035e-15
+[  Info  ] error after: 8.881784197001252e-16
+
+$ cat output/hBufferRect.fpcore
+(FPCore ( x  y )
+:name "hBufferRect"
+  :pre (and ( <= 1.0 x) ( <= x 2.0) ( <= 4.0 y) ( <= y 8.0))
+:precision binary64
+  ( + ( - ( / ( * x 2.0) ( * 2.0 y)) 4.0) x)
+)
+
+    in    x + (x - y) / 2
+    out   (2x / 2y) - 4 + x   =   x / y - 4 + x
+
+At x=1.5, y=6:
+
+    in    1.5 + (1.5 - 6) / 2  =  1.5 - 2.25   =  -0.75
+    out   1.5 / 6 - 4 + 1.5    =  0.25 - 2.5   =  -2.25
+
+Off by 1.5.  Daisy reports the error falling from 1.44e-15 to 8.88e-16.
+
+
+A THIRD, SUBTLER CASE -- constants are folded
+---------------------------------------------
+
+On seven further inputs the rewriter is algebraically correct but replaces an
+exact rational constant with its nearest double.
+
+$ cat hslConstant.scala
+import daisy.lang._
+import Real._
+
+object hslConstant {
+	def hslConstant(x: Real, y: Real, z: Real): Real = {
+		require(((1.0 <= x && x <= 2.0) && (4.0 <= y && y <= 8.0) && (16.0 <= z && z <= 32.0)))
+		x + (((y - x) * 6.0) * ((2.0 / 3.0) - z))
+	}
+}
+
+$ cat output/hslConstant.fpcore
+  ( + x ( * 6.0 ( * ( - y x) ( - 0.6666666666666666 z))))
+
+    in    ... * (2/3 - z)
+    out   ... * (0.6666666666666666 - z)
+
+2/3 and 0.6666666666666666 differ by 6.67e-17, which is 0.6 ulp near 2/3.  The
+generated floating-point code computes the same values, since fl(2.0/3.0) is
+0.6666666666666666, so this is easy to miss.  What changes is the real-valued
+specification the error is measured against: the input says 2/3, the output
+says a double 0.6 ulp away, and the reported bound is against the latter.
+Daisy reports the error falling from 8.57e-13 to 8.31e-13.

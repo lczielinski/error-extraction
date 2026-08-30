@@ -23,23 +23,18 @@ FPBENCH = os.path.expanduser(os.environ.get("FPBENCH", "~/fpbench"))
 
 
 class Metric:
-    """An error metric, and every key that spells its name.  The name is written
-    into results.json, external.json and rewrite.json keys and into the tables'
-    headers; deriving them all from one place is what keeps the three files and
-    the two reports from drifting apart."""
+    """An error metric, and the results.json keys and table header that spell
+    its name.  Derived from one place so the record and the reports cannot
+    drift apart."""
 
-    __slots__ = ("name", "label", "seed", "best", "best_expr", "variant",
-                 "judge", "judge_expr")
+    __slots__ = ("name", "label", "seed", "best", "best_expr")
 
     def __init__(self, name: str):
         self.name = name
-        self.label = f"mu_{name}"              # a table's column header
-        self.seed = f"seed_{name}"             # results.json: the input's bound
-        self.best = f"best_{name}"             # results.json: the frontier's best
-        self.best_expr = f"best_expr_{name}"   # results.json: the witness program
-        self.variant = f"best_{name}"          # external.json: the program a report covers
-        self.judge = f"costex_{name}"          # rewrite.json: the judge's score
-        self.judge_expr = f"costex_{name}_expr"
+        self.label = f"mu_{name}"
+        self.seed = f"seed_{name}"
+        self.best = f"best_{name}"
+        self.best_expr = f"best_expr_{name}"
 
     def __repr__(self):
         return f"Metric({self.name!r})"
@@ -47,9 +42,6 @@ class Metric:
 
 METRICS = tuple(Metric(m) for m in _MU)     # costex's order is the reports' order
 BY_NAME = {m.name: m for m in METRICS}
-
-SEED = "seed"                # the input program, as a variant and as a judge name
-VARIANTS = (SEED,) + tuple(m.variant for m in METRICS)
 
 
 def has_const(expr: str) -> bool:
@@ -72,20 +64,11 @@ def unit(name: str, file: str, expr: str, **extra) -> dict:
             **extra}
 
 
-def units(results: list) -> list:
-    """The distinct (core, expression) pairs, with the variants sharing each."""
-    out = []
-    for r in results:
-        if r["status"] != "ok":
-            continue
-        shared = {}
-        for v, e in [(SEED, r["expr"])] + [(m.variant, r.get(m.best_expr))
-                                           for m in METRICS]:
-            if e:
-                shared.setdefault(e, []).append(v)
-        for expr, variants in shared.items():
-            out.append(unit(f"cx{len(out):05d}", r["file"], expr, variants=variants))
-    return out
+def seed_units(results: list) -> list:
+    """One unit per core that costex analysed: its seed program.  The bounds
+    report compares analysers on the seed alone, so nothing else is exported."""
+    return [unit(f"cx{i:05d}", r["file"], r["expr"])
+            for i, r in enumerate(r for r in results if r["status"] == "ok")]
 
 
 def key(tool: str, u: dict, ver: str, opts: tuple) -> str:

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import os
 import re
+import signal
 import subprocess
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -22,10 +23,9 @@ DAISY = os.path.expanduser(os.environ.get("DAISY", "~/daisy"))
 JAVA_HOME = os.environ.get(
     "DAISY_JAVA_HOME", "/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home")
 
-# --FPTaylor is looser here and crashes on some cores; affine ranges crash on
-# sqrt, and --subdiv shells out to z3, which is not installed
+# --FPTaylor is looser and crashes; affine ranges crash on sqrt; --subdiv
+# wants z3
 OPTS = ("--analysis=dataflow", "--rangeMethod=interval", "--errorMethod=affine")
-# the same analysis, plus the rewriting phase and an FPCore of the result
 REWRITE_OPTS = OPTS + ("--rewrite", "--codegen", "--lang=FPCore")
 
 FORMATS = (("binary64", "Float64"), ("binary32", "Float32"))
@@ -51,8 +51,8 @@ def version() -> str:
 _DEF = re.compile(r"\tdef (ex\d+)\b.*?\n\t\}\n", re.S)
 _SCALA_HEAD = "import daisy.lang._\nimport Real._\n\nobject main {\n"
 
-# FPBench renders e.g. 1000.0 as "1e3.0", which Scala will not parse.  An
-# exponent-form literal is never followed by ".0", so dropping it is safe.
+# FPBench renders 1000.0 as "1e3.0", which Scala rejects.  An exponent-form
+# literal is never followed by ".0", so dropping it is safe.
 _BAD_LIT = re.compile(r"([0-9][0-9.]*[eE][+-]?[0-9]+)\.0\b")
 
 
@@ -113,19 +113,29 @@ def parse(text: str) -> dict:
 
 
 def _run(text: str, opts: tuple, precision: str, timeout: float, d: str) -> tuple:
-    """Daisy over one file, in its own scratch directory."""
+    """Daisy over one file, in its own scratch directory and its own process
+    group.  The launcher pipes java into tee, so the JVM is a grandchild:
+    killing the script on timeout leaves a 2G JVM spinning forever, and enough
+    of those starve the rest of the run.  Kill the whole group instead."""
     os.makedirs(d, exist_ok=True)
     path = os.path.join(d, "a.scala")
     with open(path, "w") as f:
         f.write(text)
     t0 = time.time()
+    proc = subprocess.Popen(["./daisy", *opts, f"--precision={precision}", path],
+                            cwd=DAISY, env=env(), stdout=subprocess.PIPE,
+                            stderr=subprocess.STDOUT, text=True,
+                            errors="replace", start_new_session=True)
     try:
-        run = subprocess.run(["./daisy", *opts, f"--precision={precision}", path],
-                             cwd=DAISY, env=env(), capture_output=True,
-                             text=True, errors="replace", timeout=timeout)
+        out, _ = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        proc.communicate()
         return None, round(time.time() - t0, 2)
-    return ANSI.sub("", run.stdout + run.stderr), round(time.time() - t0, 2)
+    return ANSI.sub("", out), round(time.time() - t0, 2)
 
 
 def _pool(work, items: list, what: str, flag: str, jobs: int) -> dict:

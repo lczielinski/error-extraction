@@ -1,25 +1,15 @@
-"""The whole benchmark in one command: costex, the external tools, the tables.
+"""The whole benchmark in one command.
 
-    uv run python bench/run.py                  # every phase, the whole corpus
-    uv run python bench/run.py --probe          # check the toolchain and exit
-    uv run python bench/run.py --summarize      # re-read the results, run nothing
-    uv run python bench/run.py --phases report  # just redraw the tables
+    uv run python bench/run.py
 
-Phases run in this order, handing on through bench/results, so each can be run
-alone against what the last one left:
+    bounds.md    costex, FPTaylor and Daisy bounding every core's seed
+    rewrites.md  costex's rewrites against Daisy's, by measured error
 
-    costex    equality saturation over bench/cores       -> results.json
-    external  FPTaylor and Daisy, same programs and box  -> external.json
-    rewrite   Daisy's rewriter against costex's, judged  -> rewrite.json
-    report    the bounds, and the two rewriters          -> report.md, rewrites.md
-
---limit, --only and --kind pick the cores, in every phase alike.  The tools live
-in bench/tools, one module each.
+The JSON beside them is what each step handed the next.
 """
 
 from __future__ import annotations
 
-import argparse
 import json
 import math
 import os
@@ -30,67 +20,45 @@ import tempfile
 import time
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
-from functools import partial
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-from tools import TOOLS, analyze, common, daisy                # noqa: E402
+from tools import TOOLS, analyze, common, daisy, rewrite, sample  # noqa: E402
 
 from costex import analysis as A                               # noqa: E402
 from costex import egg, extract                                # noqa: E402
-from costex.fpcore import parse_fpcore, to_sexp                # noqa: E402
+from costex.fpcore import parse_expr, parse_fpcore, parse_sexps, to_sexp  # noqa: E402
 
-# The head-to-head and the tool-tightness check are on absolute error alone.
-JUDGED = common.BY_NAME["abs"]
-KINDS = ("rewrite", "analysis")
-SLACK = 0.999                # a bound has to beat another by this much to count
-EGGLOG_TIMEOUT = 60.0        # seconds per core
+SCORE = "ulps"                    # reported as bits, its log2
+FIELDED = common.BY_NAME["rel"]   # which costex program competes
+NOISE_P50, NOISE_P90 = 1.0, 1.75  # measured, by resampling
+MARGIN = 2.0                      # a win needs one bit, above the noise
+SLACK = 1 / MARGIN
+ITERS = egg.DEFAULT_ITERS
+MAX_STEPS = extract.DEFAULT_MAX_STEPS
+EGGLOG_TIMEOUT = 60.0
 EXTRACT_TIMEOUT = 30.0       # a step cap alone does not bound extraction
-TOOL_TIMEOUT = 300.0         # seconds per expression per tool
+TOOL_TIMEOUT = 300.0
 REWRITE_SEED = 1490          # Daisy's genetic seed, so a run is repeatable
-WIDTH = 70                   # the tables truncate expressions to this
+JOBS = os.cpu_count()
+WIDTH = 70
 
 
 def kind(file: str) -> str:
-    """The core's :cx-kind tag.  analysis means believed optimal, so there is no
-    rearrangement to try and the run only measures the bound."""
     return str(common.core(file).props.get(":cx-kind", "rewrite"))
 
 
-def _path(args, name: str) -> str:
-    return os.path.join(args.results_dir, name)
+def corpus() -> list:
+    return sorted(f for f in os.listdir(common.CORES) if f.endswith(".fpcore"))
 
 
-def corpus(args) -> list:
-    files = sorted(f for f in os.listdir(common.CORES) if f.endswith(".fpcore"))
-    if args.only:
-        files = [f for f in files if args.only in f]
-    if args.kind:
-        files = [f for f in files if kind(f) == args.kind]
-    return files[:args.limit] if args.limit else files
-
-
-def _read(args, name: str, required: bool = True):
-    path = _path(args, name)
-    if os.path.exists(path):
-        with open(path) as f:
-            return json.load(f)
-    if required:
-        sys.exit(f"no {os.path.relpath(path)}; run the phase that writes it first")
-    return None
-
-
-def _results(args, name: str = "results.json") -> list:
-    keep = set(corpus(args))
-    return [r for r in _read(args, name)["results"] if r["file"] in keep]
-
-
-def _write(args, name: str, payload: dict) -> str:
-    os.makedirs(args.results_dir, exist_ok=True)
-    with open(_path(args, name), "w") as f:
+def _write(name: str, payload: dict) -> str:
+    os.makedirs(common.RESULTS, exist_ok=True)
+    path = os.path.join(common.RESULTS, name)
+    with open(path, "w") as f:
         json.dump(payload, f, indent=1)
-    return os.path.relpath(_path(args, name))
+    return os.path.relpath(path)
 
 
 # -- costex --
@@ -101,9 +69,8 @@ def _f(x):
     return None if math.isinf(x) else x
 
 
-def run_one(path, *, iters, max_steps) -> dict:
-    name = os.path.basename(path)
-    out = {"file": name}
+def run_one(path: str) -> dict:
+    out = {"file": os.path.basename(path)}
     t0 = time.time()
     try:
         core = parse_fpcore(open(path).read())
@@ -112,9 +79,9 @@ def run_one(path, *, iters, max_steps) -> dict:
                    box_source=str(core.props.get(":cx-box", "pre")),
                    source=str(core.props.get(":cx-source", "")),
                    expr=to_sexp(core.body), precision=core.precision)
-        g = egg.build(core.body, core.box, iters=iters, timeout=EGGLOG_TIMEOUT)
+        g = egg.build(core.body, core.box, iters=ITERS, timeout=EGGLOG_TIMEOUT)
         t1 = time.time()
-        front = extract.extract(g, max_steps=max_steps, time_limit=EXTRACT_TIMEOUT)
+        front = extract.extract(g, max_steps=MAX_STEPS, time_limit=EXTRACT_TIMEOUT)
         Ic = g.interval[g.root]
         seed = extract.analyze_program(g, core.body)
 
@@ -138,158 +105,86 @@ def run_one(path, *, iters, max_steps) -> dict:
     return out
 
 
-def _metric_lines(group: list, m) -> list:
-    seed, best = m.seed, m.best
-    live = [r for r in group if r[best] is not None]
-    gains = sorted(r[seed] / r[best] for r in live
-                   if r[seed] and r[best] and r[best] < r[seed])
-    out = [f"    {m.label:<6} bounded {len(live)} of {len(group)}"]
-    if gains:
-        out.append(f"           {len(gains)} improved, median {gains[len(gains) // 2]:.3g}x, "
-                   f"90th pct {gains[int(0.9 * (len(gains) - 1))]:.3g}x, max {gains[-1]:.3g}x")
-    return out
-
-
-def summarize(results: list) -> None:
-    st = Counter(r["status"] for r in results)
-    print(f"\n{len(results)} cores: " + ", ".join(f"{v} {k}" for k, v in st.most_common()))
-
-    ok = [r for r in results if r["status"] == "ok"]
-    if not ok:
-        return
-    groups = {k: [r for r in ok if kind(r["file"]) == k] for k in KINDS}
-    print(f"\n  {len(groups['rewrite'])} rewrite cores, {len(groups['analysis'])} "
-          f"analysis cores (:cx-kind, believed optimal)")
-    for k in KINDS:
-        if groups[k]:
-            print(f"\n  {k}")
-            for m in common.METRICS:
-                print("\n".join(_metric_lines(groups[k], m)))
-
-    trunc = sum(1 for r in ok if r.get("truncated"))
-    print(f"\n  extractions stopped early (not provably optimal): {trunc}")
-    slow = sorted(ok, key=lambda r: -(r["egglog_s"] + r["extract_s"]))[:3]
-    print("  slowest: " + ", ".join(f"{r['file'][:34]} {r['egglog_s'] + r['extract_s']:.1f}s"
-                                    for r in slow))
-
-
-def phase_costex(args) -> None:
-    files = [os.path.join(common.CORES, f) for f in corpus(args)]
-    work = partial(run_one, iters=args.iters, max_steps=args.max_steps)
+def step_costex() -> list:
+    files = [os.path.join(common.CORES, f) for f in corpus()]
     t0 = time.time()
-    with ProcessPoolExecutor(max_workers=args.jobs) as pool:
+    with ProcessPoolExecutor(max_workers=JOBS) as pool:
         results = []
-        for i, r in enumerate(pool.map(work, files), 1):
+        for i, r in enumerate(pool.map(run_one, files), 1):
             results.append(r)
             if i % 25 == 0:
                 print(f"  {i}/{len(files)}", flush=True)
     elapsed = time.time() - t0
-    out = _write(args, "results.json", {"iters": args.iters,
-                                        "elapsed_s": round(elapsed, 1),
-                                        "results": results})
-    summarize(results)
-    print(f"\n  {elapsed:.1f}s wall, {args.jobs} jobs -> {out}")
+    out = _write("results.json", {"iters": ITERS, "elapsed_s": round(elapsed, 1),
+                                  "results": results})
+    st = Counter(r["status"] for r in results)
+    print(f"  {', '.join(f'{v} {k}' for k, v in st.most_common())}"
+          f"   {elapsed:.1f}s -> {out}")
+    return results
 
 
-# -- the external tools --
+# -- fptaylor and daisy --
 
 
-def collect(results: list, us: list, per_tool: dict) -> list:
-    """One record per core: costex's numbers beside each tool's, per variant."""
-    per_core = {}
-    for tool, reports in per_tool.items():
-        for u in us:
-            per_core.setdefault(u["file"], {}).setdefault(tool, {})
-            for v in u["variants"]:
-                per_core[u["file"]][tool][v] = reports[u["name"]]
-    keep = ("name", "expr", "root_interval") + tuple(
-        k for m in common.METRICS for k in (m.best_expr, m.seed, m.best))
-    return [{"file": r["file"], "costex": {k: r.get(k) for k in keep},
-             "tools": per_core[r["file"]]}
-            for r in results if r["file"] in per_core]
-
-
-def _seed_bounds(records: list, tool: str) -> str:
-    """costex against a tool on the seed: both bound the same thing."""
-    n = Counter()
-    for r in records:
-        rep = r["tools"].get(tool, {}).get("seed")
-        ours = r["costex"].get(JUDGED.seed)
-        theirs = rep.get(JUDGED.name) if rep and rep["status"] == "ok" else None
-        if ours is None:
-            n["no costex bound"] += 1
-        elif theirs is None:
-            n["only costex"] += 1
-        else:
-            n["tighter" if ours < theirs else "looser" if theirs < ours else "tie"] += 1
-    return ", ".join(f"{v} {k}" for k, v in n.most_common())
-
-
-def _health(records: list) -> None:
-    """What landed, why anything did not, and how tight our bounds are."""
-    analysis = [r for r in records if kind(r["file"]) == "analysis"]
-    print(f"  {len(records)} cores, {len(analysis)} of them analysis cores")
-    for tool in sorted({t for r in records for t in r["tools"]}):
-        reps = [rep for r in records for rep in r["tools"].get(tool, {}).values()]
-        st = Counter(rep["status"] for rep in reps)
-        print(f"  {tool:<9} {len(reps)} analyses: "
-              + ", ".join(f"{v} {k}" for k, v in st.most_common()))
-        why = Counter(rep.get("error", "")[:48] for rep in reps
-                      if rep["status"] in ("nobound", "crash", "unsupported"))
-        for reason, n in why.most_common(6):
-            print(f"      {n:4} x {reason}")
-        print(f"      {JUDGED.label} on the analysis cores' seed: "
-              f"{_seed_bounds(analysis, tool)}")
-
-
-def phase_external(args) -> None:
-    results = _results(args)
-    us = common.units(results)
+def step_external(results: list) -> dict:
+    """Seeds only: the bounds report compares nothing else."""
+    us = common.seed_units(results)
     workdir = tempfile.mkdtemp(prefix="costex-ext-")
     t0 = time.time()
     per_tool, versions = {}, {}
     try:
-        for tool in args.tools:
+        for tool in TOOLS:
             per_tool[tool], versions[tool] = analyze(tool, us, timeout=TOOL_TIMEOUT,
-                                                     jobs=args.jobs, workdir=workdir)
+                                                     jobs=JOBS, workdir=workdir)
     except Exception:
         print(f"  work kept in {workdir}")
         raise
     else:
         shutil.rmtree(workdir, ignore_errors=True)
-    records = collect(results, us, per_tool)
+    records = [{"file": u["file"],
+                "tools": {t: per_tool[t][u["name"]] for t in TOOLS}}
+               for u in us]
     elapsed = time.time() - t0
-    out = _write(args, "external.json",
-                 {"versions": versions,
-                  "options": {t: list(TOOLS[t]["opts"]) for t in args.tools},
-                  "elapsed_s": round(elapsed, 1), "results": records})
-    print()
-    _health(records)
-    print(f"\n  {elapsed:.1f}s wall, {args.jobs} jobs -> {out}")
+    payload = {"versions": versions,
+               "options": {t: list(TOOLS[t]["opts"]) for t in TOOLS},
+               "elapsed_s": round(elapsed, 1), "results": records}
+    print(f"  {elapsed:.1f}s -> {_write('external.json', payload)}")
+    return payload
 
 
-# -- the two rewriters, head to head --
+def sample_one(u: dict) -> tuple:
+    """Measured against its seed, so a rewrite that changed the function scores
+    as wrong rather than as accurate."""
+    return u["name"], sample.measure(parse_expr(parse_sexps(u["expr"])[0]),
+                                     u["file"], u["box"], u["precision"],
+                                     reference=parse_expr(parse_sexps(u["seed"])[0]))
 
 
-WHO = (common.SEED,) + tuple(m.judge for m in common.METRICS) + ("daisy",)
+def sample_reports(us: list) -> dict:
+    t0 = time.time()
+    with ProcessPoolExecutor(max_workers=JOBS) as pool:
+        out = dict(pool.map(sample_one, us))
+    print(f"  sampled: {len(us)} programs, {sample.SAMPLES} points each, "
+          f"{time.time() - t0:.1f}s")
+    return out
+
+
+# -- rewriting --
 
 
 def _score(rep):
-    """The judge's bound for one program; a zero bound counts as none, since
-    every ratio downstream divides by it."""
-    v = rep.get(JUDGED.name) if rep and rep.get("status") == "ok" else None
-    return v or None
+    """One program's ulp distance from exact.  Never zero, so ratios are safe."""
+    if not rep or rep.get("status") != "ok":
+        return None
+    return rep.get(SCORE)
 
 
-def candidates(results: list, seeds: list, rewrites: dict) -> tuple:
-    """The distinct programs to score, and (file, who) -> which one."""
-    by_file = {r["file"]: r for r in results}
+def candidates(results: list, rewrites: dict) -> tuple:
+    """The distinct programs to measure, and (file, who) -> which one."""
     cands, index = [], {}
-    for u in seeds:
-        r = by_file[u["file"]]
-        progs = {common.SEED: r["expr"]}
-        progs.update({m.judge: r.get(m.best_expr) for m in common.METRICS})
-        rw = rewrites.get(u["name"], {})
+    for i, r in enumerate(results):
+        progs = {"seed": r["expr"], "costex": r.get(FIELDED.best_expr)}
+        rw = rewrites.get(f"cx{i:05d}", {})
         if rw.get("status") == "ok":
             progs["daisy"] = rw["expr"]
         seen = {}
@@ -298,108 +193,63 @@ def candidates(results: list, seeds: list, rewrites: dict) -> tuple:
                 continue
             if expr not in seen:
                 seen[expr] = f"j{len(cands):05d}"
-                cands.append(common.unit(seen[expr], u["file"], expr))
-            index[(u["file"], who)] = seen[expr]
+                cands.append(common.unit(seen[expr], r["file"], expr,
+                                         seed=r["expr"]))
+            index[(r["file"], who)] = seen[expr]
     return cands, index
 
 
-def _judged(e: dict, who: str) -> tuple:
-    """(score, program, note) for one side; None and a reason if it has no bound."""
-    j = e["judge"]
-    if who == "costex":
-        got = [(v, e.get(m.judge_expr)) for m in common.METRICS
-               if (v := _score(j.get(m.judge)))]
-        if got:
-            return (*min(got), "")
-        rep = next((j[m.judge] for m in common.METRICS if j.get(m.judge)), {})
-        return None, None, rep.get("status", "no program")
-    v = _score(j.get("daisy"))
-    if v:
-        return v, e.get("daisy_expr"), ""
-    note = e["daisy_status"] if e["daisy_status"] != "ok" else \
-        (j.get("daisy") or {}).get("status", "no program")
-    return None, e.get("daisy_expr"), note
-
-
 def h2h(out: list) -> list:
-    """Per core, FPTaylor's score for the seed and for each rewriter's program.
-
-    costex offers both its optima and its best is taken.  A side with no bound
-    loses by default, so a core counts if either side has one.
-    """
+    """Per core, the seed's measured error and each rewriter's.  A side with no
+    measurement loses, so a core counts if either has one."""
     rows = []
     for e in out:
-        cx, cx_expr, cx_note = _judged(e, "costex")
-        dy, dy_expr, dy_note = _judged(e, "daisy")
+        m = e["measured"]
+        cx, dy = _score(m.get("costex")), _score(m.get("daisy"))
         if cx is None and dy is None:
             continue
         rows.append({"file": e["file"], "name": e.get("name"), "kind": kind(e["file"]),
-                     "seed": _score(e["judge"].get(common.SEED)),
-                     "seed_expr": e["seed_expr"],
-                     "cx": cx, "cx_expr": cx_expr, "cx_note": cx_note,
-                     "dy": dy, "dy_expr": dy_expr, "dy_note": dy_note})
+                     "seed": _score(m.get("seed")), "seed_expr": e["seed_expr"],
+                     "cx": cx, "cx_expr": e.get("costex_expr"),
+                     "cx_note": "" if cx else _note(m.get("costex")),
+                     "dy": dy, "dy_expr": e.get("daisy_expr"),
+                     "dy_note": "" if dy else (e["daisy_status"]
+                                               if e["daisy_status"] != "ok"
+                                               else _note(m.get("daisy")))})
     return rows
 
 
-def _wins(rows: list) -> tuple:
-    cxw = [r for r in rows if r["dy"] is None or (r["cx"] and r["cx"] < r["dy"] * SLACK)]
-    dyw = [r for r in rows if r["cx"] is None or (r["dy"] and r["dy"] < r["cx"] * SLACK)]
-    return cxw, dyw
+def _note(rep) -> str:
+    return rep["status"] if rep else "no program"
 
 
-def _improves(rows: list, who: str) -> set:
-    return {r["file"] for r in rows if r["seed"] and r[who] and r[who] < r["seed"] * SLACK}
+def _verdicts(rows: list) -> tuple:
+    """Wins, dead ties, and pairs the measurement cannot separate.  A dead tie
+    is a real result, usually both rewriters returning the same program."""
+    cxw, dyw, tied, close = [], [], [], []
+    for r in rows:
+        cx, dy = r["cx"], r["dy"]
+        if dy is None or (cx and cx < dy * SLACK):
+            cxw.append(r)
+        elif cx is None or (dy and dy < cx * SLACK):
+            dyw.append(r)
+        elif cx == dy:
+            tied.append(r)
+        else:
+            close.append(r)
+    return cxw, dyw, tied, close
 
 
-def head_to_head(out: list) -> None:
-    every = h2h(out)
-    rows = [r for r in every if r["kind"] != "analysis"]
-    if not rows:
-        print("  no core has a scored rewrite")
-        return
-    cxw, dyw = _wins(rows)
-    cx_imp, dy_imp = _improves(rows, "cx"), _improves(rows, "dy")
-    both = cx_imp & dy_imp
-    print(f"\n  {len(rows)} rewrite cores with a verdict "
-          f"({len(out) - len(every)} where neither side produced a bound, "
-          f"{sum(1 for r in every if r['kind'] == 'analysis')} optimal, left out)")
-    print(f"    costex wins {len(cxw)}, daisy wins {len(dyw)}, "
-          f"tie {len(rows) - len(cxw) - len(dyw)}")
-    print(f"    by default, the other side having crashed: costex "
-          f"{sum(1 for r in cxw if r['dy'] is None)}, daisy "
-          f"{sum(1 for r in dyw if r['cx'] is None)}")
-    print(f"    improves on the seed: costex {len(cx_imp)}, daisy {len(dy_imp)}; "
-          f"both {len(both)}, only daisy {len(dy_imp - both)}, "
-          f"only costex {len(cx_imp - both)}")
-    wrong = [r["file"] for r in every if r["kind"] == "analysis"
-             and (r["file"] in _improves(every, "cx") | _improves(every, "dy"))]
-    if wrong:
-        print(f"    MISTAGGED: a tool improved {len(wrong)} core(s) tagged analysis: "
-              + ", ".join(f[:40] for f in sorted(wrong)[:3]))
-    print("    largest costex gains (costex x, daisy x):")
-    for r in sorted((r for r in rows if r["seed"] and r["cx"]),
-                    key=lambda r: -r["seed"] / r["cx"])[:5]:
-        dy = f"{r['seed'] / r['dy']:.4g}x" if r["dy"] else r["dy_note"]
-        print(f"      {r['file'][:46]:<46} costex {r['seed'] / r['cx']:.4g}x   daisy {dy}")
-
-
-def phase_rewrite(args) -> None:
-    """Daisy's genetic search against equality saturation, both scored by
-    FPTaylor so this compares rewriters and not analyses."""
-    results = [r for r in _results(args) if r["status"] == "ok"]
-    seeds = [common.unit(f"cx{i:05d}", r["file"], r["expr"])
-             for i, r in enumerate(results)]
+def step_rewrite(results: list) -> dict:
+    results = [r for r in results if r["status"] == "ok"]
+    seeds = common.seed_units(results)
     workdir = tempfile.mkdtemp(prefix="costex-rw-")
     t0 = time.time()
     try:
-        daisy_ver = daisy.version()      # before the export, so a missing tool is quick
-        rewrites = daisy.run_rewriter(seeds, seed=REWRITE_SEED,
-                                      timeout=TOOL_TIMEOUT, jobs=args.jobs,
-                                      workdir=workdir)
-        cands, index = candidates(results, seeds, rewrites)
-        print("  judging every distinct program with FPTaylor")
-        scores, ft_ver = analyze("fptaylor", cands, timeout=TOOL_TIMEOUT,
-                                 jobs=args.jobs, workdir=workdir)
+        rewrites, daisy_ver = rewrite(seeds, seed=REWRITE_SEED, timeout=TOOL_TIMEOUT,
+                                      jobs=JOBS, workdir=workdir)
+        cands, index = candidates(results, rewrites)
+        scores = sample_reports(cands)
     except Exception:
         print(f"  work kept in {workdir}")
         raise
@@ -409,36 +259,31 @@ def phase_rewrite(args) -> None:
     out = []
     for u, r in zip(seeds, results):
         rw = rewrites.get(u["name"], {})
-        entry = {"file": u["file"], "name": r.get("name"), "seed_expr": r["expr"],
-                 **{m.judge_expr: r.get(m.best_expr) for m in common.METRICS},
-                 "daisy_expr": rw.get("expr"), "daisy_status": rw.get("status"),
-                 "daisy_error": rw.get("error"),
-                 "daisy_before": rw.get("daisy_before"),
-                 "daisy_after": rw.get("daisy_after"), "judge": {}}
-        for who in WHO:
-            nm = index.get((u["file"], who))
-            if nm:
-                entry["judge"][who] = scores.get(nm)
-        out.append(entry)
+        out.append({"file": r["file"], "name": r.get("name"),
+                    "seed_expr": r["expr"],
+                    "costex_expr": r.get(FIELDED.best_expr),
+                    "daisy_expr": rw.get("expr"),
+                    "daisy_status": rw.get("status"),
+                    "daisy_error": rw.get("error"),
+                    "measured": {who: scores.get(index[(r["file"], who)])
+                                 for who in ("seed", "costex", "daisy")
+                                 if (r["file"], who) in index}})
     elapsed = time.time() - t0
-    path = _write(args, "rewrite.json",
-                  {"daisy_version": daisy_ver, "fptaylor_version": ft_ver,
-                   "rewrite_seed": REWRITE_SEED,
-                   "daisy_options": list(daisy.REWRITE_OPTS),
-                   "elapsed_s": round(elapsed, 1), "results": out})
-    st = Counter(e["daisy_status"] for e in out)
-    print(f"\n  daisy rewriter over {len(out)} cores: "
-          + ", ".join(f"{v} {k}" for k, v in st.most_common()))
-    head_to_head(out)
-    print(f"  {elapsed:.1f}s wall -> {path}")
+    payload = {"daisy_version": daisy_ver, "rewrite_seed": REWRITE_SEED,
+               "daisy_options": list(daisy.REWRITE_OPTS),
+               "sampling": {"version": sample.VERSION, "points": sample.SAMPLES,
+                            "seed": sample.SEED,
+                            "distribution": sample.DISTRIBUTION},
+               "elapsed_s": round(elapsed, 1), "results": out}
+    print(f"  {elapsed:.1f}s -> {_write('rewrite.json', payload)}")
+    return payload
 
 
-# -- the table --
+# -- shared formatting --
 
 
 STATUS = {"nobound": "n/b", "timeout": "t/o", "error": "err"}
-NONE = "&mdash;"                    # no bound exists
-NA = "&middot;"                     # not recorded for this program
+NONE = "&mdash;"
 
 
 def _num(x) -> str:
@@ -453,98 +298,154 @@ def _code(expr: str) -> str:
     return "`" + expr.replace("|", "\\|") + "`"
 
 
-def programs(r: dict) -> list:
-    """(labels, variant, expression) per distinct program, seed first."""
-    order, labels, variant = [], {}, {}
-    entries = [(common.SEED, common.SEED, r["expr"])]
-    entries += [(m.name, m.variant, r.get(m.best_expr)) for m in common.METRICS]
-    for label, v, expr in entries:
-        if not expr:
-            continue
-        if expr not in labels:
-            order.append(expr)
-            labels[expr], variant[expr] = [], v
-        labels[expr].append(label)
-    return [(labels[e], variant[e], e) for e in order]
+def _geomean(xs: list) -> float:
+    return math.exp(sum(map(math.log, xs)) / len(xs))
 
 
-def _costex(r: dict, labels: list, m) -> str:
-    """costex bounds only the metric it optimised for."""
-    if m.name in labels:
-        return _num(r.get(m.best))
-    if common.SEED in labels:
-        return _num(r.get(m.seed))
-    return NA
+def _spread(xs: list) -> str:
+    if not xs:
+        return "no ratio"
+    return (f"geomean {_geomean(xs):.3g}x, median {xs[len(xs) // 2]:.3g}x, "
+            f"p10 {xs[int(0.1 * (len(xs) - 1))]:.3g}x, "
+            f"p90 {xs[int(0.9 * (len(xs) - 1))]:.3g}x")
 
 
-def _tool(reps: dict, variant: str, m) -> str:
-    rep = (reps or {}).get(variant)
+# -- bounds.md --
+
+
+def _rows(res: dict, ext: dict) -> list:
+    """One row per core: costex's seed bounds beside each tool's report."""
+    tools = {r["file"]: r["tools"] for r in ext["results"]}
+    return [dict(r, tools=tools[r["file"]]) for r in res["results"]
+            if r["file"] in tools]
+
+
+def seed_bound(r: dict, who: str, m):
+    """Every table reads bounds here, so none can disagree about who bounded
+    what."""
+    if who == "costex":
+        return r.get(m.seed)
+    rep = r["tools"].get(who)
+    return rep.get(m.name) if rep and rep["status"] == "ok" else None
+
+
+def tightness(rows: list, tool: str, m) -> tuple:
+    n, ratios = Counter(), []
+    for r in rows:
+        ours, theirs = seed_bound(r, "costex", m), seed_bound(r, tool, m)
+        if ours is None and theirs is None:
+            n["neither"] += 1
+        elif theirs is None:
+            n["only ours"] += 1
+        elif ours is None:
+            n["only theirs"] += 1
+        else:
+            n["both"] += 1
+            n["tighter" if ours < theirs else "looser" if theirs < ours else "tie"] += 1
+            if ours > 0 and theirs > 0:
+                ratios.append(theirs / ours)
+    return n, sorted(ratios)
+
+
+def coverage_rows(rows: list, tools: list) -> list:
+    out = ["", "## Coverage", "",
+           "| Analyser | seeds |"
+           + "".join(f" bounded {m.label} |" for m in common.METRICS)
+           + " bounded neither | why not |",
+           "|---|--:|" + "--:|" * (len(common.METRICS) + 1) + "---|"]
+    for who in ["costex"] + tools:
+        got = [[seed_bound(r, who, m) for m in common.METRICS] for r in rows]
+        why = Counter(rep.get("error", "")[:52] for r in rows
+                      if who != "costex" and (rep := r["tools"].get(who))
+                      and rep["status"] != "ok")
+        out.append(f"| {who} | {len(rows)} |"
+                   + "".join(f" {sum(1 for g in got if g[i] is not None)} |"
+                             for i in range(len(common.METRICS)))
+                   + f" {sum(1 for g in got if not any(v is not None for v in g))} | "
+                   + ("; ".join(f"{v}x {k}" for k, v in why.most_common(3)) or NONE)
+                   + " |")
+    return out
+
+
+def _bound(rep, m) -> str:
     if rep is None:
-        return NA
+        return NONE
     if rep["status"] != "ok":
         return STATUS.get(rep["status"], rep["status"])
     return _num(rep.get(m.name))
 
 
-def gain(r: dict) -> float:
-    """The best ratio costex claims, for sorting."""
-    out = 1.0
+def _looseness(r: dict, tools: list) -> float:
+    """How many times looser our bound is than the tightest tool's."""
+    out = 0.0
     for m in common.METRICS:
-        seed, best = r.get(m.seed), r.get(m.best)
-        if seed and best and best > 0:
-            out = max(out, seed / best)
+        ours = seed_bound(r, "costex", m)
+        theirs = [v for t in tools if (v := seed_bound(r, t, m))]
+        if ours and theirs:
+            out = max(out, ours / min(theirs))
     return out
 
 
-def row(r: dict, tools: dict, names: list) -> str:
-    progs = programs(r)
-    cells = [
-        f"**{r.get('name') or r['file']}**",
-        # label and expression on one line: a wrapped expression is not a program
-        "<br>".join(f"{', '.join(labels)}: {_code(expr)}"
-                    for labels, _, expr in progs),
-    ]
+def bounds_row(r: dict, tools: list) -> str:
+    cells = [f"**{r.get('name') or r['file']}**", _code(r["expr"])]
     for m in common.METRICS:
-        cells.append("<br>".join(_costex(r, labels, m) for labels, _, _ in progs))
-        for t in names:
-            cells.append("<br>".join(_tool((tools or {}).get(t), v, m)
-                                     for _, v, _ in progs))
+        cells.append(_num(r.get(m.seed)))
+        cells += [_bound(r["tools"].get(t), m) for t in tools]
     return "| " + " | ".join(cells) + " |"
 
 
-def markdown(rows: list, res: dict, ext: dict, sort: str) -> str:
-    by_file = {r["file"]: r["tools"] for r in ext["results"]}
-    names = sorted({t for r in ext["results"] for t in r["tools"]})
-    rows = sorted(rows, key=(lambda r: -gain(r)) if sort == "gain"
-                  else (lambda r: r["file"]))
-    kinds = Counter(kind(r["file"]) for r in rows)
-
-    out = ["# " + " vs ".join(["costex"] + names), "",
-           f"- {len(rows)} cores, costex at {res.get('iters')} iterations",
-           f"- {kinds['rewrite']} rewrite cores, {kinds['analysis']} analysis cores "
-           f"(:cx-kind)"]
+def bounds_markdown(res: dict, ext: dict) -> str:
+    rows = _rows(res, ext)
+    tools = sorted({t for r in rows for t in r["tools"]})
+    out = ["# Bounds: " + " vs ".join(["costex"] + tools), ""]
     out += [f"- {t} {ext.get('versions', {}).get(t, '?')}, "
-            f"`{' '.join(ext.get('options', {}).get(t, []))}`" for t in names]
-    if names:
-        out.append(f"- external data for "
-                   f"{sum(1 for r in rows if r['file'] in by_file)} of them")
-    out += [f"- sorted by {'costex claimed gain' if sort == 'gain' else 'file name'}",
+            f"`{' '.join(ext.get('options', {}).get(t, []))}`" for t in tools]
+
+    out += ["", "## Summary", "",
+            "Every analyser bounds the same program, the seed.  "
+            "`their bound / ours`, so above 1x means our bound is tighter.", "",
+            "| Metric | vs | both bounded | we are tighter | looser | tie "
+            "| only we bound it | only they do | their bound / ours |",
+            "|---|---|--:|--:|--:|--:|--:|--:|---|"]
+    for m in common.METRICS:
+        for t in tools:
+            n, ratios = tightness(rows, t, m)
+            out.append(f"| {m.label} | {t} | {n['both']} | {n['tighter']} | "
+                       f"{n['looser']} | {n['tie']} | {n['only ours']} | "
+                       f"{n['only theirs']} | {_spread(ratios)} |")
+
+    out += coverage_rows(rows, tools)
+    out += ["", "## Every core", "",
+            "- sorted by how far our bound trails the tightest tool, worst first",
             "",
-            "| Core | Program | "
+            "| Core | Seed | "
             + " | ".join(f"{m.label} {t}" for m in common.METRICS
-                         for t in ["costex"] + names) + " |",
-            "|---|---|" + "---:|" * (len(common.METRICS) * (len(names) + 1))]
-    out += [row(r, by_file.get(r["file"]), names) for r in rows]
+                         for t in ["costex"] + tools) + " |",
+            "|---|---|" + "---:|" * (len(common.METRICS) * (len(tools) + 1))]
+    out += [bounds_row(r, tools)
+            for r in sorted(rows, key=lambda r: -_looseness(r, tools))]
+    out += ["",
+            f"{NONE} the analyser ran and bounded the other metric but not this "
+            "one, almost always a range containing zero, which leaves relative "
+            "error unbounded.  `n/b` it ran cleanly and bounded nothing; `t/o` "
+            "timed out; `err` or a bare status, it failed."]
     return "\n".join(out) + "\n"
 
 
-def _gain(seed: float, got: float) -> str:
+# -- rewrites.md --
+
+
+def _bits(v) -> str:
+    return NONE if v is None else f"{math.log2(v):.1f}"
+
+
+def _vs_seed(seed: float, got: float) -> str:
+    """Bits saved, blank inside the noise."""
     r = seed / got
-    return NONE if SLACK < r < 1 / SLACK else f"{r:.3g}x"
+    return NONE if SLACK < r < 1 / SLACK else f"{math.log2(r):+.1f}"
 
 
 def _edge(r: dict) -> float:
-    """How far costex's rewrite beats Daisy's; no bound loses hard."""
     if r["cx"] is None:
         return -math.inf
     if r["dy"] is None:
@@ -553,162 +454,166 @@ def _edge(r: dict) -> float:
 
 
 def h2h_markdown(rw: dict) -> str:
-    """The two rewriters side by side, scored by the same neutral analyser."""
+    sp = rw.get("sampling", {})
     every = h2h(rw["results"])
     rows = [r for r in every if r["kind"] != "analysis"]
-    cxw, dyw = _wins(rows)
+    cxw, dyw, tied, close = _verdicts(rows)
+    same_prog = sum(1 for r in tied if r["cx_expr"] == r["dy_expr"])
     st = Counter(e["daisy_status"] for e in rw["results"])
     same = sum(1 for e in rw["results"] if e.get("daisy_expr") == e["seed_expr"])
 
-    out = ["# costex's rewrite vs Daisy's", "",
+    out = ["# Rewriting: costex vs Daisy", "",
+           "Both rewriters get the same seed, and both are scored by measuring "
+           f"error in bits rather than bounding it: {sp.get('points')} points of "
+           "the core's box, the same points for every program of that core, "
+           "evaluated in the target format against a high-precision reference.  "
+           "That makes the score a lower bound on the worst case -- but neither "
+           "rewriter optimises measured error, so neither can game it.  For "
+           "bounds, see `bounds.md`.",
+           "",
+           f"A verdict needs a **{MARGIN}x** margin in ulps.  Resampling with "
+           f"independent point sets moves the ratio by {NOISE_P50}x at the median "
+           f"and {NOISE_P90}x at the 90th percentile, so a smaller gap is not "
+           "distinguishable from having drawn different points, and is reported "
+           "as too close to call.",
+           "",
            f"- {len(rows)} of {len(rw['results'])} cores get a verdict; the "
            f"{sum(1 for r in every if r['kind'] == 'analysis')} tagged optimal are left "
            f"out, as are {len(rw['results']) - len(every)} where neither side produced a "
-           "program the judge could bound",
-           f"- judged by fptaylor {rw.get('fptaylor_version')}, on {JUDGED.label}: "
-           "the same "
-           "analyser over the same box, so this compares rewriters and not analyses",
+           "program that could be measured",
+           f"- sampling {sp.get('version')}, {sp.get('points')} points drawn "
+           f"uniformly over the {sp.get('distribution')}s of each box, "
+           f"seed {sp.get('seed')}",
            f"- daisy {rw.get('daisy_version')}, seed {rw.get('rewrite_seed')}, "
            f"`{' '.join(rw.get('daisy_options', []))}`",
            "- daisy: " + ", ".join(f"{v} {k}" for k, v in st.most_common())
            + f", and returned the seed unchanged on {same}",
+           "",
+           "## Summary", "",
            f"- **costex wins {len(cxw)}, daisy wins {len(dyw)}, "
-           f"tie {len(rows) - len(cxw) - len(dyw)}** -- a side that crashed or could "
-           "not be bounded loses, which is "
+           f"dead tie {len(tied)}, too close to call {len(close)}**",
+           f"- a side whose program could not be measured loses: "
            f"{sum(1 for r in cxw if r['dy'] is None)} of costex's wins and "
            f"{sum(1 for r in dyw if r['cx'] is None)} of Daisy's",
-           f"- improves on the seed: costex {len(_improves(rows, 'cx'))}, "
-           f"daisy {len(_improves(rows, 'dy'))}",
-           "- sorted by how far costex's rewrite beats Daisy's, so Daisy's wins are last",
+           f"- of the {len(tied)} dead ties, {same_prog} are cores where both "
+           "rewriters returned the same program, so there was nothing to "
+           f"separate; the other {len(tied) - same_prog} returned different programs "
+           "that measure identically",
+           f"- the {len(close)} too close to call differ by less than the "
+           f"{MARGIN}x margin",
+           "- daisy ulps / costex ulps, "
+           f"{sum(1 for r in rows if r['cx'] and r['dy'])} both measured: "
+           + _spread(sorted(r["dy"] / r["cx"] for r in rows if r["cx"] and r["dy"])),
            "",
-           f"| Core | Program | {JUDGED.label} | vs seed |",
-           "|---|---|---:|---:|"]
+           "Each rewriter against the seed it was given, same points:", "",
+           "| Rewriter | measured | improved | unchanged | regressed | seed / theirs |",
+           "|---|--:|--:|--:|--:|---|"]
+    for label, key in (("costex", "cx"), ("daisy", "dy")):
+        g = sorted(r["seed"] / r[key] for r in rows if r["seed"] and r[key])
+        up = sum(1 for x in g if x > 1 / SLACK)
+        down = sum(1 for x in g if x < SLACK)
+        out.append(f"| {label} | {len(g)} | {up} | {len(g) - up - down} | {down} "
+                   f"| {_spread(g)} |")
+
+    bad = {who: sorted(e["file"] for e in rw["results"]
+                       if (rep := (e["measured"] or {}).get(who))
+                       and rep.get("status") == "ok"
+                       and rep.get("equivalent") is False)
+           for who in ("costex", "daisy")}
+    out += ["",
+            "Every rewrite is measured against the **seed's** exact value, so a "
+            "rewrite that changed the function scores as wrong rather than as "
+            "accurate.  Equivalence is checked directly, by comparing exact "
+            f"values at up to {sample.EQUIV_POINTS} points of the box:", "",
+            "| Rewriter | rewrote | not equivalent to the seed |",
+            "|---|--:|---|"]
+    for who, k in (("costex", "cx"), ("daisy", "dy")):
+        n = sum(1 for r in rows if r[f"{k}_expr"] and r[f"{k}_expr"] != r["seed_expr"])
+        b = bad[who]
+        out.append(f"| {who} | {n} | {len(b)}"
+                   + (": " + ", ".join(f"`{f[:44]}`" for f in b[:3]) if b else "")
+                   + " |")
+
+    out += ["", "## Every core", "",
+            "- sorted by how far costex's rewrite beats Daisy's, so Daisy's wins are last",
+            "",
+            "| Core | Program | bits of error | bits saved vs seed |",
+            "|---|---|---:|---:|"]
     for r in sorted(rows, key=lambda r: -_edge(r)):
-        progs = [(common.SEED, r["seed_expr"], r["seed"], ""),
+        progs = [("seed", r["seed_expr"], r["seed"], ""),
                  ("costex", r["cx_expr"], r["cx"], r["cx_note"]),
                  ("daisy", r["dy_expr"], r["dy"], r["dy_note"])]
         out.append("| " + " | ".join([
             f"**{r['name'] or r['file']}**",
             "<br>".join(f"{who}: {_code(e) if e else NONE}" for who, e, _, _ in progs),
-            "<br>".join(note or _num(v) for _, _, v, note in progs),
-            "<br>".join(NONE if who == common.SEED or v is None or not r["seed"]
-                        else _gain(r["seed"], v) for who, _, v, _ in progs),
+            "<br>".join(note or _bits(v) for _, _, v, note in progs),
+            "<br>".join(NONE if who == "seed" or v is None or not r["seed"]
+                        else _vs_seed(r["seed"], v) for who, _, v, _ in progs),
         ]) + " |")
     return "\n".join(out) + "\n"
-
-
-def phase_report(args) -> None:
-    res = _read(args, "results.json")
-    keep = set(corpus(args))
-    rows = [r for r in res["results"] if r["file"] in keep and r["status"] == "ok"]
-    ext = _read(args, "external.json", required=False) or {"results": []}
-    os.makedirs(args.results_dir, exist_ok=True)
-    wrote = [("report.md", markdown(rows, res, ext, args.sort))]
-    rw = _read(args, "rewrite.json", required=False)
-    if rw:
-        wrote.append(("rewrites.md", h2h_markdown(rw)))
-    for name, text in wrote:
-        with open(_path(args, name), "w") as f:
-            f.write(text)
-        print(f"  {text.count(chr(10))} lines -> {os.path.relpath(_path(args, name))}")
 
 
 # -- driving --
 
 
-PHASES = {"costex": phase_costex, "external": phase_external,
-          "rewrite": phase_rewrite, "report": phase_report}
-
-
-def preflight(args, phases: list) -> None:
-    """Check what the phases need before any of them does work."""
-    missing = []
-    if "costex" in phases and not (shutil.which(egg.EGGLOG) or os.path.exists(egg.EGGLOG)):
-        missing.append(f"no egglog at {egg.EGGLOG}; set EGGLOG")
-    if {"external", "rewrite"} & set(phases):
-        if not os.path.exists(os.path.join(common.FPBENCH, "fpbench.rkt")):
-            missing.append(f"no fpbench.rkt under {common.FPBENCH}; set FPBENCH")
-        need = set(args.tools) if "external" in phases else set()
-        if "rewrite" in phases:
-            need |= {"daisy", "fptaylor"}     # Daisy rewrites, FPTaylor judges
-        for tool in sorted(need):
-            try:
-                TOOLS[tool]["version"]()
-            except RuntimeError as e:
-                missing.append(str(e))
-    if missing:
-        sys.exit("\n".join(missing) + "\n(--probe reports the whole toolchain)")
-
-
-def probe(args) -> int:
-    print(f"EGGLOG    {egg.EGGLOG}")
-    print(f"  {'found  ' if os.path.exists(egg.EGGLOG) else 'MISSING'} egglog")
-    path = os.path.join(common.FPBENCH, "fpbench.rkt")
-    print(f"FPBENCH   {common.FPBENCH}")
-    print(f"  {'found  ' if os.path.exists(path) else 'MISSING'} fpbench.rkt")
-    for tool in args.tools:
-        print(f"\n{tool}")
+def unavailable() -> list:
+    out = []
+    if not (shutil.which(egg.EGGLOG) or os.path.exists(egg.EGGLOG)):
+        out.append(f"no egglog at {egg.EGGLOG}; set EGGLOG")
+    if not os.path.exists(os.path.join(common.FPBENCH, "fpbench.rkt")):
+        out.append(f"no fpbench.rkt under {common.FPBENCH}; set FPBENCH")
+    for tool in sorted(TOOLS):
         try:
-            print(f"  version   {TOOLS[tool]['version']()}")
-            print(f"  options   {' '.join(TOOLS[tool]['opts'])}")
+            TOOLS[tool]["version"]()
         except RuntimeError as e:
-            print(f"  UNAVAILABLE: {e}")
-    print(f"\ncorpus    {len(corpus(args))} cores in {os.path.relpath(common.CORES)}")
-    print(f"results   {os.path.relpath(args.results_dir)}")
-    print(f"cache     {os.path.relpath(common.CACHE)}")
-    return 0
-
-
-def _list(value: str, known, what: str, ap) -> list:
-    out = [v.strip() for v in value.split(",") if v.strip()]
-    unknown = [v for v in out if v not in known]
-    if unknown:
-        ap.error(f"unknown {what}: {', '.join(unknown)}; have {', '.join(known)}")
+            out.append(str(e))
     return out
 
 
-def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(prog="bench", description=__doc__.splitlines()[0])
-    ap.add_argument("--phases", default=",".join(PHASES),
-                    help="comma separated, run in order (default %(default)s)")
-    ap.add_argument("--tools", default=",".join(TOOLS),
-                    help="comma separated (default %(default)s)")
-    ap.add_argument("--probe", action="store_true", help="check the toolchain and exit")
-    ap.add_argument("--summarize", action="store_true",
-                    help="re-print the summaries, running nothing")
-    ap.add_argument("--limit", type=int, help="only the first N cores")
-    ap.add_argument("--only", metavar="SUBSTR",
-                    help="only cores whose filename contains this")
-    ap.add_argument("--kind", choices=KINDS, help="only cores tagged this way")
-    ap.add_argument("--jobs", type=int, default=os.cpu_count())
-    ap.add_argument("--results-dir", default=common.RESULTS)
+def _read(name: str):
+    path = os.path.join(common.RESULTS, name)
+    if not os.path.exists(path):
+        return None
+    with open(path) as f:
+        return json.load(f)
 
-    ap.add_argument("--iters", type=int, default=egg.DEFAULT_ITERS,
-                    help="costex's analysis/rewrite passes (default %(default)s)")
-    ap.add_argument("--max-steps", type=int, default=extract.DEFAULT_MAX_STEPS,
-                    help="costex's extraction step cap (default %(default)s)")
-    ap.add_argument("--sort", choices=("gain", "name"), default="gain",
-                    help="the tables' row order (default %(default)s)")
 
-    args = ap.parse_args(argv)
-    args.tools = _list(args.tools, tuple(TOOLS), "tool(s)", ap)
-    phases = _list(args.phases, PHASES, "phase(s)", ap)
+def main() -> int:
+    missing = unavailable()
+    if missing:
+        # stale either way, so reuse all of it rather than mix old with new
+        res, ext, rw = (_read("results.json"), _read("external.json"),
+                        _read("rewrite.json"))
+        if not (res and ext and rw):
+            return _die(missing)
+        print("\n".join(f"  {m}" for m in missing))
+        print(f"\n  reusing the JSON in {os.path.relpath(common.RESULTS)}, "
+              "rewriting only the markdown")
+    else:
+        print(f"\n== costex ==  {len(corpus())} cores")
+        results = step_costex()
+        res = {"results": results}
+        print("\n== external ==")
+        ext = step_external(results)
+        print("\n== rewrite ==")
+        rw = step_rewrite(results)
 
-    if args.probe:
-        return probe(args)
-    if args.summarize:
-        summarize(_results(args))
-        ext = _read(args, "external.json", required=False)
-        if ext:
-            print()
-            _health(ext["results"])
-        return 0
-    preflight(args, phases)
-    for name, run_phase in PHASES.items():
-        if name in phases:
-            print(f"\n== {name} ==")
-            run_phase(args)
+    print("\n== report ==")
+    for name, text in (("bounds.md", bounds_markdown(res, ext)),
+                       ("rewrites.md", h2h_markdown(rw))):
+        path = os.path.join(common.RESULTS, name)
+        with open(path, "w") as f:
+            f.write(text)
+        print(f"  {text.count(chr(10))} lines -> {os.path.relpath(path)}")
     return 0
+
+
+def _die(missing: list) -> int:
+    print("\n".join(missing), file=sys.stderr)
+    print(f"\nand no JSON in {os.path.relpath(common.RESULTS)} to fall back on, so "
+          "there is nothing to report.\nInstall the tools above, or restore the "
+          "JSON, and run again.", file=sys.stderr)
+    return 1
 
 
 if __name__ == "__main__":

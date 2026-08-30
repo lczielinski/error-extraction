@@ -4,6 +4,6 @@
   :name "Main:bigenough1 from B"
   :cx-source "herbie:haskell.fpcore:70"
   :cx-box "default"
-  :cx-kind "rewrite"
+  :cx-kind "analysis"
   :pre (<= 1.0 x 2.0)
   (+ x (* x x)))

@@ -4,6 +4,6 @@
   :name "forward-half-diff"
   :cx-source "herbie:proj/omerc.fpcore:1"
   :cx-box "default"
-  :cx-kind "rewrite"
+  :cx-kind "analysis"
   :pre (<= 1.0 W 2.0)
   (* 0.5 (- W (/ 1 W))))
