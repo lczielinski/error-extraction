@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from . import common, daisy, fptaylor, herbie
+from . import common, daisy, fptaylor, gappa, herbie
 
-TOOLS = {"fptaylor": fptaylor.SPEC, "daisy": daisy.SPEC}
+TOOLS = {"fptaylor": fptaylor.SPEC, "daisy": daisy.SPEC, "gappa": gappa.SPEC}
 REWRITERS = {"daisy": daisy.REWRITE_SPEC, "herbie": herbie.REWRITE_SPEC}
 
 CACHEABLE = ("ok", "nobound", "unsupported", "crash",

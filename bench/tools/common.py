@@ -44,7 +44,8 @@ BY_NAME = {m.name: m for m in METRICS}
 
 
 def has_const(expr: str) -> bool:
-    """Does it mention PI or E?  FPBench's Scala backend refuses those."""
+    """Does it mention PI or E?  FPBench's Scala and Gappa backends refuse
+    those, so Daisy and Gappa cannot be given the core at all."""
     def walk(e):
         return e[0] == "const" or any(walk(a) for a in e[1:] if isinstance(a, tuple))
     return walk(parse_expr(parse_sexps(expr)[0]))

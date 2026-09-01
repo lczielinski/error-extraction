@@ -1,11 +1,11 @@
 # Rewriting: costex vs daisy vs herbie
 
-Every rewriter gets the same seed and is scored by measured error, not bounded: 10000 points per core plus everything a hill climb reaches, pooled and shared, so every program is scored at its rivals' worst points too.  For sound bounds see `bounds.md`.
+Every rewriter gets the same seed and is scored by measured error, not bounded: 10000 points per core plus everything a hill climb reaches, pooled so every program is scored at its rivals' worst points too.  For sound bounds see `bounds.md`.
 
-Error is in **ulps**, the count of representable floats between the computed result and the exact one.  1 ulp is correctly rounded; the per-core table gives log2 of it.
+Error is in **ulps**; 1 ulp is correctly rounded, and the per-core table gives log2 of it.
 
 - 265 of 371 cores measured; 106 tagged optimal and 0 unmeasurable are left out
-- **88 have headroom** (seed above 4 ulps).  Elsewhere every rewriter ties by construction, so only these are summarised.
+- **88 have headroom** (seed above 4 ulps); only these are summarised, since elsewhere every rewriter ties by construction.
 - sampling sample-13, seed 20250827
 - daisy 7544e92-ff4e15a9, seed 1490, `--analysis=dataflow --rangeMethod=interval --errorMethod=affine --rewrite --codegen --lang=FPCore`
   - a genetic search over algebraic identities
@@ -16,7 +16,7 @@ Error is in **ulps**, the count of representable floats between the computed res
 
 ## Accuracy
 
-Each rewriter against its own seed, over the same 73 cores: headroom, and every rewriter produced a measurable program.  **Below 1x is an improvement.**  *Worst* is the max over the whole pool; *average* is the mean over the uniform points only, since the climbed ones are chosen to be bad.
+Each rewriter against its own seed, over the same 73 cores with headroom where all of them produced a measurable program.  **Below 1x is an improvement.**  *Worst* is the max over the whole pool; *average* is the mean over the uniform points alone, since the climbed ones are chosen to be bad.
 
 | Ratio to the seed | worst, geomean | worst, median | average, geomean | average, median |
 |---|--:|--:|--:|--:|
@@ -24,11 +24,9 @@ Each rewriter against its own seed, over the same 73 cores: headroom, and every 
 | daisy | 0.326x | 1x | 0.495x | 0.999x |
 | herbie | 0.0201x | 0.8x | 0.0817x | 0.895x |
 
-- the medians sit at 1x because on half these cores no rewriter changes the error at all; the geomean is what moves
-
 ### Head to head
 
-costex against each rival over those same 73 cores, by worst measured error.  A tie is usually the same program.
+costex against each rival over those same 73 cores, by worst measured error.
 
 | vs | costex wins | ties | loses | their ulps / ours |
 |---|--:|--:|--:|---|
@@ -40,7 +38,7 @@ costex against each rival over those same 73 cores, by worst measured error.  A 
 
 ## Equivalence
 
-All 265 measured cores.  Exact values compared at up to 20 points, to within 1e-12 of the input scale -- loose enough to allow a folded constant, which is a different real number but the same double:
+All 265 measured cores.  Exact values compared at up to 20 points, to within 1e-12 of the input scale:
 
 | Rewriter | rewrote | not equivalent to the seed |
 |---|--:|---|

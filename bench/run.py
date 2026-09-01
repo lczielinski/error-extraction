@@ -2,7 +2,7 @@
 
     uv run python bench/run.py
 
-    bounds.md    costex, FPTaylor and Daisy bounding every core's seed
+    bounds.md    costex, FPTaylor, Daisy and Gappa bounding every core's seed
     rewrites.md  costex's rewrites against Daisy's and Herbie's, by measured
                  error
 
@@ -124,7 +124,7 @@ def step_costex() -> list:
     return results
 
 
-# -- fptaylor and daisy --
+# -- the external analysers --
 
 
 def step_external(results: list) -> dict:
@@ -161,8 +161,7 @@ def sample_core(group: tuple) -> dict:
 
 
 def sample_reports(us: list) -> dict:
-    """Every program of a core is measured together, so each is scored at the
-    others' worst points too, and against the seed's exact value."""
+    """Every program of a core is measured together; see sample.measure_group."""
     groups = {}
     for u in us:
         g = groups.setdefault(u["file"],
@@ -306,7 +305,6 @@ def _row(*cells) -> str:
 
 
 def _rows(res: dict, ext: dict) -> list:
-    """One row per core: costex's seed bounds beside each tool's report."""
     tools = {r["file"]: r["tools"] for r in ext["results"]}
     return [dict(r, tools=tools[r["file"]]) for r in res["results"]
             if r["file"] in tools]
@@ -397,12 +395,14 @@ def bounds_markdown(res: dict, ext: dict) -> str:
     rows = _rows(res, ext)
     tools = sorted({t for r in rows for t in r["tools"]})
     out = ["# Bounds: " + " vs ".join(["costex"] + tools), ""]
-    out += [f"- {t} {ext.get('versions', {}).get(t, '?')}, "
-            f"`{' '.join(ext.get('options', {}).get(t, []))}`" for t in tools]
+    for t in tools:
+        opts = " ".join(ext.get("options", {}).get(t, []))
+        out.append(f"- {t} {ext.get('versions', {}).get(t, '?')}"
+                   + (f", `{opts}`" if opts else ", its defaults"))
 
     out += ["", "## Summary", "",
             "Every analyser bounds the same program, the seed.  "
-            "`their bound / ours`, so above 1x means our bound is tighter.", "",
+            "Above 1x, our bound is tighter.", "",
             "| Metric | vs | both bounded | we are tighter | looser | tie "
             "| only we bound it | only they do | their bound / ours |",
             "|---|---|--:|--:|--:|--:|--:|--:|---|"]
@@ -424,10 +424,9 @@ def bounds_markdown(res: dict, ext: dict) -> str:
     out += [bounds_row(r, tools)
             for r in sorted(rows, key=lambda r: -_looseness(r, tools))]
     out += ["",
-            f"{NONE} the analyser ran and bounded the other metric but not this "
-            "one, almost always a range containing zero, which leaves relative "
-            "error unbounded.  `n/b` it ran cleanly and bounded nothing; `t/o` "
-            "timed out; `err` or a bare status, it failed."]
+            f"{NONE} bounded the other metric but not this one, almost always a "
+            "range containing zero.  `n/b` bounded nothing; `t/o` timed out; "
+            "`err` or a bare status, it failed."]
     return "\n".join(out) + "\n"
 
 
@@ -445,7 +444,6 @@ def who_list(rw: dict) -> list:
 
 
 def h2h(out: list, whos: list) -> list:
-    """One row per core, with each rewriter's worst and mean measured error."""
     rows = []
     for e in out:
         m, rw = e["measured"], e["rewrites"]
@@ -520,25 +518,23 @@ def _h2h_preamble(rw: dict, every: list, rows: list, head: list) -> list:
         "# Rewriting: " + " vs ".join(who_list(rw)), "",
         "Every rewriter gets the same seed and is scored by measured error, "
         f"not bounded: {sp.get('points')} points per core plus everything a "
-        "hill climb reaches, pooled and shared, so every program is scored at "
-        "its rivals' worst points too.  For sound bounds see `bounds.md`.",
+        "hill climb reaches, pooled so every program is scored at its rivals' "
+        "worst points too.  For sound bounds see `bounds.md`.",
         "",
-        "Error is in **ulps**, the count of representable floats between the "
-        "computed result and the exact one.  1 ulp is correctly rounded; the "
-        "per-core table gives log2 of it.",
+        "Error is in **ulps**; 1 ulp is correctly rounded, and the per-core "
+        "table gives log2 of it.",
         "",
         f"- {len(rows)} of {len(rw['results'])} cores measured; "
         f"{optimal} tagged optimal and "
         f"{len(rw['results']) - len(every)} unmeasurable are left out",
-        f"- **{len(head)} have headroom** (seed above {HEADROOM:.0f} ulps).  "
-        "Elsewhere every rewriter ties by construction, so only these are "
-        "summarised.",
+        f"- **{len(head)} have headroom** (seed above {HEADROOM:.0f} ulps); "
+        "only these are summarised, since elsewhere every rewriter ties by "
+        "construction.",
         f"- sampling {sp.get('version')}, seed {sp.get('seed')}",
     ] + _tool_lines(rw)
 
 
 def _rstats(xs: list) -> list:
-    """geomean, median, p10, p90 of a list of ratios."""
     if not xs:
         return [NONE] * 4
     xs = sorted(xs)
@@ -557,10 +553,10 @@ def _h2h_summary(head: list, whos: list) -> list:
     both = [r for r in head if all(r["who"][w]["ulps"] for w in whos)]
     out = ["", "## Accuracy", "",
            f"Each rewriter against its own seed, over the same {len(both)} "
-           "cores: headroom, and every rewriter produced a measurable program. "
-           " **Below 1x is an improvement.**  *Worst* is the max over the whole "
-           "pool; *average* is the mean over the uniform points only, since "
-           "the climbed ones are chosen to be bad.", "",
+           "cores with headroom where all of them produced a measurable "
+           "program.  **Below 1x is an improvement.**  *Worst* is the max over "
+           "the whole pool; *average* is the mean over the uniform points "
+           "alone, since the climbed ones are chosen to be bad.", "",
            "| Ratio to the seed | worst, geomean | worst, median "
            "| average, geomean | average, median |",
            "|---|--:|--:|--:|--:|"]
@@ -569,12 +565,9 @@ def _h2h_summary(head: list, whos: list) -> list:
         avg = _rstats(_vs_seed(both, who, "mean", "seed_mean"))[:2]
         out.append(_row(who, *worst, *avg))
 
-    out += ["", "- the medians sit at 1x because on half these cores no "
-            "rewriter changes the error at all; the geomean is what moves", ""]
-
-    out += ["### Head to head", "",
+    out += ["", "### Head to head", "",
             f"costex against each rival over those same {len(both)} cores, by "
-            "worst measured error.  A tie is usually the same program.", "",
+            "worst measured error.", "",
             "| vs | costex wins | ties | loses | their ulps / ours |",
             "|---|--:|--:|--:|---|"]
     for who in whos:
@@ -602,8 +595,7 @@ def _h2h_equivalence(rw: dict, rows: list, whos: list) -> list:
     out = ["", "## Equivalence", "",
            f"All {len(rows)} measured cores.  Exact values compared at up to "
            f"{sample.EQUIV_POINTS} points, to within {sample.EQUIV_TOL:g} of "
-           "the input scale -- loose enough to allow a folded constant, which "
-           "is a different real number but the same double:", "",
+           "the input scale:", "",
            "| Rewriter | rewrote | not equivalent to the seed |",
            "|---|--:|---|"]
     for who in whos:
