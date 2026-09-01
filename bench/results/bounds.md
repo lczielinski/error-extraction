@@ -9,9 +9,9 @@ Every analyser bounds the same program, the seed.  `their bound / ours`, so abov
 
 | Metric | vs | both bounded | we are tighter | looser | tie | only we bound it | only they do | their bound / ours |
 |---|---|--:|--:|--:|--:|--:|--:|---|
-| mu_abs | daisy | 360 | 356 | 3 | 1 | 5 | 0 | geomean 7.81x, median 2.22x, p10 1.46x, p90 4.38x |
+| mu_abs | daisy | 361 | 357 | 3 | 1 | 4 | 0 | geomean 7.78x, median 2.22x, p10 1.46x, p90 4.38x |
 | mu_abs | fptaylor | 362 | 111 | 250 | 1 | 3 | 0 | geomean 0.682x, median 0.839x, p10 0.494x, p90 1x |
-| mu_rel | daisy | 259 | 259 | 0 | 0 | 21 | 0 | geomean 13.6x, median 7.5x, p10 2.57x, p90 68.3x |
+| mu_rel | daisy | 260 | 260 | 0 | 0 | 20 | 0 | geomean 13.5x, median 7.37x, p10 2.55x, p90 68.3x |
 | mu_rel | fptaylor | 277 | 125 | 151 | 1 | 3 | 10 | geomean 0.936x, median 0.979x, p10 0.552x, p90 1.17x |
 
 ## Coverage
@@ -19,7 +19,7 @@ Every analyser bounds the same program, the seed.  `their bound / ours`, so abov
 | Analyser | seeds | bounded mu_abs | bounded mu_rel | bounded neither | why not |
 |---|--:|--:|--:|--:|---|
 | costex | 371 | 365 | 280 | 6 | &mdash; |
-| daisy | 371 | 360 | 259 | 11 | 5x daisy.tools.DivisionByZeroException; 2x daisy.tools.OverflowException; 2x no bound in the output |
+| daisy | 371 | 361 | 260 | 10 | 5x daisy.tools.DivisionByZeroException; 2x daisy.tools.OverflowException; 2x no bound in the output |
 | fptaylor | 371 | 362 | 287 | 9 | 2x Potential exception detected: Division by zero at: (; 2x Potential exception detected: Overflow at: (rnd64((m; 1x num_of_float: inf |
 
 ## Every core
@@ -78,7 +78,7 @@ Every analyser bounds the same program, the seed.  `their bound / ours`, so abov
 | **From Rump in a 1983 paper** | `(+ (- (* 9 (* (* (* x x) x) x)) (* (* (* y y) y) y)) (* 2 (* y y)))` | 1.9e-12 | 3.72e-12 | 1.64e-12 | 4.04e-15 | &mdash; | 1.9e-15 |
 | **doppler2** | `(/ (* (- (+ 331.4 (* 0.6 T))) v) (* (+ (+ 331.4 (* 0.6 T)) u) (+ (+ 3…` | 3.89e-13 | 1.05e-12 | 1.84e-13 | 1.46e-15 | 5.51e-11 | 8.97e-16 |
 | **Rosa's DopplerBench** | `(/ (* (- t1) v) (* (+ t1 u) (+ t1 u)))` | 4.49e-16 | 2.13e-15 | 2.14e-16 | 5.55e-16 | 3.85e-14 | 5.61e-16 |
-| **Numeric.SpecFunctions:invIncompleteBetaWorker from math-functions-0.1.5.2, E** | `(+ (- 1 x) (* y (sqrt x)))` | 2.66e-15 | t/o | 2.72e-15 | 7.03e-16 | t/o | 3.36e-16 |
+| **Numeric.SpecFunctions:invIncompleteBetaWorker from math-functions-0.1.5.2, E** | `(+ (- 1 x) (* y (sqrt x)))` | 2.66e-15 | 4.59e-15 | 2.72e-15 | 7.03e-16 | 1.53e-15 | 3.36e-16 |
 | **seraz0-fc-c1** | `(* mult (/ (* s (+ h xj)) (sqrt (+ (* xj xj) (* s s)))))` | 9.05e-14 | 2.54e-13 | 4.36e-14 | 6.66e-16 | 2.62e-14 | 7.83e-16 |
 | **Given's Rotation SVD example** | `(sqrt (* 0.5 (+ 1 (/ x (sqrt (+ (* (* 4 p) p) (* x x)))))))` | 3.03e-16 | 7.28e-16 | 1.47e-16 | 2.73e-16 | 8.56e-16 | 1.51e-16 |
 | **Complex division, real part** | `(/ (+ (* a c) (* b d)) (+ (* c c) (* d d)))` | 1.37e-16 | 5.49e-16 | 6.78e-17 | 5.55e-16 | 3.51e-14 | 5.54e-16 |

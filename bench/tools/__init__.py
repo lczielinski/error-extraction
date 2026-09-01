@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from . import common, daisy, fptaylor
+from . import common, daisy, fptaylor, herbie
 
 TOOLS = {"fptaylor": fptaylor.SPEC, "daisy": daisy.SPEC}
+REWRITERS = {"daisy": daisy.REWRITE_SPEC, "herbie": herbie.REWRITE_SPEC}
 
 CACHEABLE = ("ok", "nobound", "unsupported", "crash",
              "nooutput", "unparsed", "argcount")
@@ -44,15 +45,17 @@ def analyze(tool: str, us: list, *, timeout: float, jobs: int, workdir: str) -> 
     return _cached(tool, us, ver, opts, run, tool), ver
 
 
-def rewrite(us: list, *, seed: int, timeout: float, jobs: int, workdir: str) -> tuple:
+def rewrite(tool: str, us: list, *, seed: int, timeout: float, jobs: int,
+            workdir: str) -> tuple:
     """Cached like an analysis; the seed rides in the key through opts, so
     changing it re-runs."""
-    ver = daisy.version()
-    opts = daisy.REWRITE_OPTS + (f"--rewrite-seed={seed}",)
+    spec = REWRITERS[tool]
+    ver = spec["version"]()
+    opts = spec["opts"] + spec["seed_opts"](seed)
 
     def run(todo):
-        return daisy.run_rewriter(todo, seed=seed, timeout=timeout, jobs=jobs,
-                                  workdir=workdir)
+        return spec["run"](todo, seed=seed, timeout=timeout, jobs=jobs,
+                           workdir=workdir)
 
-    return _cached("daisy-rewrite", us, ver, opts, run, "daisy rewrite",
+    return _cached(f"{tool}-rewrite", us, ver, opts, run, f"{tool} rewrite",
                    keep=REWRITE_CACHEABLE), ver

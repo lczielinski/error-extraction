@@ -252,3 +252,8 @@ def run_rewriter(us: list, *, seed: int, timeout: float, jobs: int,
         items = [(u["name"], t, u["args"]) for u, t in zip(batch, texts)]
         out.update(_pool(run, items, "rewrite", flag, jobs))
     return out
+
+
+REWRITE_SPEC = {"version": version, "opts": REWRITE_OPTS, "run": run_rewriter,
+                "seed_opts": lambda s: (f"--rewrite-seed={s}",),
+                "note": "a genetic search over algebraic identities"}

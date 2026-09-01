@@ -18,7 +18,7 @@
    "--errorMethod=affine"
   ]
  },
- "elapsed_s": 790.7,
+ "elapsed_s": 3.7,
  "results": [
   {
    "file": "fpbench-daisy-000-carthesiantopolar-radius.fpcore",
@@ -335,7 +335,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.74,
+     "seconds": 4.97,
      "abs": 2.4906318355892894e-09,
      "rel": 1.86704035651371e-05,
      "range": [
@@ -835,7 +835,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.9,
+     "seconds": 5.23,
      "abs": 4.440892098500627e-16,
      "rel": null,
      "range": [
@@ -3920,7 +3920,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.0,
+     "seconds": 3.7,
      "abs": 4.440892098500627e-15,
      "rel": 4.440892098500627e-15,
      "range": [
@@ -5669,8 +5669,14 @@
      ]
     },
     "daisy": {
-     "status": "timeout",
-     "seconds": 644.69
+     "status": "ok",
+     "seconds": 3.11,
+     "abs": 4.58674304082249e-15,
+     "rel": 1.5289143469408304e-15,
+     "range": [
+      2.9999999999999996,
+      11.313708498984763
+     ]
     }
    }
   },
@@ -8958,7 +8964,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.21,
+     "seconds": 3.08,
      "abs": 1.4781185718720514e-15,
      "rel": 1.045187665568503e-15,
      "range": [
@@ -9008,7 +9014,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.23,
+     "seconds": 3.13,
      "abs": 1.1641000801352965e-15,
      "rel": 8.231430606434716e-16,
      "range": [

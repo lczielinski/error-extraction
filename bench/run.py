@@ -3,7 +3,8 @@
     uv run python bench/run.py
 
     bounds.md    costex, FPTaylor and Daisy bounding every core's seed
-    rewrites.md  costex's rewrites against Daisy's, by measured error
+    rewrites.md  costex's rewrites against Daisy's and Herbie's, by measured
+                 error
 
 The JSON beside them is what each step handed the next.
 """
@@ -24,7 +25,7 @@ from concurrent.futures import ProcessPoolExecutor
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-from tools import TOOLS, analyze, common, daisy, rewrite, sample  # noqa: E402
+from tools import REWRITERS, TOOLS, analyze, common, rewrite, sample  # noqa: E402
 
 from costex import analysis as A                               # noqa: E402
 from costex import egg, extract                                # noqa: E402
@@ -40,7 +41,7 @@ MAX_STEPS = 1_000_000        # kalman-filter-per-p needs ~770k to reach its root
 EGGLOG_TIMEOUT = 60.0
 EXTRACT_TIMEOUT = 120.0      # a step cap alone does not bound extraction
 TOOL_TIMEOUT = 300.0
-REWRITE_SEED = 1490               # Daisy's genetic seed, so a run is repeatable
+REWRITE_SEED = 1490               # every rewriter's, so a run is repeatable
 JOBS = os.cpu_count()
 WIDTH = 70
 
@@ -192,9 +193,10 @@ def candidates(results: list, rewrites: dict) -> tuple:
     """The distinct programs to measure, and (file, who) -> which one."""
     cands, index = [], {}
     for i, r in enumerate(results):
-        rw = rewrites.get(f"cx{i:05d}", {})
-        progs = {"seed": r["expr"], "costex": r.get(FIELDED.best_expr),
-                 "daisy": rw["expr"] if rw.get("status") == "ok" else None}
+        progs = {"seed": r["expr"], "costex": r.get(FIELDED.best_expr)}
+        for tool, reports in rewrites.items():
+            rep = reports.get(f"cx{i:05d}", {})
+            progs[tool] = rep["expr"] if rep.get("status") == "ok" else None
         seen = {}
         for who, expr in progs.items():
             if not expr:
@@ -206,14 +208,29 @@ def candidates(results: list, rewrites: dict) -> tuple:
     return cands, index
 
 
+def _programs(r: dict, rewrites: dict, name: str) -> dict:
+    """who -> what it returned for this core, costex included so the report
+    reads every rewriter the same way."""
+    expr = r.get(FIELDED.best_expr)
+    out = {"costex": {"status": "ok" if expr else "noprogram", "expr": expr}}
+    for tool, reports in rewrites.items():
+        rep = reports.get(name, {})
+        out[tool] = {"status": rep.get("status", "nooutput"),
+                     "expr": rep.get("expr"), "error": rep.get("error")}
+    return out
+
+
 def step_rewrite(results: list) -> dict:
     results = [r for r in results if r["status"] == "ok"]
     seeds = common.seed_units(results)
     workdir = tempfile.mkdtemp(prefix="costex-rw-")
     t0 = time.time()
     try:
-        rewrites, daisy_ver = rewrite(seeds, seed=REWRITE_SEED, timeout=TOOL_TIMEOUT,
-                                      jobs=JOBS, workdir=workdir)
+        rewrites, versions = {}, {}
+        for tool in REWRITERS:
+            rewrites[tool], versions[tool] = rewrite(
+                tool, seeds, seed=REWRITE_SEED, timeout=TOOL_TIMEOUT, jobs=JOBS,
+                workdir=workdir)
         cands, index = candidates(results, rewrites)
         scores = sample_reports(cands)
     except Exception:
@@ -224,19 +241,18 @@ def step_rewrite(results: list) -> dict:
 
     out = []
     for u, r in zip(seeds, results):
-        rw = rewrites.get(u["name"], {})
+        progs = _programs(r, rewrites, u["name"])
         out.append({"file": r["file"], "name": r.get("name"),
-                    "seed_expr": r["expr"],
-                    "costex_expr": r.get(FIELDED.best_expr),
-                    "daisy_expr": rw.get("expr"),
-                    "daisy_status": rw.get("status"),
-                    "daisy_error": rw.get("error"),
+                    "seed_expr": r["expr"], "rewrites": progs,
                     "measured": {who: scores.get(index[(r["file"], who)])
-                                 for who in ("seed", "costex", "daisy")
+                                 for who in ("seed", *progs)
                                  if (r["file"], who) in index}})
     elapsed = time.time() - t0
-    payload = {"daisy_version": daisy_ver, "rewrite_seed": REWRITE_SEED,
-               "daisy_options": list(daisy.REWRITE_OPTS),
+    payload = {"rewriters": {t: {"version": versions[t],
+                                 "options": list(REWRITERS[t]["opts"]),
+                                 "note": REWRITERS[t].get("note", "")}
+                             for t in REWRITERS},
+               "rewrite_seed": REWRITE_SEED,
                "sampling": {"version": sample.VERSION, "points": sample.SAMPLES,
                             "seed": sample.SEED,
                             "distribution": sample.DISTRIBUTION,
@@ -422,26 +438,31 @@ def _note(rep) -> str:
     return rep["status"] if rep else "no program"
 
 
-def h2h(out: list) -> list:
-    """One row per core, with each side's worst and mean measured error."""
+def who_list(rw: dict) -> list:
+    """The rewriters the JSON holds, costex first: the report follows what was
+    recorded, not what is installed today."""
+    return ["costex"] + list(rw.get("rewriters", {}))
+
+
+def h2h(out: list, whos: list) -> list:
+    """One row per core, with each rewriter's worst and mean measured error."""
     rows = []
     for e in out:
-        m = e["measured"]
-        cx, dy = _val(m.get("costex"), SCORE), _val(m.get("daisy"), SCORE)
-        if cx is None and dy is None:
+        m, rw = e["measured"], e["rewrites"]
+        who = {}
+        for w in whos:
+            rep, prog = m.get(w), rw.get(w, {})
+            got = _val(rep, SCORE)
+            note = "" if got else (prog.get("status") if prog.get("status") != "ok"
+                                   else _note(rep))
+            who[w] = {"expr": prog.get("expr"), "ulps": got,
+                      "mean": _val(rep, MEAN), "note": note}
+        if not any(v["ulps"] for v in who.values()):
             continue
-        dy_note = e["daisy_status"] if e["daisy_status"] != "ok" \
-            else _note(m.get("daisy"))
         rows.append({"file": e["file"], "name": e.get("name"), "kind": kind(e["file"]),
                      "zeros": (m.get("seed") or {}).get("ref_zeros", 0),
                      "seed": _val(m.get("seed"), SCORE), "seed_expr": e["seed_expr"],
-                     "seed_mean": _val(m.get("seed"), MEAN),
-                     "cx": cx, "cx_expr": e.get("costex_expr"),
-                     "cx_mean": _val(m.get("costex"), MEAN),
-                     "cx_note": "" if cx else _note(m.get("costex")),
-                     "dy": dy, "dy_expr": e.get("daisy_expr"),
-                     "dy_mean": _val(m.get("daisy"), MEAN),
-                     "dy_note": "" if dy else dy_note})
+                     "seed_mean": _val(m.get("seed"), MEAN), "who": who})
     return rows
 
 
@@ -455,12 +476,17 @@ def _bits(v) -> str:
     return NONE if v is None else f"{math.log2(v):.1f}"
 
 
-def _edge(r: dict) -> float:
-    if r["cx"] is None:
+def _edge(r: dict, whos: list) -> float:
+    """The best rival's ulps over ours, so the table leads with the cores we
+    win by the most."""
+    ours = r["who"]["costex"]["ulps"]
+    theirs = [r["who"][w]["ulps"] for w in whos
+              if w != "costex" and r["who"][w]["ulps"]]
+    if ours is None:
         return -math.inf
-    if r["dy"] is None:
+    if not theirs:
         return math.inf
-    return r["dy"] / r["cx"]
+    return min(theirs) / ours
 
 
 def _not_equivalent(rw: dict, who: str) -> list:
@@ -472,14 +498,27 @@ def _not_equivalent(rw: dict, who: str) -> list:
     return sorted(out)
 
 
+def _tool_lines(rw: dict) -> list:
+    out = []
+    for tool, info in rw.get("rewriters", {}).items():
+        st = Counter(e["rewrites"][tool]["status"] for e in rw["results"])
+        same = sum(1 for e in rw["results"]
+                   if e["rewrites"][tool].get("expr") == e["seed_expr"])
+        out.append(f"- {tool} {info.get('version')}, seed {rw.get('rewrite_seed')}, "
+                   f"`{' '.join(info.get('options', []))}`")
+        if info.get("note"):
+            out.append(f"  - {info['note']}")
+        out.append("  - " + ", ".join(f"{v} {k}" for k, v in st.most_common())
+                   + f", and returned the seed unchanged on {same}")
+    return out
+
+
 def _h2h_preamble(rw: dict, every: list, rows: list, head: list) -> list:
     sp = rw.get("sampling", {})
-    st = Counter(e["daisy_status"] for e in rw["results"])
-    same = sum(1 for e in rw["results"] if e.get("daisy_expr") == e["seed_expr"])
     optimal = sum(1 for r in every if r["kind"] == "analysis")
     return [
-        "# Rewriting: costex vs Daisy", "",
-        "Both rewriters get the same seed and are scored by measured error, "
+        "# Rewriting: " + " vs ".join(who_list(rw)), "",
+        "Every rewriter gets the same seed and is scored by measured error, "
         f"not bounded: {sp.get('points')} points per core plus everything a "
         "hill climb reaches, pooled and shared, so every program is scored at "
         "its rivals' worst points too.  For sound bounds see `bounds.md`.",
@@ -494,12 +533,8 @@ def _h2h_preamble(rw: dict, every: list, rows: list, head: list) -> list:
         f"- **{len(head)} have headroom** (seed above {HEADROOM:.0f} ulps).  "
         "Elsewhere every rewriter ties by construction, so only these are "
         "summarised.",
-        f"- sampling {sp.get('version')}, seed {sp.get('seed')}; "
-        f"daisy {rw.get('daisy_version')}, seed {rw.get('rewrite_seed')}, "
-        f"`{' '.join(rw.get('daisy_options', []))}`",
-        "- daisy: " + ", ".join(f"{v} {k}" for k, v in st.most_common())
-        + f", and returned the seed unchanged on {same}",
-    ]
+        f"- sampling {sp.get('version')}, seed {sp.get('seed')}",
+    ] + _tool_lines(rw)
 
 
 def _rstats(xs: list) -> list:
@@ -511,38 +546,59 @@ def _rstats(xs: list) -> list:
             f"{_pct(xs, 0.1):.3g}x", f"{_pct(xs, 0.9):.3g}x"]
 
 
-def _vs_seed(rows: list, key: str, suffix: str) -> list:
-    return [r[key + suffix] / r["seed" + suffix] for r in rows
-            if r.get(key + suffix) and r.get("seed" + suffix)]
+def _vs_seed(rows: list, who: str, key: str, seed_key: str) -> list:
+    return [r["who"][who][key] / r[seed_key] for r in rows
+            if r["who"][who][key] and r[seed_key]]
 
 
-def _h2h_summary(rows: list, head: list) -> list:
-    both = [r for r in head if r["cx"] and r["dy"]]
+def _h2h_summary(head: list, whos: list) -> list:
+    """Every rewriter over the same cores: the ones with headroom where all of
+    them returned something measurable."""
+    both = [r for r in head if all(r["who"][w]["ulps"] for w in whos)]
     out = ["", "## Accuracy", "",
            f"Each rewriter against its own seed, over the same {len(both)} "
-           "cores: headroom, and both produced a measurable program.  "
-           "**Below 1x is an improvement.**  *Worst* is the max over the whole "
+           "cores: headroom, and every rewriter produced a measurable program. "
+           " **Below 1x is an improvement.**  *Worst* is the max over the whole "
            "pool; *average* is the mean over the uniform points only, since "
            "the climbed ones are chosen to be bad.", "",
            "| Ratio to the seed | worst, geomean | worst, median "
            "| average, geomean | average, median |",
            "|---|--:|--:|--:|--:|"]
-    for label, key in (("costex", "cx"), ("daisy", "dy")):
-        worst = _rstats(_vs_seed(both, key, ""))[:2]
-        avg = _rstats(_vs_seed(both, key, "_mean"))[:2]
-        out.append(_row(label, *worst, *avg))
+    for who in whos:
+        worst = _rstats(_vs_seed(both, who, "ulps", "seed"))[:2]
+        avg = _rstats(_vs_seed(both, who, "mean", "seed_mean"))[:2]
+        out.append(_row(who, *worst, *avg))
 
-    out += ["",
-            "- the medians sit at 1x because on half these cores neither "
-            "rewriter changes the error at all; the geomean is what moves",
-            f"- {sum(1 for r in both if r['cx_expr'] == r['dy_expr'])} of the "
-            f"{len(both)} are cores where both rewriters returned the same "
-            "program"]
+    out += ["", "- the medians sit at 1x because on half these cores no "
+            "rewriter changes the error at all; the geomean is what moves", ""]
+
+    out += ["### Head to head", "",
+            f"costex against each rival over those same {len(both)} cores, by "
+            "worst measured error.  A tie is usually the same program.", "",
+            "| vs | costex wins | ties | loses | their ulps / ours |",
+            "|---|--:|--:|--:|---|"]
+    for who in whos:
+        if who == "costex":
+            continue
+        wins = ties = losses = 0
+        ratios = []
+        for r in both:
+            ours, theirs = r["who"]["costex"]["ulps"], r["who"][who]["ulps"]
+            wins += theirs > ours
+            ties += theirs == ours
+            losses += theirs < ours
+            ratios.append(theirs / ours)
+        out.append(_row(who, wins, ties, losses, _spread(sorted(ratios))))
+    same = [(w, sum(1 for r in both
+                    if r["who"][w]["expr"] == r["who"]["costex"]["expr"]))
+            for w in whos if w != "costex"]
+    out.append("")
+    out += [f"- {n} of the {len(both)} are cores where costex and {w} returned "
+            "the same program" for w, n in same]
     return out
 
 
-
-def _h2h_equivalence(rw: dict, rows: list) -> list:
+def _h2h_equivalence(rw: dict, rows: list, whos: list) -> list:
     out = ["", "## Equivalence", "",
            f"All {len(rows)} measured cores.  Exact values compared at up to "
            f"{sample.EQUIV_POINTS} points, to within {sample.EQUIV_TOL:g} of "
@@ -550,8 +606,9 @@ def _h2h_equivalence(rw: dict, rows: list) -> list:
            "is a different real number but the same double:", "",
            "| Rewriter | rewrote | not equivalent to the seed |",
            "|---|--:|---|"]
-    for who, k in (("costex", "cx"), ("daisy", "dy")):
-        n = sum(1 for r in rows if r[f"{k}_expr"] and r[f"{k}_expr"] != r["seed_expr"])
+    for who in whos:
+        n = sum(1 for r in rows if r["who"][who]["expr"]
+                and r["who"][who]["expr"] != r["seed_expr"])
         bad = _not_equivalent(rw, who)
         out.append(_row(who, n,
                         f"{len(bad)}"
@@ -560,16 +617,16 @@ def _h2h_equivalence(rw: dict, rows: list) -> list:
     return out
 
 
-def _h2h_table(rows: list) -> list:
+def _h2h_table(rows: list, whos: list) -> list:
     out = ["", "## Every core", "",
-           "- sorted by daisy ulps / costex ulps; * marks a core with headroom",
-           "",
+           "- sorted by the best rival's ulps / costex ulps; * marks a core "
+           "with headroom", "",
            "| Core | Program | worst bits | mean bits |",
            "|---|---|---:|---:|"]
-    for r in sorted(rows, key=lambda r: -_edge(r)):
-        progs = [("seed", r["seed_expr"], r["seed"], r["seed_mean"], ""),
-                 ("costex", r["cx_expr"], r["cx"], r["cx_mean"], r["cx_note"]),
-                 ("daisy", r["dy_expr"], r["dy"], r["dy_mean"], r["dy_note"])]
+    for r in sorted(rows, key=lambda r: -_edge(r, whos)):
+        progs = [("seed", r["seed_expr"], r["seed"], r["seed_mean"], "")]
+        progs += [(w, r["who"][w]["expr"], r["who"][w]["ulps"],
+                   r["who"][w]["mean"], r["who"][w]["note"]) for w in whos]
         head = r["seed"] and r["seed"] > HEADROOM
         out.append(_row(
             f"**{r['name'] or r['file']}**" + ("&nbsp;\\*" if head else ""),
@@ -580,15 +637,15 @@ def _h2h_table(rows: list) -> list:
     return out
 
 
-
 def h2h_markdown(rw: dict) -> str:
-    every = h2h(rw["results"])
+    whos = who_list(rw)
+    every = h2h(rw["results"], whos)
     rows = [r for r in every if r["kind"] != "analysis"]
     head = _headroom(rows)
     out = (_h2h_preamble(rw, every, rows, head)
-           + _h2h_summary(rows, head)
-           + _h2h_equivalence(rw, rows)
-           + _h2h_table(rows))
+           + _h2h_summary(head, whos)
+           + _h2h_equivalence(rw, rows, whos)
+           + _h2h_table(rows, whos))
     return "\n".join(out) + "\n"
 
 
@@ -601,9 +658,11 @@ def unavailable() -> list:
         out.append(f"no egglog at {egg.EGGLOG}; set EGGLOG")
     if not os.path.exists(os.path.join(common.FPBENCH, "fpbench.rkt")):
         out.append(f"no fpbench.rkt under {common.FPBENCH}; set FPBENCH")
-    for tool in sorted(TOOLS):
+    # daisy analyses and rewrites, and one missing checkout is one complaint
+    for check in dict.fromkeys(spec["version"] for spec
+                               in (*TOOLS.values(), *REWRITERS.values())):
         try:
-            TOOLS[tool]["version"]()
+            check()
         except RuntimeError as e:
             out.append(str(e))
     return out
