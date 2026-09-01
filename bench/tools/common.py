@@ -8,6 +8,7 @@ import json
 import os
 import subprocess
 import sys
+from typing import NamedTuple
 
 BENCH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(BENCH))
@@ -22,24 +23,23 @@ CACHE = os.path.join(BENCH, ".cache")
 FPBENCH = os.path.expanduser(os.environ.get("FPBENCH", "~/fpbench"))
 
 
-class Metric:
+class Metric(NamedTuple):
     """An error metric and the results.json keys naming it, derived in one
     place so the record and the reports cannot drift apart."""
 
-    __slots__ = ("name", "label", "seed", "best", "best_expr")
-
-    def __init__(self, name: str):
-        self.name = name
-        self.label = f"mu_{name}"
-        self.seed = f"seed_{name}"
-        self.best = f"best_{name}"
-        self.best_expr = f"best_expr_{name}"
-
-    def __repr__(self):
-        return f"Metric({self.name!r})"
+    name: str
+    label: str
+    seed: str
+    best: str
+    best_expr: str
 
 
-METRICS = tuple(Metric(m) for m in _MU)     # costex's order is the reports' order
+def _metric(name: str) -> Metric:
+    return Metric(name, f"mu_{name}", f"seed_{name}", f"best_{name}",
+                  f"best_expr_{name}")
+
+
+METRICS = tuple(_metric(m) for m in _MU)    # costex's order is the reports' order
 BY_NAME = {m.name: m for m in METRICS}
 
 
@@ -67,6 +67,9 @@ def seed_units(results: list) -> list:
     """The bounds report compares analysers on the seed alone."""
     return [unit(f"cx{i:05d}", r["file"], r["expr"])
             for i, r in enumerate(r for r in results if r["status"] == "ok")]
+
+
+# -- the run cache --
 
 
 def key(tool: str, u: dict, ver: str, opts: tuple) -> str:

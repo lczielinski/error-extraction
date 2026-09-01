@@ -101,9 +101,9 @@ _ROOTS = {}
 
 
 def _root(workdir: str) -> str:
-    """A private FPTaylor directory for this process: b_and_b/compile.sh builds
-    a helper binary *in place*, so concurrent runs would race on its object
-    files.  b_and_b is copied (72K) and tmp/log made; the rest is symlinked."""
+    """A private FPTaylor directory per process: b_and_b/compile.sh builds a
+    helper binary in place, so concurrent runs would race.  b_and_b is copied
+    (72K) and tmp/log made; the rest is symlinked."""
     root = _ROOTS.get(os.getpid())
     if root is None:
         root = os.path.join(workdir, f"root{os.getpid()}")
@@ -139,8 +139,8 @@ def run_one(item: tuple, *, opts: tuple, timeout: float, workdir: str) -> tuple:
                       "error": (run.stderr or run.stdout)[-300:].strip()}
     report = parse(run.stdout)
     if report["abs"] is None:
-        # e.g. "num_of_float: inf": it exits 0 having bounded nothing, which is
-        # its answer, not a failure
+        # e.g. "num_of_float: inf": it exits 0 having bounded nothing, which
+        # is its answer, not a failure
         return name, {"status": "nobound", "seconds": took,
                       "error": _why(run.stderr + run.stdout)}
     return name, {"status": "ok", "seconds": took, **report}

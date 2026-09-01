@@ -1,7 +1,7 @@
 {
  "versions": {
   "fptaylor": "0.9.4+dev",
-  "daisy": "7544e92"
+  "daisy": "7544e92-ff4e15a9"
  },
  "options": {
   "fptaylor": [
@@ -18,7 +18,7 @@
    "--errorMethod=affine"
   ]
  },
- "elapsed_s": 0.1,
+ "elapsed_s": 790.7,
  "results": [
   {
    "file": "fpbench-daisy-000-carthesiantopolar-radius.fpcore",
@@ -35,7 +35,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.03,
+     "seconds": 3.7,
      "abs": 2.305289770426567e-12,
      "rel": 1.6300860292686049e-12,
      "range": [
@@ -60,7 +60,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.48,
+     "seconds": 5.85,
      "abs": 3.502975687297294e-12,
      "rel": null,
      "range": [
@@ -85,7 +85,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 6.19,
+     "seconds": 5.77,
      "abs": 3.502975687297294e-12,
      "rel": null,
      "range": [
@@ -110,7 +110,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.93,
+     "seconds": 5.99,
      "abs": 1.160113782816552e-13,
      "rel": null,
      "range": [
@@ -135,7 +135,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 6.33,
+     "seconds": 5.56,
      "abs": 2.346965440551685e-12,
      "rel": null,
      "range": [
@@ -160,7 +160,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.97,
+     "seconds": 5.74,
      "abs": 1.3019511689167766e-14,
      "rel": 8.236320243355084e-13,
      "range": [
@@ -185,7 +185,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.74,
+     "seconds": 4.77,
      "abs": 8.881784197001252e-16,
      "rel": null,
      "range": [
@@ -210,7 +210,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 6.95,
+     "seconds": 3.26,
      "abs": 1.0430822499081613e-06,
      "rel": 8.34465799926529e-06,
      "range": [
@@ -235,7 +235,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.88,
+     "seconds": 4.17,
      "abs": 2.305289770426567e-12,
      "rel": 1.6300860292686049e-12,
      "range": [
@@ -260,7 +260,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 6.23,
+     "seconds": 2.78,
      "abs": 0.0012376430317629396,
      "rel": 0.0008751457804478522,
      "range": [
@@ -285,7 +285,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.86,
+     "seconds": 4.64,
      "abs": 3.9968028886505635e-15,
      "rel": null,
      "range": [
@@ -310,7 +310,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.08,
+     "seconds": 4.92,
      "abs": 1.1362993745936219e-10,
      "rel": null,
      "range": [
@@ -335,7 +335,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.92,
+     "seconds": 4.74,
      "abs": 2.4906318355892894e-09,
      "rel": 1.86704035651371e-05,
      "range": [
@@ -360,7 +360,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.17,
+     "seconds": 4.71,
      "abs": 2.3252511027749283e-12,
      "rel": null,
      "range": [
@@ -385,7 +385,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.36,
+     "seconds": 5.06,
      "abs": 4.4941828036826337e-13,
      "rel": null,
      "range": [
@@ -410,7 +410,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.18,
+     "seconds": 5.01,
      "abs": 1.1102230246251565e-15,
      "rel": null,
      "range": [
@@ -435,7 +435,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.08,
+     "seconds": 5.12,
      "abs": 1.5765166949677223e-14,
      "rel": null,
      "range": [
@@ -460,7 +460,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.97,
+     "seconds": 5.27,
      "abs": 1.0440537323574973e-13,
      "rel": null,
      "range": [
@@ -485,7 +485,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.92,
+     "seconds": 4.98,
      "abs": 4.806242515087434e-13,
      "rel": null,
      "range": [
@@ -510,7 +510,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.15,
+     "seconds": 5.09,
      "abs": 2.4648397101145748e-12,
      "rel": null,
      "range": [
@@ -535,7 +535,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.05,
+     "seconds": 4.85,
      "abs": 1.1362993745936219e-10,
      "rel": null,
      "range": [
@@ -560,7 +560,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.92,
+     "seconds": 4.97,
      "abs": 2.4906318355892894e-09,
      "rel": 1.86704035651371e-05,
      "range": [
@@ -585,7 +585,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.61,
+     "seconds": 3.05,
      "abs": 2.1457672119140625e-06,
      "rel": null,
      "range": [
@@ -610,7 +610,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.9,
+     "seconds": 5.17,
      "abs": 7.993605777301127e-15,
      "rel": 9.992007221626407e-16,
      "range": [
@@ -635,7 +635,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.83,
+     "seconds": 5.24,
      "abs": 4.751754545395708e-14,
      "rel": null,
      "range": [
@@ -660,7 +660,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.79,
+     "seconds": 6.1,
      "abs": 1.998515501143389,
      "rel": null,
      "range": [
@@ -685,7 +685,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.08,
+     "seconds": 5.01,
      "abs": 3.885745366949227e-06,
      "rel": 1.165723610049796,
      "range": [
@@ -710,7 +710,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.91,
+     "seconds": 4.95,
      "abs": 1.3877676786344658e-16,
      "rel": 4.163303035903397e-16,
      "range": [
@@ -735,7 +735,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 7.15,
+     "seconds": 3.46,
      "abs": 7.152557373046875e-07,
      "rel": null,
      "range": [
@@ -760,7 +760,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.06,
+     "seconds": 2.49,
      "abs": 7.152557373046875e-07,
      "rel": null,
      "range": [
@@ -785,7 +785,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.85,
+     "seconds": 5.06,
      "abs": 1.487817549546845e-13,
      "rel": null,
      "range": [
@@ -835,7 +835,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.08,
+     "seconds": 4.9,
      "abs": 4.440892098500627e-16,
      "rel": null,
      "range": [
@@ -860,7 +860,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.93,
+     "seconds": 5.16,
      "abs": 1.0978104702733509e-15,
      "rel": 6.859235459908349e-16,
      "range": [
@@ -885,7 +885,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.14,
+     "seconds": 5.33,
      "abs": 4.1911988101104756e-13,
      "rel": 1.4235228893370562e-11,
      "range": [
@@ -910,7 +910,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.44,
+     "seconds": 5.28,
      "abs": 1.0471093297316197e-12,
      "rel": 5.505959283492299e-11,
      "range": [
@@ -935,7 +935,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.07,
+     "seconds": 5.3,
      "abs": 1.682927721863026e-13,
      "rel": 3.844664154553662e-13,
      "range": [
@@ -960,7 +960,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.01,
+     "seconds": 5.1,
      "abs": 2.948752353404416e-13,
      "rel": null,
      "range": [
@@ -985,7 +985,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.19,
+     "seconds": 5.02,
      "abs": 3.6066261088762985e-11,
      "rel": null,
      "range": [
@@ -1010,7 +1010,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.54,
+     "seconds": 5.4,
      "abs": 8.648499855918153e-14,
      "rel": 5.577775225345691e-14,
      "range": [
@@ -1035,7 +1035,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.56,
+     "seconds": 5.14,
      "abs": 1.3068946018619628e-13,
      "rel": null,
      "range": [
@@ -1060,7 +1060,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.56,
+     "seconds": 5.32,
      "abs": 6.230844036785959e-14,
      "rel": 1.336816044445184e-13,
      "range": [
@@ -1085,7 +1085,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.95,
+     "seconds": 5.05,
      "abs": 3.7189551880475297e-16,
      "rel": 1.18101955296104e-15,
      "range": [
@@ -1110,7 +1110,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.22,
+     "seconds": 5.45,
      "abs": 1.748815463629566e-16,
      "rel": 4.6913986779982346e-15,
      "range": [
@@ -1135,7 +1135,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.15,
+     "seconds": 5.3,
      "abs": 3.8878001384112835e-08,
      "rel": 1.8536202370101573e-14,
      "range": [
@@ -1160,7 +1160,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.98,
+     "seconds": 5.27,
      "abs": 1.1296729607621833e-15,
      "rel": null,
      "range": [
@@ -1185,7 +1185,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.7,
+     "seconds": 5.29,
      "abs": 5.707240235963695e-16,
      "rel": 6.827352805638813e-16,
      "range": [
@@ -1210,7 +1210,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.77,
+     "seconds": 5.1,
      "abs": 1.4510731312549944e-15,
      "rel": null,
      "range": [
@@ -1235,7 +1235,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.83,
+     "seconds": 5.35,
      "abs": 6.35104049318337e-14,
      "rel": 1.057113629939846e-14,
      "range": [
@@ -1260,7 +1260,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.55,
+     "seconds": 5.19,
      "abs": 1.0639637319324417e-16,
      "rel": null,
      "range": [
@@ -1285,7 +1285,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.17,
+     "seconds": 5.45,
      "abs": 3.1385146835594135e-07,
      "rel": null,
      "range": [
@@ -1310,7 +1310,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.25,
+     "seconds": 5.46,
      "abs": 3.1385146835594135e-07,
      "rel": null,
      "range": [
@@ -1335,7 +1335,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.32,
+     "seconds": 5.37,
      "abs": 3.208945953264709e-07,
      "rel": null,
      "range": [
@@ -1360,7 +1360,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.98,
+     "seconds": 5.0,
      "abs": 4.758098676964963e-15,
      "rel": 6.661338147750949e-15,
      "range": [
@@ -1385,7 +1385,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.74,
+     "seconds": 5.02,
      "abs": 1.776356839400251e-15,
      "rel": null,
      "range": [
@@ -1410,7 +1410,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 7.33,
+     "seconds": 6.87,
      "abs": 657293819.2351851,
      "rel": null,
      "range": [
@@ -1435,7 +1435,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.42,
+     "seconds": 3.43,
      "abs": 3.5762787220505743e-07,
      "rel": null,
      "range": [
@@ -1455,7 +1455,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.26,
+     "seconds": 4.99,
      "abs": 4.989600773836802e+291,
      "rel": null,
      "range": [
@@ -1475,7 +1475,7 @@
     },
     "daisy": {
      "status": "crash",
-     "seconds": 5.13,
+     "seconds": 5.27,
      "error": "daisy.tools.DivisionByZeroException"
     }
    }
@@ -1495,7 +1495,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.08,
+     "seconds": 5.23,
      "abs": 4.440892098500627e-16,
      "rel": null,
      "range": [
@@ -1520,7 +1520,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.72,
+     "seconds": 5.12,
      "abs": 6.689007525095405e-16,
      "rel": 2.9914151056241916e-16,
      "range": [
@@ -1545,7 +1545,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.81,
+     "seconds": 5.16,
      "abs": 1.179611963664229e-16,
      "rel": 5.033011044967377e-15,
      "range": [
@@ -1570,7 +1570,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.78,
+     "seconds": 5.46,
      "abs": 3.063521658575042e-15,
      "rel": 2.1311455016174204e-15,
      "range": [
@@ -1595,7 +1595,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.01,
+     "seconds": 5.3,
      "abs": 2.83106871279415e-15,
      "rel": null,
      "range": [
@@ -1620,7 +1620,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.28,
+     "seconds": 5.33,
      "abs": 3.0531133177191813e-15,
      "rel": 2.442490654175345e-15,
      "range": [
@@ -1645,7 +1645,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.12,
+     "seconds": 5.32,
      "abs": 1.6542323066914835e-13,
      "rel": 1.946155654931157e-15,
      "range": [
@@ -1670,7 +1670,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.98,
+     "seconds": 5.13,
      "abs": 1.4366285938649526e-13,
      "rel": 1.915504791819937e-15,
      "range": [
@@ -1695,7 +1695,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.9,
+     "seconds": 5.42,
      "abs": 9.103828801926284e-15,
      "rel": 4.335156572345849e-16,
      "range": [
@@ -1720,7 +1720,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.98,
+     "seconds": 5.66,
      "abs": 0.00035045299958369475,
      "rel": 6.69508936056487e-15,
      "range": [
@@ -1745,7 +1745,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.02,
+     "seconds": 5.52,
      "abs": 1.0675488271161274e-14,
      "rel": 5.422470232970806e-15,
      "range": [
@@ -1770,7 +1770,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.49,
+     "seconds": 5.35,
      "abs": 1.9984014443252818e-15,
      "rel": 4.996003610813204e-16,
      "range": [
@@ -1795,7 +1795,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.65,
+     "seconds": 5.51,
      "abs": 1.4432899320127035e-15,
      "rel": 5.773159728050814e-16,
      "range": [
@@ -1820,7 +1820,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.92,
+     "seconds": 5.58,
      "abs": 1.4112058743798173e-11,
      "rel": 4.593608909965808e-16,
      "range": [
@@ -1845,7 +1845,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.11,
+     "seconds": 5.3,
      "abs": 2.5781845794073126e-15,
      "rel": 1.031273831762925e-14,
      "range": [
@@ -1870,7 +1870,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.28,
+     "seconds": 5.71,
      "abs": 7.149836278586013e-16,
      "rel": 3.574918139293007e-15,
      "range": [
@@ -1895,7 +1895,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.01,
+     "seconds": 5.44,
      "abs": 3.552713678800502e-15,
      "rel": 3.552713678800502e-15,
      "range": [
@@ -1920,7 +1920,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.67,
+     "seconds": 5.43,
      "abs": 5.995204332975845e-15,
      "rel": null,
      "range": [
@@ -1945,7 +1945,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.18,
+     "seconds": 5.45,
      "abs": 7.327471962526033e-15,
      "rel": 1.4654943925052068e-15,
      "range": [
@@ -1970,7 +1970,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.42,
+     "seconds": 5.48,
      "abs": 1.7763568394002505e-15,
      "rel": null,
      "range": [
@@ -1995,7 +1995,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.14,
+     "seconds": 5.41,
      "abs": 8.572772121813917e-13,
      "rel": 4.7103143526450094e-15,
      "range": [
@@ -2020,7 +2020,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.29,
+     "seconds": 5.35,
      "abs": 7.884803920887862e-13,
      "rel": 4.085390632584385e-15,
      "range": [
@@ -2045,7 +2045,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.27,
+     "seconds": 5.02,
      "abs": 4.718447854656915e-16,
      "rel": 3.5388358909926865e-16,
      "range": [
@@ -2070,7 +2070,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.55,
+     "seconds": 5.19,
      "abs": 3.608224830031759e-16,
      "rel": 5.412337245047638e-16,
      "range": [
@@ -2095,7 +2095,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.39,
+     "seconds": 5.12,
      "abs": 5.10702591327572e-15,
      "rel": 1.7023419710919068e-15,
      "range": [
@@ -2120,7 +2120,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.44,
+     "seconds": 5.18,
      "abs": 2.839950496991151e-13,
      "rel": 4.507857931731985e-15,
      "range": [
@@ -2145,7 +2145,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.54,
+     "seconds": 5.11,
      "abs": 2.7022828419376315e-13,
      "rel": 5.5148629427298596e-15,
      "range": [
@@ -2170,7 +2170,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.61,
+     "seconds": 5.19,
      "abs": 1.0559454545323717e-15,
      "rel": 1.9007018181582693e-15,
      "range": [
@@ -2195,7 +2195,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.41,
+     "seconds": 4.95,
      "abs": 9.547918011776346e-15,
      "rel": 1.5913196686293911e-15,
      "range": [
@@ -2220,7 +2220,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.25,
+     "seconds": 4.95,
      "abs": 5.417888360170764e-14,
      "rel": 5.417888360170764e-16,
      "range": [
@@ -2245,7 +2245,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.98,
+     "seconds": 5.21,
      "abs": 4.407482609333666e-15,
      "rel": 5.561514657923952e-16,
      "range": [
@@ -2270,7 +2270,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.02,
+     "seconds": 4.96,
      "abs": 1.0045297926808416e-12,
      "rel": 1.0045297926808416e-15,
      "range": [
@@ -2295,7 +2295,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 1.7,
+     "seconds": 5.04,
      "abs": 4.2454928461665986e-13,
      "rel": 1.0613732115416497e-15,
      "range": [
@@ -2320,7 +2320,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.73,
+     "seconds": 5.23,
      "abs": 2.039364845578693e-14,
      "rel": 1.9713860173927364e-15,
      "range": [
@@ -2345,7 +2345,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.59,
+     "seconds": 4.93,
      "abs": 3.110538646579102e-17,
      "rel": 2.1224851941363288e-16,
      "range": [
@@ -2370,7 +2370,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.49,
+     "seconds": 5.1,
      "abs": 4.476002901654397e-16,
      "rel": 4.440479069101584e-16,
      "range": [
@@ -2395,7 +2395,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.62,
+     "seconds": 5.15,
      "abs": 3.409772464380012e-16,
      "rel": 3.5518463170625125e-16,
      "range": [
@@ -2420,7 +2420,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.91,
+     "seconds": 5.25,
      "abs": 1.2872500847040355e-16,
      "rel": 3.388374416511268e-14,
      "range": [
@@ -2445,7 +2445,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.64,
+     "seconds": 5.27,
      "abs": 3.520870763842236e-18,
      "rel": 1.4407403165642428e-14,
      "range": [
@@ -2470,7 +2470,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.77,
+     "seconds": 5.17,
      "abs": 9.969802761133906e-14,
      "rel": 1.6080327034086945e-15,
      "range": [
@@ -2495,7 +2495,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.75,
+     "seconds": 5.19,
      "abs": 6.661338147750941e-16,
      "rel": 5.329070518200753e-15,
      "range": [
@@ -2520,7 +2520,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.4,
+     "seconds": 5.36,
      "abs": 3.392884947239278e-17,
      "rel": 1.7394190162846698e-14,
      "range": [
@@ -2545,7 +2545,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.73,
+     "seconds": 5.32,
      "abs": 3.9812597663058114e-13,
      "rel": 1.5674251048448076e-15,
      "range": [
@@ -2570,7 +2570,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.79,
+     "seconds": 5.44,
      "abs": 9.728597593957559e-15,
      "rel": 1.1445408934067716e-15,
      "range": [
@@ -2595,7 +2595,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.84,
+     "seconds": 5.23,
      "abs": 1.1102230246251568e-16,
      "rel": 1.776356839400251e-15,
      "range": [
@@ -2620,7 +2620,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.86,
+     "seconds": 5.26,
      "abs": 1.2089004020054972e-08,
      "rel": 1.7822561152424456e-15,
      "range": [
@@ -2645,7 +2645,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.7,
+     "seconds": 5.3,
      "abs": 2.4868995751603507e-14,
      "rel": null,
      "range": [
@@ -2670,7 +2670,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.45,
+     "seconds": 5.06,
      "abs": 9.406056180852025e-17,
      "rel": 2.2574534834044864e-15,
      "range": [
@@ -2695,7 +2695,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.16,
+     "seconds": 5.25,
      "abs": 0.0007782087486702949,
      "rel": 1.6777574740635982e-15,
      "range": [
@@ -2720,7 +2720,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.0,
+     "seconds": 5.13,
      "abs": 1.5276668818842154e-13,
      "rel": 1.4145063721150144e-15,
      "range": [
@@ -2745,7 +2745,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.77,
+     "seconds": 5.2,
      "abs": 9.992007221626409e-16,
      "rel": 3.9968028886505636e-16,
      "range": [
@@ -2770,7 +2770,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.77,
+     "seconds": 5.36,
      "abs": 1.6730444190531903e-15,
      "rel": 1.825139366239844e-15,
      "range": [
@@ -2795,7 +2795,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.86,
+     "seconds": 5.31,
      "abs": 6.040480615698841e-14,
      "rel": 6.723317554864797e-15,
      "range": [
@@ -2820,7 +2820,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.0,
+     "seconds": 5.46,
      "abs": 2.5289164751023163e-13,
      "rel": 6.335535333579467e-14,
      "range": [
@@ -2845,7 +2845,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.93,
+     "seconds": 5.36,
      "abs": 9.992007221626409e-16,
      "rel": null,
      "range": [
@@ -2870,7 +2870,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.83,
+     "seconds": 5.2,
      "abs": 8.529288386682765e-14,
      "rel": null,
      "range": [
@@ -2895,7 +2895,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.88,
+     "seconds": 5.35,
      "abs": 1.4657608460311167e-10,
      "rel": 2.5682661305563443e-15,
      "range": [
@@ -2920,7 +2920,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.65,
+     "seconds": 5.37,
      "abs": 4.884981308350689e-15,
      "rel": null,
      "range": [
@@ -2945,7 +2945,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.48,
+     "seconds": 5.21,
      "abs": 6.661338147750939e-16,
      "rel": null,
      "range": [
@@ -2970,7 +2970,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.56,
+     "seconds": 5.34,
      "abs": 3.108624468950438e-16,
      "rel": 6.217248937900876e-16,
      "range": [
@@ -2995,7 +2995,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.67,
+     "seconds": 5.39,
      "abs": 1.2789769243681803e-13,
      "rel": 1.5987211554602255e-15,
      "range": [
@@ -3020,7 +3020,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.47,
+     "seconds": 5.33,
      "abs": 1.4432899320127035e-15,
      "rel": 7.216449660063518e-16,
      "range": [
@@ -3045,7 +3045,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.55,
+     "seconds": 5.14,
      "abs": 3.552713678800501e-15,
      "rel": 1.7763568394002505e-15,
      "range": [
@@ -3070,7 +3070,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.37,
+     "seconds": 5.41,
      "abs": 1.8243184740640572e-12,
      "rel": 1.7746288658210673e-15,
      "range": [
@@ -3095,7 +3095,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.54,
+     "seconds": 5.35,
      "abs": 1.5969447986208252e-12,
      "rel": 1.584270633552406e-15,
      "range": [
@@ -3120,7 +3120,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.43,
+     "seconds": 5.59,
      "abs": 4.674856057818033e-10,
      "rel": 1.7763500896060497e-15,
      "range": [
@@ -3145,7 +3145,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.85,
+     "seconds": 5.74,
      "abs": 1.1967677515656305e-07,
      "rel": 1.7763568130338684e-15,
      "range": [
@@ -3170,7 +3170,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.53,
+     "seconds": 5.48,
      "abs": 1.4588330543574557e-13,
      "rel": 2.1142508034166026e-15,
      "range": [
@@ -3195,7 +3195,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.78,
+     "seconds": 5.41,
      "abs": 1.9984014443252818e-15,
      "rel": 9.992007221626409e-16,
      "range": [
@@ -3220,7 +3220,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.09,
+     "seconds": 5.24,
      "abs": 3.3306690738754696e-16,
      "rel": null,
      "range": [
@@ -3245,7 +3245,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.75,
+     "seconds": 5.39,
      "abs": 1.5969447986208252e-12,
      "rel": 2.068581345363763e-15,
      "range": [
@@ -3270,7 +3270,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.75,
+     "seconds": 5.43,
      "abs": 1.5898393712632242e-13,
      "rel": null,
      "range": [
@@ -3295,7 +3295,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.33,
+     "seconds": 5.57,
      "abs": 1.376676550535194e-13,
      "rel": null,
      "range": [
@@ -3320,7 +3320,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.42,
+     "seconds": 5.39,
      "abs": 1.270095140171179e-13,
      "rel": null,
      "range": [
@@ -3345,7 +3345,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.33,
+     "seconds": 5.41,
      "abs": 1.0080825063596421e-13,
      "rel": 2.0573112374686574e-15,
      "range": [
@@ -3370,7 +3370,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.7,
+     "seconds": 5.34,
      "abs": 2.9753977059954195e-14,
      "rel": 1.750233944703188e-15,
      "range": [
@@ -3395,7 +3395,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.73,
+     "seconds": 5.12,
      "abs": 9.17154167834268e-16,
      "rel": 4.1016381302493486e-16,
      "range": [
@@ -3420,7 +3420,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.34,
+     "seconds": 6.25,
      "abs": 94558019893192.1,
      "rel": null,
      "range": [
@@ -3445,7 +3445,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.75,
+     "seconds": 5.92,
      "abs": 0.00011882934998652674,
      "rel": 2.9512548068568365e-14,
      "range": [
@@ -3470,7 +3470,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.29,
+     "seconds": 5.34,
      "abs": 1.2434497875801753e-14,
      "rel": null,
      "range": [
@@ -3495,7 +3495,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.28,
+     "seconds": 5.39,
      "abs": 1.687538997430238e-14,
      "rel": 1.687538997430238e-15,
      "range": [
@@ -3520,7 +3520,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.23,
+     "seconds": 5.71,
      "abs": 1.8474111129762608e-11,
      "rel": 6.013708050052932e-15,
      "range": [
@@ -3545,7 +3545,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.38,
+     "seconds": 5.62,
      "abs": 1.2094877568616121e-17,
      "rel": 2.4383273178330098e-14,
      "range": [
@@ -3570,7 +3570,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.31,
+     "seconds": 5.39,
      "abs": 1.2767564783189334e-15,
      "rel": 2.0428103653102934e-14,
      "range": [
@@ -3595,7 +3595,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.72,
+     "seconds": 5.43,
      "abs": 1.8526846723432347e-15,
      "rel": 1.1857181902996703e-14,
      "range": [
@@ -3620,7 +3620,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.86,
+     "seconds": 5.15,
      "abs": 4.758098676964963e-15,
      "rel": 6.661338147750949e-15,
      "range": [
@@ -3645,7 +3645,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.6,
+     "seconds": 5.13,
      "abs": 1.7827009709695394e-14,
      "rel": 1.5598633495983468e-14,
      "range": [
@@ -3670,7 +3670,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.34,
+     "seconds": 5.28,
      "abs": 1.9428902930940286e-16,
      "rel": 1.2434497875801783e-14,
      "range": [
@@ -3695,7 +3695,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.22,
+     "seconds": 5.12,
      "abs": 8.257283745649605e-16,
      "rel": 2.2019423321732278e-15,
      "range": [
@@ -3720,7 +3720,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.24,
+     "seconds": 5.15,
      "abs": 3.774758283725532e-15,
      "rel": 7.549516567451064e-16,
      "range": [
@@ -3745,7 +3745,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.49,
+     "seconds": 5.47,
      "abs": 5.773159728050814e-15,
      "rel": null,
      "range": [
@@ -3770,7 +3770,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.71,
+     "seconds": 5.36,
      "abs": 9.000091552738025,
      "rel": 1.5986398452840707e-14,
      "range": [
@@ -3795,7 +3795,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.34,
+     "seconds": 5.23,
      "abs": 1.028066520802895e-13,
      "rel": 3.115353093342106e-15,
      "range": [
@@ -3820,7 +3820,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.4,
+     "seconds": 5.27,
      "abs": 2.930988785010413e-14,
      "rel": 3.6637359812630166e-15,
      "range": [
@@ -3845,7 +3845,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.4,
+     "seconds": 5.35,
      "abs": 2.067790383364355e-15,
      "rel": 9.452756038237051e-15,
      "range": [
@@ -3870,7 +3870,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.18,
+     "seconds": 5.2,
      "abs": 5.329070518200752e-14,
      "rel": 4.440892098500627e-15,
      "range": [
@@ -3895,7 +3895,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.37,
+     "seconds": 5.04,
      "abs": 2.1316282072803008e-13,
      "rel": 4.440892098500627e-15,
      "range": [
@@ -3920,7 +3920,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.68,
+     "seconds": 5.0,
      "abs": 4.440892098500627e-15,
      "rel": 4.440892098500627e-15,
      "range": [
@@ -3945,7 +3945,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.16,
+     "seconds": 5.16,
      "abs": 1.7763568394002505e-14,
      "rel": null,
      "range": [
@@ -3970,7 +3970,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.24,
+     "seconds": 5.29,
      "abs": 1.554312234475219e-14,
      "rel": 5.181040781584064e-15,
      "range": [
@@ -3995,7 +3995,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.27,
+     "seconds": 5.12,
      "abs": 4.440892098500626e-15,
      "rel": 1.4802973661668755e-15,
      "range": [
@@ -4020,7 +4020,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.55,
+     "seconds": 5.11,
      "abs": 6.384512794832922e-16,
      "rel": 1.8867870984970517e-15,
      "range": [
@@ -4045,7 +4045,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.51,
+     "seconds": 5.0,
      "abs": 2.010243823254618e-15,
      "rel": 4.52304860232289e-15,
      "range": [
@@ -4070,7 +4070,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.35,
+     "seconds": 5.15,
      "abs": 1.3534147347811443e-15,
      "rel": 4.736951571734005e-15,
      "range": [
@@ -4095,7 +4095,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.39,
+     "seconds": 5.31,
      "abs": 1.4738827442468196e-15,
      "rel": 1.4738827442468196e-15,
      "range": [
@@ -4120,7 +4120,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.36,
+     "seconds": 5.21,
      "abs": 1.4957171303977812e-16,
      "rel": null,
      "range": [
@@ -4145,7 +4145,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.51,
+     "seconds": 5.19,
      "abs": 7.075208269356794e-15,
      "rel": 3.065923583387944e-14,
      "range": [
@@ -4170,7 +4170,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.46,
+     "seconds": 5.36,
      "abs": 1.552527947471358e-14,
      "rel": null,
      "range": [
@@ -4195,7 +4195,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.38,
+     "seconds": 5.05,
      "abs": 9.85878045867139e-14,
      "rel": 3.0808688933348094e-15,
      "range": [
@@ -4220,7 +4220,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.33,
+     "seconds": 4.98,
      "abs": 4.496378131476478e-15,
      "rel": 1.0905318805173467e-15,
      "range": [
@@ -4245,7 +4245,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.31,
+     "seconds": 5.22,
      "abs": 2.5091040356528538e-14,
      "rel": 1.792217168323467e-15,
      "range": [
@@ -4270,7 +4270,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.34,
+     "seconds": 5.19,
      "abs": 1.963947661350873e-14,
      "rel": 1.071421287984747e-15,
      "range": [
@@ -4295,7 +4295,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.36,
+     "seconds": 4.96,
      "abs": 8.851253063824063e-14,
      "rel": 7.532981330914096e-15,
      "range": [
@@ -4320,7 +4320,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.37,
+     "seconds": 5.2,
      "abs": 1.776389517807136e-13,
      "rel": 3.2049967696611866e-15,
      "range": [
@@ -4345,7 +4345,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.38,
+     "seconds": 5.07,
      "abs": 8.618106228652781e-15,
      "rel": 4.8382350757348945e-15,
      "range": [
@@ -4370,7 +4370,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.52,
+     "seconds": 5.29,
      "abs": 1.3127519904454521e-14,
      "rel": null,
      "range": [
@@ -4395,7 +4395,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.45,
+     "seconds": 5.07,
      "abs": 2.4158453015843406e-13,
      "rel": 1.677670348322459e-15,
      "range": [
@@ -4420,7 +4420,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.39,
+     "seconds": 4.97,
      "abs": 6.661338147750939e-16,
      "rel": 1.3322676295501878e-15,
      "range": [
@@ -4445,7 +4445,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.55,
+     "seconds": 5.04,
      "abs": 1.3322676295501878e-15,
      "rel": null,
      "range": [
@@ -4470,7 +4470,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.26,
+     "seconds": 5.06,
      "abs": 1.0014211682118912e-13,
      "rel": 1.7568792424770021e-15,
      "range": [
@@ -4495,7 +4495,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.19,
+     "seconds": 5.23,
      "abs": 2.053912595556541e-16,
      "rel": 2.0539125955565408e-15,
      "range": [
@@ -4520,7 +4520,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.09,
+     "seconds": 4.99,
      "abs": 3.992361996552063e-13,
      "rel": 1.584270633552406e-15,
      "range": [
@@ -4545,7 +4545,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.4,
+     "seconds": 5.06,
      "abs": 2.2380959530110548e-08,
      "rel": 5.315191731766396e-15,
      "range": [
@@ -4570,7 +4570,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.09,
+     "seconds": 4.67,
      "abs": 2.1316282072803006e-14,
      "rel": 1.3322676295501878e-15,
      "range": [
@@ -4595,7 +4595,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.22,
+     "seconds": 5.12,
      "abs": 9.298117831235698e-16,
      "rel": 1.3017364963729978e-14,
      "range": [
@@ -4620,7 +4620,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.95,
+     "seconds": 4.71,
      "abs": 1.7763568394002505e-15,
      "rel": 8.881784197001252e-16,
      "range": [
@@ -4645,7 +4645,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.27,
+     "seconds": 5.04,
      "abs": 2.0237589382077207e-11,
      "rel": 9.900973278902742e-15,
      "range": [
@@ -4670,7 +4670,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.64,
+     "seconds": 4.94,
      "abs": 4.403884664346467e-15,
      "rel": null,
      "range": [
@@ -4695,7 +4695,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.38,
+     "seconds": 4.96,
      "abs": 3.3306690738754704e-15,
      "rel": 2.2204460492503135e-15,
      "range": [
@@ -4720,7 +4720,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.27,
+     "seconds": 4.98,
      "abs": 2.6645352591003757e-15,
      "rel": 1.3322676295501878e-15,
      "range": [
@@ -4745,7 +4745,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.42,
+     "seconds": 4.74,
      "abs": 9.992007221626409e-15,
      "rel": 1.1102230246251565e-15,
      "range": [
@@ -4770,7 +4770,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.3,
+     "seconds": 4.85,
      "abs": 3.108624468950438e-14,
      "rel": 1.6361181415528622e-15,
      "range": [
@@ -4795,7 +4795,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.41,
+     "seconds": 5.07,
      "abs": 2.7524479582526825e-16,
      "rel": 7.519827667135549e-16,
      "range": [
@@ -4820,7 +4820,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.49,
+     "seconds": 4.98,
      "abs": 6.661338147750943e-16,
      "rel": null,
      "range": [
@@ -4845,7 +4845,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.36,
+     "seconds": 5.01,
      "abs": 9.43689570931385e-16,
      "rel": 3.019806626980432e-14,
      "range": [
@@ -4870,7 +4870,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.38,
+     "seconds": 4.74,
      "abs": 5.820766091346741e-11,
      "rel": null,
      "range": [
@@ -4895,7 +4895,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.75,
+     "seconds": 5.21,
      "abs": 1.7638766517462955e-15,
      "rel": 5.678432827295062e-14,
      "range": [
@@ -4920,7 +4920,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.47,
+     "seconds": 5.03,
      "abs": 2.4158453015843418e-14,
      "rel": 2.415845301584342e-15,
      "range": [
@@ -4945,7 +4945,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.39,
+     "seconds": 5.21,
      "abs": 1.865174681370263e-14,
      "rel": null,
      "range": [
@@ -4970,7 +4970,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.46,
+     "seconds": 5.0,
      "abs": 2.928213227448851e-15,
      "rel": 2.342570581959081e-15,
      "range": [
@@ -4995,7 +4995,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.22,
+     "seconds": 4.86,
      "abs": 2.3092638912203256e-14,
      "rel": 5.773159728050814e-15,
      "range": [
@@ -5020,7 +5020,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.02,
+     "seconds": 4.98,
      "abs": 1.4432899320127035e-15,
      "rel": null,
      "range": [
@@ -5045,7 +5045,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.09,
+     "seconds": 5.16,
      "abs": 9.034439862887221e-15,
      "rel": null,
      "range": [
@@ -5070,7 +5070,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.2,
+     "seconds": 4.97,
      "abs": 4.440892098500626e-15,
      "rel": 4.440892098500626e-15,
      "range": [
@@ -5095,7 +5095,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.13,
+     "seconds": 4.84,
      "abs": 2.164934898019058e-15,
      "rel": 3.030908857226681e-14,
      "range": [
@@ -5120,7 +5120,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.17,
+     "seconds": 4.96,
      "abs": 2.6645352591003757e-15,
      "rel": 8.881784197001252e-16,
      "range": [
@@ -5145,7 +5145,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.44,
+     "seconds": 5.28,
      "abs": 1.8430658489032193e-12,
      "rel": 9.637503050720211e-14,
      "range": [
@@ -5170,7 +5170,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.45,
+     "seconds": 4.95,
      "abs": 1.6875389974302395e-14,
      "rel": 2.9531932455029193e-15,
      "range": [
@@ -5195,7 +5195,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.48,
+     "seconds": 4.98,
      "abs": 2.2343238370581287e-15,
      "rel": 3.574918139293006e-14,
      "range": [
@@ -5220,7 +5220,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.41,
+     "seconds": 5.21,
      "abs": 2.053912595556541e-16,
      "rel": 2.0539125955565408e-15,
      "range": [
@@ -5245,7 +5245,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.78,
+     "seconds": 5.59,
      "abs": 1.2594744962703301e-12,
      "rel": 1.5743431203379126e-13,
      "range": [
@@ -5270,7 +5270,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.4,
+     "seconds": 5.54,
      "abs": 1.1315691638150596e-15,
      "rel": null,
      "range": [
@@ -5295,7 +5295,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.01,
+     "seconds": 5.18,
      "abs": 6.494804694057166e-15,
      "rel": null,
      "range": [
@@ -5320,7 +5320,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.44,
+     "seconds": 5.34,
      "abs": 5.175887329229671e-15,
      "rel": 4.7708969798895524e-15,
      "range": [
@@ -5345,7 +5345,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.79,
+     "seconds": 5.72,
      "abs": 6.095157387029294e-15,
      "rel": null,
      "range": [
@@ -5370,7 +5370,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.08,
+     "seconds": 6.25,
      "abs": 2.6833659251749473e-12,
      "rel": 1.5882839239080643e-12,
      "range": [
@@ -5395,7 +5395,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.36,
+     "seconds": 5.24,
      "abs": 1.443289932012707e-15,
      "rel": 5.773159728050828e-15,
      "range": [
@@ -5420,7 +5420,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.43,
+     "seconds": 5.15,
      "abs": 3.1086244689504383e-15,
      "rel": 3.1086244689504383e-15,
      "range": [
@@ -5445,7 +5445,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.52,
+     "seconds": 5.36,
      "abs": 1.7541523789077476e-14,
      "rel": 5.847174596359158e-15,
      "range": [
@@ -5470,7 +5470,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.57,
+     "seconds": 5.43,
      "abs": 3.0531133177191817e-15,
      "rel": 4.88498130835069e-15,
      "range": [
@@ -5495,7 +5495,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.51,
+     "seconds": 5.51,
      "abs": 1.9140297759088368e-14,
      "rel": 2.0880324828096402e-15,
      "range": [
@@ -5520,7 +5520,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.75,
+     "seconds": 4.98,
      "abs": 4.403144515663371e-16,
      "rel": 3.145103225473836e-14,
      "range": [
@@ -5545,7 +5545,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.73,
+     "seconds": 5.32,
      "abs": 1.4287320906204394e-15,
      "rel": null,
      "range": [
@@ -5570,7 +5570,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.6,
+     "seconds": 5.18,
      "abs": 1.7250432906540735e-15,
      "rel": null,
      "range": [
@@ -5595,7 +5595,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.65,
+     "seconds": 5.15,
      "abs": 6.766110679591078e-16,
      "rel": 1.8606804368875465e-13,
      "range": [
@@ -5620,7 +5620,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.52,
+     "seconds": 5.23,
      "abs": 1.573704129972006e-14,
      "rel": 7.187451643334392e-15,
      "range": [
@@ -5645,7 +5645,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.58,
+     "seconds": 4.94,
      "abs": 1.4287320906204394e-15,
      "rel": null,
      "range": [
@@ -5669,14 +5669,8 @@
      ]
     },
     "daisy": {
-     "status": "ok",
-     "seconds": 4.51,
-     "abs": 4.58674304082249e-15,
-     "rel": 1.5289143469408304e-15,
-     "range": [
-      2.9999999999999996,
-      11.313708498984763
-     ]
+     "status": "timeout",
+     "seconds": 644.69
     }
    }
   },
@@ -5695,7 +5689,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.65,
+     "seconds": 5.02,
      "abs": 2.868076146948321e-16,
      "rel": null,
      "range": [
@@ -5720,7 +5714,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.01,
+     "seconds": 5.39,
      "abs": 3.435685972711747e-13,
      "rel": 1.2488984344315903e-13,
      "range": [
@@ -5745,7 +5739,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.86,
+     "seconds": 5.16,
      "abs": 2.0499071719503526e-10,
      "rel": 2.4974359490506606e-14,
      "range": [
@@ -5770,7 +5764,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.68,
+     "seconds": 4.72,
      "abs": 8.881784197001252e-16,
      "rel": null,
      "range": [
@@ -5795,7 +5789,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.81,
+     "seconds": 4.82,
      "abs": 5.457190255242495e-12,
      "rel": 5.324088053895117e-15,
      "range": [
@@ -5820,7 +5814,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.58,
+     "seconds": 5.09,
      "abs": 6.453171330633723e-16,
      "rel": 6.073573017067034e-16,
      "range": [
@@ -5845,7 +5839,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.64,
+     "seconds": 4.88,
      "abs": 4.163336342344342e-16,
      "rel": 1.4481169886415103e-16,
      "range": [
@@ -5870,7 +5864,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.5,
+     "seconds": 4.84,
      "abs": 1.778028835275336e-10,
      "rel": 7.608167887357022e-14,
      "range": [
@@ -5895,7 +5889,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.57,
+     "seconds": 4.82,
      "abs": 2.0169161659919123e-17,
      "rel": 1.7038907770299674e-13,
      "range": [
@@ -5920,7 +5914,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.56,
+     "seconds": 4.98,
      "abs": 6.572520305780928e-14,
      "rel": 5.47710025481744e-15,
      "range": [
@@ -5945,7 +5939,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.52,
+     "seconds": 4.91,
      "abs": 5.542795448534539e-18,
      "rel": 9.090184535596644e-14,
      "range": [
@@ -5970,7 +5964,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.2,
+     "seconds": 4.78,
      "abs": 4.7073456244106644e-14,
      "rel": 1.8829382497642656e-15,
      "range": [
@@ -5995,7 +5989,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.22,
+     "seconds": 4.97,
      "abs": 2.6201263381153694e-14,
      "rel": 2.1834386150961413e-15,
      "range": [
@@ -6020,7 +6014,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.43,
+     "seconds": 4.9,
      "abs": 3.4638958368304884e-14,
      "rel": 3.4638958368304887e-15,
      "range": [
@@ -6045,7 +6039,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.43,
+     "seconds": 4.73,
      "abs": 4.39648317751562e-14,
      "rel": 1.758593271006248e-15,
      "range": [
@@ -6070,7 +6064,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.66,
+     "seconds": 4.77,
      "abs": 5.773159728050814e-15,
      "rel": 6.41462192005646e-16,
      "range": [
@@ -6095,7 +6089,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.36,
+     "seconds": 4.66,
      "abs": 1.1102230246251565e-15,
      "rel": 1.1102230246251565e-15,
      "range": [
@@ -6120,7 +6114,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.34,
+     "seconds": 4.81,
      "abs": 7.494005416219813e-16,
      "rel": 2.3980817331903403e-15,
      "range": [
@@ -6145,7 +6139,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.5,
+     "seconds": 5.0,
      "abs": 7.258401646166234e-17,
      "rel": 7.290950532471912e-17,
      "range": [
@@ -6170,7 +6164,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.55,
+     "seconds": 4.62,
      "abs": 4.7271214720368536e-17,
      "rel": 1.4824252936307572e-13,
      "range": [
@@ -6195,7 +6189,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.4,
+     "seconds": 4.8,
      "abs": 1.5543122344752192e-15,
      "rel": null,
      "range": [
@@ -6220,7 +6214,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.45,
+     "seconds": 4.8,
      "abs": 4.041211809635571e-14,
      "rel": null,
      "range": [
@@ -6245,7 +6239,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.51,
+     "seconds": 4.75,
      "abs": 7.676962320616256e-13,
      "rel": 4.8034149625118324e-14,
      "range": [
@@ -6270,7 +6264,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.28,
+     "seconds": 4.67,
      "abs": 1.4432899320127035e-14,
      "rel": 7.040438692744895e-16,
      "range": [
@@ -6295,7 +6289,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.63,
+     "seconds": 4.72,
      "abs": 5.995204332975845e-15,
      "rel": 2.9976021664879227e-15,
      "range": [
@@ -6320,7 +6314,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.36,
+     "seconds": 4.92,
      "abs": 1.6064530658102942e-14,
      "rel": null,
      "range": [
@@ -6345,7 +6339,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.25,
+     "seconds": 4.89,
      "abs": 5.3290705182007527e-14,
      "rel": 6.661338147750941e-15,
      "range": [
@@ -6370,7 +6364,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.57,
+     "seconds": 4.82,
      "abs": 1.3855583347321971e-13,
      "rel": 3.030908857226681e-14,
      "range": [
@@ -6395,7 +6389,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.25,
+     "seconds": 4.9,
      "abs": 7.105427357601003e-14,
      "rel": 4.440892098500627e-15,
      "range": [
@@ -6420,7 +6414,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.24,
+     "seconds": 4.57,
      "abs": 9.54791801177635e-15,
      "rel": 9.54791801177635e-15,
      "range": [
@@ -6445,7 +6439,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.18,
+     "seconds": 4.7,
      "abs": 1.4210854715202004e-14,
      "rel": 1.7763568394002505e-15,
      "range": [
@@ -6470,7 +6464,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.38,
+     "seconds": 4.58,
      "abs": 8.548717289613707e-14,
      "rel": 5.028657229184533e-15,
      "range": [
@@ -6495,7 +6489,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.29,
+     "seconds": 4.93,
      "abs": 1.8476331575811855e-12,
      "rel": 3.740148092269607e-15,
      "range": [
@@ -6520,7 +6514,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.27,
+     "seconds": 4.43,
      "abs": 3.1086244689504383e-15,
      "rel": 5.181040781584064e-16,
      "range": [
@@ -6545,7 +6539,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.0,
+     "seconds": 4.69,
      "abs": 2.2115642650533118e-13,
      "rel": 1.7835195685913807e-15,
      "range": [
@@ -6570,7 +6564,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.52,
+     "seconds": 4.59,
      "abs": 1.7541523789077473e-14,
      "rel": 6.496860662621287e-16,
      "range": [
@@ -6595,7 +6589,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.38,
+     "seconds": 4.67,
      "abs": 7.815970093361102e-14,
      "rel": 7.815970093361102e-16,
      "range": [
@@ -6620,7 +6614,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.34,
+     "seconds": 4.72,
      "abs": 3.08086889333481e-15,
      "rel": 2.4646951146678482e-15,
      "range": [
@@ -6645,7 +6639,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.5,
+     "seconds": 4.62,
      "abs": 4.391045350456233e-15,
      "rel": 3.4903180990805955e-15,
      "range": [
@@ -6670,7 +6664,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.09,
+     "seconds": 4.89,
      "abs": 9.325873406851326e-15,
      "rel": null,
      "range": [
@@ -6695,7 +6689,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.6,
+     "seconds": 5.01,
      "abs": 1.5574843002598633e-14,
      "rel": null,
      "range": [
@@ -6720,7 +6714,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.83,
+     "seconds": 4.94,
      "abs": 1.2434497875801764e-14,
      "rel": 2.352472571097631e-15,
      "range": [
@@ -6745,7 +6739,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.07,
+     "seconds": 4.93,
      "abs": 4.209784448476616e-15,
      "rel": 3.3462389205839767e-15,
      "range": [
@@ -6770,7 +6764,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.09,
+     "seconds": 4.86,
      "abs": 9.325873406851326e-15,
      "rel": null,
      "range": [
@@ -6795,7 +6789,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.75,
+     "seconds": 4.7,
      "abs": 1.1730982448511758e-14,
      "rel": 1.229741102062584e-15,
      "range": [
@@ -6820,7 +6814,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.63,
+     "seconds": 4.72,
      "abs": 1.7319479184152445e-14,
      "rel": 5.7731597280508156e-15,
      "range": [
@@ -6845,7 +6839,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.47,
+     "seconds": 4.55,
      "abs": 2.3314683517128295e-15,
      "rel": 1.865174681370264e-15,
      "range": [
@@ -6870,7 +6864,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.58,
+     "seconds": 4.74,
      "abs": 1.643130076445232e-14,
      "rel": 3.2862601528904643e-15,
      "range": [
@@ -6895,7 +6889,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.31,
+     "seconds": 4.98,
      "abs": 3.552713678800502e-15,
      "rel": null,
      "range": [
@@ -6920,7 +6914,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.35,
+     "seconds": 4.79,
      "abs": 1.8214390843188958e-14,
      "rel": 1.1023850829088485e-15,
      "range": [
@@ -6945,7 +6939,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.53,
+     "seconds": 4.77,
      "abs": 7.0832228971085e-14,
      "rel": 4.722148598072333e-15,
      "range": [
@@ -6970,7 +6964,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.17,
+     "seconds": 4.56,
      "abs": 1.776356839400251e-15,
      "rel": 8.881784197001254e-16,
      "range": [
@@ -6995,7 +6989,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.46,
+     "seconds": 4.7,
      "abs": 1.5814527869224556e-06,
      "rel": 9.652421795181004e-14,
      "range": [
@@ -7020,7 +7014,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.44,
+     "seconds": 4.45,
      "abs": 5.967670801965143e-12,
      "rel": 1.2973197395576397e-14,
      "range": [
@@ -7045,7 +7039,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.77,
+     "seconds": 4.49,
      "abs": 7.851657102264656e-10,
      "rel": 6.618052176554835e-14,
      "range": [
@@ -7070,7 +7064,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.46,
+     "seconds": 3.92,
      "abs": 2.5401902803423587e-13,
      "rel": null,
      "range": [
@@ -7095,7 +7089,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.46,
+     "seconds": 4.02,
      "abs": 3.375077994860476e-14,
      "rel": 1.687538997430238e-15,
      "range": [
@@ -7120,7 +7114,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.53,
+     "seconds": 3.85,
      "abs": 1.554312234475219e-14,
      "rel": 5.181040781584064e-16,
      "range": [
@@ -7145,7 +7139,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.33,
+     "seconds": 3.9,
      "abs": 2.7977620220553945e-14,
      "rel": 8.22871182957469e-16,
      "range": [
@@ -7170,7 +7164,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.54,
+     "seconds": 3.9,
      "abs": 6.328271240363392e-14,
      "rel": 1.1102230246251565e-15,
      "range": [
@@ -7195,7 +7189,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.55,
+     "seconds": 3.78,
      "abs": 1.474376176702208e-13,
      "rel": null,
      "range": [
@@ -7220,7 +7214,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.29,
+     "seconds": 3.81,
      "abs": 3.6637359812630166e-14,
      "rel": 1.5929286875056594e-15,
      "range": [
@@ -7245,7 +7239,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.36,
+     "seconds": 3.9,
      "abs": 1.2434497875801755e-14,
      "rel": 1.2434497875801755e-14,
      "range": [
@@ -7270,7 +7264,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.7,
+     "seconds": 3.95,
      "abs": 2.1600499167107058e-12,
      "rel": 2.1600499167107058e-12,
      "range": [
@@ -7295,7 +7289,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 9.51,
+     "seconds": 8.17,
      "abs": 4.152308273499253e-14,
      "rel": 6.860986375516463e-13,
      "range": [
@@ -7320,7 +7314,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.62,
+     "seconds": 3.93,
      "abs": 4.496378131476478e-15,
      "rel": 1.0905318805173467e-15,
      "range": [
@@ -7345,7 +7339,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.49,
+     "seconds": 3.91,
      "abs": 2.9753977059954195e-14,
      "rel": 1.750233944703188e-15,
      "range": [
@@ -7370,7 +7364,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.55,
+     "seconds": 3.85,
      "abs": 2.6201263381153694e-14,
      "rel": 2.1834386150961413e-15,
      "range": [
@@ -7395,7 +7389,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.58,
+     "seconds": 3.85,
      "abs": 1.4210854715202004e-14,
      "rel": 1.7763568394002505e-15,
      "range": [
@@ -7420,7 +7414,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.68,
+     "seconds": 3.7,
      "abs": 4.440892098500627e-15,
      "rel": 4.440892098500627e-15,
      "range": [
@@ -7445,7 +7439,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.85,
+     "seconds": 3.79,
      "abs": 4.192202140984591e-13,
      "rel": 2.1834386150961413e-15,
      "range": [
@@ -7470,7 +7464,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.85,
+     "seconds": 3.81,
      "abs": 2.2737367544323206e-13,
      "rel": 1.7763568394002505e-15,
      "range": [
@@ -7505,7 +7499,7 @@
     },
     "daisy": {
      "status": "crash",
-     "seconds": 3.93,
+     "seconds": 3.58,
      "error": "daisy.tools.DivisionByZeroException"
     }
    }
@@ -7525,7 +7519,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.35,
+     "seconds": 4.0,
      "abs": 4.8906450101210144e-15,
      "rel": 3.608807330743732e-15,
      "range": [
@@ -7550,7 +7544,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.01,
+     "seconds": 4.0,
      "abs": 2.7755575615628975e-17,
      "rel": 2.842170943040407e-14,
      "range": [
@@ -7570,7 +7564,7 @@
     },
     "daisy": {
      "status": "crash",
-     "seconds": 3.6,
+     "seconds": 3.93,
      "error": "daisy.tools.DivisionByZeroException"
     }
    }
@@ -7585,7 +7579,7 @@
     },
     "daisy": {
      "status": "crash",
-     "seconds": 3.91,
+     "seconds": 4.33,
      "error": "daisy.tools.DivisionByZeroException"
     }
    }
@@ -7605,7 +7599,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.68,
+     "seconds": 4.13,
      "abs": 8.696747026230396e-16,
      "rel": 7.609653647951596e-16,
      "range": [
@@ -7630,7 +7624,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.16,
+     "seconds": 4.18,
      "abs": 1.9895196601282808e-13,
      "rel": 1.2434497875801755e-14,
      "range": [
@@ -7655,7 +7649,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.22,
+     "seconds": 4.32,
      "abs": 613.6278691128069,
      "rel": null,
      "range": [
@@ -7680,7 +7674,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.26,
+     "seconds": 4.32,
      "abs": 1.6239952310921165e+30,
      "rel": null,
      "range": [
@@ -7705,7 +7699,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.16,
+     "seconds": 4.3,
      "abs": 2.6201263381153694e-14,
      "rel": 2.1834386150961413e-15,
      "range": [
@@ -7730,7 +7724,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.6,
+     "seconds": 4.21,
      "abs": 9.547918011776364e-16,
      "rel": 4.773959005888182e-15,
      "range": [
@@ -7755,7 +7749,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.89,
+     "seconds": 4.34,
      "abs": 5.486828311957247e-16,
      "rel": 3.5115701196526384e-14,
      "range": [
@@ -7780,7 +7774,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.76,
+     "seconds": 4.45,
      "abs": 1.2313535427746823e-16,
      "rel": null,
      "range": [
@@ -7805,7 +7799,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.75,
+     "seconds": 4.46,
      "abs": 4.440892098500627e-16,
      "rel": null,
      "range": [
@@ -7825,7 +7819,7 @@
     },
     "daisy": {
      "status": "crash",
-     "seconds": 5.28,
+     "seconds": 4.15,
      "error": "daisy.tools.OverflowException"
     }
    }
@@ -7845,7 +7839,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.35,
+     "seconds": 4.81,
      "abs": 2.5608532741560517e-15,
      "rel": 1.0637390523417445e-14,
      "range": [
@@ -7870,7 +7864,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 6.33,
+     "seconds": 5.56,
      "abs": 1.311389103864285e-15,
      "rel": 3.858510247908377e-15,
      "range": [
@@ -7895,7 +7889,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.88,
+     "seconds": 5.52,
      "abs": 6.282853025719654e-16,
      "rel": 1.0632520505064028e-15,
      "range": [
@@ -7934,7 +7928,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.56,
+     "seconds": 4.42,
      "abs": 3.423039629524283e-12,
      "rel": 1.4262665123017848e-14,
      "range": [
@@ -7959,7 +7953,7 @@
     },
     "daisy": {
      "status": "nobound",
-     "seconds": 4.3,
+     "seconds": 4.47,
      "error": "no bound in the output"
     }
    }
@@ -7979,7 +7973,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.71,
+     "seconds": 4.77,
      "abs": 4.749309250942358e-11,
      "rel": null,
      "range": [
@@ -8004,7 +7998,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.06,
+     "seconds": 4.49,
      "abs": 2.1094237467877974e-14,
      "rel": 6.80459273157354e-16,
      "range": [
@@ -8029,7 +8023,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.95,
+     "seconds": 4.11,
      "abs": 1.9984014443252818e-15,
      "rel": null,
      "range": [
@@ -8054,7 +8048,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.82,
+     "seconds": 4.09,
      "abs": 6.66133814775094e-15,
      "rel": null,
      "range": [
@@ -8079,7 +8073,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.58,
+     "seconds": 4.24,
      "abs": 4.263828548047022e-14,
      "rel": 1.7055314192188089e-15,
      "range": [
@@ -8104,7 +8098,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.62,
+     "seconds": 4.36,
      "abs": 1.021405182655144e-14,
      "rel": null,
      "range": [
@@ -8129,7 +8123,7 @@
     },
     "daisy": {
      "status": "nobound",
-     "seconds": 4.07,
+     "seconds": 4.14,
      "error": "no bound in the output"
     }
    }
@@ -8149,7 +8143,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.17,
+     "seconds": 4.04,
      "abs": 2.1340492142064116e-15,
      "rel": 3.8546263931603306e-14,
      "range": [
@@ -8174,7 +8168,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.21,
+     "seconds": 4.13,
      "abs": 9.390191923915127e-16,
      "rel": null,
      "range": [
@@ -8199,7 +8193,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.91,
+     "seconds": 4.88,
      "abs": 1.2003908977931157e-11,
      "rel": null,
      "range": [
@@ -8224,7 +8218,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.62,
+     "seconds": 4.51,
      "abs": 3.1385318964571873e-07,
      "rel": null,
      "range": [
@@ -8249,7 +8243,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.61,
+     "seconds": 4.16,
      "abs": 3.7214675785435255e-12,
      "rel": null,
      "range": [
@@ -8274,7 +8268,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.73,
+     "seconds": 4.33,
      "abs": 3.4940939031002935e-12,
      "rel": 4.367617378875367e-14,
      "range": [
@@ -8299,7 +8293,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 40.59,
+     "seconds": 32.61,
      "abs": 6.861303295072208e-15,
      "rel": 2.2230622676033956e-14,
      "range": [
@@ -8324,7 +8318,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 91.69,
+     "seconds": 81.35,
      "abs": 8405.326675627555,
      "rel": null,
      "range": [
@@ -8349,7 +8343,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 116.05,
+     "seconds": 105.49,
      "abs": 5.893763633514096e-13,
      "rel": null,
      "range": [
@@ -8374,7 +8368,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.31,
+     "seconds": 4.56,
      "abs": 7.277317835177632e-16,
      "rel": 8.555000199524799e-16,
      "range": [
@@ -8399,7 +8393,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.87,
+     "seconds": 4.51,
      "abs": 4.3595978996798194e-16,
      "rel": 1.3950713278975424e-14,
      "range": [
@@ -8424,7 +8418,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.58,
+     "seconds": 4.55,
      "abs": 5.154889495768316e-16,
      "rel": 5.175144542344872e-16,
      "range": [
@@ -8449,7 +8443,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.53,
+     "seconds": 4.31,
      "abs": 6.23590068471458e-12,
      "rel": 1.1810417963474585e-14,
      "range": [
@@ -8474,7 +8468,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.21,
+     "seconds": 3.31,
      "abs": 5.761169319384863e-12,
      "rel": null,
      "range": [
@@ -8499,7 +8493,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.66,
+     "seconds": 3.22,
      "abs": 5.496048061104376e-12,
      "rel": 1.5613772900864704e-14,
      "range": [
@@ -8524,7 +8518,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.78,
+     "seconds": 3.95,
      "abs": 3.471000077871857e-18,
      "rel": 1.1779167318581716e-16,
      "range": [
@@ -8549,7 +8543,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.6,
+     "seconds": 3.7,
      "abs": 3.470080311122504e-18,
      "rel": 1.3792490213199766e-16,
      "range": [
@@ -8574,7 +8568,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.11,
+     "seconds": 3.38,
      "abs": 3.33066907387547e-16,
      "rel": null,
      "range": [
@@ -8599,7 +8593,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.48,
+     "seconds": 3.28,
      "abs": 1.6653345369377353e-16,
      "rel": 2.2204460492503136e-16,
      "range": [
@@ -8624,7 +8618,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.66,
+     "seconds": 3.34,
      "abs": 2.5565327632648405e-11,
      "rel": 1.5978329770405254e-15,
      "range": [
@@ -8649,7 +8643,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.76,
+     "seconds": 3.21,
      "abs": 7.620570841027074e-12,
      "rel": 1.7640210280155265e-15,
      "range": [
@@ -8674,7 +8668,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.89,
+     "seconds": 3.11,
      "abs": 3.2187585929932546e-12,
      "rel": 6.1899203711408744e-15,
      "range": [
@@ -8699,7 +8693,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.65,
+     "seconds": 3.06,
      "abs": 7.149836278586013e-16,
      "rel": 3.574918139293007e-15,
      "range": [
@@ -8724,7 +8718,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.76,
+     "seconds": 3.18,
      "abs": 7.075208269356794e-15,
      "rel": 3.065923583387944e-14,
      "range": [
@@ -8749,7 +8743,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.91,
+     "seconds": 3.19,
      "abs": 5.987783586278103e-13,
      "rel": 2.057355349130362e-14,
      "range": [
@@ -8774,7 +8768,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 5.44,
+     "seconds": 3.19,
      "abs": 2.5378102635314373e-13,
      "rel": 2.6159149435791772e-14,
      "range": [
@@ -8799,7 +8793,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 6.38,
+     "seconds": 3.45,
      "abs": 2.7707073968485942e-08,
      "rel": null,
      "range": [
@@ -8824,7 +8818,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 4.12,
+     "seconds": 3.31,
      "abs": 1.6552803572267302e-10,
      "rel": null,
      "range": [
@@ -8849,7 +8843,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.81,
+     "seconds": 3.23,
      "abs": 4.440892098500627e-15,
      "rel": null,
      "range": [
@@ -8874,7 +8868,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.9,
+     "seconds": 3.59,
      "abs": 5.126821633893997e-09,
      "rel": 4.927816684891345e-15,
      "range": [
@@ -8899,7 +8893,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.78,
+     "seconds": 3.31,
      "abs": 1.4151737559586765e-09,
      "rel": 5.3154062348207495e-15,
      "range": [
@@ -8919,7 +8913,7 @@
     },
     "daisy": {
      "status": "crash",
-     "seconds": 3.7,
+     "seconds": 3.19,
      "error": "daisy.tools.OverflowException"
     }
    }
@@ -8939,7 +8933,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.4,
+     "seconds": 3.36,
      "abs": 2.220446049250313e-16,
      "rel": 2.220446049250313e-16,
      "range": [
@@ -8964,7 +8958,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.57,
+     "seconds": 3.21,
      "abs": 1.4781185718720514e-15,
      "rel": 1.045187665568503e-15,
      "range": [
@@ -8989,7 +8983,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.55,
+     "seconds": 3.16,
      "abs": 1.1641000801352965e-15,
      "rel": 8.231430606434716e-16,
      "range": [
@@ -9014,7 +9008,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.5,
+     "seconds": 3.23,
      "abs": 1.1641000801352965e-15,
      "rel": 8.231430606434716e-16,
      "range": [
@@ -9039,7 +9033,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.5,
+     "seconds": 3.13,
      "abs": 1.1641000801352965e-15,
      "rel": 8.231430606434716e-16,
      "range": [
@@ -9064,7 +9058,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.57,
+     "seconds": 3.08,
      "abs": 1.4781185718720514e-15,
      "rel": 1.045187665568503e-15,
      "range": [
@@ -9089,7 +9083,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.66,
+     "seconds": 3.19,
      "abs": 2.1439691044337656e-14,
      "rel": 1.2975891311945904e-15,
      "range": [
@@ -9114,7 +9108,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.56,
+     "seconds": 3.12,
      "abs": 4.225915826404406e-15,
      "rel": 1.219916819973642e-15,
      "range": [
@@ -9139,7 +9133,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.68,
+     "seconds": 3.16,
      "abs": 4.440892098500626e-16,
      "rel": null,
      "range": [
@@ -9164,7 +9158,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.77,
+     "seconds": 2.58,
      "abs": 4.440892098500626e-15,
      "rel": 1.4802973661668755e-15,
      "range": [
@@ -9189,7 +9183,7 @@
     },
     "daisy": {
      "status": "ok",
-     "seconds": 3.69,
+     "seconds": 2.57,
      "abs": 1.1546319456101628e-14,
      "rel": null,
      "range": [

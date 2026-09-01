@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import os
 import re
 import signal
@@ -23,8 +24,7 @@ DAISY = os.path.expanduser(os.environ.get("DAISY", "~/daisy"))
 JAVA_HOME = os.environ.get(
     "DAISY_JAVA_HOME", "/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home")
 
-# --FPTaylor is looser and crashes; affine ranges crash on sqrt; --subdiv
-# wants z3
+# --FPTaylor is looser and crashes; affine ranges crash on sqrt; --subdiv wants z3
 OPTS = ("--analysis=dataflow", "--rangeMethod=interval", "--errorMethod=affine")
 REWRITE_OPTS = OPTS + ("--rewrite", "--codegen", "--lang=FPCore")
 
@@ -38,14 +38,31 @@ def env() -> dict:
                 PATH=os.path.join(JAVA_HOME, "bin") + ":" + os.environ["PATH"])
 
 
+CLASSES = os.path.join(DAISY, "target", "scala-2.13", "classes")
+
+
+def build_id() -> str:
+    """A digest of the compiled classes.  The cache must key on what actually
+    runs: an uncommitted edit or a plain rebuild does not move HEAD, and the
+    old results would be served for a Daisy that no longer produces them."""
+    h = hashlib.sha256()
+    paths = sorted(os.path.join(d, n) for d, _, ns in os.walk(CLASSES)
+                   for n in ns if n.endswith(".class"))
+    for path in paths:
+        st = os.stat(path)
+        h.update(f"{os.path.relpath(path, CLASSES)}|{st.st_size}|"
+                 f"{st.st_mtime_ns}\n".encode())
+    return h.hexdigest()[:8]
+
+
 def version() -> str:
     if not os.path.exists(os.path.join(DAISY, "daisy")):
         raise RuntimeError(f"no daisy launcher at {DAISY}; set DAISY to its directory")
-    if not os.path.isdir(os.path.join(DAISY, "target", "scala-2.13", "classes")):
+    if not os.path.isdir(CLASSES):
         raise RuntimeError(f"daisy is not built; run `sbt compile` in {DAISY}")
     run = subprocess.run(["git", "-C", DAISY, "rev-parse", "--short", "HEAD"],
                          capture_output=True, text=True, errors="replace")
-    return run.stdout.strip() or "unknown"
+    return f"{run.stdout.strip() or 'unknown'}-{build_id()}"
 
 
 _DEF = re.compile(r"\tdef (ex\d+)\b.*?\n\t\}\n", re.S)
@@ -57,8 +74,8 @@ _BAD_LIT = re.compile(r"([0-9][0-9.]*[eE][+-]?[0-9]+)\.0\b")
 
 
 def split_scala(path: str) -> list:
-    """One function per file, in input order: Daisy reports in a final phase,
-    so one crash would lose the whole file."""
+    """One function per file: Daisy reports in a final phase, so one crash
+    would lose a whole batch."""
     with open(path) as f:
         src = _BAD_LIT.sub(r"\1", f.read())
     return [_SCALA_HEAD + m.group(0) + "}\n" for m in _DEF.finditer(src)]
@@ -113,10 +130,9 @@ def parse(text: str) -> dict:
 
 
 def _run(text: str, opts: tuple, precision: str, timeout: float, d: str) -> tuple:
-    """Daisy over one file, in its own scratch directory and its own process
-    group.  The launcher pipes java into tee, so the JVM is a grandchild:
-    killing the script on timeout leaves a 2G JVM spinning forever, and enough
-    of those starve the rest of the run.  Kill the whole group instead."""
+    """Daisy over one file, in its own scratch directory and process group.
+    The launcher pipes java into tee, so the JVM is a grandchild: killing only
+    the script on timeout would leave a 2G JVM spinning."""
     os.makedirs(d, exist_ok=True)
     path = os.path.join(d, "a.scala")
     with open(path, "w") as f:
@@ -183,8 +199,8 @@ _AFTER = re.compile(r"error after:\s*([-\d.eE+]+)")
 
 
 def _rename_vars(e, mapping: dict):
-    """FPBench escapes what Scala forbids in an identifier, so `x.re` comes
-    back as `x_46re`; names are mapped back by position."""
+    """FPBench escapes what Scala forbids, so `x.re` comes back as `x_46re`;
+    names are mapped back by position."""
     if e[0] == "var":
         return ("var", mapping.get(e[1], e[1]))
     return (e[0],) + tuple(_rename_vars(a, mapping) if isinstance(a, tuple) else a

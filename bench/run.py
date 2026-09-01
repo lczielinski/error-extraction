@@ -30,19 +30,17 @@ from costex import analysis as A                               # noqa: E402
 from costex import egg, extract                                # noqa: E402
 from costex.fpcore import parse_expr, parse_fpcore, parse_sexps, to_sexp  # noqa: E402
 
-SCORE = "ulps"                    # reported as bits, its log2
+SCORE = "ulps"                    # worst measured error
+MEAN = "mean_ulps"                # mean over the uniform points alone
 FIELDED = common.BY_NAME["rel"]   # which costex program competes
-NOISE_P50, NOISE_P90 = 1.0, 1.75  # measured, by resampling
-MARGIN = 2.0                      # a win needs one bit, above the noise
-SLACK = 1 / MARGIN
 HEADROOM = 4.0                    # ulps the seed must lose before a core counts
 HEADROOM_STEPS = (2.0, 4.0, 8.0, 64.0)
 ITERS = egg.DEFAULT_ITERS
-MAX_STEPS = extract.DEFAULT_MAX_STEPS
+MAX_STEPS = 1_000_000        # kalman-filter-per-p needs ~770k to reach its root
 EGGLOG_TIMEOUT = 60.0
-EXTRACT_TIMEOUT = 30.0       # a step cap alone does not bound extraction
+EXTRACT_TIMEOUT = 120.0      # a step cap alone does not bound extraction
 TOOL_TIMEOUT = 300.0
-REWRITE_SEED = 1490          # Daisy's genetic seed, so a run is repeatable
+REWRITE_SEED = 1490               # Daisy's genetic seed, so a run is repeatable
 JOBS = os.cpu_count()
 WIDTH = 70
 
@@ -63,12 +61,12 @@ def _write(name: str, payload: dict) -> str:
     return os.path.relpath(path)
 
 
-# -- costex --
-
-
 def _f(x):
     x = float(x)
     return None if math.isinf(x) else x
+
+
+# -- costex --
 
 
 def run_one(path: str) -> dict:
@@ -155,9 +153,6 @@ def step_external(results: list) -> dict:
 
 
 def sample_core(group: tuple) -> dict:
-    """Every program of one core at once, so each is scored at the others'
-    worst points too, and against its seed, so a rewrite that changed the
-    function scores as wrong rather than as accurate."""
     file, box, precision, seed, progs = group
     bodies = {name: parse_expr(parse_sexps(expr)[0]) for name, expr in progs.items()}
     return sample.measure_group(bodies, file, box, precision,
@@ -165,6 +160,8 @@ def sample_core(group: tuple) -> dict:
 
 
 def sample_reports(us: list) -> dict:
+    """Every program of a core is measured together, so each is scored at the
+    others' worst points too, and against the seed's exact value."""
     groups = {}
     for u in us:
         g = groups.setdefault(u["file"],
@@ -185,82 +182,28 @@ def sample_reports(us: list) -> dict:
 # -- rewriting --
 
 
-def _score(rep):
-    """Never zero, so ratios are safe."""
+def _val(rep, key: str):
     if not rep or rep.get("status") != "ok":
         return None
-    return rep.get(SCORE)
+    return rep.get(key)
 
 
 def candidates(results: list, rewrites: dict) -> tuple:
     """The distinct programs to measure, and (file, who) -> which one."""
     cands, index = [], {}
     for i, r in enumerate(results):
-        progs = {"seed": r["expr"], "costex": r.get(FIELDED.best_expr)}
         rw = rewrites.get(f"cx{i:05d}", {})
-        if rw.get("status") == "ok":
-            progs["daisy"] = rw["expr"]
+        progs = {"seed": r["expr"], "costex": r.get(FIELDED.best_expr),
+                 "daisy": rw["expr"] if rw.get("status") == "ok" else None}
         seen = {}
         for who, expr in progs.items():
             if not expr:
                 continue
             if expr not in seen:
                 seen[expr] = f"j{len(cands):05d}"
-                cands.append(common.unit(seen[expr], r["file"], expr,
-                                         seed=r["expr"]))
+                cands.append(common.unit(seen[expr], r["file"], expr, seed=r["expr"]))
             index[(r["file"], who)] = seen[expr]
     return cands, index
-
-
-def h2h(out: list) -> list:
-    """A side with no measurement loses, so a core counts if either has one."""
-    rows = []
-    for e in out:
-        m = e["measured"]
-        cx, dy = _score(m.get("costex")), _score(m.get("daisy"))
-        if cx is None and dy is None:
-            continue
-        rows.append({"file": e["file"], "name": e.get("name"), "kind": kind(e["file"]),
-                     "seed": _score(m.get("seed")), "seed_expr": e["seed_expr"],
-                     "cx": cx, "cx_expr": e.get("costex_expr"),
-                     "cx_note": "" if cx else _note(m.get("costex")),
-                     "dy": dy, "dy_expr": e.get("daisy_expr"),
-                     "dy_note": "" if dy else (e["daisy_status"]
-                                               if e["daisy_status"] != "ok"
-                                               else _note(m.get("daisy")))})
-    return rows
-
-
-def _note(rep) -> str:
-    return rep["status"] if rep else "no program"
-
-
-def _verdicts(rows: list) -> tuple:
-    """A dead tie is a real result, usually the same program from both."""
-    cxw, dyw, tied, close = [], [], [], []
-    for r in rows:
-        cx, dy = r["cx"], r["dy"]
-        if dy is None or (cx and cx < dy * SLACK):
-            cxw.append(r)
-        elif cx is None or (dy and dy < cx * SLACK):
-            dyw.append(r)
-        elif cx == dy:
-            tied.append(r)
-        else:
-            close.append(r)
-    return cxw, dyw, tied, close
-
-
-def _headroom(rows: list, floor: float) -> list:
-    """Cores where the seed loses more than floor ulps, so a rewriter has
-    something to win.  Counting the rest as ties reports the corpus."""
-    return [r for r in rows if r["seed"] and r["seed"] > floor]
-
-
-def _saved(rows: list, key: str) -> float:
-    """Mean bits of error a rewriter took off the seed."""
-    got = [math.log2(r["seed"] / r[key]) for r in rows if r["seed"] and r[key]]
-    return sum(got) / len(got) if got else 0.0
 
 
 def step_rewrite(results: list) -> dict:
@@ -315,7 +258,7 @@ NONE = "&mdash;"
 def _num(x) -> str:
     if x is None:
         return NONE
-    return "0" if x == 0 else f"{x:.3g}"     # costex can report -0.0
+    return "0" if x == 0 else f"{x:.3g}"
 
 
 def _code(expr: str) -> str:
@@ -328,12 +271,19 @@ def _geomean(xs: list) -> float:
     return math.exp(sum(map(math.log, xs)) / len(xs))
 
 
+def _pct(xs: list, q: float) -> float:
+    return xs[int(q * (len(xs) - 1))]
+
+
 def _spread(xs: list) -> str:
     if not xs:
         return "no ratio"
     return (f"geomean {_geomean(xs):.3g}x, median {xs[len(xs) // 2]:.3g}x, "
-            f"p10 {xs[int(0.1 * (len(xs) - 1))]:.3g}x, "
-            f"p90 {xs[int(0.9 * (len(xs) - 1))]:.3g}x")
+            f"p10 {_pct(xs, 0.1):.3g}x, p90 {_pct(xs, 0.9):.3g}x")
+
+
+def _row(*cells) -> str:
+    return "| " + " | ".join(map(str, cells)) + " |"
 
 
 # -- bounds.md --
@@ -372,6 +322,17 @@ def tightness(rows: list, tool: str, m) -> tuple:
     return n, sorted(ratios)
 
 
+def _why_not(rows: list, who: str) -> str:
+    if who == "costex":
+        return NONE
+    why = Counter()
+    for r in rows:
+        rep = r["tools"].get(who)
+        if rep and rep["status"] != "ok":
+            why[rep.get("error", "")[:52]] += 1
+    return "; ".join(f"{v}x {k}" for k, v in why.most_common(3)) or NONE
+
+
 def coverage_rows(rows: list, tools: list) -> list:
     out = ["", "## Coverage", "",
            "| Analyser | seeds |"
@@ -380,15 +341,12 @@ def coverage_rows(rows: list, tools: list) -> list:
            "|---|--:|" + "--:|" * (len(common.METRICS) + 1) + "---|"]
     for who in ["costex"] + tools:
         got = [[seed_bound(r, who, m) for m in common.METRICS] for r in rows]
-        why = Counter(rep.get("error", "")[:52] for r in rows
-                      if who != "costex" and (rep := r["tools"].get(who))
-                      and rep["status"] != "ok")
-        out.append(f"| {who} | {len(rows)} |"
-                   + "".join(f" {sum(1 for g in got if g[i] is not None)} |"
-                             for i in range(len(common.METRICS)))
-                   + f" {sum(1 for g in got if not any(v is not None for v in g))} | "
-                   + ("; ".join(f"{v}x {k}" for k, v in why.most_common(3)) or NONE)
-                   + " |")
+        out.append(_row(
+            who, len(rows),
+            *(sum(1 for g in got if g[i] is not None)
+              for i in range(len(common.METRICS))),
+            sum(1 for g in got if not any(v is not None for v in g)),
+            _why_not(rows, who)))
     return out
 
 
@@ -416,7 +374,7 @@ def bounds_row(r: dict, tools: list) -> str:
     for m in common.METRICS:
         cells.append(_num(r.get(m.seed)))
         cells += [_bound(r["tools"].get(t), m) for t in tools]
-    return "| " + " | ".join(cells) + " |"
+    return _row(*cells)
 
 
 def bounds_markdown(res: dict, ext: dict) -> str:
@@ -435,9 +393,9 @@ def bounds_markdown(res: dict, ext: dict) -> str:
     for m in common.METRICS:
         for t in tools:
             n, ratios = tightness(rows, t, m)
-            out.append(f"| {m.label} | {t} | {n['both']} | {n['tighter']} | "
-                       f"{n['looser']} | {n['tie']} | {n['only ours']} | "
-                       f"{n['only theirs']} | {_spread(ratios)} |")
+            out.append(_row(m.label, t, n["both"], n["tighter"], n["looser"],
+                            n["tie"], n["only ours"], n["only theirs"],
+                            _spread(ratios)))
 
     out += coverage_rows(rows, tools)
     out += ["", "## Every core", "",
@@ -460,14 +418,41 @@ def bounds_markdown(res: dict, ext: dict) -> str:
 # -- rewrites.md --
 
 
+def _note(rep) -> str:
+    return rep["status"] if rep else "no program"
+
+
+def h2h(out: list) -> list:
+    """One row per core, with each side's worst and mean measured error."""
+    rows = []
+    for e in out:
+        m = e["measured"]
+        cx, dy = _val(m.get("costex"), SCORE), _val(m.get("daisy"), SCORE)
+        if cx is None and dy is None:
+            continue
+        dy_note = e["daisy_status"] if e["daisy_status"] != "ok" \
+            else _note(m.get("daisy"))
+        rows.append({"file": e["file"], "name": e.get("name"), "kind": kind(e["file"]),
+                     "zeros": (m.get("seed") or {}).get("ref_zeros", 0),
+                     "seed": _val(m.get("seed"), SCORE), "seed_expr": e["seed_expr"],
+                     "seed_mean": _val(m.get("seed"), MEAN),
+                     "cx": cx, "cx_expr": e.get("costex_expr"),
+                     "cx_mean": _val(m.get("costex"), MEAN),
+                     "cx_note": "" if cx else _note(m.get("costex")),
+                     "dy": dy, "dy_expr": e.get("daisy_expr"),
+                     "dy_mean": _val(m.get("daisy"), MEAN),
+                     "dy_note": "" if dy else dy_note})
+    return rows
+
+
+def _headroom(rows: list, floor: float = HEADROOM) -> list:
+    """Cores where the seed loses more than floor ulps, so a rewriter has
+    something to win."""
+    return [r for r in rows if r["seed"] and r["seed"] > floor]
+
+
 def _bits(v) -> str:
     return NONE if v is None else f"{math.log2(v):.1f}"
-
-
-def _vs_seed(seed: float, got: float) -> str:
-    """Bits saved, blank inside the noise."""
-    r = seed / got
-    return NONE if SLACK < r < 1 / SLACK else f"{math.log2(r):+.1f}"
 
 
 def _edge(r: dict) -> float:
@@ -478,136 +463,132 @@ def _edge(r: dict) -> float:
     return r["dy"] / r["cx"]
 
 
-def h2h_markdown(rw: dict) -> str:
+def _not_equivalent(rw: dict, who: str) -> list:
+    out = []
+    for e in rw["results"]:
+        rep = (e["measured"] or {}).get(who)
+        if rep and rep.get("status") == "ok" and rep.get("equivalent") is False:
+            out.append(e["file"])
+    return sorted(out)
+
+
+def _h2h_preamble(rw: dict, every: list, rows: list, head: list) -> list:
     sp = rw.get("sampling", {})
-    every = h2h(rw["results"])
-    rows = [r for r in every if r["kind"] != "analysis"]
-    cxw, dyw, tied, close = _verdicts(rows)
-    same_prog = sum(1 for r in tied if r["cx_expr"] == r["dy_expr"])
     st = Counter(e["daisy_status"] for e in rw["results"])
     same = sum(1 for e in rw["results"] if e.get("daisy_expr") == e["seed_expr"])
+    optimal = sum(1 for r in every if r["kind"] == "analysis")
+    return [
+        "# Rewriting: costex vs Daisy", "",
+        "Both rewriters get the same seed and are scored by measured error, "
+        f"not bounded: {sp.get('points')} points per core plus everything a "
+        "hill climb reaches, pooled and shared, so every program is scored at "
+        "its rivals' worst points too.  For sound bounds see `bounds.md`.",
+        "",
+        "Error is in **ulps**, the count of representable floats between the "
+        "computed result and the exact one.  1 ulp is correctly rounded; the "
+        "per-core table gives log2 of it.",
+        "",
+        f"- {len(rows)} of {len(rw['results'])} cores measured; "
+        f"{optimal} tagged optimal and "
+        f"{len(rw['results']) - len(every)} unmeasurable are left out",
+        f"- **{len(head)} have headroom** (seed above {HEADROOM:.0f} ulps).  "
+        "Elsewhere every rewriter ties by construction, so only these are "
+        "summarised.",
+        f"- sampling {sp.get('version')}, seed {sp.get('seed')}; "
+        f"daisy {rw.get('daisy_version')}, seed {rw.get('rewrite_seed')}, "
+        f"`{' '.join(rw.get('daisy_options', []))}`",
+        "- daisy: " + ", ".join(f"{v} {k}" for k, v in st.most_common())
+        + f", and returned the seed unchanged on {same}",
+    ]
 
-    head = _headroom(rows, HEADROOM)
-    hcxw, hdyw, htied, hclose = _verdicts(head)
 
-    out = ["# Rewriting: costex vs Daisy", "",
-           "Both rewriters get the same seed, and both are scored by measuring "
-           f"error in bits rather than bounding it: {sp.get('points')} uniform "
-           "points of the core's box, the same ones for every program of that "
-           "core, plus the worst points a hill climb reaches from them -- "
-           "pooled, so every program is scored at every other program's worst "
-           "case as well.  That makes the score a lower bound on the worst "
-           "case -- but neither rewriter optimises measured error, so neither "
-           "can game it.  For bounds, see `bounds.md`.",
-           "",
-           f"A verdict needs a **{MARGIN}x** margin in ulps.  Resampling with "
-           f"independent point sets moves the ratio by {NOISE_P50}x at the median "
-           f"and {NOISE_P90}x at the 90th percentile, so a smaller gap is not "
-           "distinguishable from having drawn different points, and is reported "
-           "as too close to call.",
-           "",
-           f"- {len(rows)} of {len(rw['results'])} cores get a verdict; the "
-           f"{sum(1 for r in every if r['kind'] == 'analysis')} tagged optimal are left "
-           f"out, as are {len(rw['results']) - len(every)} where neither side produced a "
-           "program that could be measured",
-           f"- of those {len(rows)}, **{len(head)} have headroom**: the seed "
-           f"loses more than {HEADROOM:.0f} ulps, so there is something for a "
-           "rewriter to take off",
-           f"- sampling {sp.get('version')}, {sp.get('points')} points drawn "
-           f"uniformly over the {sp.get('distribution')}s of each box, "
-           f"seed {sp.get('seed')}, then {sp.get('search_seeds')} climbs per "
-           f"program over a ladder of {sp.get('search_levels')} step sizes",
-           f"- daisy {rw.get('daisy_version')}, seed {rw.get('rewrite_seed')}, "
-           f"`{' '.join(rw.get('daisy_options', []))}`",
-           "- daisy: " + ", ".join(f"{v} {k}" for k, v in st.most_common())
-           + f", and returned the seed unchanged on {same}",
-           "",
-           "## Summary", "",
-           "Only a core whose seed is inaccurate can be made more accurate.  "
-           "The corpus is mostly seeds that are already right to a couple of "
-           "ulps, and on those every rewriter ties by construction, so the "
-           "headline is the cores with headroom:", "",
-           f"- **on the {len(head)} cores with headroom: costex wins "
-           f"{len(hcxw)}, daisy wins {len(hdyw)}, dead tie {len(htied)}, "
-           f"too close to call {len(hclose)}**",
-           f"- **bits of error taken off the seed, mean over those cores: "
-           f"costex {_saved(head, 'cx'):+.2f}, daisy {_saved(head, 'dy'):+.2f}**",
-           "",
-           "How that moves with where the bar is put:", "",
-           "| seed loses more than | cores | costex | daisy | dead tie | "
-           "too close | costex bits | daisy bits |",
-           "|---|--:|--:|--:|--:|--:|--:|--:|"]
-    for floor in HEADROOM_STEPS:
-        sel = _headroom(rows, floor)
-        a, b, c, d = _verdicts(sel)
-        out.append(f"| {floor:.0f} ulps{' (the bar)' if floor == HEADROOM else ''} "
-                   f"| {len(sel)} | {len(a)} | {len(b)} | {len(c)} | {len(d)} "
-                   f"| {_saved(sel, 'cx'):+.2f} | {_saved(sel, 'dy'):+.2f} |")
+def _rstats(xs: list) -> list:
+    """geomean, median, p10, p90 of a list of ratios."""
+    if not xs:
+        return [NONE] * 4
+    xs = sorted(xs)
+    return [f"{_geomean(xs):.3g}x", f"{xs[len(xs) // 2]:.3g}x",
+            f"{_pct(xs, 0.1):.3g}x", f"{_pct(xs, 0.9):.3g}x"]
 
-    out += ["",
-            "The whole corpus, headroom or not, for completeness:", "",
-            f"- costex wins {len(cxw)}, daisy wins {len(dyw)}, "
-            f"dead tie {len(tied)}, too close to call {len(close)}",
-            f"- a side whose program could not be measured loses: "
-            f"{sum(1 for r in cxw if r['dy'] is None)} of costex's wins and "
-            f"{sum(1 for r in dyw if r['cx'] is None)} of Daisy's",
-            f"- of the {len(tied)} dead ties, {same_prog} are cores where both "
-            "rewriters returned the same program, so there was nothing to "
-            f"separate; the other {len(tied) - same_prog} returned different programs "
-            "that measure identically",
-            f"- the {len(close)} too close to call differ by less than the "
-            f"{MARGIN}x margin",
-            "- daisy ulps / costex ulps, "
-            f"{sum(1 for r in rows if r['cx'] and r['dy'])} both measured: "
-            + _spread(sorted(r["dy"] / r["cx"] for r in rows if r["cx"] and r["dy"])),
-            "",
-            "Each rewriter against the seed it was given, same points:", ""]
-    out += ["| Rewriter | measured | improved | unchanged | regressed | seed / theirs |",
-            "|---|--:|--:|--:|--:|---|"]
+
+def _vs_seed(rows: list, key: str, suffix: str) -> list:
+    return [r[key + suffix] / r["seed" + suffix] for r in rows
+            if r.get(key + suffix) and r.get("seed" + suffix)]
+
+
+def _h2h_summary(rows: list, head: list) -> list:
+    both = [r for r in head if r["cx"] and r["dy"]]
+    out = ["", "## Accuracy", "",
+           f"Each rewriter against its own seed, over the same {len(both)} "
+           "cores: headroom, and both produced a measurable program.  "
+           "**Below 1x is an improvement.**  *Worst* is the max over the whole "
+           "pool; *average* is the mean over the uniform points only, since "
+           "the climbed ones are chosen to be bad.", "",
+           "| Ratio to the seed | worst, geomean | worst, median "
+           "| average, geomean | average, median |",
+           "|---|--:|--:|--:|--:|"]
     for label, key in (("costex", "cx"), ("daisy", "dy")):
-        g = sorted(r["seed"] / r[key] for r in rows if r["seed"] and r[key])
-        up = sum(1 for x in g if x > 1 / SLACK)
-        down = sum(1 for x in g if x < SLACK)
-        out.append(f"| {label} | {len(g)} | {up} | {len(g) - up - down} | {down} "
-                   f"| {_spread(g)} |")
+        worst = _rstats(_vs_seed(both, key, ""))[:2]
+        avg = _rstats(_vs_seed(both, key, "_mean"))[:2]
+        out.append(_row(label, *worst, *avg))
 
-    bad = {who: sorted(e["file"] for e in rw["results"]
-                       if (rep := (e["measured"] or {}).get(who))
-                       and rep.get("status") == "ok"
-                       and rep.get("equivalent") is False)
-           for who in ("costex", "daisy")}
     out += ["",
-            "Every rewrite is measured against the **seed's** exact value, so a "
-            "rewrite that changed the function scores as wrong rather than as "
-            "accurate.  Equivalence is checked directly, by comparing exact "
-            f"values at up to {sample.EQUIV_POINTS} points of the box:", "",
-            "| Rewriter | rewrote | not equivalent to the seed |",
-            "|---|--:|---|"]
+            "- the medians sit at 1x because on half these cores neither "
+            "rewriter changes the error at all; the geomean is what moves",
+            f"- {sum(1 for r in both if r['cx_expr'] == r['dy_expr'])} of the "
+            f"{len(both)} are cores where both rewriters returned the same "
+            "program"]
+    return out
+
+
+
+def _h2h_equivalence(rw: dict, rows: list) -> list:
+    out = ["", "## Equivalence", "",
+           f"All {len(rows)} measured cores.  Exact values compared at up to "
+           f"{sample.EQUIV_POINTS} points, to within {sample.EQUIV_TOL:g} of "
+           "the input scale -- loose enough to allow a folded constant, which "
+           "is a different real number but the same double:", "",
+           "| Rewriter | rewrote | not equivalent to the seed |",
+           "|---|--:|---|"]
     for who, k in (("costex", "cx"), ("daisy", "dy")):
         n = sum(1 for r in rows if r[f"{k}_expr"] and r[f"{k}_expr"] != r["seed_expr"])
-        b = bad[who]
-        out.append(f"| {who} | {n} | {len(b)}"
-                   + (": " + ", ".join(f"`{f[:44]}`" for f in b[:3]) if b else "")
-                   + " |")
+        bad = _not_equivalent(rw, who)
+        out.append(_row(who, n,
+                        f"{len(bad)}"
+                        + (": " + ", ".join(f"`{f[:44]}`" for f in bad[:3])
+                           if bad else "")))
+    return out
 
-    out += ["", "## Every core", "",
-            "- sorted by how far costex's rewrite beats Daisy's, so Daisy's wins are last",
-            f"- a core with headroom -- seed above {HEADROOM:.0f} ulps -- is marked *",
-            "",
-            "| Core | Program | bits of error | bits saved vs seed |",
-            "|---|---|---:|---:|"]
-    with_head = {id(r) for r in head}
+
+def _h2h_table(rows: list) -> list:
+    out = ["", "## Every core", "",
+           "- sorted by daisy ulps / costex ulps; * marks a core with headroom",
+           "",
+           "| Core | Program | worst bits | mean bits |",
+           "|---|---|---:|---:|"]
     for r in sorted(rows, key=lambda r: -_edge(r)):
-        progs = [("seed", r["seed_expr"], r["seed"], ""),
-                 ("costex", r["cx_expr"], r["cx"], r["cx_note"]),
-                 ("daisy", r["dy_expr"], r["dy"], r["dy_note"])]
-        out.append("| " + " | ".join([
-            f"**{r['name'] or r['file']}**" + ("&nbsp;\\*" if id(r) in with_head else ""),
-            "<br>".join(f"{who}: {_code(e) if e else NONE}" for who, e, _, _ in progs),
-            "<br>".join(note or _bits(v) for _, _, v, note in progs),
-            "<br>".join(NONE if who == "seed" or v is None or not r["seed"]
-                        else _vs_seed(r["seed"], v) for who, _, v, _ in progs),
-        ]) + " |")
+        progs = [("seed", r["seed_expr"], r["seed"], r["seed_mean"], ""),
+                 ("costex", r["cx_expr"], r["cx"], r["cx_mean"], r["cx_note"]),
+                 ("daisy", r["dy_expr"], r["dy"], r["dy_mean"], r["dy_note"])]
+        head = r["seed"] and r["seed"] > HEADROOM
+        out.append(_row(
+            f"**{r['name'] or r['file']}**" + ("&nbsp;\\*" if head else ""),
+            "<br>".join(f"{who}: {_code(e) if e else NONE}"
+                        for who, e, _, _, _ in progs),
+            "<br>".join(note or _bits(v) for _, _, v, _, note in progs),
+            "<br>".join(note or _bits(mu) for _, _, _, mu, note in progs)))
+    return out
+
+
+
+def h2h_markdown(rw: dict) -> str:
+    every = h2h(rw["results"])
+    rows = [r for r in every if r["kind"] != "analysis"]
+    head = _headroom(rows)
+    out = (_h2h_preamble(rw, every, rows, head)
+           + _h2h_summary(rows, head)
+           + _h2h_equivalence(rw, rows)
+           + _h2h_table(rows))
     return "\n".join(out) + "\n"
 
 
@@ -636,25 +617,36 @@ def _read(name: str):
         return json.load(f)
 
 
+def _reuse(missing: list):
+    """Stale either way, so reuse all of the JSON rather than mix old with new."""
+    res, ext, rw = _read("results.json"), _read("external.json"), _read("rewrite.json")
+    if not (res and ext and rw):
+        return None
+    print("\n".join(f"  {m}" for m in missing))
+    print(f"\n  reusing the JSON in {os.path.relpath(common.RESULTS)}, "
+          "rewriting only the markdown")
+    return res, ext, rw
+
+
+def _fresh():
+    print(f"\n== costex ==  {len(corpus())} cores")
+    results = step_costex()
+    print("\n== external ==")
+    ext = step_external(results)
+    print("\n== rewrite ==")
+    rw = step_rewrite(results)
+    return {"results": results}, ext, rw
+
+
 def main() -> int:
     missing = unavailable()
     if missing:
-        # stale either way, so reuse all of it rather than mix old with new
-        res, ext, rw = (_read("results.json"), _read("external.json"),
-                        _read("rewrite.json"))
-        if not (res and ext and rw):
+        got = _reuse(missing)
+        if got is None:
             return _die(missing)
-        print("\n".join(f"  {m}" for m in missing))
-        print(f"\n  reusing the JSON in {os.path.relpath(common.RESULTS)}, "
-              "rewriting only the markdown")
+        res, ext, rw = got
     else:
-        print(f"\n== costex ==  {len(corpus())} cores")
-        results = step_costex()
-        res = {"results": results}
-        print("\n== external ==")
-        ext = step_external(results)
-        print("\n== rewrite ==")
-        rw = step_rewrite(results)
+        res, ext, rw = _fresh()
 
     print("\n== report ==")
     for name, text in (("bounds.md", bounds_markdown(res, ext)),

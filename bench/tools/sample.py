@@ -17,7 +17,7 @@ import struct
 import gmpy2
 from gmpy2 import mpfr
 
-VERSION = "sample-12"
+VERSION = "sample-13"
 SAMPLES = 10_000
 SEARCH_SEEDS = 8             # worst uniform points a program climbs from
 SEARCH_LEVELS = 64           # step sizes in the ladder, span down to one float
@@ -28,9 +28,14 @@ ZERO_BITS = 4096             # before believing a reference of exactly zero
 MAX_REF_BITS = 16384
 SEED = 20250827
 DISTRIBUTION = "float"       # or "value", uniform over the reals instead
+UNSETTLED_MAX = 0.01         # of the drawn points, before a core is unusable
 EQUIV_POINTS = 20
 EQUIV_SETTLE = 2.0 ** -200   # equivalence needs far tighter than the error does
-EQUIV_TOL = 1e-25
+# Loose enough for a folded constant -- daisy prints fl(1/3) as 0.3333333333333333,
+# whose exact value differs from 1/3 by an ulp -- and many orders tighter than any
+# real change of function.  Measured against the input scale, not the result, so a
+# point where the two cancel does not read as a disagreement.
+EQUIV_TOL = 1e-12
 
 _UNARY = {"neg", "sqrt"}
 
@@ -70,13 +75,14 @@ def _span(lo: float, hi: float, width: int) -> tuple:
 
 
 def _spans(box: dict, width: int):
+    """None if the box has no uniform measure, or no float inside it."""
     spans = {}
     for v, (lo, hi) in box.items():
         if not (math.isfinite(lo) and math.isfinite(hi)):
-            return None            # an unbounded box has no uniform measure
+            return None
         a, b = _span(lo, hi, width)
         if a > b:
-            return None            # no representable number inside the box
+            return None
         spans[v] = (a, b)
     return spans
 
@@ -110,6 +116,7 @@ def _points(file: str, box: dict, n: int, precision: str) -> list:
 
 
 def _target(e, env: dict, rnd):
+    """The program as the target format runs it."""
     op = e[0]
     if op == "var":
         return env[e[1]]
@@ -138,6 +145,7 @@ def _target(e, env: dict, rnd):
 
 
 def _ref(e, env: dict):
+    """The same program at the current mpfr precision."""
     op = e[0]
     if op == "var":
         return mpfr(env[e[1]])
@@ -165,6 +173,7 @@ def _ref(e, env: dict):
 
 
 def _ulps(got: float, ref, width: int) -> float:
+    """Never zero, so ratios of scores are safe."""
     exact = float(ref)
     if width == 32:
         exact = _f32(exact)
@@ -184,6 +193,13 @@ def floor_bits(box: dict) -> int:
     return min(MAX_REF_BITS, max(REF_BITS, int(2 * span) + 128))
 
 
+def _noise_floor(env: dict, bits: int):
+    """The largest a pure rounding residue can be at this precision: an
+    expression over inputs of magnitude M carries noise of order M * 2**-bits."""
+    scale = max([abs(v) for v in env.values()] + [1.0])
+    return mpfr(scale) * mpfr(2) ** -bits
+
+
 def _stable_ref(body, env: dict, bits: int, settle=None) -> tuple:
     """Doubles the precision until two agree.  Agreement on zero waits for
     ZERO_BITS: two precisions both losing it to cancellation agree perfectly."""
@@ -195,8 +211,13 @@ def _stable_ref(body, env: dict, bits: int, settle=None) -> tuple:
         target = mpfr(2) ** -64 if settle is None else mpfr(settle)
         if hi != 0 and lo != 0 and abs((hi - lo) / hi) < target:
             return hi, bits
-        if hi == 0 and lo == 0 and bits >= ZERO_BITS:
-            return hi, bits          # still zero with room to spare: really zero
+        # Both precisions put the value at or below their own rounding noise,
+        # having just failed to agree relatively: that is cancellation residue,
+        # which halves as the precision doubles.  A genuinely tiny value would
+        # have agreed above instead of tracking the floor down.
+        if bits >= ZERO_BITS and abs(hi) <= _noise_floor(env, 2 * bits) \
+                and abs(lo) <= _noise_floor(env, bits):
+            return mpfr(0), bits
         bits *= 2
         lo = hi
         if bits > MAX_REF_BITS:
@@ -303,59 +324,49 @@ def _climb(score, env0: dict, names: list, spans: dict, width: int,
     return [env for _, env in top]
 
 
-def measure_group(programs: dict, file: str, box: dict, precision: str,
-                  reference, n: int = SAMPLES) -> dict:
-    """One core's programs on one pool: the uniform points plus everything
-    any climb reached.  Adversarial, and still paired."""
-    width = 32 if precision == "binary32" else 64
-    rnd = _f32 if precision == "binary32" else (lambda x: x)
-    names = sorted(box)
-    pts = _points(file, box, n, precision)
-    if not pts:
-        return {name: {"status": "nopoints", "error": "the box is unbounded"}
-                for name in programs}
-
-    refs = _Refs(reference, names, floor_bits(box))
-    base = []
-    for env in pts:
-        try:
-            ref = refs.at(env)
-        except ArithmeticError as ex:
-            return {name: {"status": "unstable", "error": str(ex)}
-                    for name in programs}
-        if ref is not None:
-            base.append(env)
-
-    spans = _spans(box, width)
+def _search(programs: dict, base: list, refs: _Refs, rnd, width: int,
+            names: list, spans: dict) -> dict:
+    """Every program climbs from its own worst uniform points.  A ladder costs
+    2 * vars * levels, so many variables buy depth by climbing from fewer."""
+    budget = 2 * len(names) * SEARCH_LEVELS
+    seeds = max(1, min(SEARCH_SEEDS, SEARCH_EVALS // budget))
     found = {}
-    if spans and base:               # a core with no variables has one point
-        # a ladder costs 2 * vars * levels, so many variables buy depth
-        # by climbing from fewer starts
-        budget = 2 * len(names) * SEARCH_LEVELS
-        seeds = max(1, min(SEARCH_SEEDS, SEARCH_EVALS // budget))
-        for body in programs.values():
-            score = _scorer(body, refs, rnd, width)
-            scored = [(score(env), env) for env in base]
-            starts = [env for got, env in
-                      sorted(((g, e) for g, e in scored if g is not None),
-                             key=lambda pair: -pair[0])[:seeds]]
-            for env in starts:
-                for env2 in _climb(score, env, names, spans, width, budget):
-                    found.setdefault(tuple(env2[v] for v in names), env2)
+    for body in programs.values():
+        score = _scorer(body, refs, rnd, width)
+        scored = [(score(env), env) for env in base]
+        starts = [env for _, env in
+                  sorted(((g, e) for g, e in scored if g is not None),
+                         key=lambda pair: -pair[0])[:seeds]]
+        for env in starts:
+            for reached in _climb(score, env, names, spans, width, budget):
+                found.setdefault(tuple(reached[v] for v in names), reached)
+    return found
 
-    extra = [env for env in found.values() if refs.soft(env) is not None]
-    pool = base + extra
-    return {name: _report(body, pool, len(base), refs, rnd, width,
-                          len(pts), reference)
-            for name, body in programs.items()}
+
+def _equivalent(body, refs: _Refs, env: dict, bits: int) -> bool:
+    """Does the rewrite agree with its seed on the reals at this point?"""
+    try:
+        mine, _ = _stable_ref(body, env, bits, EQUIV_SETTLE)
+        theirs, _ = _stable_ref(refs.body, env, bits, EQUIV_SETTLE)
+    except (ZeroDivisionError, ValueError, ArithmeticError):
+        return False                 # defined for the seed, not for the rewrite
+    if mine == theirs:
+        return True
+    scale = max([abs(mine), abs(theirs)]
+                + [abs(mpfr(v)) for v in env.values()] + [mpfr(1)])
+    return abs(mine - theirs) <= mpfr(EQUIV_TOL) * scale
 
 
 def _report(body, pool: list, n_uniform: int, refs: _Refs, rnd, width: int,
             drawn: int, reference) -> dict:
     check = body != reference        # a rewrite: does it agree with its seed?
-    abs_errs, rel_errs, ulps, broke, undef = [], [], [], 0, 0
+    abs_errs, rel_errs, broke, undef = [], [], 0, 0
     same, differs = 0, 0
     worst, worst_i = 0.0, -1
+    # the mean is kept over the uniform points alone: the pool is deliberately
+    # enriched with worst cases, so a mean over all of it is not an average
+    # over the box
+    sum_u, n_u, sum_pool = 0.0, 0, 0.0
     for i, env in enumerate(pool):
         ref = refs.soft(env)
         if ref is None:
@@ -370,19 +381,14 @@ def _report(body, pool: list, n_uniform: int, refs: _Refs, rnd, width: int,
             broke += 1
             continue
         if check and same + differs < EQUIV_POINTS:
-            try:
-                mine, _ = _stable_ref(body, env, refs.bits, EQUIV_SETTLE)
-                theirs, _ = _stable_ref(refs.body, env, refs.bits, EQUIV_SETTLE)
-            except (ZeroDivisionError, ValueError, ArithmeticError):
-                differs += 1         # defined for the seed, not for the rewrite
-            else:
-                near = (mine == theirs or (theirs != 0 and
-                                           abs((mine - theirs) / theirs) < EQUIV_TOL))
-                same, differs = same + bool(near), differs + (not near)
+            near = _equivalent(body, refs, env, refs.bits)
+            same, differs = same + near, differs + (not near)
         d = abs(mpfr(got) - ref)
         abs_errs.append(float(d))
         u = _ulps(got, ref, width)
-        ulps.append(u)
+        sum_pool += u
+        if i < n_uniform:
+            sum_u, n_u = sum_u + u, n_u + 1
         if u > worst:
             worst, worst_i = u, i
         if ref != 0:
@@ -397,15 +403,53 @@ def _report(body, pool: list, n_uniform: int, refs: _Refs, rnd, width: int,
             "drawn": drawn, "searched": len(pool) - n_uniform,
             "from_search": worst_i >= n_uniform,
             "ulps": worst, "bits": math.log2(worst),
+            "mean_ulps": (sum_u / n_u) if n_u else None,
+            "pool_mean_ulps": sum_pool / len(abs_errs),
             "equivalent": (differs == 0) if check else True,
             "equiv_checked": same + differs, "equiv_differs": differs,
             "abs": max(abs_errs), "rel": max(rel_errs) if rel_errs else None}
 
 
-def measure(body, file: str, box: dict, precision: str, n: int = SAMPLES,
-            reference=None) -> dict:
-    """One program alone, so never scored at a rival's worst case; prefer
-    measure_group.  The reference is the *seed's* exact value, so a rewrite
-    that changed the function scores as wrong, not as accurate."""
-    reference = body if reference is None else reference
-    return measure_group({"it": body}, file, box, precision, reference, n)["it"]
+def measure_group(programs: dict, file: str, box: dict, precision: str,
+                  reference, n: int = SAMPLES) -> dict:
+    """One core's programs on one pool: the uniform points plus everything any
+    climb reached.  Adversarial, and still paired.  The reference is the
+    *seed's* exact value, so a rewrite that changed the function scores as
+    wrong rather than as accurate."""
+    width = 32 if precision == "binary32" else 64
+    rnd = _f32 if precision == "binary32" else (lambda x: x)
+    names = sorted(box)
+    pts = _points(file, box, n, precision)
+    if not pts:
+        return {name: {"status": "nopoints", "error": "the box is unbounded"}
+                for name in programs}
+
+    refs = _Refs(reference, names, floor_bits(box))
+    base, unsettled = [], 0
+    for env in pts:
+        try:
+            ref = refs.at(env)
+        except ArithmeticError:
+            unsettled += 1       # the search already tolerates these; so here
+            continue
+        if ref is not None:
+            base.append(env)
+    if unsettled > UNSETTLED_MAX * len(pts):
+        return {name: {"status": "unstable", "unsettled": unsettled,
+                       "error": f"{unsettled} of {len(pts)} points never settled"}
+                for name in programs}
+
+    spans = _spans(box, width)
+    found = {}
+    if spans and base:               # a core with no variables has one point
+        found = _search(programs, base, refs, rnd, width, names, spans)
+
+    extra = [env for env in found.values() if refs.soft(env) is not None]
+    pool = base + extra
+    # where the exact value is zero, every program is ~2**62 ulps away from it
+    # whatever it computes, so the ulp score saturates and carries no signal
+    zeros = sum(1 for env in pool if refs.soft(env) == 0)
+    return {name: dict(_report(body, pool, len(base), refs, rnd, width,
+                               len(pts), reference),
+                       unsettled=unsettled, ref_zeros=zeros)
+            for name, body in programs.items()}
