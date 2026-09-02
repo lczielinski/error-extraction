@@ -35,7 +35,7 @@
   "search_levels": 64,
   "search_evals": 4000
  },
- "elapsed_s": 210.8,
+ "elapsed_s": 32.9,
  "results": [
   {
    "file": "fpbench-daisy-000-carthesiantopolar-radius.fpcore",
@@ -4410,7 +4410,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (+ 3 (/ (* (- (* w r)) (+ (* w (* r 0.125)) (* (* w (* r 0.125)) (* 2 v)))) (- 1 v))) (- 0.5)) (/ (- 2) (* r r)))"
+     "expr": "(+ (+ (+ 3 (/ (* (- (* w r)) (+ (* (* w (* r 0.125)) (* 2 v)) (* w (* r 0.125)))) (- 1 v))) (- 0.5)) (/ (- 2) (* r r)))"
     },
     "daisy": {
      "status": "ok",
@@ -8092,7 +8092,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ x y) (* (- x) y))"
+     "expr": "(+ x (* y (- 1 x)))"
     },
     "daisy": {
      "status": "ok",
@@ -8136,15 +8136,15 @@
      "drawn": 10000,
      "searched": 128,
      "from_search": true,
-     "ulps": 4.380700509510745e+18,
-     "bits": 61.92586729487423,
-     "mean_ulps": 11.3087,
-     "pool_mean_ulps": 1299514049983372.0,
+     "ulps": 1107343877696713.0,
+     "bits": 49.97602473360329,
+     "mean_ulps": 3.403,
+     "pool_mean_ulps": 595484394827.2808,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
-     "abs": 1.7712203113262783e-15,
-     "rel": 1.0,
+     "abs": 8.85609338483302e-16,
+     "rel": 0.19735430889594177,
      "unsettled": 0,
      "ref_zeros": 0
     },
@@ -16738,7 +16738,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* x (* (- (* x 3) 4) 3)) 3)"
+     "expr": "(+ 3 (* x (* (- (* x 3) 4) 3)))"
     },
     "daisy": {
      "status": "ok",
@@ -33326,7 +33326,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(/ (+ (* t (* 2 (/ (* 2 (/ t (+ 1 t))) (+ 1 t)))) 1) (+ (* t (* 2 (/ (* 2 (/ t (+ 1 t))) (+ 1 t)))) 2))"
+     "expr": "(/ (+ (* t (* 2 (/ (* 2 (/ t (+ 1 t))) (+ 1 t)))) 1) (* 2 (+ 1 (* t (/ (* 2 (/ t (+ 1 t))) (+ 1 t))))))"
     },
     "daisy": {
      "status": "ok",
@@ -34119,7 +34119,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ x (* x x))"
+     "expr": "(* x (+ 1 x))"
     },
     "daisy": {
      "status": "ok",
@@ -34135,17 +34135,17 @@
    "measured": {
     "seed": {
      "status": "ok",
-     "sampled": 10064,
+     "sampled": 10128,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 64,
+     "searched": 128,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.0003,
-     "pool_mean_ulps": 1.0023847376788553,
+     "pool_mean_ulps": 1.0023696682464456,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -34156,38 +34156,38 @@
     },
     "costex": {
      "status": "ok",
-     "sampled": 10064,
+     "sampled": 10128,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 64,
+     "searched": 128,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
-     "mean_ulps": 1.0003,
-     "pool_mean_ulps": 1.0023847376788553,
+     "mean_ulps": 1.0206,
+     "pool_mean_ulps": 1.0275473933649288,
      "equivalent": true,
-     "equiv_checked": 0,
+     "equiv_checked": 20,
      "equiv_differs": 0,
-     "abs": 3.8476865732574e-16,
-     "rel": 1.1293909094357623e-16,
+     "abs": 6.732497292954566e-16,
+     "rel": 2.1151421871533668e-16,
      "unsettled": 0,
      "ref_zeros": 0
     },
     "daisy": {
      "status": "ok",
-     "sampled": 10064,
+     "sampled": 10128,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 64,
+     "searched": 128,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.0003,
-     "pool_mean_ulps": 1.0023847376788553,
+     "pool_mean_ulps": 1.0023696682464456,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -34198,17 +34198,17 @@
     },
     "herbie": {
      "status": "ok",
-     "sampled": 10064,
+     "sampled": 10128,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 64,
+     "searched": 128,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.0003,
-     "pool_mean_ulps": 1.0023847376788553,
+     "pool_mean_ulps": 1.0023696682464456,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -34226,7 +34226,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* x (+ (* x x) x))"
+     "expr": "(* x (* x (+ 1 x)))"
     },
     "daisy": {
      "status": "ok",
@@ -34242,17 +34242,17 @@
    "measured": {
     "seed": {
      "status": "ok",
-     "sampled": 10123,
+     "sampled": 10182,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 123,
+     "searched": 182,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.0149,
-     "pool_mean_ulps": 1.0223253976094042,
+     "pool_mean_ulps": 1.0233745825967393,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -34263,17 +34263,17 @@
     },
     "costex": {
      "status": "ok",
-     "sampled": 10123,
+     "sampled": 10182,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 123,
+     "searched": 182,
      "from_search": false,
-     "ulps": 2.0,
-     "bits": 1.0,
-     "mean_ulps": 1.0168,
-     "pool_mean_ulps": 1.0243998814580657,
+     "ulps": 3.0,
+     "bits": 1.584962500721156,
+     "mean_ulps": 1.0262,
+     "pool_mean_ulps": 1.0408564132783342,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -34284,17 +34284,17 @@
     },
     "daisy": {
      "status": "ok",
-     "sampled": 10123,
+     "sampled": 10182,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 123,
+     "searched": 182,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.0168,
-     "pool_mean_ulps": 1.0243998814580657,
+     "pool_mean_ulps": 1.026910233745826,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -34305,17 +34305,17 @@
     },
     "herbie": {
      "status": "ok",
-     "sampled": 10123,
+     "sampled": 10182,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 123,
+     "searched": 182,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.0168,
-     "pool_mean_ulps": 1.0243998814580657,
+     "pool_mean_ulps": 1.026910233745826,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -35447,7 +35447,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* (* (+ (+ (+ 1 (- (/ 25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))) (- (+ (* (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))) 10) (* (* (* 0.5 0.5) dt) (* dt (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))))))) (* (- dt) (* dt (* dt (* dt (/ 0.25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))))))) dt) dt) 10) (+ (* (+ (+ (+ 1 (- (/ 25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))) (- (+ (* (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))) 10) (* (* (* 0.5 0.5) dt) (* dt (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))))))) (* (- dt) (* dt (* dt (* dt (/ 0.25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))))))) 25) (+ (* (* (* (* (- (* 0.25 1) (* 0.25 (+ (/ 25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))) (+ (+ (* dt (* dt (* dt (* dt (/ 0.25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))))) (* (* (* 0.5 0.5) dt) (* dt (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))))) (* (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))) 10))))) dt) dt) dt) dt) (* (* (* (* (* (+ (+ (+ 1 (- (/ 25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))) (- (+ (* (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))) 10) (* (* (* 0.5 0.5) dt) (* dt (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))))))) (* (- dt) (* dt (* dt (* dt (/ 0.25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))))))) dt) dt) (* 0.5 0.5)) dt) dt))))"
+     "expr": "(+ (* (* (* (+ (+ (+ 1 (- (/ 25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))) (- (+ (* (* (* 0.5 0.5) dt) (* dt (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))))) (* (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))) 10)))) (* (- dt) (* dt (* dt (* dt (/ 0.25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))))))) dt) dt) 10) (+ (* (+ (+ (+ 1 (- (/ 25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))) (- (+ (* (* (* 0.5 0.5) dt) (* dt (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))))) (* (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))) 10)))) (* (- dt) (* dt (* dt (* dt (/ 0.25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))))))) 25) (+ (* (* (* (* (- 0.25 (* 0.25 (+ (/ 25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))) (+ (* (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))) 10) (+ (* dt (* dt (* dt (* dt (/ 0.25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))))) (* (* (* 0.5 0.5) dt) (* dt (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))))))))) dt) dt) dt) dt) (* (* (* (* (* (+ (+ (+ 1 (- (/ 25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r)))))) (- (+ (* (* (* 0.5 0.5) dt) (* dt (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))))) (* (* dt (/ dt (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))) 10)))) (* (- dt) (* dt (* dt (* dt (/ 0.25 (+ (+ 25 (* (* (* (* (* 0.5 0.5) dt) dt) dt) dt)) (+ (* dt (* 10 dt)) (+ (* 0.25 (* dt (* dt (* dt dt)))) r))))))))) dt) dt) (* 0.5 0.5)) dt) dt))))"
     },
     "daisy": {
      "status": "timeout",
@@ -37352,7 +37352,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* rone_es (* (* (* rone_es (* (+ (* (- ca) (* es ca)) 1) ca)) ca) (- es))) (+ (* rone_es (* (+ (* (- ca) (* es ca)) 1) rone_es)) (- 1)))"
+     "expr": "(+ (+ (- 1) (* rone_es (* (+ (* (- ca) (* es ca)) 1) rone_es))) (* rone_es (* (* (* rone_es (* (+ (* (- ca) (* es ca)) 1) ca)) ca) (- es))))"
     },
     "daisy": {
      "status": "ok",

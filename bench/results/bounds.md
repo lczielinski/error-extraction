@@ -122,7 +122,6 @@ Every analyser bounds the same program, the seed.  Above 1x, our bound is tighte
 | **Numeric.SpecFunctions:invIncompleteGamma from math-functions-0.1.5.2, A** | `(- 1 (* x (+ 0.253 (* x 0.12))))` | 2.78e-16 | 4.4e-16 | 1.67e-16 | 2.88e-16 | 1.6e-14 | 3.15e-14 | 1.09e-14 | 1.67e-14 |
 | **NMSE problem 3.3.1** | `(- (/ 1 (+ x 1)) (/ 1 x))` | 2.78e-16 | 4.44e-16 | 2.22e-16 | 3.33e-16 | 1.22e-15 | &mdash; | 7.36e-16 | 1.75e-15 |
 | **2frac (problem 3.3.1)** | `(- (/ 1 (+ x 1)) (/ 1 x))` | 2.78e-16 | 4.44e-16 | 2.22e-16 | 3.33e-16 | 1.22e-15 | &mdash; | 7.36e-16 | 1.75e-15 |
-| **Data.Colour.RGBSpace.HSL:hsl from colour-2.3.3, A** | `(- (+ x y) (* x y))` | 3.55e-15 | 6e-15 | 2.22e-15 | 5e-15 | &mdash; | &mdash; | &mdash; | &mdash; |
 | **Codec.Picture.Types:toneMapping from JuicyPixels-3.2.6.1** | `(/ (* x (+ (/ x y) 1)) (+ x 1))` | 5.55e-16 | 8.26e-16 | 3.52e-16 | 9.9e-16 | 4.81e-16 | 2.2e-15 | 4.23e-16 | 6.97e-16 |
 | **verhulst** | `(/ (* 4 x) (+ 1 (/ x 1.11)))` | 2.78e-16 | 3.72e-16 | 1.79e-16 | 4.18e-16 | 2.63e-16 | 1.18e-15 | 2.41e-16 | 3.9e-16 |
 | **Examples.Basics.BasicTests:f2 from sbv-4.4** | `(- (* x x) (* y y))` | 1.11e-14 | 2.62e-14 | 7.33e-15 | 1.49e-14 | 2.96e-16 | 2.18e-15 | 2.41e-16 | 6.11e-16 |
@@ -148,6 +147,7 @@ Every analyser bounds the same program, the seed.  Above 1x, our bound is tighte
 | **Bouland and Aaronson, Equation (25)** | `(- (+ (* (+ (* a a) (* b b)) (+ (* a a) (* b b))) (* 4 (+ (* (* a a) …` | 3.97e-12 | 5.76e-12 | 2.8e-12 | 4.64e-12 | &mdash; | &mdash; | 2.56e-15 | &mdash; |
 | **Data.Random.Distribution.Normal:normalTail from random-fu-0.2.6.2** | `(+ (+ (* x x) y) y)` | 3.11e-15 | 5.77e-15 | 2.89e-15 | 4.22e-15 | 2.59e-16 | 6.41e-16 | 1.83e-16 | 3.58e-16 |
 | **Linear.Quaternion:$c/ from linear-1.19.1.3, E** | `(+ (+ (+ (* x x) (* y y)) (* y y)) (* y y))` | 5.73e-14 | 1.01e-13 | 4.64e-14 | 6.82e-14 | 4.14e-16 | 2.06e-15 | 2.94e-16 | 5.64e-16 |
+| **Data.Colour.RGBSpace.HSL:hsl from colour-2.3.3, A** | `(- (+ x y) (* x y))` | 3.11e-15 | 6e-15 | 2.22e-15 | 5e-15 | &mdash; | &mdash; | &mdash; | &mdash; |
 | **Linear.Quaternion:$c/ from linear-1.19.1.3, A** | `(+ (+ (+ (* x y) (* z z)) (* z z)) (* z z))` | 9.11e-13 | 1.6e-12 | 7.4e-13 | 1.08e-12 | 4.13e-16 | 2.07e-15 | 2.96e-16 | 5.57e-16 |
 | **Main:i from ** | `(+ (+ (+ (+ x x) x) x) x)` | 2.66e-15 | 3.77e-15 | 2.44e-15 | 2.55e-15 | 3.71e-16 | 7.55e-16 | 2.66e-16 | 4.22e-16 |
 | **Data.Random.Distribution.Triangular:triangularCDF from random-fu-0.2.6.2, B** | `(/ x (* (- y z) (- t z)))` | 3.47e-18 | 4.73e-17 | 2.49e-18 | 8.24e-18 | 4.44e-16 | 1.48e-13 | 5.76e-16 | 1.11e-15 |

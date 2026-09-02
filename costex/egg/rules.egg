@@ -40,6 +40,8 @@
 
 (birewrite (Mul a (Add b c)) (Add (Mul a b) (Mul a c)) :ruleset opt)
 (birewrite (Mul a (Sub b c)) (Sub (Mul a b) (Mul a c)) :ruleset opt)
+(birewrite (Sub a (Mul a b)) (Mul a (Sub (Num 1.0) b)) :ruleset opt)
+(birewrite (Add a (Mul a b)) (Mul a (Add (Num 1.0) b)) :ruleset opt)
 (birewrite (Sub (Mul a a) (Mul b b)) (Mul (Add a b) (Sub a b)) :ruleset opt)
 
 ; -- division -----------------------------------------------------------
