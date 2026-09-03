@@ -37,7 +37,8 @@
 (rewrite (Sub a a) (Num 0.0) :ruleset opt)
 (rewrite (Sub (Add a b) a) b :ruleset opt)
 (rewrite (Sub (Add a b) b) a :ruleset opt)
-
+(rewrite (Neg (Num a)) (Num (neg a)) :ruleset opt)
+(birewrite (Add a a) (Mul (Num 2.0) a) :ruleset opt)
 (birewrite (Mul a (Add b c)) (Add (Mul a b) (Mul a c)) :ruleset opt)
 (birewrite (Mul a (Sub b c)) (Sub (Mul a b) (Mul a c)) :ruleset opt)
 (birewrite (Sub a (Mul a b)) (Mul a (Sub (Num 1.0) b)) :ruleset opt)

@@ -10,9 +10,9 @@ Every analyser bounds the same program, the seed.  Above 1x, our bound is tighte
 
 | Metric | vs | both bounded | we are tighter | looser | tie | only we bound it | only they do | their bound / ours |
 |---|---|--:|--:|--:|--:|--:|--:|---|
-| mu_abs | daisy | 361 | 357 | 3 | 1 | 4 | 0 | geomean 7.78x, median 2.22x, p10 1.46x, p90 4.38x |
-| mu_abs | fptaylor | 362 | 111 | 250 | 1 | 3 | 0 | geomean 0.682x, median 0.839x, p10 0.494x, p90 1x |
-| mu_abs | gappa | 364 | 337 | 21 | 6 | 1 | 6 | geomean 6.51x, median 1.49x, p10 1.06x, p90 3.5x |
+| mu_abs | daisy | 361 | 357 | 3 | 1 | 4 | 0 | geomean 7.79x, median 2.22x, p10 1.46x, p90 4.38x |
+| mu_abs | fptaylor | 362 | 111 | 250 | 1 | 3 | 0 | geomean 0.683x, median 0.844x, p10 0.494x, p90 1x |
+| mu_abs | gappa | 364 | 337 | 21 | 6 | 1 | 6 | geomean 6.52x, median 1.49x, p10 1.06x, p90 3.5x |
 | mu_rel | daisy | 260 | 260 | 0 | 0 | 20 | 0 | geomean 13.5x, median 7.37x, p10 2.55x, p90 68.3x |
 | mu_rel | fptaylor | 277 | 125 | 151 | 1 | 3 | 10 | geomean 0.936x, median 0.979x, p10 0.552x, p90 1.17x |
 | mu_rel | gappa | 269 | 262 | 6 | 1 | 11 | 2 | geomean 2.04x, median 1.8x, p10 1.26x, p90 2.45x |
@@ -104,7 +104,6 @@ Every analyser bounds the same program, the seed.  Above 1x, our bound is tighte
 | **Diagrams.Trail:splitAtParam  from diagrams-lib-1.3.0.3, C** | `(/ (- x y) (- 1 y))` | 6.29e-16 | 1.35e-15 | 3.33e-16 | 7.5e-16 | 3.33e-16 | 4.74e-15 | 3.35e-16 | 6.48e-16 |
 | **subtraction fraction** | `(/ (- (+ f n)) (- f n))` | 1.44e-15 | 4.76e-15 | 7.78e-16 | 2.05e-15 | 3.33e-16 | 6.66e-15 | 3.35e-16 | 7.22e-16 |
 | **Linear.Projection:perspective from linear-1.19.1.3, A** | `(/ (+ x y) (- x y))` | 1.44e-15 | 4.76e-15 | 7.78e-16 | 2.05e-15 | 3.33e-16 | 6.66e-15 | 3.35e-16 | 7.22e-16 |
-| **Data.Random.Distribution.T:$ccdf from random-fu-0.2.6.2** | `(/ (+ x y) (+ y y))` | 3.61e-16 | 7.49e-16 | 1.95e-16 | 3.89e-16 | 3.33e-16 | 2.4e-15 | 2.91e-16 | 5.43e-16 |
 | **doppler3** | `(/ (* (- (+ 331.4 (* 0.6 T))) v) (* (+ (+ 331.4 (* 0.6 T)) u) (+ (+ 3…` | 1.05e-13 | 1.68e-13 | 5.7e-14 | 1.08e-13 | 1.2e-15 | 3.84e-13 | 7.36e-16 | 1.16e-15 |
 | **Data.Colour.RGB:hslsv from colour-2.3.3, D** | `(/ (- x y) (+ x y))` | 3.55e-16 | 7.15e-16 | 1.95e-16 | 5.3e-16 | 3.33e-16 | 3.57e-15 | 3.36e-16 | 7.22e-16 |
 | **init-p** | `(/ (- L H) (+ L H))` | 3.55e-16 | 7.15e-16 | 1.95e-16 | 5.3e-16 | 3.33e-16 | 3.57e-15 | 3.36e-16 | 7.22e-16 |
@@ -261,6 +260,7 @@ Every analyser bounds the same program, the seed.  Above 1x, our bound is tighte
 | **Statistics.Sample:$swelfordMean from math-functions-0.1.5.2** | `(+ x (/ (- y x) z))` | 2.78e-16 | 6.45e-16 | 2.78e-16 | 5.79e-16 | 1.63e-16 | 6.07e-16 | 1.41e-16 | 3.74e-16 |
 | **B-tau3** | `(+ (* tau (+ (* tau (+ (* tau d3u_dtau3) (* 2 d2u_dtau2))) (* (* 2 (+…` | 4.89e-10 | 7.85e-10 | 4.23e-10 | 5.71e-10 | 1.34e-15 | 6.62e-14 | 7.8e-15 | 2.01e-15 |
 | **Data.Array.Repa.Algorithms.ColorRamp:rampColorHotToCold from repa-algorithms-3.4.0.1, C** | `(+ 1 (/ (* 4 (- (+ x (* y 0.25)) z)) y))` | 5.77e-15 | 1.64e-14 | 5.55e-15 | 1.58e-14 | 4.22e-16 | 3.29e-15 | 3.65e-16 | 7.33e-16 |
+| **Data.Random.Distribution.T:$ccdf from random-fu-0.2.6.2** | `(/ (+ x y) (+ y y))` | 2.22e-16 | 7.49e-16 | 1.95e-16 | 3.89e-16 | 3.33e-16 | 2.4e-15 | 2.91e-16 | 5.43e-16 |
 | **test06_sums4, sum2** | `(+ (+ x0 x1) (+ x2 x3))` | 4.77e-07 | 7.15e-07 | 4.17e-07 | 5.66e-07 | &mdash; | &mdash; | &mdash; | &mdash; |
 | **Graphics.Rasterific.Svg.PathConverter:arcToSegments from rasterific-svg-0.2.3.1** | `(+ (/ (* x x) (* y y)) (/ (* z z) (* t t)))` | 2.22e-16 | 9.44e-16 | 1.94e-16 | 3.89e-16 | 4.44e-16 | 3.02e-14 | 6.03e-16 | 8.88e-16 |
 | **Graphics.Rendering.Chart.Backend.Diagrams:calcFontMetrics from Chart-diagrams-1.5.1, B** | `(* x (/ (* (/ y z) t) t))` | 4.44e-16 | 2.23e-15 | 3.89e-16 | 8.88e-16 | 4.44e-16 | 3.57e-14 | 5.71e-16 | 9.99e-16 |

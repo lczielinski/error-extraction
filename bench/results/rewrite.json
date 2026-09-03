@@ -35,7 +35,7 @@
   "search_levels": 64,
   "search_evals": 4000
  },
- "elapsed_s": 32.9,
+ "elapsed_s": 33.1,
  "results": [
   {
    "file": "fpbench-daisy-000-carthesiantopolar-radius.fpcore",
@@ -1435,7 +1435,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (* (+ (* x1 x1) x2) (* x1 x1)) (+ (+ (* (+ (* x1 x1) x2) (- 11)) (* (+ (* x1 x1) x2) x2)) (- (+ (* (* 11 x1) x1) (- (* 11 x2) (* 11 11)))))) (+ (* (+ x1 (* x2 x2)) (+ x1 (* x2 x2))) (+ (* (+ x1 (* x2 x2)) (- 7)) (+ (* (- 7) (- x1 7)) (* (- 7) (* x2 x2))))))"
+     "expr": "(+ (+ (* (+ (* x1 x1) x2) (* x1 x1)) (+ (+ (* (+ (* x1 x1) x2) -11) (* (+ (* x1 x1) x2) x2)) (- (+ (* (* 11 x1) x1) (+ (* 11 -11) (* 11 x2)))))) (+ (* (+ x1 (* x2 x2)) (+ x1 (* x2 x2))) (+ (* (+ x1 (* x2 x2)) -7) (+ (- (* 7 (* x2 x2))) (- (* 7 (- x1 7)))))))"
     },
     "daisy": {
      "status": "ok",
@@ -1542,7 +1542,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* -25 (- x1 2)) (- x1 2)) (+ (+ (- (+ (* x3 x3) (+ (* x3 (- 1)) (- 1 x3)))) (+ (* (- 2 x2) (- x2 2)) (* (- 4 x4) (- x4 4)))) (- (* (- 4 x6) (- x6 4)) (* (- x5 1) (- x5 1)))))"
+     "expr": "(+ (* (* -25 (- x1 2)) (- x1 2)) (+ (+ (* -1 (+ (* x3 x3) (+ (* x3 -1) (- 1 x3)))) (+ (* (- 2 x2) (- x2 2)) (* (- 4 x4) (- x4 4)))) (- (* (- 4 x6) (- x6 4)) (* (- x5 1) (- x5 1)))))"
     },
     "daisy": {
      "status": "ok",
@@ -1756,7 +1756,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* -12 x1) (* x2 (+ (- 7) x2)))"
+     "expr": "(+ (* -12 x1) (* x2 (+ -7 x2)))"
     },
     "daisy": {
      "status": "ok",
@@ -3468,7 +3468,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(/ (/ (+ (* (- 1) x) (+ (- 1) x)) x) (+ x 1))"
+     "expr": "(/ (/ (+ (* -1 x) (+ -1 x)) x) (+ x 1))"
     },
     "daisy": {
      "status": "ok",
@@ -3982,7 +3982,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* (- 2) x2) x3) (- (* (- x1) x2) (+ x1 x3)))"
+     "expr": "(+ (* (* -2 x3) x2) (- (* (- x1) x2) (+ x1 x3)))"
     },
     "daisy": {
      "status": "ok",
@@ -4089,7 +4089,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* (- x2) x3) (* x2 x1)) (+ (* x2 (* x1 (* x3 2))) (+ (* 3 (* x3 x3)) (+ (* 3 (* x3 x3)) (- x2)))))"
+     "expr": "(+ (* (* (- x2) x3) (* x2 x1)) (+ (+ (- x2) (* 2 (* 3 (* x3 x3)))) (* x2 (* x1 (* x3 2)))))"
     },
     "daisy": {
      "status": "ok",
@@ -4105,17 +4105,17 @@
    "measured": {
     "seed": {
      "status": "ok",
-     "sampled": 10193,
+     "sampled": 10185,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 193,
+     "searched": 185,
      "from_search": true,
      "ulps": 1764789128206.0,
      "bits": 40.682632947149706,
      "mean_ulps": 1.0705,
-     "pool_mean_ulps": 659253672.2930442,
+     "pool_mean_ulps": 659771495.5007364,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -4126,17 +4126,17 @@
     },
     "costex": {
      "status": "ok",
-     "sampled": 10193,
+     "sampled": 10185,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 193,
+     "searched": 185,
      "from_search": true,
      "ulps": 1764789128206.0,
      "bits": 40.682632947149706,
-     "mean_ulps": 1.0913,
-     "pool_mean_ulps": 673488080.1419601,
+     "mean_ulps": 1.0782,
+     "pool_mean_ulps": 674017084.0182621,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -4147,17 +4147,17 @@
     },
     "daisy": {
      "status": "ok",
-     "sampled": 10193,
+     "sampled": 10185,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 193,
+     "searched": 185,
      "from_search": true,
      "ulps": 1764789128206.0,
      "bits": 40.682632947149706,
      "mean_ulps": 1.0926,
-     "pool_mean_ulps": 561822573.9363289,
+     "pool_mean_ulps": 562263868.0527246,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -4168,17 +4168,17 @@
     },
     "herbie": {
      "status": "ok",
-     "sampled": 10193,
+     "sampled": 10185,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 193,
+     "searched": 185,
      "from_search": true,
      "ulps": 1764789128206.0,
      "bits": 40.682632947149706,
      "mean_ulps": 1.0782,
-     "pool_mean_ulps": 673488080.1277347,
+     "pool_mean_ulps": 674017084.0182621,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -4196,7 +4196,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(- (+ (/ (/ 2 r) r) (+ (- 4.5) 3)) (* w (* (* 0.125 (* (* w r) (- 3 (* 2 v)))) (/ r (- 1 v)))))"
+     "expr": "(+ (* (- 1) (* w (* (* 0.125 (* (* w r) (- 3 (* 2 v)))) (/ r (- 1 v))))) (+ (/ (/ 2 r) r) (+ -4.5 3)))"
     },
     "daisy": {
      "status": "ok",
@@ -4410,7 +4410,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (+ 3 (/ (* (- (* w r)) (+ (* (* w (* r 0.125)) (* 2 v)) (* w (* r 0.125)))) (- 1 v))) (- 0.5)) (/ (- 2) (* r r)))"
+     "expr": "(+ (/ -2 (* r r)) (+ (+ 3 (/ (* (- (* w r)) (+ (* (* w (* r 0.125)) (* 2 v)) (* w (* r 0.125)))) (- 1 v))) -0.5))"
     },
     "daisy": {
      "status": "ok",
@@ -4731,7 +4731,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (+ 35000000 (/ (* (/ 0.401 v) (* 1000 1000)) v)) (+ v (* (- 1000) 0.0000427))) (* (- 1000) (* 1.3806503E-23 300)))"
+     "expr": "(+ (* (+ 35000000 (/ (* (/ 0.401 v) (* 1000 1000)) v)) (+ v (* -1000 0.0000427))) (* -1000 (* 1.3806503E-23 300)))"
     },
     "daisy": {
      "status": "ok",
@@ -4945,7 +4945,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ 1 (+ (* 0.5 x) (+ (* (- x) (* 0.125 x)) (* (* (* x x) x) (- 0.0625 (* 0.0390625 x))))))"
+     "expr": "(+ 1 (+ (* 0.5 x) (+ (* (* -0.125 x) x) (* (* (* x x) x) (- 0.0625 (* 0.0390625 x))))))"
     },
     "daisy": {
      "status": "ok",
@@ -5373,7 +5373,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* (* (* b (* b (* b (* b (* b 5.5))))) b) b) b) (+ (* (* (* (* (* b (* b 333.75)) b) b) b) b) (+ (+ (/ a (* 2 b)) (* a (* a (* b (* b (- (* (* 11 a) a) (* (* (* b b) b) b))))))) (* a (* a (- (* (* (* (* (- 121) b) b) b) b) 2))))))"
+     "expr": "(+ (* (* (* (* b (* b (* b (* b (* b 5.5))))) b) b) b) (+ (* (* (* (* (* b (* b 333.75)) b) b) b) b) (+ (+ (/ a (* 2 b)) (* a (* a (* b (* b (- (* (* 11 a) a) (* (* (* b b) b) b))))))) (* a (* a (+ (* (* (* (* -121 b) b) b) b) -2))))))"
     },
     "daisy": {
      "status": "ok",
@@ -5480,7 +5480,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* (* (* (* (* (* b (* 5.5 b)) b) b) b) b) b) b) (+ (* (* (* (* (* b (* b 333.75)) b) b) b) b) (+ (+ (/ a (* 2 b)) (* a (* a (* b (* b (+ (* (- b) (* b (* b b))) (* (* 11 a) a))))))) (* a (* a (+ (* (- b) (* b (* b (* b 121)))) (- 2)))))))"
+     "expr": "(+ (* (* (* (* (* b (* b 333.75)) b) b) b) b) (+ (* (* (* (* (* (* (* b (* 5.5 b)) b) b) b) b) b) b) (+ (+ (/ a (* 2 b)) (* a (* a (* b (* b (+ (* (- b) (* b (* b b))) (* (* 11 a) a))))))) (* a (* a (+ (* (- b) (* b (* b (* b 121)))) -2))))))"
     },
     "daisy": {
      "status": "ok",
@@ -5506,7 +5506,7 @@
      "ulps": 6.0,
      "bits": 2.584962500721156,
      "mean_ulps": 2.0007,
-     "pool_mean_ulps": 2.0337890625,
+     "pool_mean_ulps": 2.03271484375,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -5526,13 +5526,13 @@
      "from_search": false,
      "ulps": 4.0,
      "bits": 2.0,
-     "mean_ulps": 1.5317,
-     "pool_mean_ulps": 1.55966796875,
+     "mean_ulps": 1.5111,
+     "pool_mean_ulps": 1.53759765625,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
      "abs": 6.220325452308217e-08,
-     "rel": 4.0684317139033425e-16,
+     "rel": 3.9250688819265203e-16,
      "unsettled": 0,
      "ref_zeros": 0
     },
@@ -5548,7 +5548,7 @@
      "ulps": 5.0,
      "bits": 2.321928094887362,
      "mean_ulps": 1.5384,
-     "pool_mean_ulps": 1.56728515625,
+     "pool_mean_ulps": 1.56875,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -5569,7 +5569,7 @@
      "ulps": 5.0,
      "bits": 2.321928094887362,
      "mean_ulps": 1.6285,
-     "pool_mean_ulps": 1.6513671875,
+     "pool_mean_ulps": 1.64970703125,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -5587,7 +5587,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* (* (* (* (* (* b (* 5.5 b)) b) b) b) b) b) b) (+ (* b (* b (* b (* b (* b (* b 333.75)))))) (+ (* (- b) (* b (* b (* b (* (* a (* a b)) b))))) (+ (* a (* a (* b (* b (+ (* (* 11 a) a) (* (* (- 121) b) b)))))) (+ (* a (* a (- 2))) (/ a (* 2 b)))))))"
+     "expr": "(+ (* (* (* (* (* (* (* b (* 5.5 b)) b) b) b) b) b) b) (+ (* b (* b (* b (* b (* b (* b 333.75)))))) (+ (* (- b) (* b (* b (* b (* (* a (* a b)) b))))) (+ (* a (* a (* b (* b (+ (* (* 11 a) a) (* (* -121 b) b)))))) (+ (* a (* a -2)) (/ a (* 2 b)))))))"
     },
     "daisy": {
      "status": "ok",
@@ -5887,7 +5887,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* (* (* (- x 20) (* (* (* (- x 9) (- x 12)) (* (* (- x 4) (* (- x 3) (- x 5))) (* (+ (* x x) (+ (* x (- 1)) (* (- 1 x) 2))) (* (- x 6) (- x 7))))) (* (- x 8) (- x 10)))) (* (- x 11) (- x 13))) (* (- x 14) (* (- x 17) (* (* (- x 16) (* (- x 19) (- x 15))) (- x 18)))))"
+     "expr": "(* (* (* (- x 20) (* (* (* (- x 9) (- x 12)) (* (* (- x 4) (* (- x 3) (- x 5))) (* (+ (* x x) (+ (* x -1) (* (- 1 x) 2))) (* (- x 6) (- x 7))))) (* (- x 8) (- x 10)))) (* (- x 11) (- x 13))) (* (- x 14) (* (- x 17) (* (* (- x 16) (* (- x 19) (- x 15))) (- x 18)))))"
     },
     "daisy": {
      "status": "timeout",
@@ -6187,7 +6187,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (/ 1 (sqrt x)) (/ (- 1) (sqrt (+ x 1))))"
+     "expr": "(+ (/ 1 (sqrt x)) (/ -1 (sqrt (+ x 1))))"
     },
     "daisy": {
      "status": "crash",
@@ -6273,7 +6273,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(/ (/ (+ (* (- 1) x) (+ (- 1) x)) x) (+ x 1))"
+     "expr": "(/ (/ (+ (* -1 x) (+ -1 x)) x) (+ x 1))"
     },
     "daisy": {
      "status": "ok",
@@ -8734,7 +8734,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ x (/ (- 1) 3))"
+     "expr": "(+ x (/ -1 3))"
     },
     "daisy": {
      "status": "crash",
@@ -9783,7 +9783,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* 3 (* (+ x (/ (- 16) 116)) y))"
+     "expr": "(* 3 (* (+ x (/ -16 116)) y))"
     },
     "daisy": {
      "status": "ok",
@@ -10746,7 +10746,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* (- 4) y) z) x)"
+     "expr": "(+ (* (* -4 z) y) x)"
     },
     "daisy": {
      "status": "ok",
@@ -11067,7 +11067,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* a (* 27 b)) (+ (* (* (* (- 9) y) z) t) (* x 2)))"
+     "expr": "(+ (* a (* 27 b)) (+ (* (* (* -9 z) y) t) (* x 2)))"
     },
     "daisy": {
      "status": "ok",
@@ -11113,8 +11113,8 @@
      "from_search": false,
      "ulps": 3.0,
      "bits": 1.584962500721156,
-     "mean_ulps": 1.3392,
-     "pool_mean_ulps": 1.3475198412698413,
+     "mean_ulps": 1.3402,
+     "pool_mean_ulps": 1.3485119047619047,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -11388,7 +11388,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* (- 27) j) k) (+ (* z (* y (* x (* 18 t)))) (+ (* b c) (- (* (* (- 4) t) a) (* x (* 4 i))))))"
+     "expr": "(+ (* (* -27 k) j) (+ (* z (* y (* x (* 18 t)))) (+ (* b c) (- (* (* -4 a) t) (* x (* 4 i))))))"
     },
     "daisy": {
      "status": "ok",
@@ -11404,17 +11404,17 @@
    "measured": {
     "seed": {
      "status": "ok",
-     "sampled": 10048,
+     "sampled": 10072,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 48,
+     "searched": 72,
      "from_search": false,
      "ulps": 3.0,
      "bits": 1.584962500721156,
      "mean_ulps": 1.3498,
-     "pool_mean_ulps": 1.3552945859872612,
+     "pool_mean_ulps": 1.3560365369340746,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -11425,38 +11425,38 @@
     },
     "costex": {
      "status": "ok",
-     "sampled": 10048,
+     "sampled": 10072,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 48,
+     "searched": 72,
      "from_search": false,
      "ulps": 3.0,
      "bits": 1.584962500721156,
-     "mean_ulps": 1.3498,
-     "pool_mean_ulps": 1.3552945859872612,
+     "mean_ulps": 1.3638,
+     "pool_mean_ulps": 1.3699364575059572,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
-     "abs": 0.0003240180735530948,
-     "rel": 2.6652062202202664e-16,
+     "abs": 0.0003528053271779489,
+     "rel": 2.7785739970458655e-16,
      "unsettled": 0,
      "ref_zeros": 0
     },
     "daisy": {
      "status": "ok",
-     "sampled": 10048,
+     "sampled": 10072,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 48,
+     "searched": 72,
      "from_search": false,
      "ulps": 3.0,
      "bits": 1.584962500721156,
      "mean_ulps": 1.3498,
-     "pool_mean_ulps": 1.3552945859872612,
+     "pool_mean_ulps": 1.3560365369340746,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -11467,17 +11467,17 @@
     },
     "herbie": {
      "status": "ok",
-     "sampled": 10048,
+     "sampled": 10072,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 48,
+     "searched": 72,
      "from_search": false,
      "ulps": 3.0,
      "bits": 1.584962500721156,
      "mean_ulps": 1.3608,
-     "pool_mean_ulps": 1.364749203821656,
+     "pool_mean_ulps": 1.3661636219221605,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -11816,7 +11816,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(/ (/ (+ (* (* (- 9) z) t) (* x y)) 2) a)"
+     "expr": "(/ (/ (+ (* (* -9 t) z) (* x y)) 2) a)"
     },
     "daisy": {
      "status": "ok",
@@ -11832,17 +11832,17 @@
    "measured": {
     "seed": {
      "status": "ok",
-     "sampled": 10096,
+     "sampled": 10144,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 96,
+     "searched": 144,
      "from_search": true,
      "ulps": 4.0,
      "bits": 2.0,
      "mean_ulps": 1.4412,
-     "pool_mean_ulps": 1.4498811410459589,
+     "pool_mean_ulps": 1.4508083596214512,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -11853,38 +11853,38 @@
     },
     "costex": {
      "status": "ok",
-     "sampled": 10096,
+     "sampled": 10144,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 96,
-     "from_search": true,
+     "searched": 144,
+     "from_search": false,
      "ulps": 4.0,
      "bits": 2.0,
-     "mean_ulps": 1.4412,
-     "pool_mean_ulps": 1.4498811410459589,
+     "mean_ulps": 1.4287,
+     "pool_mean_ulps": 1.4380914826498423,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
-     "abs": 1.480216652073841e-14,
-     "rel": 3.4439581701373707e-16,
+     "abs": 1.4894472933157186e-14,
+     "rel": 3.413577021380592e-16,
      "unsettled": 0,
      "ref_zeros": 0
     },
     "daisy": {
      "status": "ok",
-     "sampled": 10096,
+     "sampled": 10144,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 96,
+     "searched": 144,
      "from_search": true,
      "ulps": 4.0,
      "bits": 2.0,
      "mean_ulps": 1.4412,
-     "pool_mean_ulps": 1.4498811410459589,
+     "pool_mean_ulps": 1.4508083596214512,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -11895,17 +11895,17 @@
     },
     "herbie": {
      "status": "ok",
-     "sampled": 10096,
+     "sampled": 10144,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 96,
+     "searched": 144,
      "from_search": false,
      "ulps": 3.0,
      "bits": 1.584962500721156,
      "mean_ulps": 1.4265,
-     "pool_mean_ulps": 1.4347266244057053,
+     "pool_mean_ulps": 1.434641167192429,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -12030,7 +12030,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(- x (/ (* y 3) 8))"
+     "expr": "(+ x (* -3 (/ y 8)))"
     },
     "daisy": {
      "status": "ok",
@@ -13742,7 +13742,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (* z z) (* x y)) (* z (+ z z)))"
+     "expr": "(+ (+ (* z z) (* x y)) (* z (* 2 z)))"
     },
     "daisy": {
      "status": "ok",
@@ -14170,7 +14170,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (* y y) (* x x)) (* y (+ y y)))"
+     "expr": "(+ (+ (* y y) (* x x)) (* y (* 2 y)))"
     },
     "daisy": {
      "status": "ok",
@@ -15775,7 +15775,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (+ x x) x) (+ x x))"
+     "expr": "(+ (* 2 (* 2 x)) x)"
     },
     "daisy": {
      "status": "ok",
@@ -15791,12 +15791,12 @@
    "measured": {
     "seed": {
      "status": "ok",
-     "sampled": 10114,
+     "sampled": 10064,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 114,
+     "searched": 64,
      "from_search": false,
      "ulps": 1.0,
      "bits": 0.0,
@@ -15812,33 +15812,33 @@
     },
     "costex": {
      "status": "ok",
-     "sampled": 10114,
+     "sampled": 10064,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 114,
+     "searched": 64,
      "from_search": false,
-     "ulps": 2.0,
-     "bits": 1.0,
-     "mean_ulps": 1.2677,
-     "pool_mean_ulps": 1.2716037176191417,
+     "ulps": 1.0,
+     "bits": 0.0,
+     "mean_ulps": 1.0,
+     "pool_mean_ulps": 1.0,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
-     "abs": 1.3322676295501878e-15,
-     "rel": 1.664768435371148e-16,
+     "abs": 8.881784197001252e-16,
+     "rel": 1.109826155688838e-16,
      "unsettled": 0,
      "ref_zeros": 0
     },
     "daisy": {
      "status": "ok",
-     "sampled": 10114,
+     "sampled": 10064,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 114,
+     "searched": 64,
      "from_search": false,
      "ulps": 1.0,
      "bits": 0.0,
@@ -15854,12 +15854,12 @@
     },
     "herbie": {
      "status": "ok",
-     "sampled": 10114,
+     "sampled": 10064,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 114,
+     "searched": 64,
      "from_search": false,
      "ulps": 1.0,
      "bits": 0.0,
@@ -17594,7 +17594,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(/ (+ (* (- y) (* y 4)) (* x x)) (+ (* x x) (* (* y 4) y)))"
+     "expr": "(/ (+ (* (* -4 y) y) (* x x)) (+ (* x x) (* (* y 4) y)))"
     },
     "daisy": {
      "status": "ok",
@@ -18536,7 +18536,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (+ (/ x y) (/ (/ 2 t) z)) (/ 2 t)) (- 2))"
+     "expr": "(+ (+ (+ (/ x y) (/ (/ 2 t) z)) (/ 2 t)) -2)"
     },
     "daisy": {
      "status": "ok",
@@ -19178,7 +19178,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* (- 4) y) z) (* x x))"
+     "expr": "(+ (* (* -4 z) y) (* x x))"
     },
     "daisy": {
      "status": "ok",
@@ -19713,7 +19713,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* (- 4) (- (* z z) t)) y) (* x x))"
+     "expr": "(+ (* (* -4 (- (* z z) t)) y) (* x x))"
     },
     "daisy": {
      "status": "ok",
@@ -22453,7 +22453,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ 0.918938533204673 (* y (+ (- 0.5) x))) (* (- 1) x))"
+     "expr": "(+ (+ 0.918938533204673 (* y (+ -0.5 x))) (* -1 x))"
     },
     "daisy": {
      "status": "ok",
@@ -22946,7 +22946,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* x (* x 2)) (- 1))"
+     "expr": "(+ (* x (* x 2)) -1)"
     },
     "daisy": {
      "status": "ok",
@@ -23053,7 +23053,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* x (+ (* (* (- 1) x) y) 1))"
+     "expr": "(* x (+ (* (* y -1) x) 1))"
     },
     "daisy": {
      "status": "ok",
@@ -23267,7 +23267,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* (* 3 (sqrt x)) (+ y (+ (/ (/ 1 9) x) (- 1))))"
+     "expr": "(* (* 3 (sqrt x)) (+ y (- (/ (/ 1 9) x) 1)))"
     },
     "daisy": {
      "status": "ok",
@@ -24123,7 +24123,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(/ (+ (* x x) (- 3)) 6)"
+     "expr": "(/ (+ (* x x) -3) 6)"
     },
     "daisy": {
      "status": "ok",
@@ -24765,7 +24765,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (/ (/ x y) y) (- 3))"
+     "expr": "(+ (/ (/ x y) y) -3)"
     },
     "daisy": {
      "status": "ok",
@@ -24872,7 +24872,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (+ (* (+ t (- y 2)) b) (* (- t) a)) a) (+ (* (- 1 y) z) x))"
+     "expr": "(+ (+ (+ (* (+ t (- y 2)) b) (* (* -1 a) t)) a) (+ (* (- 1 y) z) x))"
     },
     "daisy": {
      "status": "ok",
@@ -25728,7 +25728,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ y y) (* x x))"
+     "expr": "(+ (* x x) (* 2 y))"
     },
     "daisy": {
      "status": "ok",
@@ -25835,7 +25835,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ x (- x 1))"
+     "expr": "(+ (* 2 x) -1)"
     },
     "daisy": {
      "status": "ok",
@@ -25942,7 +25942,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(/ (+ x y) (+ y y))"
+     "expr": "(/ (+ (/ x y) 1) 2)"
     },
     "daisy": {
      "status": "ok",
@@ -25988,13 +25988,13 @@
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
-     "mean_ulps": 1.219,
-     "pool_mean_ulps": 1.2249210110584519,
+     "mean_ulps": 1.091,
+     "pool_mean_ulps": 1.0968601895734598,
      "equivalent": true,
-     "equiv_checked": 0,
+     "equiv_checked": 20,
      "equiv_differs": 0,
-     "abs": 1.2314102022492266e-16,
-     "rel": 2.0387410983168075e-16,
+     "abs": 6.936450695793758e-17,
+     "rel": 1.1039720708758771e-16,
      "unsettled": 0,
      "ref_zeros": 0
     },
@@ -27312,7 +27312,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* y (+ x x))"
+     "expr": "(* x (* 2 y))"
     },
     "daisy": {
      "status": "ok",
@@ -27633,7 +27633,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ x x) y)"
+     "expr": "(+ y (* 2 x))"
     },
     "daisy": {
      "status": "ok",
@@ -27740,7 +27740,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (* y 5) (* x z)) (* x (+ (+ (+ y y) z) t)))"
+     "expr": "(+ (+ (* x t) (* y 5)) (* x (+ (* 2 y) (* 2 z))))"
     },
     "daisy": {
      "status": "ok",
@@ -27766,7 +27766,7 @@
      "ulps": 3.0,
      "bits": 1.584962500721156,
      "mean_ulps": 1.3699,
-     "pool_mean_ulps": 1.3807888540031397,
+     "pool_mean_ulps": 1.3798076923076923,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -27786,13 +27786,13 @@
      "from_search": false,
      "ulps": 3.0,
      "bits": 1.584962500721156,
-     "mean_ulps": 1.3208,
-     "pool_mean_ulps": 1.3281985871271587,
+     "mean_ulps": 1.2835,
+     "pool_mean_ulps": 1.2951334379905808,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
-     "abs": 9.299459416680601e-14,
-     "rel": 2.5866243786458094e-16,
+     "abs": 7.504645983679759e-14,
+     "rel": 2.339161778846429e-16,
      "unsettled": 0,
      "ref_zeros": 0
     },
@@ -27808,7 +27808,7 @@
      "ulps": 3.0,
      "bits": 1.584962500721156,
      "mean_ulps": 1.3635,
-     "pool_mean_ulps": 1.3728414442700156,
+     "pool_mean_ulps": 1.3717621664050235,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -27829,7 +27829,7 @@
      "ulps": 3.0,
      "bits": 1.584962500721156,
      "mean_ulps": 1.2725,
-     "pool_mean_ulps": 1.2761970172684458,
+     "pool_mean_ulps": 1.281004709576138,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -27847,7 +27847,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ z (+ y (+ y (+ (+ x x) x))))"
+     "expr": "(+ z (+ (+ x (* 2 x)) (* 2 y)))"
     },
     "daisy": {
      "status": "ok",
@@ -27863,17 +27863,17 @@
    "measured": {
     "seed": {
      "status": "ok",
-     "sampled": 10149,
+     "sampled": 10147,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 149,
+     "searched": 147,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.2781,
-     "pool_mean_ulps": 1.280520248300325,
+     "pool_mean_ulps": 1.2805755395683454,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -27884,38 +27884,38 @@
     },
     "costex": {
      "status": "ok",
-     "sampled": 10149,
+     "sampled": 10147,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 149,
+     "searched": 147,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
-     "mean_ulps": 1.2064,
-     "pool_mean_ulps": 1.2118435313824023,
+     "mean_ulps": 1.1967,
+     "pool_mean_ulps": 1.2036069774317533,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
-     "abs": 6.439293542825908e-15,
-     "rel": 1.8973489675948755e-16,
+     "abs": 5.773159728050814e-15,
+     "rel": 1.6992912400029782e-16,
      "unsettled": 0,
      "ref_zeros": 0
     },
     "daisy": {
      "status": "ok",
-     "sampled": 10149,
+     "sampled": 10147,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 149,
+     "searched": 147,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.1967,
-     "pool_mean_ulps": 1.2037639176273525,
+     "pool_mean_ulps": 1.2036069774317533,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -27926,17 +27926,17 @@
     },
     "herbie": {
      "status": "ok",
-     "sampled": 10149,
+     "sampled": 10147,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 149,
+     "searched": 147,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.1856,
-     "pool_mean_ulps": 1.1897723913686078,
+     "pool_mean_ulps": 1.1898097959988174,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -29024,7 +29024,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (/ (+ (* 4 x) (* (- 4) y)) z) (* (- 4) 0.5))"
+     "expr": "(+ (/ (+ (* 4 x) (* -4 y)) z) (* 4 -0.5))"
     },
     "daisy": {
      "status": "ok",
@@ -29666,7 +29666,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* (- 0.5) (* (* A (/ Cd m)) (* (* density (* v 1000)) v)))"
+     "expr": "(* -0.5 (* (* A (/ Cd m)) (* (* density (* v 1000)) v)))"
     },
     "daisy": {
      "status": "ok",
@@ -29987,7 +29987,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* 2 (* Ci (- (* 2 (* Ci (* (- delta 1) (- delta 1)))) 1)))"
+     "expr": "(* (* (+ (* 2 (* Ci (* (- delta 1) (- delta 1)))) -1) 2) Ci)"
     },
     "daisy": {
      "status": "ok",
@@ -30950,7 +30950,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* (+ (+ 1 (* (* (* (* x (* x (* x x))) x) x) (+ (* (* x x) (+ (* x (* x 0.0001789971)) 0.0005064034)) 0.0072644182))) (* x (* x (+ (* x (* x 0.0424060604)) 0.1049934947)))) (/ x (+ (+ (* (* x (* x (* x x))) (+ 0.2909738639 (* x (* (* x (* x x)) 0.0140005442)))) (+ (* (* x x) (+ (* (* 2 (* (* (* x (* x (* x (* x (* x 0.0001789971))))) (* x x)) (* x x))) x) 0.7715471019)) 1)) (* (* (* (* x (* x (* x x))) x) x) (+ (* x (* x (* x (* x 0.0008327945)))) 0.0694555761)))))"
+     "expr": "(* (+ (+ 1 (* (* (* (* x (* x (* x x))) x) x) (+ (* (* x x) (+ (* x (* x 0.0001789971)) 0.0005064034)) 0.0072644182))) (* x (* x (+ (* x (* x 0.0424060604)) 0.1049934947)))) (/ x (+ (+ (* (* x (* x (* x x))) (+ 0.2909738639 (* x (* (* x (* x x)) 0.0140005442)))) (+ (* (* x x) (+ (* (* (* x (* x (* x (* x (* x (* 2 0.0001789971)))))) x) (* x (* x (* x x)))) 0.7715471019)) 1)) (* (* (* (* x (* x (* x x))) x) x) (+ (* x (* x (* x (* x 0.0008327945)))) 0.0694555761)))))"
     },
     "daisy": {
      "status": "timeout",
@@ -30996,8 +30996,8 @@
      "from_search": false,
      "ulps": 5.0,
      "bits": 2.321928094887362,
-     "mean_ulps": 1.6726,
-     "pool_mean_ulps": 1.6866169544740974,
+     "mean_ulps": 1.6745,
+     "pool_mean_ulps": 1.6877943485086342,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -31018,7 +31018,7 @@
      "ulps": 4.0,
      "bits": 2.0,
      "mean_ulps": 1.5585,
-     "pool_mean_ulps": 1.566620879120879,
+     "pool_mean_ulps": 1.566326530612245,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -31357,7 +31357,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* im (+ re re))"
+     "expr": "(* re (* 2 im))"
     },
     "daisy": {
      "status": "ok",
@@ -31849,8 +31849,8 @@
    "seed_expr": "(/ (/ (/ (+ (+ (+ alpha beta) (* beta alpha)) 1) (+ (+ alpha beta) (* 2 1))) (+ (+ alpha beta) (* 2 1))) (+ (+ (+ alpha beta) (* 2 1)) 1))",
    "rewrites": {
     "costex": {
-     "status": "noprogram",
-     "expr": null
+     "status": "ok",
+     "expr": "(/ (/ (/ (* (+ 1 alpha) (+ beta 1)) (+ (+ beta 1) (+ 1 alpha))) (+ (+ beta 1) (+ 1 alpha))) (+ (+ beta 2) (+ 1 alpha)))"
     },
     "daisy": {
      "status": "crash",
@@ -31866,17 +31866,17 @@
    "measured": {
     "seed": {
      "status": "ok",
-     "sampled": 10128,
+     "sampled": 10152,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 128,
+     "searched": 152,
      "from_search": true,
      "ulps": 5.0,
      "bits": 2.321928094887362,
      "mean_ulps": 1.0849,
-     "pool_mean_ulps": 1.1122630331753554,
+     "pool_mean_ulps": 1.1143617021276595,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -31885,19 +31885,40 @@
      "unsettled": 0,
      "ref_zeros": 0
     },
-    "herbie": {
+    "costex": {
      "status": "ok",
-     "sampled": 10128,
+     "sampled": 10152,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 128,
+     "searched": 152,
+     "from_search": true,
+     "ulps": 5.0,
+     "bits": 2.321928094887362,
+     "mean_ulps": 1.0789,
+     "pool_mean_ulps": 1.1052994483845549,
+     "equivalent": true,
+     "equiv_checked": 20,
+     "equiv_differs": 0,
+     "abs": 4.113685608477895e-17,
+     "rel": 4.937724508468353e-16,
+     "unsettled": 0,
+     "ref_zeros": 0
+    },
+    "herbie": {
+     "status": "ok",
+     "sampled": 10152,
+     "broke": 0,
+     "undefined": 0,
+     "ref_bits": 256,
+     "drawn": 10000,
+     "searched": 152,
      "from_search": true,
      "ulps": 6.0,
      "bits": 2.584962500721156,
      "mean_ulps": 1.0356,
-     "pool_mean_ulps": 1.0572669826224328,
+     "pool_mean_ulps": 1.0587076438140268,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -31915,7 +31936,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* (+ a (/ (- 1) 3)) (+ (/ rand (sqrt (* 9 (+ a (/ (- 1) 3))))) 1))"
+     "expr": "(* (+ a (/ -1 3)) (+ (/ rand (sqrt (* 9 (+ a (/ -1 3))))) 1))"
     },
     "daisy": {
      "status": "ok",
@@ -32129,7 +32150,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (/ (* m (* m (- 1 m))) v) (* (- 1) m))"
+     "expr": "(+ (/ (* m (* m (- 1 m))) v) (* -1 m))"
     },
     "daisy": {
      "status": "crash",
@@ -32515,7 +32536,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* (+ (+ x eps) x) eps)"
+     "expr": "(* (+ eps (* 2 x)) eps)"
     },
     "daisy": {
      "status": "ok",
@@ -32531,17 +32552,17 @@
    "measured": {
     "seed": {
      "status": "ok",
-     "sampled": 10192,
+     "sampled": 10128,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 2048,
      "drawn": 10000,
-     "searched": 192,
+     "searched": 128,
      "from_search": true,
      "ulps": 4.638089024936802e+18,
      "bits": 62.00823621976373,
      "mean_ulps": 3.8145298201873875e+17,
-     "pool_mean_ulps": 4.044286730931718e+17,
+     "pool_mean_ulps": 4.069841164422852e+17,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -32552,17 +32573,17 @@
     },
     "costex": {
      "status": "ok",
-     "sampled": 10192,
+     "sampled": 10128,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 2048,
      "drawn": 10000,
-     "searched": 192,
-     "from_search": true,
-     "ulps": 9.0,
-     "bits": 3.169925001442312,
-     "mean_ulps": 1.0227,
-     "pool_mean_ulps": 1.0438579277864992,
+     "searched": 128,
+     "from_search": false,
+     "ulps": 2.0,
+     "bits": 1.0,
+     "mean_ulps": 1.0144,
+     "pool_mean_ulps": 1.0225118483412323,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -32573,17 +32594,17 @@
     },
     "daisy": {
      "status": "ok",
-     "sampled": 10192,
+     "sampled": 10128,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 2048,
      "drawn": 10000,
-     "searched": 192,
+     "searched": 128,
      "from_search": true,
      "ulps": 4.638089024936802e+18,
      "bits": 62.00823621976373,
      "mean_ulps": 3.8145298201873875e+17,
-     "pool_mean_ulps": 4.044286730931718e+17,
+     "pool_mean_ulps": 4.069841164422852e+17,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -32594,17 +32615,17 @@
     },
     "herbie": {
      "status": "ok",
-     "sampled": 10192,
+     "sampled": 10128,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 2048,
      "drawn": 10000,
-     "searched": 192,
+     "searched": 128,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.0144,
-     "pool_mean_ulps": 1.0227629513343799,
+     "pool_mean_ulps": 1.0225118483412323,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -33157,7 +33178,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* 2E-16 (+ (* (- 2) t) (+ (* 1 t) (* t (* t 2E-16))))) (+ (+ -1 1) (* t 2E-16)))"
+     "expr": "(+ (* 2E-16 (+ (* -2 t) (+ (* 1 t) (* t (* t 2E-16))))) (+ (+ -1 1) (* t 2E-16)))"
     },
     "daisy": {
      "status": "ok",
@@ -33326,7 +33347,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(/ (+ (* t (* 2 (/ (* 2 (/ t (+ 1 t))) (+ 1 t)))) 1) (* 2 (+ 1 (* t (/ (* 2 (/ t (+ 1 t))) (+ 1 t))))))"
+     "expr": "(/ (+ (* t (* (/ (* 2 (/ t (+ 1 t))) (+ 1 t)) 2)) 1) (* 2 (+ 1 (* (/ (* 2 (/ t (+ 1 t))) (+ 1 t)) t))))"
     },
     "daisy": {
      "status": "ok",
@@ -33819,7 +33840,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(* 2 (+ (+ (/ 1 9) (/ (/ 1 9) 9)) (/ 1 9)))"
+     "expr": "(* 2 (+ (/ (/ 1 9) 9) (/ 2 9)))"
     },
     "daisy": {
      "status": "unparsed",
@@ -34547,7 +34568,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (+ (* (* 77617 77617) (* 33096 (* 33096 (+ (* 33096 (* 33096 -121)) (* (* 11 77617) 77617))))) (+ (* (* (* (* 77617 77617) 33096) 33096) (* (- 33096) (* (* 33096 33096) 33096))) (* (* (* (* 33096 (* 33096 (* 33096 (* 33096 (* 33096 5.5))))) 33096) 33096) 33096))) (* (* (* (* (* 33096 (* 33096 333.75)) 33096) 33096) 33096) 33096)) (+ (* (* 77617 77617) -2) (/ (/ 77617 33096) 2)))"
+     "expr": "(+ (+ (+ (* (* 77617 77617) (* 33096 (* 33096 (+ (* 33096 (* 33096 -121)) (* (* 11 77617) 77617))))) (+ (* (* (* (* 77617 77617) 33096) 33096) (* (* (* 33096 -33096) 33096) 33096)) (* (* (* (* 33096 (* 33096 (* 33096 (* 33096 (* 33096 5.5))))) 33096) 33096) 33096))) (* (* (* (* (* 33096 (* 33096 333.75)) 33096) 33096) 33096) 33096)) (+ (* (* 77617 77617) -2) (/ (/ 77617 33096) 2)))"
     },
     "daisy": {
      "status": "unparsed",
@@ -34847,7 +34868,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* 2 (* (+ (+ (- 3) (* x1 (* x1 (/ 3 (+ (* x1 x1) 1))))) (/ (- (* 2 x2) x1) (+ (* x1 x1) 1))) (* x1 (+ (* (* 3 x1) x1) (- (* 2 x2) x1))))) (+ (- (* (* x1 (* x1 (+ (* (* 3 x1) x1) (- (* 2 x2) x1)))) 4) (* (* (+ (* x1 x1) 1) (* x1 6)) x1)) (+ (* 3 (* x1 (* x1 (+ (* x1 (* x1 (/ 3 (+ (* x1 x1) 1)))) (/ (- (* 2 x2) x1) (+ (* x1 x1) 1)))))) (+ (* 3 (/ (+ (- (* (* 3 x1) x1) (* 2 x2)) (- x1)) (+ (* x1 x1) 1))) (+ (* (* x1 x1) x1) (+ x1 x1))))))"
+     "expr": "(+ (* 2 (* (+ (+ -3 (* x1 (* x1 (/ 3 (+ (* x1 x1) 1))))) (/ (- (* 2 x2) x1) (+ (* x1 x1) 1))) (* x1 (+ (* (* 3 x1) x1) (- (* 2 x2) x1))))) (+ (- (* (* x1 (* x1 (+ (* (* 3 x1) x1) (- (* 2 x2) x1)))) 4) (* (* (+ (* x1 x1) 1) (* x1 6)) x1)) (+ (* 3 (* x1 (* x1 (+ (* x1 (* x1 (/ 3 (+ (* x1 x1) 1)))) (/ (- (* 2 x2) x1) (+ (* x1 x1) 1)))))) (+ (* 3 (/ (+ (- (* (* 3 x1) x1) (* 2 x2)) (- x1)) (+ (* x1 x1) 1))) (* x1 (+ 2 (* x1 x1)))))))"
     },
     "daisy": {
      "status": "ok",
@@ -34873,7 +34894,7 @@
      "ulps": 10.0,
      "bits": 3.321928094887362,
      "mean_ulps": 2.3757,
-     "pool_mean_ulps": 2.427206240858118,
+     "pool_mean_ulps": 2.4275962944904923,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -34893,8 +34914,8 @@
      "from_search": false,
      "ulps": 6.0,
      "bits": 2.584962500721156,
-     "mean_ulps": 1.8351,
-     "pool_mean_ulps": 1.8670892247684057,
+     "mean_ulps": 1.8325,
+     "pool_mean_ulps": 1.8642613359336908,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -34915,7 +34936,7 @@
      "ulps": 8.0,
      "bits": 3.0,
      "mean_ulps": 2.146,
-     "pool_mean_ulps": 2.2001950268161874,
+     "pool_mean_ulps": 2.2003900536323746,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -34936,7 +34957,7 @@
      "ulps": 7.0,
      "bits": 2.807354922057604,
      "mean_ulps": 1.986,
-     "pool_mean_ulps": 2.031496830814237,
+     "pool_mean_ulps": 2.0315943442223308,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -34954,7 +34975,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* (* (* y (* y (* y (* y (* y 5.5))))) y) y) y) (+ (* (* (* (* (* y (* y 333.75)) y) y) y) y) (+ (+ (/ x (* 2 y)) (* x (* x (* y (* y (- (* (* 11 x) x) (* (* (* y y) y) y))))))) (* x (* x (- (* (* (* (* (- 121) y) y) y) y) 2))))))"
+     "expr": "(+ (* (* (* (* y (* y (* y (* y (* y 5.5))))) y) y) y) (+ (* (* (* (* (* y (* y 333.75)) y) y) y) y) (+ (+ (/ x (* 2 y)) (* x (* x (* y (* y (- (* (* 11 x) x) (* (* (* y y) y) y))))))) (* x (* x (+ (* (* (* (* -121 y) y) y) y) -2))))))"
     },
     "daisy": {
      "status": "ok",
@@ -35168,7 +35189,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* (* x (* x (* x 9))) x) (* (* (- y) (+ (* y y) (- 2))) y))"
+     "expr": "(+ (* (* x (* x (* x 9))) x) (* (* (- y) (+ (* y y) -2)) y))"
     },
     "daisy": {
      "status": "ok",
@@ -35854,7 +35875,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (+ (- 1) (* (* (* 4 b) 3) b)) (* 4 (* a (+ (+ (* b b) (* (- 1) (* a a))) a)))) (+ (* (* (+ (* b b) (* a a)) a) a) (* (* (+ (* b b) (* a a)) b) b)))"
+     "expr": "(+ (+ (+ -1 (* (* (* 4 b) 3) b)) (* 4 (* a (+ (+ (* b b) (* a (* -1 a))) a)))) (+ (* (* (+ (* b b) (* a a)) a) a) (* (* (+ (* b b) (* a a)) b) b)))"
     },
     "daisy": {
      "status": "ok",
@@ -35961,7 +35982,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* b (* b (* b b))) (+ (* (* b (* b a)) a) (+ (+ (+ (* a (+ (* (* 4 a) a) (* 4 a))) (* a (* (* a a) a))) (* (* b (* b a)) a)) (+ (* (- 4) (* b (* (* b 3) a))) (+ (* (* 4 b) b) (- 1))))))"
+     "expr": "(+ (* b (* b (* b b))) (+ (* (* b (* b a)) a) (+ (+ (+ (* a (+ (* (* 4 a) a) (* 4 a))) (* a (* (* a a) a))) (* (* b (* b a)) a)) (+ (* (- 4) (* b (* (* b 3) a))) (+ (* (* 4 b) b) -1)))))"
     },
     "daisy": {
      "status": "ok",
@@ -36068,7 +36089,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (* b (* b (* a a))) (+ (* a (* a (* a a))) (+ (* (* 4 b) b) (- 1)))) (* (* (+ (* b b) (* a a)) b) b))"
+     "expr": "(+ (+ (* b (* b (* a a))) (+ (* a (* a (* a a))) (+ (* (* 4 b) b) -1))) (* (* (+ (* b b) (* a a)) b) b))"
     },
     "daisy": {
      "status": "ok",
@@ -36175,7 +36196,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ 0.02946529277 (+ (* (- -4.668270147E-7) Yr) (+ (* 1.193845912E-7 Xr) (+ (+ (+ (* (- 4.408314235E-18) (* Yr (- (* (* 3 Xr) Xr) (* Yr Yr)))) (+ (* (- 3) (* (* Xr (* 1.696780024E-18 Yr)) Yr)) (+ (+ (* 4 (* -8.331083518E-24 (* Xr (* Yr (- (* Xr Xr) (* Yr Yr)))))) (* -3.689471323E-24 (+ (* Xr (* Xr (* Xr Xr))) (* Yr (* Yr (+ (* (* -6 Xr) Xr) (* Yr Yr))))))) (* Xr (* (* 1.696780024E-18 Xr) Xr))))) (* Xr (+ (* (* -2 1.523735715E-12) Yr) (* 9.233980362E-12 Xr)))) (* (* (- 9.233980362E-12) Yr) Yr)))))"
+     "expr": "(+ 0.02946529277 (+ (* (- -4.668270147E-7) Yr) (+ (* 1.193845912E-7 Xr) (+ (+ (+ (* (- 4.408314235E-18) (* Yr (- (* (* 3 Xr) Xr) (* Yr Yr)))) (+ (* -3 (* (* Xr (* 1.696780024E-18 Yr)) Yr)) (+ (+ (* 4 (* -8.331083518E-24 (* Xr (* Yr (- (* Xr Xr) (* Yr Yr)))))) (* -3.689471323E-24 (+ (* Xr (* Xr (* Xr Xr))) (* Yr (* Yr (+ (* (* -6 Xr) Xr) (* Yr Yr))))))) (* Xr (* (* 1.696780024E-18 Xr) Xr))))) (* Xr (+ (* (* -2 1.523735715E-12) Yr) (* 9.233980362E-12 Xr)))) (* (* (- 9.233980362E-12) Yr) Yr)))))"
     },
     "daisy": {
      "status": "ok",
@@ -36389,7 +36410,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* 0.5 W) (/ (- 0.5) W))"
+     "expr": "(+ (* 0.5 W) (* -1 (/ 0.5 W)))"
     },
     "daisy": {
      "status": "ok",
@@ -37352,7 +37373,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (+ (- 1) (* rone_es (* (+ (* (- ca) (* es ca)) 1) rone_es))) (* rone_es (* (* (* rone_es (* (+ (* (- ca) (* es ca)) 1) ca)) ca) (- es))))"
+     "expr": "(+ (+ -1 (* rone_es (* (+ (* (- ca) (* es ca)) 1) rone_es))) (* rone_es (* (* (* rone_es (* (+ (* (- ca) (* es ca)) 1) ca)) ca) (- es))))"
     },
     "daisy": {
      "status": "ok",
@@ -38038,7 +38059,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(sqrt (* x (+ x x)))"
+     "expr": "(sqrt (* x (* 2 x)))"
     },
     "daisy": {
      "status": "ok",
@@ -38466,7 +38487,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(sqrt (* x (+ x x)))"
+     "expr": "(sqrt (* x (* 2 x)))"
     },
     "daisy": {
      "status": "ok",
@@ -38873,7 +38894,7 @@
    "rewrites": {
     "costex": {
      "status": "ok",
-     "expr": "(+ (* x x) (+ x x))"
+     "expr": "(* x (+ x (* 2 1)))"
     },
     "daisy": {
      "status": "ok",
@@ -38889,17 +38910,17 @@
    "measured": {
     "seed": {
      "status": "ok",
-     "sampled": 10128,
+     "sampled": 10185,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 128,
+     "searched": 185,
      "from_search": false,
      "ulps": 4.0,
      "bits": 2.0,
      "mean_ulps": 1.8576,
-     "pool_mean_ulps": 1.872037914691943,
+     "pool_mean_ulps": 1.8775650466372116,
      "equivalent": true,
      "equiv_checked": 0,
      "equiv_differs": 0,
@@ -38910,38 +38931,38 @@
     },
     "costex": {
      "status": "ok",
-     "sampled": 10128,
+     "sampled": 10185,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 128,
+     "searched": 185,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
-     "mean_ulps": 1.2302,
-     "pool_mean_ulps": 1.236176935229068,
+     "mean_ulps": 1.2249,
+     "pool_mean_ulps": 1.2333824251350025,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
-     "abs": 6.660352031130232e-16,
-     "rel": 1.3733065369290904e-16,
+     "abs": 8.757857386946825e-16,
+     "rel": 1.7669296292299286e-16,
      "unsettled": 0,
      "ref_zeros": 0
     },
     "daisy": {
      "status": "ok",
-     "sampled": 10128,
+     "sampled": 10185,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 128,
+     "searched": 185,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.2302,
-     "pool_mean_ulps": 1.236176935229068,
+     "pool_mean_ulps": 1.2359351988217968,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
@@ -38952,17 +38973,17 @@
     },
     "herbie": {
      "status": "ok",
-     "sampled": 10128,
+     "sampled": 10185,
      "broke": 0,
      "undefined": 0,
      "ref_bits": 256,
      "drawn": 10000,
-     "searched": 128,
+     "searched": 185,
      "from_search": false,
      "ulps": 2.0,
      "bits": 1.0,
      "mean_ulps": 1.2302,
-     "pool_mean_ulps": 1.236176935229068,
+     "pool_mean_ulps": 1.2359351988217968,
      "equivalent": true,
      "equiv_checked": 20,
      "equiv_differs": 0,
