@@ -35,7 +35,7 @@
   "search_levels": 64,
   "search_evals": 4000
  },
- "elapsed_s": 33.1,
+ "elapsed_s": 36.2,
  "results": [
   {
    "file": "fpbench-daisy-000-carthesiantopolar-radius.fpcore",
