@@ -8,12 +8,17 @@ own egglog-experimental over the one costex runs.  Herbie 2.3 only reaches for
 that binary under `generate:egglog`, which is off.
 
 Herbie has no sound mode: nothing it emits is guaranteed equal to its input
-over the reals.  Two of its moves are unsound by construction and both are
-turned off here, which is as close as it comes:
+over the reals.  One of its moves is unsound by construction and is turned off
+here, which is as close as it comes:
 
   generate:taylor    series expansion, which agrees only near a limit point
-  reduce:regimes     splitting the box and branching, so no one expression
-                     answers for the whole input range
+
+`reduce:regimes` is left on.  A branch is not itself unsound: if each arm is
+equal to the input over the reals then so is the conditional, everywhere.  What
+made regimes look unsound is that the arms Herbie usually stitches together are
+series expansions -- so disabling taylor is what buys soundness, and disabling
+regimes too was belt and braces that also threw away the comparison costex most
+wants, since costex now emits guarded programs of its own.
 
 What is left is rewriting under identities, like the other two rewriters, and
 `rewrites.md` measures on the points whether the result really is equivalent.
@@ -38,17 +43,17 @@ RACKET = os.environ.get("HERBIE_RACKET", "racket")
 PLATFORM = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                         "herbie_platform.rkt")
 
-_DISABLE = ("--disable", "generate:taylor",     # not equal over the reals
-            "--disable", "reduce:regimes")      # and neither is a branch
+_DISABLE = ("--disable", "generate:taylor",)    # not equal over the reals
 
 # what the report prints and the cache keys on: the platform by name, since
 # its contents are already in the version, and its path is this machine's
 REWRITE_OPTS = ("--platform", os.path.basename(PLATFORM)) + _DISABLE
 RUN_OPTS = ("--platform", PLATFORM) + _DISABLE
 
-NOTE = ("series expansion and branch splitting are off, and the platform is "
-        "cut down to this corpus's operations, so what is left is rewriting "
-        "under identities over the same language as the others")
+NOTE = ("series expansion is off and the platform is cut down to this "
+        "corpus's operations, so what is left is rewriting under identities "
+        "over the same language as the others; branch splitting is on, since "
+        "a conditional whose arms are each equal to the input is equal to it")
 
 
 def _cmd(*args) -> list:

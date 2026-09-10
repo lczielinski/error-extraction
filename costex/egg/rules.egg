@@ -8,6 +8,13 @@
 ;   2. The interval analysis, for the facts definedness does not give:
 ;      sqrt(x*x) = x needs x >= 0, and a rule that invents a divisor needs that
 ;      divisor to be nonzero. Those rules are marked GATED below.
+;
+; One further obligation on a GATED rule, from the guarded nodes in guards.egg:
+; its right hand side must mention a matched subterm, never only literals.  A
+; guarded node's arms are renamed copies kept apart by congruence, and a rule
+; like (Sub a a) -> (Num 0.0) unions across them -- harmless ungated, since the
+; equality holds in every copy, but a gated rule would carry a fact true in one
+; copy into a class the other reads.  Every gated rule below obeys this.
 
 (relation Nonzero (Math))
 (relation Nonneg (Math))

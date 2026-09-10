@@ -7,7 +7,7 @@ import sys
 import time
 
 from . import analysis as A
-from . import egg, extract
+from . import egg, extract, guard
 from .fpcore import parse_fpcore, to_sexp
 
 
@@ -25,8 +25,14 @@ def main(argv=None) -> int:
     ap.add_argument("file")
     ap.add_argument("--iters", type=int, default=egg.DEFAULT_ITERS,
                     help="interleaved analysis/rewrite passes (default %(default)s)")
+    ap.add_argument("--kappa", type=float, default=guard.KAPPA_MIN,
+                    help="guard a subtraction whose atomic condition number "
+                         "exceeds this (default %(default)s)")
+    ap.add_argument("--no-guards", action="store_true",
+                    help="skip guarded rewrites, leaving the plain analysis")
     ap.add_argument("--emit", metavar="PATH", help="also write the generated .egg here")
     args = ap.parse_args(argv)
+    guard.KAPPA_MIN = args.kappa
 
     with open(args.file) as f:
         core = parse_fpcore(f.read())
@@ -39,18 +45,27 @@ def main(argv=None) -> int:
         print(f"error: {e}\nthe input box does not keep every subexpression defined",
               file=sys.stderr)
         return 1
-    t1 = time.monotonic()
     front = extract.extract(g)
-    t2 = time.monotonic()
+
+    # A cancelling subtraction gets a guarded node; no candidate means no extra
+    # saturation.  --emit lands on whichever model the reported bound came from.
+    guards = []
+    if not args.no_guards:
+        got = guard.run(core, g, args.iters, out_path=args.emit)
+        if got is not None:
+            g, front, guards = got.graph, got.front, got.guards
+    elapsed = time.monotonic() - t0
     Ic = g.interval[g.root]
 
     print(f"{core.name or args.file}   [{core.precision}]")
     for v, (lo, hi) in core.box.items():
         print(f"  {v} in [{lo!r}, {hi!r}]")
     print(f"  I_root  {Ic}")
-    print(f"  {g}, {args.iters} iterations, {t1 - t0:.2f}s")
+    print(f"  {g}, {args.iters} iterations, {elapsed:.2f}s")
     print(f"  extraction {front.steps} steps, frontier {len(front.entries.get(g.root, []))}"
-          f", {t2 - t1:.2f}s" + (", truncated" if front.truncated else ""))
+          + (", truncated" if front.truncated else ""))
+    for pred in guards:
+        print(f"  guarded on {to_sexp(pred)}")
 
     seed = extract.analyze_program(g, core.body)
     print(f"\n  input   {to_sexp(core.body)}")
@@ -64,7 +79,7 @@ def main(argv=None) -> int:
     print()
     for m in A.METRICS:
         value, _, witness = front.best(g.root, Ic, m)
-        print(f"  best mu_{m:<3} {_fmt(value)}   {to_sexp(witness)}")
+        print(f"  best mu_{m:<3} {_fmt(value)}   {to_sexp(egg.derename(witness))}")
     return 0
 
 

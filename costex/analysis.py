@@ -172,13 +172,39 @@ def mul(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
     return _round(Sh, Dh, Ic)
 
 
-def _ratio(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Iv:
+def _lam(I1: Iv, I2: Iv, Ic: Iv):
+    """An enclosure of lambda = x/z, or None when there is none.
+
+    Both quotients enclose it, since lambda = x/z and 1 - lambda = y/z.  A
+    same-signed sum has lambda in [0,1], which the quotients need not see.
+    """
     if Ic.contains_zero or I1.contains_zero or I2.contains_zero:
-        return TOP
+        return None
     lam = (I1 / Ic).intersect(ONE - I2 / Ic)
     if (I1.lo > 0 and I2.lo > 0) or (I1.hi < 0 and I2.hi < 0):
         lam = lam.intersect(Iv(0, 1))
     if lam.is_empty or lam.lo == -INF or lam.hi == INF:
+        return None
+    return lam
+
+
+def kappa(I1: Iv, I2: Iv, Ic: Iv):
+    """A bound on the atomic condition number of x + y.
+
+    Pointwise (|x| + |y|) / |x + y| = |lambda| + |1 - lambda|, exactly 1 for a
+    same-signed sum.  Taking each magnitude over the interval separately
+    overestimates, but lambda in [0,1] still bounds both by 1, so a same-signed
+    sum never exceeds 2 however wide its intervals: above that is cancellation.
+    """
+    lam = _lam(I1, I2, Ic)
+    if lam is None:
+        return INF
+    return lam.mag + (ONE - lam).mag
+
+
+def _ratio(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Iv:
+    lam = _lam(I1, I2, Ic)
+    if lam is None:
         return TOP
     return _combine(lam.lo, p1.S, p2.S).hull(_combine(lam.hi, p1.S, p2.S))
 
@@ -239,6 +265,19 @@ def sqrt(p1: Pair, I1: Iv, Ic: Iv) -> Pair:
     return _round(Sh, Dh, Ic)
 
 
+def ifprop(pt: Pair, pe: Pair, Ic: Iv) -> Pair:
+    """A guarded node: the hull of its arms.
+
+    Exactly one arm runs at each v and each arm's pair holds where its guard
+    selects, so the hull holds on all of B.  A comparison is exact, so the guard
+    adds no rounding; what makes the arms' assumptions legitimate is `decidable`,
+    checked where the guard is chosen.
+    """
+    if pt is BOTTOM or pe is BOTTOM:
+        return BOTTOM
+    return Pair(*rho(pt.S.hull(pe.S), pt.D.hull(pe.D), Ic))
+
+
 _BINARY = {"add": add, "sub": sub, "mul": mul, "div": div}
 
 
@@ -247,6 +286,8 @@ def transfer(op: str, pairs: list, ivs: list, Ic: Iv) -> Pair:
         return neg(pairs[0], Ic)
     if op == "sqrt":
         return sqrt(pairs[0], ivs[0], Ic)
+    if op == "ifprop":
+        return ifprop(pairs[0], pairs[1], Ic)
     return _BINARY[op](pairs[0], pairs[1], ivs[0], ivs[1], Ic)
 
 

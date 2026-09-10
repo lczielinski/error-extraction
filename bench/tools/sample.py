@@ -115,6 +115,30 @@ def _points(file: str, box: dict, n: int, precision: str) -> list:
     return out
 
 
+_CMP = {"lt": lambda a, b: a < b, "le": lambda a, b: a <= b,
+        "gt": lambda a, b: a > b, "ge": lambda a, b: a >= b,
+        "eq": lambda a, b: a == b, "ne": lambda a, b: a != b}
+
+
+def _pred(e, ev) -> bool:
+    """A guard's truth value, with `ev` evaluating its numeric operands.
+
+    Shared by both evaluators, so a guard is decided in whichever precision its
+    arms are.  Where those disagree the program is not equivalent to its spec,
+    which is what the check on the sampled points is for.
+    """
+    op = e[0]
+    if op in _CMP:
+        return _CMP[op](ev(e[1]), ev(e[2]))
+    if op == "and":
+        return _pred(e[1], ev) and _pred(e[2], ev)
+    if op == "or":
+        return _pred(e[1], ev) or _pred(e[2], ev)
+    if op == "not":
+        return not _pred(e[1], ev)
+    raise ValueError(f"unsupported guard {op}")
+
+
 def _target(e, env: dict, rnd):
     """The program as the target format runs it."""
     op = e[0]
@@ -125,6 +149,10 @@ def _target(e, env: dict, rnd):
             else rnd(float(e[1].numerator))
     if op == "const":
         return rnd(math.pi if e[1] == "PI" else math.e)
+    if op == "ifprop":
+        # the guard runs in the target format, as the program does
+        taken = e[2] if _pred(e[1], lambda x: _target(x, env, rnd)) else e[3]
+        return _target(taken, env, rnd)
     if op in _UNARY:
         a = _target(e[1], env, rnd)
         if op == "neg":
@@ -153,6 +181,11 @@ def _ref(e, env: dict):
         return mpfr(e[1].numerator) / mpfr(e[1].denominator)
     if op == "const":
         return gmpy2.const_pi() if e[1] == "PI" else gmpy2.exp(mpfr(1))
+    if op == "ifprop":
+        # decided at the current mpfr precision, so a branch that flips near
+        # the boundary shows up as inequivalent
+        taken = e[2] if _pred(e[1], lambda x: _ref(x, env)) else e[3]
+        return _ref(taken, env)
     if op in _UNARY:
         a = _ref(e[1], env)
         if op == "neg":

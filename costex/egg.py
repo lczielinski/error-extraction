@@ -22,11 +22,18 @@ EGG_DIR = os.path.join(os.path.dirname(__file__), "egg")
 DEFAULT_ITERS = 4
 ANA_ROUNDS = 30
 
-OPS = {"add": "Add", "sub": "Sub", "mul": "Mul", "div": "Div", "neg": "Neg", "sqrt": "Sqrt"}
+OPS = {"add": "Add", "sub": "Sub", "mul": "Mul", "div": "Div", "neg": "Neg",
+       "sqrt": "Sqrt", "ifprop": "IfProp"}
 OP_NAME = {v: k for k, v in OPS.items()}
 LEAVES = ("Num", "Lit", "Var")
 CONSTRUCTORS = LEAVES + tuple(OPS.values())
-TABLES = CONSTRUCTORS + ("lo", "hi", "Bad")    # dumped in this order
+
+# Guards live in their own sort, so they get their own classes and no interval.
+PROP_OPS = {"gt": "Gt", "samesign": "SameSign"}
+PROP_NAME = {v: k for k, v in PROP_OPS.items()}
+PROP_CONSTRUCTORS = tuple(PROP_OPS.values())
+
+TABLES = CONSTRUCTORS + PROP_CONSTRUCTORS + ("lo", "hi", "Bad")   # dumped in order
 
 
 class BadBox(Exception):
@@ -50,12 +57,15 @@ class ENode:
 
 
 class EGraph:
-    def __init__(self, nodes, interval, lits, root=None):
+    def __init__(self, nodes, interval, lits, root=None, props=None):
         self.nodes = nodes        # class id -> [ENode]
         self.interval = interval  # class id -> Iv
         self.lits = lits          # Lit index -> AST leaf
+        self.props = props or {}  # Prop class id -> [ENode]; no interval
         self.root = root
+        self.roots = {}           # context suffix -> class id
         self._index = None
+        self._pindex = None
         self._where = {}
 
     def __repr__(self):
@@ -75,6 +85,9 @@ class EGraph:
             key = ("Num", float(e[1]), ())
         elif e[0] in ("num", "const"):
             key = ("Lit", self.lits.index(e), ())
+        elif e[0] == "ifprop":
+            key = ("IfProp", None, (self.locate_prop(e[1]),
+                                    self.locate(e[2]), self.locate(e[3])))
         else:
             key = (OPS[e[0]], None, tuple(self.locate(a) for a in e[1:]))
         if key not in self._index:
@@ -82,6 +95,16 @@ class EGraph:
         cls = self._index[key]
         self._where[e] = cls
         return cls
+
+    def locate_prop(self, e) -> str:
+        """The Prop class of a guard term."""
+        if self._pindex is None:
+            self._pindex = {n.key(): cls
+                            for cls, ns in self.props.items() for n in ns}
+        key = (PROP_OPS[e[0]], None, tuple(self.locate(a) for a in e[1:]))
+        if key not in self._pindex:
+            raise RuntimeError(f"guard missing from the e-graph: {key}")
+        return self._pindex[key]
 
 
 # -- emitting --
@@ -145,6 +168,9 @@ class _Emitter:
             self.lits.append(e)
             body = f"(Lit {len(self.lits) - 1})"
             bounds = _lit_bounds(e)      # an inexact constant needs its own box
+        elif e[0] in PROP_OPS:
+            kids = [self.term(a) for a in e[1:]]
+            body = f"({PROP_OPS[e[0]]} {' '.join(kids)})"
         else:
             kids = [self.term(a) for a in e[1:]]
             body = f"({OPS[e[0]]} {' '.join(kids)})"
@@ -166,16 +192,73 @@ def _source(name: str) -> str:
         return f.read()
 
 
-def program(body, box: dict, iters: int = DEFAULT_ITERS) -> tuple:
-    """The .egg source, and the Lit table it indexes."""
+def rename(e, subs: dict):
+    """A copy of e with its variables renamed.
+
+    A renamed leaf is the same input read under a narrower box, so the copy
+    denotes the same value.  The rename exists only to give it its own
+    e-classes: egglog's union is global, so without it an equality derived under
+    one context's intervals would be visible in the other.
+    """
+    if e[0] == "var":
+        return ("var", subs.get(e[1], e[1]))
+    if e[0] in ("num", "const"):
+        return e
+    return (e[0],) + tuple(rename(a, subs) for a in e[1:])
+
+
+MARK = "@"          # separates a context tag from the variable it renames
+
+
+def derename(e):
+    """Strip context tags, turning a witness back into a runnable program."""
+    if e[0] == "var":
+        return ("var", e[1].split(MARK)[0])
+    if e[0] in ("num", "const"):
+        return e
+    return (e[0],) + tuple(derename(a) for a in e[1:])
+
+
+def program(body, box: dict, iters: int = DEFAULT_ITERS, plans=(), seeds=()) -> tuple:
+    """The .egg source, and the Lit table it indexes.
+
+    Each plan is (target, guard, then_box, else_box): two renamed copies of
+    `target`, each with its own leaf boxes, joined by an IfProp under `guard`
+    and unioned with the original.  The union needs no gate -- the node is total
+    and equal to both arms -- and the arms' own preconditions are what the
+    refined boxes encode.
+
+    Congruence keeps the copies apart: their leaves are distinct terms, so
+    nothing built over one is congruent to its twin.  Subterms free of a renamed
+    variable are shared on purpose, their boxes agreeing in both.  The
+    obligation this puts on the rule sets is in the header of rules.egg.
+    """
+    if any(MARK in v for v in box):
+        raise ValueError(f"{MARK!r} is reserved for context tags: {sorted(box)}")
     em = _Emitter()
     for name, (lo, hi) in box.items():
         em.bound(em.term(("var", name)), lo, hi)
     root = em.term(body)
+    for seed in seeds:
+        em.term(seed)
+
+    unions = []
+    for i, (target, guard, then_box, else_box) in enumerate(plans):
+        arms = []
+        for tag, obox in (("t", then_box), ("e", else_box)):
+            subs = {v: f"{v}@{tag}{i}" for v in obox}
+            for v, (lo, hi) in obox.items():
+                em.bound(em.term(("var", subs[v])), lo, hi)
+            arms.append(em.term(rename(target, subs)))
+        node = f"$ifp{i}"
+        em.lines.append(f"(let {node} (IfProp {em.term(guard)} {arms[0]} {arms[1]}))")
+        unions.append(f"(union {node} {em.term(target)})")
 
     src = [_source("analysis.egg"),
            _source("rules.egg"),
+           _source("guards.egg"),
            "\n".join(em.lines),
+           "\n".join(unions),
            f"(let $root {root})",
            f"(run-schedule (repeat {iters} (repeat {ANA_ROUNDS} ana) opt))",
            f"(run-schedule (repeat {ANA_ROUNDS} ana))"]
@@ -221,12 +304,16 @@ def parse_dump(text: str) -> tuple:
     if len(blocks) != len(TABLES):
         raise RuntimeError(f"expected {len(TABLES)} tables in the dump, got {len(blocks)}")
 
-    nodes, ends, bad = {}, {"lo": {}, "hi": {}}, []
+    nodes, props, ends, bad = {}, {}, {"lo": {}, "hi": {}}, []
     for table, rows in zip(TABLES, blocks):
         for row in rows:
             lhs, rhs = row.rsplit(" -> ", 1)
             args = parse_sexps(lhs)[0][1:]
-            if table in CONSTRUCTORS:
+            if table in PROP_CONSTRUCTORS:
+                cls = _norm(parse_sexps(rhs)[0])
+                props.setdefault(cls, []).append(
+                    ENode(table, tuple(_norm(a) for a in args), None))
+            elif table in CONSTRUCTORS:
                 cls = _norm(parse_sexps(rhs)[0])
                 payload = _payload(table, args[0]) if table in LEAVES else None
                 children = () if table in LEAVES else tuple(_norm(a) for a in args)
@@ -243,12 +330,12 @@ def parse_dump(text: str) -> tuple:
     # a class the analysis never bounded stays at top
     interval = {cls: Iv(ends["lo"].get(cls, NINF), ends["hi"].get(cls, INF))
                 for cls in nodes}
-    return nodes, interval
+    return nodes, interval, props
 
 
 def build(body, box: dict, iters: int = DEFAULT_ITERS, out_path: str = None,
-          timeout: float = None) -> EGraph:
-    src, lits = program(body, box, iters)
+          timeout: float = None, plans=(), seeds=()) -> EGraph:
+    src, lits = program(body, box, iters, plans, seeds)
     tmp = None if out_path else tempfile.mkdtemp(prefix="costex-")
     path = out_path or os.path.join(tmp, "model.egg")
     with open(path, "w") as f:
@@ -257,8 +344,8 @@ def build(body, box: dict, iters: int = DEFAULT_ITERS, out_path: str = None,
         run = subprocess.run([EGGLOG, path], capture_output=True, text=True, timeout=timeout)
         if run.returncode != 0 or "[ERROR]" in run.stderr:
             raise RuntimeError(f"egglog failed ({path}):\n{run.stderr[:2000]}")
-        nodes, interval = parse_dump(run.stdout)
-        g = EGraph(nodes, interval, lits)
+        nodes, interval, props = parse_dump(run.stdout)
+        g = EGraph(nodes, interval, lits, props=props)
         g.root = g.locate(body)
     except Exception:
         tmp = None             # a failed run keeps its model to look at

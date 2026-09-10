@@ -1,0 +1,44 @@
+; Guard rewriting.
+;
+; A Prop denotes a predicate on the reals, and every rule here must preserve its
+; truth value at every v in B, the discipline rules.egg documents for Math.
+;
+; What rewriting a guard is for: reaching a member the program can decide
+; exactly and that constrains a variable, since (Gt (Var v) (Num c)) refines
+; that variable's box in the branch's context and ana propagates it downstream.
+
+(relation Negative (Math))
+(rule ((= h (hi c)) (< h 0.0)) ((Negative c)) :ruleset ana)
+
+; Seed a guard, already reduced, for every subtraction with a sign-definite
+; operand -- the same idiom as the conjugate rule materialising (Add a c) so the
+; analysis can bound it, and what lets guards be found in the caller's own
+; saturation.  Sign-definiteness is what a reduction needs anyway, so gating on
+; it is exactly as selective as it is useful: a*c > 0 with c > 0 says a > 0.
+;
+; Seeding and reducing are one action on purpose.  A ruleset runs once per outer
+; iteration, so a rule cannot see what another made in the same pass, and
+; splitting these would cost a round before any guard is readable.
+(rule ((= e (Sub a c)) (Pos c))
+      ((union (SameSign a c) (Gt a (Num 0.0)))) :ruleset opt)
+(rule ((= e (Sub a c)) (Negative c))
+      ((union (SameSign a c) (Gt (Num 0.0) a))) :ruleset opt)
+(rule ((= e (Sub a c)) (Pos a))
+      ((union (SameSign a c) (Gt c (Num 0.0)))) :ruleset opt)
+(rule ((= e (Sub a c)) (Negative a))
+      ((union (SameSign a c) (Gt (Num 0.0) c))) :ruleset opt)
+
+; a*b > 0 is symmetric
+(birewrite (SameSign a b) (SameSign b a) :ruleset opt)
+
+; One direction only: the converse would give every guard a Mul node, and a
+; rounded product is not an exact operand, so such a guard is undecidable anyway
+(rule ((= p (Gt (Mul a b) (Num 0.0)))) ((union p (SameSign a b))) :ruleset opt)
+
+; for a SameSign arriving some other way than the seeding rules above
+(rule ((= p (SameSign a b)) (Pos b)) ((union p (Gt a (Num 0.0)))) :ruleset opt)
+(rule ((= p (SameSign a b)) (Negative b)) ((union p (Gt (Num 0.0) a))) :ruleset opt)
+
+; a radicand is non-negative on B, so the root is positive exactly where the
+; radicand is -- one step closer to naming a variable
+(rewrite (Gt (Sqrt a) (Num 0.0)) (Gt a (Num 0.0)) :ruleset opt)

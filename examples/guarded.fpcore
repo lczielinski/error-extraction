@@ -1,0 +1,10 @@
+; The relative bound needs the root class to stay off zero, which the full box
+; cannot show: -b + sqrt(b*b-d) > 0 whenever d < 0, but the interval straddles.
+; The subtraction's condition number is unbounded, so it gets a guarded node.
+; SameSign(sqrt(b*b-d), b) rewrites to b > 0 because the root is positive, and
+; in the b > 0 context sqrt(b*b-d) + b is provably nonzero -- which fires the
+; conjugate rule there and nowhere else.
+(FPCore (b d)
+  :name "guarded conjugate"
+  :pre (and (<= -10 b 10) (<= -2 d -1))
+  (+ (- b) (sqrt (- (* b b) d))))

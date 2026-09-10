@@ -1,0 +1,10 @@
+; sqrt(x*x+1) - x cancels for large positive x, and its interval straddles zero,
+; so the relative bound is infinite and the conjugate rule cannot fire: the
+; divisor sqrt(x*x+1) + x is not provably nonzero on the whole box.  The
+; subtraction's condition number is unbounded, so it gets a guarded node.
+; SameSign(sqrt(x*x+1), x) rewrites to x > 0 because the root is positive, and
+; in that context the divisor is [1, 20.05], which fires the conjugate.
+(FPCore (x)
+  :name "sqrt(x*x+1) - x"
+  :pre (<= -10 x 10)
+  (- (sqrt (+ (* x x) 1)) x))

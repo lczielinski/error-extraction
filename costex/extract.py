@@ -8,7 +8,7 @@ from fractions import Fraction
 from itertools import product
 
 from . import analysis as A
-from .egg import OP_NAME, is_exact
+from .egg import OP_NAME, PROP_NAME, is_exact
 
 DEFAULT_MAX_STEPS = 200_000
 
@@ -36,9 +36,26 @@ def analyze_program(g, e):
         return A.EXACT
     if e[0] in ("num", "const"):
         return A.constant(is_exact(e), Ic)
+    if e[0] == "ifprop":
+        if not decidable(g, e[1]):
+            return A.BOTTOM
+        arms = [analyze_program(g, a) for a in e[2:]]
+        if any(p is A.BOTTOM for p in arms):
+            return A.BOTTOM
+        return A.transfer("ifprop", arms, [], Ic)
     kids = [analyze_program(g, a) for a in e[1:]]
     ivs = [g.interval[g.locate(a)] for a in e[1:]]
     return A.transfer(e[0], kids, ivs, Ic)
+
+
+def decidable(g, guard) -> bool:
+    """Does the float guard decide the same way as the real one?
+
+    Only if every operand is exact.  Otherwise an operand within its own error
+    of zero flips the test, and the arm that runs is not the arm whose
+    precondition was assumed.
+    """
+    return all(analyze_program(g, a) == A.EXACT for a in guard[1:])
 
 
 def _leaf_witness(node, lits):
@@ -52,6 +69,32 @@ def _leaf_witness(node, lits):
 def _leaf_pair(node, Ic):
     """A Var reads exactly and a Num is representable; a Lit rounds."""
     return A.EXACT if node.op in ("Var", "Num") else A.constant(False, Ic)
+
+
+def _guard_witness(g, F, prop_cls):
+    """The guard to emit for a Prop class, as an AST, or None if there is none.
+
+    A guard costs no accuracy, comparisons being exact; what it has to earn is
+    the right to assume its precondition in each arm, which needs every operand
+    exact (see `decidable`).  Among those, prefer the member naming the most
+    leaves: cheapest to run, and the one whose context refines a box.
+    """
+    best = None
+    for node in g.props.get(prop_cls, ()):
+        wits = []
+        for child in node.children:
+            hit = next((w for pair, w in F.get(child, ()) if pair == A.EXACT), None)
+            if hit is None:
+                break
+            wits.append(hit)
+        else:
+            name = PROP_NAME[node.op]
+            ast = (("gt", ("mul",) + tuple(wits), ("num", Fraction(0)))
+                   if name == "samesign" else (name,) + tuple(wits))
+            leaves = sum(w[0] in ("var", "num", "const") for w in wits)
+            if best is None or leaves > best[0]:
+                best = (leaves, ast)
+    return None if best is None else best[1]
 
 
 def _insert(entries, pair, witness):
@@ -89,25 +132,45 @@ def extract(g, max_steps: int = DEFAULT_MAX_STEPS, time_limit: float = None) -> 
                 if pair is not A.BOTTOM and _insert(F[cls], pair, witness):
                     enqueue(cls)
 
+    def past_deadline() -> bool:
+        return deadline is not None and time.monotonic() > deadline
+
     steps, truncated = 0, False
     while queue:
-        if steps >= max_steps or (deadline is not None and time.monotonic() > deadline):
+        if steps >= max_steps or past_deadline():
             truncated = True
             break
         cls, node = queue.popleft()
         queued.discard((cls, node.key()))
         steps += 1
         Ic = g.interval[cls]
-        ivs = [g.interval[c] for c in node.children]
         changed = False
         op = OP_NAME[node.op]
-        for combo in product(*(F[c] for c in node.children)):
+        if op == "ifprop":
+            # the first child is a Prop class, which has no frontier: the guard
+            # is chosen once, and only the two arms are crossed
+            guard = _guard_witness(g, F, node.children[0])
+            if guard is None:
+                continue
+            kids = node.children[1:]
+        else:
+            guard, kids = None, node.children
+        ivs = [g.interval[c] for c in kids]
+        # the deadline is checked inside the product too: a step cap counts
+        # popped nodes and so does not bound one node's work
+        for i, combo in enumerate(product(*(F[c] for c in kids))):
+            if not i & 1023 and past_deadline():
+                truncated = True
+                break
             pair = A.transfer(op, [e[0] for e in combo], ivs, Ic)
             if pair is A.BOTTOM:
                 continue
-            witness = (op,) + tuple(e[1] for e in combo)
+            wits = tuple(e[1] for e in combo)
+            witness = (op, guard) + wits if guard is not None else (op,) + wits
             changed |= _insert(F[cls], pair, witness)
         if changed:
             enqueue(cls)
+        if truncated:
+            break
 
     return Frontier(F, steps, truncated)

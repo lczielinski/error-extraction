@@ -89,6 +89,24 @@ _BINOPS = {"+": "add", "-": "sub", "*": "mul", "/": "div"}
 _SYMBOLS = {v: k for k, v in _BINOPS.items()}      # for to_sexp
 _CONSTS = {"PI", "E"}
 
+# Guards and the guarded node.  ('ifprop', guard, then, else) is the
+# conditional the analysis reads as one node, and a guard is a comparison,
+# possibly under and/or/not.  SameSign is internal to the e-graph: it always has
+# a Gt member, so a witness never needs to name it.
+#
+# The analysis only ever builds ('gt', a, b); the rest exist so that a branched
+# program from another rewriter parses and can be sampled.
+_CMP = {"<": "lt", "<=": "le", ">": "gt", ">=": "ge", "==": "eq", "!=": "ne"}
+_CMP_SYM = {v: k for k, v in _CMP.items()}
+_JOIN = ("and", "or")
+
+
+def _conj(preds: list) -> tuple:
+    out = preds[0]
+    for q in preds[1:]:
+        out = ("and", out, q)
+    return out
+
 
 def _is_number(tok) -> bool:
     if not isinstance(tok, Sym):
@@ -110,6 +128,30 @@ def parse_expr(s) -> tuple:
     if not isinstance(s, list) or not s:
         raise SyntaxError(f"bad expression {s!r}")
     head = str(s[0])
+    if head == "if":
+        args = [parse_expr(a) for a in s[1:]]
+        if len(args) != 3:
+            raise SyntaxError("if takes a condition and two branches")
+        return ("ifprop",) + tuple(args)
+    if head in _CMP:
+        args = [parse_expr(a) for a in s[1:]]
+        if len(args) < 2:
+            raise SyntaxError(f"{head} needs at least two arguments")
+        # FPCore comparisons chain: (< a b c) is a < b and b < c
+        return _conj([(_CMP[head], x, y) for x, y in zip(args, args[1:])])
+    if head in _JOIN:
+        args = [parse_expr(a) for a in s[1:]]
+        if not args:
+            raise SyntaxError(f"{head} needs an argument")
+        out = args[0]
+        for q in args[1:]:
+            out = (head, out, q)
+        return out
+    if head == "not":
+        args = [parse_expr(a) for a in s[1:]]
+        if len(args) != 1:
+            raise SyntaxError("not takes one argument")
+        return ("not", args[0])
     if head != "sqrt" and head not in _BINOPS:
         raise SyntaxError(f"unsupported operation {head!r}")
     args = [parse_expr(a) for a in s[1:]]
@@ -151,6 +193,14 @@ def to_sexp(e) -> str:
         return f"(- {to_sexp(e[1])})"
     if op == "sqrt":
         return f"(sqrt {to_sexp(e[1])})"
+    if op in _CMP_SYM:
+        return f"({_CMP_SYM[op]} {to_sexp(e[1])} {to_sexp(e[2])})"
+    if op in _JOIN:
+        return f"({op} {to_sexp(e[1])} {to_sexp(e[2])})"
+    if op == "not":
+        return f"(not {to_sexp(e[1])})"
+    if op == "ifprop":
+        return f"(if {to_sexp(e[1])} {to_sexp(e[2])} {to_sexp(e[3])})"
     return f"({_SYMBOLS[op]} {to_sexp(e[1])} {to_sexp(e[2])})"
 
 

@@ -8,16 +8,26 @@
 ; e-nodes of a class, and iteration runs downward from top. Intervals therefore
 ; only ever shrink, so a rewrite gated on an interval stays valid once it fires.
 
-(datatype Math
-  (Num f64)          ; a value exactly representable in the target format
-  (Lit i64)          ; index into the driver's table of inexact constants
-  (Var String)
-  (Add Math Math)
-  (Sub Math Math)
-  (Mul Math Math)
-  (Div Math Math)
-  (Neg Math)
-  (Sqrt Math))
+; A guarded node carries its own precondition, so it needs no interval gate:
+; (IfProp p t f) is total and equal to both arms wherever each is defined, and
+; the arms are context copies of one value, so its interval is their hull.
+; Prop and Math are mutually recursive, hence datatype*.
+
+(datatype*
+  (Math
+    (Num f64)        ; a value exactly representable in the target format
+    (Lit i64)        ; index into the driver's table of inexact constants
+    (Var String)
+    (Add Math Math)
+    (Sub Math Math)
+    (Mul Math Math)
+    (Div Math Math)
+    (Neg Math)
+    (Sqrt Math)
+    (IfProp Prop Math Math))
+  (Prop
+    (Gt Math Math)         ; a > b over the reals
+    (SameSign Math Math))) ; a*b > 0, so both are nonzero and share a sign
 
 (function lo (Math) f64 :merge (max old new))
 (function hi (Math) f64 :merge (min old new))
@@ -50,6 +60,7 @@
 (rule ((= e (Div a b))) ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
 (rule ((= e (Neg a)))   ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
 (rule ((= e (Sqrt a)))  ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
+(rule ((= e (IfProp p t f))) ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
 
 ; -- leaves and the radicand constraint ---------------------------------
 ; Var and Lit bounds are seeded by the driver. A Num is exactly representable
@@ -78,6 +89,10 @@
 
 ; -- mul ----------------------------------------------------------------
 ; P is lo >= 0 and hi > 0, N is hi <= 0 and lo < 0, M straddles zero.
+
+; a square is non-negative, which the sign cases below cannot see: they split on
+; two independent operands, and a*a lands in M*M
+(rule ((= e (Mul a a))) ((set (lo e) 0.0)) :ruleset ana)
 
 ; a zero operand pins the product to zero, whatever the other operand is
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= la 0.0) (= ha 0.0))
@@ -173,3 +188,12 @@
 
 (rule ((= e (Sqrt a)) (= la (lo a)) (= ha (hi a)) (>= ha 0.0))
       ((set (rawlo e) (sqrt (max la 0.0))) (set (rawhi e) (sqrt ha))) :ruleset ana)
+
+; -- guarded ------------------------------------------------------------
+; The hull of the arms. Both denote the same real value, so this is sound, and
+; the merge then intersects it with whatever else the class holds.
+
+(rule ((= e (IfProp p t f)) (= lt (lo t)) (= lf (lo f)))
+      ((set (lo e) (min lt lf))) :ruleset ana)
+(rule ((= e (IfProp p t f)) (= ht (hi t)) (= hf (hi f)))
+      ((set (hi e) (max ht hf))) :ruleset ana)

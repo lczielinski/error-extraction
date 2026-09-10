@@ -1,0 +1,8 @@
+; The mirror of guarded-hypot: the sign-definite operand is negative, so the
+; guard reduces to a negated variable and comes out as (> 0 x) with the arms the
+; other way round.  Worth keeping as an example because the other two only ever
+; exercise (> v 0).
+(FPCore (x)
+  :name "-sqrt(x*x+1) - x"
+  :pre (<= -10 x 10)
+  (- (- (sqrt (+ (* x x) 1))) x))
