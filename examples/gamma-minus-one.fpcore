@@ -1,0 +1,30 @@
+; The Lorentz factor's gamma - 1, written the way the algebra falls out:
+;
+;   gamma - 1 = (1 - sqrt(1-v*v)) / sqrt(1-v*v)
+;
+; For small v both operands of the subtraction approach 1, so it cancels and the
+; relative error is unbounded in practice.  The fix is the conjugate, and unlike
+; examples/guarded.fpcore this one needs no guard: the divisor it invents,
+; 1 + sqrt(1-v*v), is provably in [1,2] on the whole box, so the rule fires
+; globally.  Kept as the contrast case -- a large condition number does not on
+; its own mean a conditional is needed.
+;
+; It is tempting to want the conjugate only where v is small, since that is
+; where the seed cancels.  Measured over 3000 points per band, worst/mean ulps:
+;
+;   v in [1e-6, 0.01]   seed 8.2e11 / 2.2e10     conjugate 3.0 / 1.477
+;   v in [0.01, 0.5]    seed   12219 / 540       conjugate 3.0 / 1.423
+;   v in [0.5, 0.9]     seed     7.0 / 2.174     conjugate 4.0 / 1.477
+;
+; The conjugate wins in every band, so there is nothing to switch back to.  The
+; general rule: the conjugate of a - c divides by a + c, so it has its own bad
+; region at a = -c, and a conditional is needed only when the box holds both.
+; Here a + c is in [1,2] throughout.  Compare lightcone-energy.fpcore, where
+; a + p reaches zero at one end of the box and a - p at the other.
+;
+; v is held off zero because gamma - 1 vanishes there, and no rewrite gives a
+; relative bound at a zero of the value.
+(FPCore (v)
+  :name "gamma - 1"
+  :pre (<= 0.000001 v 0.9)
+  (/ (- 1 (sqrt (- 1 (* v v)))) (sqrt (- 1 (* v v)))))

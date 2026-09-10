@@ -34,7 +34,14 @@
 ; (Ctx p e) denotes the same value as e.  It is kept in its own class ONLY so
 ; that an equality or an interval derived under p stays there -- egglog's union
 ; is global, so a rule unioning (Ctx p a) with a would collapse every context at
-; once and silently stop the mechanism working.  Never write that rule.
+; once and stop the mechanism working.  Never write that rule.
+;
+; It cannot be checked cheaply, and the reason is worth knowing: collapsing a
+; context into its subject is exactly what guards.egg's unconstrained-variable
+; rule does on purpose, and it is how the arms share everything the split does
+; not touch.  The intended collapse and the fatal one are the same operation,
+; distinguished only by whether the guard constrains what is being collapsed --
+; so a detector has to know the guard's variable, not just spot the union.
 ;
 ; The tighter interval a context carries is an enclosure on p's region, not on
 ; B, so it is sound only because (Ctx p e) is reached only through the arm of an
@@ -52,6 +59,7 @@
 (ruleset ana)
 (ruleset opt)
 (ruleset dist)
+
 
 ; -- widening -----------------------------------------------------------
 ; The arithmetic rules below evaluate their formulas in f64, so each endpoint

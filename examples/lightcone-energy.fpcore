@@ -1,0 +1,18 @@
+; The light-cone energy of a particle, E - p with E = sqrt(m*m + p*p).  For
+; p >> m the two terms cancel, and this is the guarded counterpart to
+; examples/gamma-minus-one.fpcore:
+;
+;   there  1 - sqrt(1-v*v)  is a difference of two positives, so cancellation
+;          happens exactly where the value reaches zero -- relative error is
+;          genuinely unbounded there and no rewrite helps.  The conjugate's
+;          divisor is provably in [1,2], so it fires globally and needs no guard.
+;
+;   here   sqrt(m*m+p*p) strictly dominates p, so the difference gets small
+;          without reaching zero.  But its conjugate divides by
+;          sqrt(m*m+p*p) + p, which straddles zero once p may be negative, so
+;          the rule cannot fire on the whole box.  The guard p > 0 is what makes
+;          it derivable, and only on the arm where the cancellation happens.
+(FPCore (m p)
+  :name "E - p"
+  :pre (and (<= 0.1 m 1) (<= -10 p 10))
+  (- (sqrt (+ (* m m) (* p p))) p))
