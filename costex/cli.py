@@ -45,15 +45,14 @@ def main(argv=None) -> int:
         print(f"error: {e}\nthe input box does not keep every subexpression defined",
               file=sys.stderr)
         return 1
-    front = extract.extract(g)
-
     # A cancelling subtraction gets a guarded node; no candidate means no extra
     # saturation.  --emit lands on whichever model the reported bound came from.
-    guards = []
-    if not args.no_guards:
-        got = guard.run(core, g, args.iters, out_path=args.emit)
-        if got is not None:
-            g, front, guards = got.graph, got.front, got.guards
+    # The guarded pass reads the graph, not a frontier, so extract only the one
+    # whose bound is reported.
+    got = None if args.no_guards else guard.run(core, g, args.iters,
+                                                out_path=args.emit)
+    guards = got.guards if got else []
+    g, front = (got.graph, got.front) if got else (g, extract.extract(g))
     elapsed = time.monotonic() - t0
     Ic = g.interval[g.root]
 
@@ -79,7 +78,7 @@ def main(argv=None) -> int:
     print()
     for m in A.METRICS:
         value, _, witness = front.best(g.root, Ic, m)
-        print(f"  best mu_{m:<3} {_fmt(value)}   {to_sexp(egg.derename(witness))}")
+        print(f"  best mu_{m:<3} {_fmt(value)}   {to_sexp(witness)}")
     return 0
 
 

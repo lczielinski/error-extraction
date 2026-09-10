@@ -32,7 +32,7 @@ MAX_NODES = 2        # guarded nodes per program
 ITERS_BONUS = 2      # a newly fired gate needs another opt round to propagate
 TIMEOUT = 60.0       # seconds per egglog run
 TIME_LIMIT = 60.0    # seconds per extraction
-BUDGET = 120.0       # seconds for the whole guarded pass, over all three phases
+BUDGET = 120.0       # seconds for the whole guarded pass
 
 
 def _leaf(g, cls, op):
@@ -129,13 +129,18 @@ def candidates(g) -> list:
     return [r[1:] for r in out]
 
 
+def _pair(gt):
+    """A guard and its complement: not (x > y) is y >= x."""
+    return gt, ("ge", gt[2], gt[1])
+
+
 def guard_for(g, box: dict, a, c):
-    """An emittable guard for SameSign(a,c) and the boxes it implies, or None.
+    """An emittable guard for SameSign(a,c), with its complement, or None.
 
     A member comparing a variable against a constant is what we are after: the
     program decides it exactly, since a variable holds a representable value and
-    k is representable, and it refines v's box in each context so the ordinary
-    ana pass derives everything downstream.  A negated variable counts -- the
+    k is representable, and guards.egg's refinement rules read it as a bound on
+    v inside each context, which the ordinary ana pass then propagates.  A negated variable counts -- the
     sign folds into the threshold -- so this does not depend on whether the
     normalising rewrites happened to fire before the dump.
     """
@@ -157,10 +162,10 @@ def guard_for(g, box: dict, a, c):
             lo, hi = box[v]
             if not lo < t < hi:
                 continue               # the box already decides this guard
-            num, above, below = ("num", Fraction(t)), {v: (t, hi)}, {v: (lo, t)}
+            num = ("num", Fraction(t))
             if (sign > 0) != bool(flip):
-                return ("gt", ("var", v), num), above, below
-            return ("gt", num, ("var", v)), below, above
+                return _pair(("gt", ("var", v), num))
+            return _pair(("gt", num, ("var", v)))
     return None
 
 

@@ -146,6 +146,7 @@ def extract(g, max_steps: int = DEFAULT_MAX_STEPS, time_limit: float = None) -> 
         Ic = g.interval[cls]
         changed = False
         op = OP_NAME[node.op]
+        guard = None
         if op == "ifprop":
             # the first child is a Prop class, which has no frontier: the guard
             # is chosen once, and only the two arms are crossed
@@ -153,8 +154,10 @@ def extract(g, max_steps: int = DEFAULT_MAX_STEPS, time_limit: float = None) -> 
             if guard is None:
                 continue
             kids = node.children[1:]
+        elif op == "ctx":
+            kids = node.children[1:]        # the Prop is analysis-only
         else:
-            guard, kids = None, node.children
+            kids = node.children
         ivs = [g.interval[c] for c in kids]
         # the deadline is checked inside the product too: a step cap counts
         # popped nodes and so does not bound one node's work
@@ -166,7 +169,12 @@ def extract(g, max_steps: int = DEFAULT_MAX_STEPS, time_limit: float = None) -> 
             if pair is A.BOTTOM:
                 continue
             wits = tuple(e[1] for e in combo)
-            witness = (op, guard) + wits if guard is not None else (op,) + wits
+            if op == "ctx":
+                witness = wits[0]           # a context is not part of a program
+            elif guard is not None:
+                witness = (op, guard) + wits
+            else:
+                witness = (op,) + wits
             changed |= _insert(F[cls], pair, witness)
         if changed:
             enqueue(cls)

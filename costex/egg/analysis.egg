@@ -24,10 +24,24 @@
     (Div Math Math)
     (Neg Math)
     (Sqrt Math)
-    (IfProp Prop Math Math))
+    (IfProp Prop Math Math)
+    (Ctx Prop Math))       ; e, reasoned about on the region where p holds
   (Prop
     (Gt Math Math)         ; a > b over the reals
+    (Ge Math Math)         ; a >= b, so a guard's complement needs no Not
     (SameSign Math Math))) ; a*b > 0, so both are nonzero and share a sign
+
+; (Ctx p e) denotes the same value as e.  It is kept in its own class ONLY so
+; that an equality or an interval derived under p stays there -- egglog's union
+; is global, so a rule unioning (Ctx p a) with a would collapse every context at
+; once and silently stop the mechanism working.  Never write that rule.
+;
+; The tighter interval a context carries is an enclosure on p's region, not on
+; B, so it is sound only because (Ctx p e) is reached only through the arm of an
+; (IfProp p ...).  A rule putting a context term into a class that is evaluated
+; unconditionally would be unsound, not merely imprecise.  This is the same
+; obligation rules.egg's header records, and it is why every gated rule builds
+; its right hand side from matched subterms.
 
 (function lo (Math) f64 :merge (max old new))
 (function hi (Math) f64 :merge (min old new))
@@ -37,6 +51,7 @@
 
 (ruleset ana)
 (ruleset opt)
+(ruleset dist)
 
 ; -- widening -----------------------------------------------------------
 ; The arithmetic rules below evaluate their formulas in f64, so each endpoint
@@ -61,6 +76,7 @@
 (rule ((= e (Neg a)))   ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
 (rule ((= e (Sqrt a)))  ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
 (rule ((= e (IfProp p t f))) ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
+(rule ((= e (Ctx p a))) ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
 
 ; -- leaves and the radicand constraint ---------------------------------
 ; Var and Lit bounds are seeded by the driver. A Num is exactly representable
@@ -197,3 +213,26 @@
       ((set (lo e) (min lt lf))) :ruleset ana)
 (rule ((= e (IfProp p t f)) (= ht (hi t)) (= hf (hi f)))
       ((set (hi e) (max ht hf))) :ruleset ana)
+
+; -- contexts -----------------------------------------------------------
+; A context inherits its subject's interval, since its region is part of B, and
+; the refinement rules in guards.egg then tighten the leaves it constrains.
+; Never the other direction: a context's interval does not hold on all of B.
+
+(rule ((= e (Ctx p a)) (= l (lo a))) ((set (lo e) l)) :ruleset ana)
+(rule ((= e (Ctx p a)) (= h (hi a))) ((set (hi e) h)) :ruleset ana)
+
+; Distribution pushes the marker to the leaves, which is what a rule cannot do
+; by substitution: (Ctx p (Var v)) is the leaf whose box the guard refines.
+
+(rewrite (Ctx p (Add a b)) (Add (Ctx p a) (Ctx p b)) :subsume :ruleset dist)
+(rewrite (Ctx p (Sub a b)) (Sub (Ctx p a) (Ctx p b)) :subsume :ruleset dist)
+(rewrite (Ctx p (Mul a b)) (Mul (Ctx p a) (Ctx p b)) :subsume :ruleset dist)
+(rewrite (Ctx p (Div a b)) (Div (Ctx p a) (Ctx p b)) :subsume :ruleset dist)
+(rewrite (Ctx p (Neg a)) (Neg (Ctx p a)) :subsume :ruleset dist)
+(rewrite (Ctx p (Sqrt a)) (Sqrt (Ctx p a)) :subsume :ruleset dist)
+
+; a constant is the same in every context, and nesting one context is idempotent
+(rewrite (Ctx p (Num n)) (Num n) :subsume :ruleset dist)
+(rewrite (Ctx p (Lit i)) (Lit i) :subsume :ruleset dist)
+(rewrite (Ctx p (Ctx p a)) (Ctx p a) :ruleset dist)

@@ -23,13 +23,13 @@ DEFAULT_ITERS = 4
 ANA_ROUNDS = 30
 
 OPS = {"add": "Add", "sub": "Sub", "mul": "Mul", "div": "Div", "neg": "Neg",
-       "sqrt": "Sqrt", "ifprop": "IfProp"}
+       "sqrt": "Sqrt", "ifprop": "IfProp", "ctx": "Ctx"}
 OP_NAME = {v: k for k, v in OPS.items()}
 LEAVES = ("Num", "Lit", "Var")
 CONSTRUCTORS = LEAVES + tuple(OPS.values())
 
 # Guards live in their own sort, so they get their own classes and no interval.
-PROP_OPS = {"gt": "Gt", "samesign": "SameSign"}
+PROP_OPS = {"gt": "Gt", "ge": "Ge", "samesign": "SameSign"}
 PROP_NAME = {v: k for k, v in PROP_OPS.items()}
 PROP_CONSTRUCTORS = tuple(PROP_OPS.values())
 
@@ -88,6 +88,8 @@ class EGraph:
         elif e[0] == "ifprop":
             key = ("IfProp", None, (self.locate_prop(e[1]),
                                     self.locate(e[2]), self.locate(e[3])))
+        elif e[0] == "ctx":
+            key = ("Ctx", None, (self.locate_prop(e[1]), self.locate(e[2])))
         else:
             key = (OPS[e[0]], None, tuple(self.locate(a) for a in e[1:]))
         if key not in self._index:
@@ -192,49 +194,14 @@ def _source(name: str) -> str:
         return f.read()
 
 
-def rename(e, subs: dict):
-    """A copy of e with its variables renamed.
-
-    A renamed leaf is the same input read under a narrower box, so the copy
-    denotes the same value.  The rename exists only to give it its own
-    e-classes: egglog's union is global, so without it an equality derived under
-    one context's intervals would be visible in the other.
-    """
-    if e[0] == "var":
-        return ("var", subs.get(e[1], e[1]))
-    if e[0] in ("num", "const"):
-        return e
-    return (e[0],) + tuple(rename(a, subs) for a in e[1:])
-
-
-MARK = "@"          # separates a context tag from the variable it renames
-
-
-def derename(e):
-    """Strip context tags, turning a witness back into a runnable program."""
-    if e[0] == "var":
-        return ("var", e[1].split(MARK)[0])
-    if e[0] in ("num", "const"):
-        return e
-    return (e[0],) + tuple(derename(a) for a in e[1:])
-
-
 def program(body, box: dict, iters: int = DEFAULT_ITERS, plans=(), seeds=()) -> tuple:
     """The .egg source, and the Lit table it indexes.
 
-    Each plan is (target, guard, then_box, else_box): two renamed copies of
-    `target`, each with its own leaf boxes, joined by an IfProp under `guard`
-    and unioned with the original.  The union needs no gate -- the node is total
-    and equal to both arms -- and the arms' own preconditions are what the
-    refined boxes encode.
-
-    Congruence keeps the copies apart: their leaves are distinct terms, so
-    nothing built over one is congruent to its twin.  Subterms free of a renamed
-    variable are shared on purpose, their boxes agreeing in both.  The
-    obligation this puts on the rule sets is in the header of rules.egg.
+    Each plan is (target, guard, complement): the target under both contexts,
+    joined by an IfProp and unioned with it.  The union needs no gate, the node
+    being total and equal to both arms, and a context's leaf boxes come from the
+    refinement rules in guards.egg rather than from anything emitted here.
     """
-    if any(MARK in v for v in box):
-        raise ValueError(f"{MARK!r} is reserved for context tags: {sorted(box)}")
     em = _Emitter()
     for name, (lo, hi) in box.items():
         em.bound(em.term(("var", name)), lo, hi)
@@ -243,16 +210,10 @@ def program(body, box: dict, iters: int = DEFAULT_ITERS, plans=(), seeds=()) -> 
         em.term(seed)
 
     unions = []
-    for i, (target, guard, then_box, else_box) in enumerate(plans):
-        arms = []
-        for tag, obox in (("t", then_box), ("e", else_box)):
-            subs = {v: f"{v}@{tag}{i}" for v in obox}
-            for v, (lo, hi) in obox.items():
-                em.bound(em.term(("var", subs[v])), lo, hi)
-            arms.append(em.term(rename(target, subs)))
-        node = f"$ifp{i}"
-        em.lines.append(f"(let {node} (IfProp {em.term(guard)} {arms[0]} {arms[1]}))")
-        unions.append(f"(union {node} {em.term(target)})")
+    for i, (target, guard, complement) in enumerate(plans):
+        t, p, q = em.term(target), em.term(guard), em.term(complement)
+        em.lines.append(f"(let $ifp{i} (IfProp {p} (Ctx {p} {t}) (Ctx {q} {t})))")
+        unions.append(f"(union $ifp{i} {t})")
 
     src = [_source("analysis.egg"),
            _source("rules.egg"),
@@ -260,8 +221,9 @@ def program(body, box: dict, iters: int = DEFAULT_ITERS, plans=(), seeds=()) -> 
            "\n".join(em.lines),
            "\n".join(unions),
            f"(let $root {root})",
-           f"(run-schedule (repeat {iters} (repeat {ANA_ROUNDS} ana) opt))",
-           f"(run-schedule (repeat {ANA_ROUNDS} ana))"]
+           f"(run-schedule (repeat {iters} (saturate dist) "
+           f"(repeat {ANA_ROUNDS} ana) opt))",
+           f"(run-schedule (saturate dist) (repeat {ANA_ROUNDS} ana))"]
     src += [f"(print-function {t} 100000000)" for t in TABLES]
     return "\n".join(src) + "\n", em.lits
 

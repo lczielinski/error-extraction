@@ -278,6 +278,18 @@ def ifprop(pt: Pair, pe: Pair, Ic: Iv) -> Pair:
     return Pair(*rho(pt.S.hull(pe.S), pt.D.hull(pe.D), Ic))
 
 
+def ctx(p: Pair, Ic: Iv) -> Pair:
+    """A context does not change the program, only what is known about it.
+
+    So the pair passes through -- but through rho with the context's own
+    interval, which is tighter than the subject's and is where the whole point
+    of a context lands.
+    """
+    if p is BOTTOM:
+        return BOTTOM
+    return Pair(*rho(p.S, p.D, Ic))
+
+
 _BINARY = {"add": add, "sub": sub, "mul": mul, "div": div}
 
 
@@ -288,6 +300,8 @@ def transfer(op: str, pairs: list, ivs: list, Ic: Iv) -> Pair:
         return sqrt(pairs[0], ivs[0], Ic)
     if op == "ifprop":
         return ifprop(pairs[0], pairs[1], Ic)
+    if op == "ctx":
+        return ctx(pairs[0], Ic)
     return _BINARY[op](pairs[0], pairs[1], ivs[0], ivs[1], Ic)
 
 

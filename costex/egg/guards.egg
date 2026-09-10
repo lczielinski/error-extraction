@@ -42,3 +42,49 @@
 ; a radicand is non-negative on B, so the root is positive exactly where the
 ; radicand is -- one step closer to naming a variable
 (rewrite (Gt (Sqrt a) (Num 0.0)) (Gt a (Num 0.0)) :ruleset opt)
+
+; -- contexts -----------------------------------------------------------
+; Which variable a guard constrains, and how, over the shapes the rules above
+; can produce: the variable on either side, bare or under a single Neg.  The
+; shapes are enumerated rather than normalised first because a normalising
+; rewrite only lands a pass later, and there is one saturation to work in.
+;
+; Requiring a bare (Var v) is also what bounds nesting.  Inside a context the
+; leaves are (Ctx p (Var v)), so a guard derived there constrains nothing, no
+; further context is built, and no root-to-leaf path carries two conditionals.
+
+(relation Constrains (Prop String))
+(rule ((= p (Gt (Var v) (Num k)))) ((Constrains p v)) :ruleset ana)
+(rule ((= p (Ge (Var v) (Num k)))) ((Constrains p v)) :ruleset ana)
+(rule ((= p (Gt (Num k) (Var v)))) ((Constrains p v)) :ruleset ana)
+(rule ((= p (Ge (Num k) (Var v)))) ((Constrains p v)) :ruleset ana)
+(rule ((= p (Gt (Neg (Var v)) (Num k)))) ((Constrains p v)) :ruleset ana)
+(rule ((= p (Ge (Neg (Var v)) (Num k)))) ((Constrains p v)) :ruleset ana)
+(rule ((= p (Gt (Num k) (Neg (Var v))))) ((Constrains p v)) :ruleset ana)
+(rule ((= p (Ge (Num k) (Neg (Var v))))) ((Constrains p v)) :ruleset ana)
+
+; a guard's complement, so the else arm's context needs no Not
+(relation Complement (Prop Prop))
+(rule ((= p (Gt a b))) ((Complement p (Ge b a))) :ruleset opt)
+(rule ((= p (Ge a b))) ((Complement p (Gt b a))) :ruleset opt)
+
+; A variable the guard leaves alone reads the same in every context, so it stays
+; in the shared class.  This is what makes a context cost only the subterms that
+; actually depend on the split.
+(rule ((= e (Ctx p (Var v))) (Constrains p w) (!= v w))
+      ((union e (Var v))) :ruleset dist)
+
+; The refinement itself: the guard, read as a bound on its variable.  A Neg
+; folds into the threshold, so -v > k becomes v < -k.
+(rule ((= e (Ctx p (Var v))) (= p (Gt (Var v) (Num k)))) ((set (lo e) k)) :ruleset ana)
+(rule ((= e (Ctx p (Var v))) (= p (Ge (Var v) (Num k)))) ((set (lo e) k)) :ruleset ana)
+(rule ((= e (Ctx p (Var v))) (= p (Gt (Num k) (Var v)))) ((set (hi e) k)) :ruleset ana)
+(rule ((= e (Ctx p (Var v))) (= p (Ge (Num k) (Var v)))) ((set (hi e) k)) :ruleset ana)
+(rule ((= e (Ctx p (Var v))) (= p (Gt (Neg (Var v)) (Num k))))
+      ((set (hi e) (neg k))) :ruleset ana)
+(rule ((= e (Ctx p (Var v))) (= p (Ge (Neg (Var v)) (Num k))))
+      ((set (hi e) (neg k))) :ruleset ana)
+(rule ((= e (Ctx p (Var v))) (= p (Gt (Num k) (Neg (Var v)))))
+      ((set (lo e) (neg k))) :ruleset ana)
+(rule ((= e (Ctx p (Var v))) (= p (Ge (Num k) (Neg (Var v)))))
+      ((set (lo e) (neg k))) :ruleset ana)
