@@ -21,6 +21,7 @@ EGG_DIR = os.path.join(os.path.dirname(__file__), "egg")
 
 DEFAULT_ITERS = 4
 ANA_ROUNDS = 30
+KAPPA_MIN = 10.0      # the atomic condition number that earns a node a branch
 
 OPS = {"add": "Add", "sub": "Sub", "mul": "Mul", "div": "Div", "neg": "Neg",
        "sqrt": "Sqrt", "ifprop": "IfProp", "ctx": "Ctx"}
@@ -28,8 +29,8 @@ OP_NAME = {v: k for k, v in OPS.items()}
 LEAVES = ("Num", "Lit", "Var")
 CONSTRUCTORS = LEAVES + tuple(OPS.values())
 
-# Guards live in their own sort, so they get their own classes and no interval.
-PROP_OPS = {"gt": "Gt", "ge": "Ge", "samesign": "SameSign"}
+# Predicates live in their own sort, so they get their own classes and no interval.
+PROP_OPS = {"gt": "Gt", "not": "Not", "samesgn": "SameSgn", "oppsgn": "OppSgn"}
 PROP_NAME = {v: k for k, v in PROP_OPS.items()}
 PROP_CONSTRUCTORS = tuple(PROP_OPS.values())
 
@@ -63,9 +64,7 @@ class EGraph:
         self.lits = lits          # Lit index -> AST leaf
         self.props = props or {}  # Prop class id -> [ENode]; no interval
         self.root = root
-        self.roots = {}           # context suffix -> class id
         self._index = None
-        self._pindex = None
         self._where = {}
 
     def __repr__(self):
@@ -85,11 +84,6 @@ class EGraph:
             key = ("Num", float(e[1]), ())
         elif e[0] in ("num", "const"):
             key = ("Lit", self.lits.index(e), ())
-        elif e[0] == "ifprop":
-            key = ("IfProp", None, (self.locate_prop(e[1]),
-                                    self.locate(e[2]), self.locate(e[3])))
-        elif e[0] == "ctx":
-            key = ("Ctx", None, (self.locate_prop(e[1]), self.locate(e[2])))
         else:
             key = (OPS[e[0]], None, tuple(self.locate(a) for a in e[1:]))
         if key not in self._index:
@@ -97,16 +91,6 @@ class EGraph:
         cls = self._index[key]
         self._where[e] = cls
         return cls
-
-    def locate_prop(self, e) -> str:
-        """The Prop class of a guard term."""
-        if self._pindex is None:
-            self._pindex = {n.key(): cls
-                            for cls, ns in self.props.items() for n in ns}
-        key = (PROP_OPS[e[0]], None, tuple(self.locate(a) for a in e[1:]))
-        if key not in self._pindex:
-            raise RuntimeError(f"guard missing from the e-graph: {key}")
-        return self._pindex[key]
 
 
 # -- emitting --
@@ -194,35 +178,27 @@ def _source(name: str) -> str:
         return f.read()
 
 
-def program(body, box: dict, iters: int = DEFAULT_ITERS, plans=(), seeds=()) -> tuple:
+def program(body, box: dict, iters: int = DEFAULT_ITERS, branch: bool = True) -> tuple:
     """The .egg source, and the Lit table it indexes.
 
-    Each plan is (target, guard, complement): the target under both contexts,
-    joined by an IfProp and unioned with it.  The union needs no gate, the node
-    being total and equal to both arms, and a context's leaf boxes come from the
-    refinement rules in guards.egg rather than from anything emitted here.
+    Branching is branch.egg's business entirely -- the trigger, the split and
+    the conjugate are rules -- so the driver emits only the program and its
+    box.  `branch` off leaves the plain analysis, for comparison.
     """
     em = _Emitter()
     for name, (lo, hi) in box.items():
         em.bound(em.term(("var", name)), lo, hi)
     root = em.term(body)
-    for seed in seeds:
-        em.term(seed)
-
-    unions = []
-    for i, (target, guard, complement) in enumerate(plans):
-        t, p, q = em.term(target), em.term(guard), em.term(complement)
-        em.lines.append(f"(let $ifp{i} (IfProp {p} (Ctx {p} {t}) (Ctx {q} {t})))")
-        unions.append(f"(union $ifp{i} {t})")
 
     src = [_source("analysis.egg"),
            _source("rules.egg"),
-           _source("guards.egg"),
+           _source("branch.egg").replace("KAPPA_MIN", _f64(KAPPA_MIN)) if branch else "",
            "\n".join(em.lines),
-           "\n".join(unions),
            f"(let $root {root})",
+           "(Root $root)",
+           # each round: distribute contexts, analyse, rewrite, then branch
            f"(run-schedule (repeat {iters} (saturate dist) "
-           f"(repeat {ANA_ROUNDS} ana) opt))",
+           f"(repeat {ANA_ROUNDS} ana) opt (saturate branch)))",
            f"(run-schedule (saturate dist) (repeat {ANA_ROUNDS} ana))"]
     src += [f"(print-function {t} 100000000)" for t in TABLES]
     return "\n".join(src) + "\n", em.lits
@@ -295,9 +271,23 @@ def parse_dump(text: str) -> tuple:
     return nodes, interval, props
 
 
+def build_or_plain(body, box: dict, iters: int = DEFAULT_ITERS, out_path: str = None,
+                   timeout: float = None) -> tuple:
+    """Build with branching, or without if that runs out of time.
+
+    Branching copies the program once per region, and with several variables
+    straddling zero the copies can exhaust the budget; the plain analysis is
+    then still worth having.  Returns (graph, branched).
+    """
+    try:
+        return build(body, box, iters, out_path, timeout, branch=True), True
+    except subprocess.TimeoutExpired:
+        return build(body, box, iters, out_path, timeout, branch=False), False
+
+
 def build(body, box: dict, iters: int = DEFAULT_ITERS, out_path: str = None,
-          timeout: float = None, plans=(), seeds=()) -> EGraph:
-    src, lits = program(body, box, iters, plans, seeds)
+          timeout: float = None, branch: bool = True) -> EGraph:
+    src, lits = program(body, box, iters, branch)
     tmp = None if out_path else tempfile.mkdtemp(prefix="costex-")
     path = out_path or os.path.join(tmp, "model.egg")
     with open(path, "w") as f:

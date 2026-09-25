@@ -8,7 +8,7 @@ from fractions import Fraction
 from itertools import product
 
 from . import analysis as A
-from .egg import OP_NAME, PROP_NAME, is_exact
+from .egg import OP_NAME, is_exact
 
 DEFAULT_MAX_STEPS = 200_000
 
@@ -30,32 +30,15 @@ class Frontier:
 
 
 def analyze_program(g, e):
-    """A(z~) for one program tree, over the e-graph's class intervals."""
+    """A(z~) for one straight-line program, over the e-graph's class intervals."""
     Ic = g.interval[g.locate(e)]
     if e[0] == "var":
         return A.EXACT
     if e[0] in ("num", "const"):
         return A.constant(is_exact(e), Ic)
-    if e[0] == "ifprop":
-        if not decidable(g, e[1]):
-            return A.BOTTOM
-        arms = [analyze_program(g, a) for a in e[2:]]
-        if any(p is A.BOTTOM for p in arms):
-            return A.BOTTOM
-        return A.transfer("ifprop", arms, [], Ic)
     kids = [analyze_program(g, a) for a in e[1:]]
     ivs = [g.interval[g.locate(a)] for a in e[1:]]
     return A.transfer(e[0], kids, ivs, Ic)
-
-
-def decidable(g, guard) -> bool:
-    """Does the float guard decide the same way as the real one?
-
-    Only if every operand is exact.  Otherwise an operand within its own error
-    of zero flips the test, and the arm that runs is not the arm whose
-    precondition was assumed.
-    """
-    return all(analyze_program(g, a) == A.EXACT for a in guard[1:])
 
 
 def _leaf_witness(node, lits):
@@ -72,29 +55,26 @@ def _leaf_pair(node, Ic):
 
 
 def _guard_witness(g, F, prop_cls):
-    """The guard to emit for a Prop class, as an AST, or None if there is none.
+    """The guard to emit for a Prop class: a leaf compared with zero, or None.
 
-    A guard costs no accuracy, comparisons being exact; what it has to earn is
-    the right to assume its precondition in each arm, which needs every operand
-    exact (see `decidable`).  Among those, prefer the member naming the most
-    leaves: cheapest to run, and the one whose context refines a box.
+    A split's predicate class always holds (Gt w 0) or (Gt 0 w) with w a leaf,
+    since that is what licensed the split.  It is also the only member a float
+    program decides the way the real one does: a variable holds a representable
+    value and zero is exact, whereas any rounded operand could flip the test
+    near zero and run an arm whose assumption is false.
     """
-    best = None
     for node in g.props.get(prop_cls, ()):
+        if node.op != "Gt":
+            continue
         wits = []
         for child in node.children:
             hit = next((w for pair, w in F.get(child, ()) if pair == A.EXACT), None)
-            if hit is None:
+            if hit is None or hit[0] not in ("var", "num"):
                 break
             wits.append(hit)
         else:
-            name = PROP_NAME[node.op]
-            ast = (("gt", ("mul",) + tuple(wits), ("num", Fraction(0)))
-                   if name == "samesign" else (name,) + tuple(wits))
-            leaves = sum(w[0] in ("var", "num", "const") for w in wits)
-            if best is None or leaves > best[0]:
-                best = (leaves, ast)
-    return None if best is None else best[1]
+            return ("gt",) + tuple(wits)
+    return None
 
 
 def _insert(entries, pair, witness):

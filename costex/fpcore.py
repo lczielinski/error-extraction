@@ -91,11 +91,11 @@ _CONSTS = {"PI", "E"}
 
 # Guards and the guarded node.  ('ifprop', guard, then, else) is the
 # conditional the analysis reads as one node, and a guard is a comparison,
-# possibly under and/or/not.  SameSign is internal to the e-graph: it always has
-# a Gt member, so a witness never needs to name it.
+# possibly under and/or/not.
 #
-# The analysis only ever builds ('gt', a, b); the rest exist so that a branched
-# program from another rewriter parses and can be sampled.
+# The analysis only ever builds ('gt', v, 0), the else arm being implicit; the
+# rest exist so that a branched program from another rewriter parses and can
+# be sampled.
 _CMP = {"<": "lt", "<=": "le", ">": "gt", ">=": "ge", "==": "eq", "!=": "ne"}
 _CMP_SYM = {v: k for k, v in _CMP.items()}
 _JOIN = ("and", "or")

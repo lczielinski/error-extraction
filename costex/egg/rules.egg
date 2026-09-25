@@ -9,7 +9,7 @@
 ;      sqrt(x*x) = x needs x >= 0, and a rule that invents a divisor needs that
 ;      divisor to be nonzero. Those rules are marked GATED below.
 ;
-; One further obligation on a GATED rule, from the guarded nodes in guards.egg:
+; One further obligation on a GATED rule, from the guarded nodes in branch.egg:
 ; its right hand side must mention a matched subterm, never only literals.  A
 ; guarded node's arms are renamed copies kept apart by congruence, and a rule
 ; like (Sub a a) -> (Num 0.0) unions across them -- harmless ungated, since the
@@ -19,9 +19,10 @@
 (relation Nonzero (Math))
 (relation Nonneg (Math))
 (relation Pos (Math))
+(relation Negative (Math))
 
 (rule ((= l (lo c)) (> l 0.0)) ((Nonzero c) (Nonneg c) (Pos c)) :ruleset ana)
-(rule ((= h (hi c)) (< h 0.0)) ((Nonzero c)) :ruleset ana)
+(rule ((= h (hi c)) (< h 0.0)) ((Nonzero c) (Negative c)) :ruleset ana)
 (rule ((= l (lo c)) (>= l 0.0)) ((Nonneg c)) :ruleset ana)
 
 ; -- structural ---------------------------------------------------------

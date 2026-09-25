@@ -37,6 +37,7 @@ FIELDED = common.BY_NAME["rel"]   # which costex program competes
 HEADROOM = 4.0                    # ulps the seed must lose before a core counts
 HEADROOM_STEPS = (2.0, 4.0, 8.0, 64.0)
 ITERS = egg.DEFAULT_ITERS
+BRANCH = True                # split on cancellation; a timeout falls back to plain
 MAX_STEPS = 1_000_000        # kalman-filter-per-p needs ~770k to reach its root
 EGGLOG_TIMEOUT = 60.0
 EXTRACT_TIMEOUT = 120.0      # a step cap alone does not bound extraction
@@ -80,13 +81,18 @@ def run_one(path: str) -> dict:
                    box_source=str(core.props.get(":cx-box", "pre")),
                    source=str(core.props.get(":cx-source", "")),
                    expr=to_sexp(core.body), precision=core.precision)
-        g = egg.build(core.body, core.box, iters=ITERS, timeout=EGGLOG_TIMEOUT)
+        if BRANCH:
+            g, branched = egg.build_or_plain(core.body, core.box, iters=ITERS,
+                                             timeout=EGGLOG_TIMEOUT)
+        else:
+            g, branched = egg.build(core.body, core.box, iters=ITERS,
+                                    timeout=EGGLOG_TIMEOUT, branch=False), False
         t1 = time.time()
         front = extract.extract(g, max_steps=MAX_STEPS, time_limit=EXTRACT_TIMEOUT)
         Ic = g.interval[g.root]
         seed = extract.analyze_program(g, core.body)
 
-        out.update(status="ok",
+        out.update(status="ok", branched=branched,
                    classes=len(g.nodes), nodes=sum(map(len, g.nodes.values())),
                    egglog_s=round(t1 - t0, 3), extract_s=round(time.time() - t1, 3),
                    steps=front.steps, truncated=front.truncated,

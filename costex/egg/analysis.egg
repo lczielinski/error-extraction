@@ -28,8 +28,9 @@
     (Ctx Prop Math))       ; e, reasoned about on the region where p holds
   (Prop
     (Gt Math Math)         ; a > b over the reals
-    (Ge Math Math)         ; a >= b, so a guard's complement needs no Not
-    (SameSign Math Math))) ; a*b > 0, so both are nonzero and share a sign
+    (Not Prop)             ; the else arm's region
+    (SameSgn Math Math)    ; a*b > 0: both nonzero and of one sign
+    (OppSgn Math Math)))   ; a*b < 0: both nonzero and of opposite sign
 
 ; (Ctx p e) denotes the same value as e.  It is kept in its own class ONLY so
 ; that an equality or an interval derived under p stays there -- egglog's union
@@ -37,7 +38,7 @@
 ; once and stop the mechanism working.  Never write that rule.
 ;
 ; It cannot be checked cheaply, and the reason is worth knowing: collapsing a
-; context into its subject is exactly what guards.egg's unconstrained-variable
+; context into its subject is exactly what branch.egg's unconstrained-variable
 ; rule does on purpose, and it is how the arms share everything the split does
 ; not touch.  The intended collapse and the fatal one are the same operation,
 ; distinguished only by whether the guard constrains what is being collapsed --
@@ -59,6 +60,8 @@
 (ruleset ana)
 (ruleset opt)
 (ruleset dist)
+(ruleset branch)          ; branch.egg
+(relation Root (Math))    ; the program's root class, set by the driver
 
 
 ; -- widening -----------------------------------------------------------
@@ -222,9 +225,56 @@
 (rule ((= e (IfProp p t f)) (= ht (hi t)) (= hf (hi f)))
       ((set (hi e) (max ht hf))) :ruleset ana)
 
+; -- condition number ---------------------------------------------------
+; kappa(e) bounds the atomic condition number (|x| + |y|) / |x + y| of an
+; additive node e = x + y; a Sub reads y = -c.  With lambda = x/z it is
+; |lambda| + |1 - lambda|, and lambda is enclosed by both x/z and 1 - y/z, so
+; lamlo and lamhi merge as an intersection.  INF while z straddles zero.
+; Merging by min is sound because intervals only shrink.
+;
+; The quotient rules need every operand finite and z one-signed; (* lz hz) > 0
+; says both endpoints of z are nonzero and of one sign.  egglog's / panics on a
+; zero divisor rather than returning inf.
+
+(function kappa (Math) f64 :merge (min old new))
+(function lamlo (Math) f64 :merge (max old new))
+(function lamhi (Math) f64 :merge (min old new))
+
+(rule ((= e (Add x y)) (= lz (lo e)) (= hz (hi e)) (<= lz 0.0) (>= hz 0.0))
+      ((set (kappa e) inf)) :ruleset ana)
+(rule ((= e (Sub x c)) (= lz (lo e)) (= hz (hi e)) (<= lz 0.0) (>= hz 0.0))
+      ((set (kappa e) inf)) :ruleset ana)
+
+; x / z, for either node shape
+(rule ((= e (Add x y)) (= lx (lo x)) (= hx (hi x)) (= lz (lo e)) (= hz (hi e))
+       (> lx -inf) (< hx inf) (> lz -inf) (< hz inf) (> (* lz hz) 0.0))
+      ((set (lamlo e) (min (min (/ lx lz) (/ lx hz)) (min (/ hx lz) (/ hx hz))))
+       (set (lamhi e) (max (max (/ lx lz) (/ lx hz)) (max (/ hx lz) (/ hx hz)))))
+      :ruleset ana)
+(rule ((= e (Sub x c)) (= lx (lo x)) (= hx (hi x)) (= lz (lo e)) (= hz (hi e))
+       (> lx -inf) (< hx inf) (> lz -inf) (< hz inf) (> (* lz hz) 0.0))
+      ((set (lamlo e) (min (min (/ lx lz) (/ lx hz)) (min (/ hx lz) (/ hx hz))))
+       (set (lamhi e) (max (max (/ lx lz) (/ lx hz)) (max (/ hx lz) (/ hx hz)))))
+      :ruleset ana)
+; 1 - y/z.  For a Sub, y = -c, so 1 - y/z = 1 + c/z.
+(rule ((= e (Add x y)) (= ly (lo y)) (= hy (hi y)) (= lz (lo e)) (= hz (hi e))
+       (> ly -inf) (< hy inf) (> lz -inf) (< hz inf) (> (* lz hz) 0.0))
+      ((set (lamlo e) (- 1.0 (max (max (/ ly lz) (/ ly hz)) (max (/ hy lz) (/ hy hz)))))
+       (set (lamhi e) (- 1.0 (min (min (/ ly lz) (/ ly hz)) (min (/ hy lz) (/ hy hz))))))
+      :ruleset ana)
+(rule ((= e (Sub x c)) (= lc (lo c)) (= hc (hi c)) (= lz (lo e)) (= hz (hi e))
+       (> lc -inf) (< hc inf) (> lz -inf) (< hz inf) (> (* lz hz) 0.0))
+      ((set (lamlo e) (+ 1.0 (min (min (/ lc lz) (/ lc hz)) (min (/ hc lz) (/ hc hz)))))
+       (set (lamhi e) (+ 1.0 (max (max (/ lc lz) (/ lc hz)) (max (/ hc lz) (/ hc hz))))))
+      :ruleset ana)
+
+(rule ((= l (lamlo e)) (= h (lamhi e)) (<= l h))
+      ((set (kappa e) (+ (max (abs l) (abs h))
+                         (max (abs (- 1.0 l)) (abs (- 1.0 h)))))) :ruleset ana)
+
 ; -- contexts -----------------------------------------------------------
 ; A context inherits its subject's interval, since its region is part of B, and
-; the refinement rules in guards.egg then tighten the leaves it constrains.
+; the refinement rules in branch.egg then tighten the leaves it constrains.
 ; Never the other direction: a context's interval does not hold on all of B.
 
 (rule ((= e (Ctx p a)) (= l (lo a))) ((set (lo e) l)) :ruleset ana)
@@ -232,13 +282,16 @@
 
 ; Distribution pushes the marker to the leaves, which is what a rule cannot do
 ; by substitution: (Ctx p (Var v)) is the leaf whose box the guard refines.
+; The undistributed node is left in place, not subsumed: rewriting can put a
+; compound node into a variable's class, and subsuming (Ctx p (Var x)) on that
+; account would leave the leaf's class with no node egglog can print.
 
-(rewrite (Ctx p (Add a b)) (Add (Ctx p a) (Ctx p b)) :subsume :ruleset dist)
-(rewrite (Ctx p (Sub a b)) (Sub (Ctx p a) (Ctx p b)) :subsume :ruleset dist)
-(rewrite (Ctx p (Mul a b)) (Mul (Ctx p a) (Ctx p b)) :subsume :ruleset dist)
-(rewrite (Ctx p (Div a b)) (Div (Ctx p a) (Ctx p b)) :subsume :ruleset dist)
-(rewrite (Ctx p (Neg a)) (Neg (Ctx p a)) :subsume :ruleset dist)
-(rewrite (Ctx p (Sqrt a)) (Sqrt (Ctx p a)) :subsume :ruleset dist)
+(rewrite (Ctx p (Add a b)) (Add (Ctx p a) (Ctx p b)) :ruleset dist)
+(rewrite (Ctx p (Sub a b)) (Sub (Ctx p a) (Ctx p b)) :ruleset dist)
+(rewrite (Ctx p (Mul a b)) (Mul (Ctx p a) (Ctx p b)) :ruleset dist)
+(rewrite (Ctx p (Div a b)) (Div (Ctx p a) (Ctx p b)) :ruleset dist)
+(rewrite (Ctx p (Neg a)) (Neg (Ctx p a)) :ruleset dist)
+(rewrite (Ctx p (Sqrt a)) (Sqrt (Ctx p a)) :ruleset dist)
 
 ; a constant is the same in every context, and nesting one context is idempotent
 (rewrite (Ctx p (Num n)) (Num n) :subsume :ruleset dist)

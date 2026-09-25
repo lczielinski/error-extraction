@@ -270,8 +270,8 @@ def ifprop(pt: Pair, pe: Pair, Ic: Iv) -> Pair:
 
     Exactly one arm runs at each v and each arm's pair holds where its guard
     selects, so the hull holds on all of B.  A comparison is exact, so the guard
-    adds no rounding; what makes the arms' assumptions legitimate is `decidable`,
-    checked where the guard is chosen.
+    adds no rounding; what makes the arms' assumptions legitimate is that the
+    guard compares a variable with zero, which extract.py insists on.
     """
     if pt is BOTTOM or pe is BOTTOM:
         return BOTTOM

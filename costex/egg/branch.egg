@@ -1,0 +1,117 @@
+; Branching.
+;
+; A Prop denotes a predicate on the reals, and every rule here must preserve its
+; truth value at every v in B, the discipline rules.egg documents for Math.
+;
+; An additive node whose condition number exceeds KAPPA_MIN gets a predicate,
+; SameSgn or OppSgn of its operands, and the rules below reduce it, where they
+; can, to a comparison of one variable w against zero.  If w's box still
+; straddles zero in the region the node lives in, that region is split: its
+; root R becomes (IfProp (Gt w 0) (Ctx (Gt w 0) R) (Ctx (Not (Gt w 0)) R)).
+; In each arm w has a sign, the gated rules in rules.egg fire where the
+; narrower box licenses them, and the conjugate follows.  An arm is a region
+; too, so splits nest, one variable per level.
+;
+; All of it runs in the `branch` ruleset, which the driver saturates once per
+; round after the rewrite rules.
+
+; -- the predicate ------------------------------------------------------
+; x - c cancels where x and c share a sign; x + y where they differ.  A point
+; interval is skipped: cancellation there is exact, and there is nothing for a
+; branch to separate.
+
+(rule ((= e (Sub x c)) (= k (kappa e)) (> k KAPPA_MIN) (= l (lo e)) (= h (hi e)) (< l h))
+      ((SameSgn x c)) :ruleset branch)
+(rule ((= e (Add x y)) (= k (kappa e)) (> k KAPPA_MIN) (= l (lo e)) (= h (hi e)) (< l h))
+      ((OppSgn x y)) :ruleset branch)
+
+(birewrite (SameSgn a b) (SameSgn b a) :ruleset branch)
+(birewrite (OppSgn a b) (OppSgn b a) :ruleset branch)
+
+; -- reduction ----------------------------------------------------------
+; Each step is an equivalence on the reals.  A sign-definite operand fixes the
+; other's sign; a root is positive exactly where its radicand is; a negation
+; flips the side; a product's sign is a SameSgn.
+
+(rule ((= p (SameSgn a b)) (Pos b))      ((union p (Gt a (Num 0.0)))) :ruleset branch)
+(rule ((= p (SameSgn a b)) (Negative b)) ((union p (Gt (Num 0.0) a))) :ruleset branch)
+(rule ((= p (OppSgn a b))  (Pos b))      ((union p (Gt (Num 0.0) a))) :ruleset branch)
+(rule ((= p (OppSgn a b))  (Negative b)) ((union p (Gt a (Num 0.0)))) :ruleset branch)
+(rewrite (SameSgn a (Neg b)) (OppSgn a b) :ruleset branch)
+(rewrite (OppSgn a (Neg b)) (SameSgn a b) :ruleset branch)
+(rewrite (Gt (Sqrt a) (Num 0.0)) (Gt a (Num 0.0)) :ruleset branch)
+(rewrite (Gt (Neg a) (Num 0.0)) (Gt (Num 0.0) a) :ruleset branch)
+(rewrite (Gt (Num 0.0) (Neg a)) (Gt a (Num 0.0)) :ruleset branch)
+(rule ((= p (Gt (Mul a b) (Num 0.0)))) ((union p (SameSgn a b))) :ruleset branch)
+
+; -- leaves and regions -------------------------------------------------
+; A leaf is a variable under any nest of contexts.  It is the only thing a
+; guard can refine, and the only comparison a float program decides the way
+; the real one does.  Arm maps a region's predicate to the class at its root.
+
+(relation Leaf (Math))
+(rule ((= e (Var v))) ((Leaf e)) :ruleset branch)
+(rule ((= e (Ctx p a)) (Leaf a)) ((Leaf e)) :ruleset branch)
+
+(relation Arm (Prop Math))
+
+; Splits p w: p reduced to the sign of leaf w, and w's box still straddles
+; zero.  Strictly: after a split, w reads [0, hi] in one arm and [lo, 0] in the
+; other, so no predicate on w splits either arm again.  That bounds nesting at
+; one level per variable.
+
+(relation Splits (Prop Math))
+(rule ((= p (Gt w (Num 0.0))) (Leaf w) (= l (lo w)) (< l 0.0) (= h (hi w)) (> h 0.0))
+      ((Splits p w)) :ruleset branch)
+(rule ((= p (Gt (Num 0.0) w)) (Leaf w) (= l (lo w)) (< l 0.0) (= h (hi w)) (> h 0.0))
+      ((Splits p w)) :ruleset branch)
+
+; -- the split ----------------------------------------------------------
+; At the region's root: the program's root for a bare variable, the enclosing
+; arm for a context-wrapped one.  A variable the enclosing split left alone
+; collapses back into its global class (below), so that class holds the
+; wrapped copy and names the arm.  The union is idempotent: one IfProp per
+; region and variable, however many nodes ask for it.
+
+(rule ((Splits p w) (= w (Var v)) (Root r))
+      ((let g (Gt w (Num 0.0)))
+       (union r (IfProp g (Ctx g r) (Ctx (Not g) r)))
+       (Arm g (Ctx g r)) (Arm (Not g) (Ctx (Not g) r))) :ruleset branch)
+(rule ((Splits p w) (= w (Ctx q u)) (Arm q r))
+      ((let g (Gt w (Num 0.0)))
+       (union r (IfProp g (Ctx g r) (Ctx (Not g) r)))
+       (Arm g (Ctx g r)) (Arm (Not g) (Ctx (Not g) r))) :ruleset branch)
+
+; -- the conjugate ------------------------------------------------------
+; rules.egg's conjugate is gated on its divisor being nonzero, which the
+; narrower box in the same-sign arm proves, so it fires there on its own.  The
+; Add form is the same rule mirrored.
+
+(rule ((= e (Add x y)) (= s (Sub x y)) (Nonzero s))
+      ((union e (Div (Sub (Mul x x) (Mul y y)) s))) :ruleset opt)
+
+; The divisor is built in both arms the round the split happens.  rules.egg's
+; prep would build the same node after distribution, a round later; having it
+; now lets the analysis bound it and the conjugate fire a round sooner.
+
+(rule ((= e (Sub x c)) (= p (SameSgn x c)) (Splits p w))
+      ((let g (Gt w (Num 0.0)))
+       (Add (Ctx g x) (Ctx g c)) (Add (Ctx (Not g) x) (Ctx (Not g) c))) :ruleset branch)
+(rule ((= e (Add x y)) (= p (OppSgn x y)) (Splits p w))
+      ((let g (Gt w (Num 0.0)))
+       (Sub (Ctx g x) (Ctx g y)) (Sub (Ctx (Not g) x) (Ctx (Not g) y))) :ruleset branch)
+
+; -- reading a guard as a box -------------------------------------------
+
+(rule ((= e (Ctx p w)) (= p (Gt w (Num k)))) ((set (lo e) k)) :ruleset ana)
+(rule ((= e (Ctx q w)) (= q (Not p)) (= p (Gt w (Num k)))) ((set (hi e) k)) :ruleset ana)
+
+; A leaf the guard does not constrain reads the same in every region, so it
+; stays in the enclosing class; a context then costs only the subterms that
+; depend on the split.  Leaf is what keeps this from being the fatal union
+; analysis.egg warns of.
+
+(rule ((= e (Ctx p u)) (Leaf u) (= p (Gt w (Num k))) (Leaf w) (!= u w))
+      ((union e u)) :ruleset dist)
+(rule ((= e (Ctx q u)) (= q (Not p)) (Leaf u) (= p (Gt w (Num k))) (Leaf w) (!= u w))
+      ((union e u)) :ruleset dist)
