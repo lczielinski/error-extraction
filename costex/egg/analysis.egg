@@ -61,7 +61,6 @@
 (ruleset opt)
 (ruleset dist)
 (ruleset branch)          ; branch.egg
-(relation Root (Math))    ; the program's root class, set by the driver
 
 
 ; -- widening -----------------------------------------------------------

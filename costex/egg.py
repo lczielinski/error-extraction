@@ -13,7 +13,7 @@ from fractions import Fraction
 import gmpy2
 
 from . import analysis as A
-from .fpcore import Str, parse_sexps, variables
+from .fpcore import Str, parse_sexps
 from .interval import INF, NINF, Iv
 
 EGGLOG = os.environ.get("EGGLOG", os.path.expanduser("~/.cargo/bin/egglog-experimental"))
@@ -182,23 +182,19 @@ def program(body, box: dict, iters: int = DEFAULT_ITERS, branch: bool = True) ->
     """The .egg source, and the Lit table it indexes.
 
     Branching is branch.egg's business entirely -- the trigger, the split and
-    the conjugate are rules -- so the driver emits only the program, its box,
-    and the order the splits take the variables in.  `branch` off leaves the
-    plain analysis, for comparison.
+    the conjugate are rules -- so the driver emits only the program and its
+    box.  `branch` off leaves the plain analysis, for comparison.
     """
     em = _Emitter()
     for name, (lo, hi) in box.items():
         em.bound(em.term(("var", name)), lo, hi)
     root = em.term(body)
-    ranks = [f'(Rank "{v}" {i})' for i, v in enumerate(sorted(variables(body)))]
 
     src = [_source("analysis.egg"),
            _source("rules.egg"),
            _source("branch.egg").replace("KAPPA_MIN", _f64(KAPPA_MIN)) if branch else "",
            "\n".join(em.lines),
            f"(let $root {root})",
-           "(Root $root)",
-           "\n".join(ranks) if branch else "",
            # each round: distribute contexts, analyse, rewrite, then branch
            f"(run-schedule (repeat {iters} (saturate dist) "
            f"(repeat {ANA_ROUNDS} ana) opt (saturate branch)))",
@@ -278,8 +274,8 @@ def build_or_plain(body, box: dict, iters: int = DEFAULT_ITERS, out_path: str = 
                    timeout: float = None) -> tuple:
     """Build with branching, or without if that runs out of time.
 
-    Branching copies the program once per region, and with several variables
-    straddling zero the copies can exhaust the budget; the plain analysis is
+    Branching copies a split node's subterms once per arm, and nested splits
+    multiply the copies, which can exhaust the budget; the plain analysis is
     then still worth having.  Returns (graph, branched).
     """
     try:
