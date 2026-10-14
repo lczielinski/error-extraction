@@ -10,7 +10,7 @@
 ; root R becomes (IfProp (Gt w 0) (Ctx (Gt w 0) R) (Ctx (Not (Gt w 0)) R)).
 ; In each arm w has a sign, the gated rules in rules.egg fire where the
 ; narrower box licenses them, and the conjugate follows.  An arm is a region
-; too, so splits nest, one variable per level.
+; too, so splits nest, each variable at most once along a chain.
 ;
 ; All of it runs in the `branch` ruleset, which the driver saturates once per
 ; round after the rewrite rules.
@@ -47,18 +47,14 @@
 ; -- leaves and regions -------------------------------------------------
 ; A leaf is a variable under any nest of contexts.  It is the only thing a
 ; guard can refine, and the only comparison a float program decides the way
-; the real one does.  Arm maps a region's predicate to the class at its root.
+; the real one does.
 
 (relation Leaf (Math))
 (rule ((= e (Var v))) ((Leaf e)) :ruleset branch)
 (rule ((= e (Ctx p a)) (Leaf a)) ((Leaf e)) :ruleset branch)
 
-(relation Arm (Prop Math))
-
 ; Splits p w: p reduced to the sign of leaf w, and w's box still straddles
-; zero.  Strictly: after a split, w reads [0, hi] in one arm and [lo, 0] in the
-; other, so no predicate on w splits either arm again.  That bounds nesting at
-; one level per variable.
+; zero.
 
 (relation Splits (Prop Math))
 (rule ((= p (Gt w (Num 0.0))) (Leaf w) (= l (lo w)) (< l 0.0) (= h (hi w)) (> h 0.0))
@@ -66,21 +62,44 @@
 (rule ((= p (Gt (Num 0.0) w)) (Leaf w) (= l (lo w)) (< l 0.0) (= h (hi w)) (> h 0.0))
       ((Splits p w)) :ruleset branch)
 
-; -- the split ----------------------------------------------------------
-; At the region's root: the program's root for a bare variable, the enclosing
-; arm for a context-wrapped one.  A variable the enclosing split left alone
-; collapses back into its global class (below), so that class holds the
-; wrapped copy and names the arm.  The union is idempotent: one IfProp per
-; region and variable, however many nodes ask for it.
+; A region is the program's root or an arm of a split.  (LeafIn r v w): region
+; r reads variable v as class w -- the bare variable at the root, and in an
+; arm the parent's leaf under the arm's guard.  That is the leaf the guard
+; refines, so a variable split on reads one-signed in the arm and every region
+; below it, and is never split there again; one the guard leaves alone
+; collapses back into its global class (below) and can be.  Nesting is
+; therefore at most one level per variable.
+;
+; The region has to be carried, not read off w.  Once (Ctx g (Var y))
+; collapses into (Var y), y's class holds contexts from every region that
+; reads y unconstrained, so a (Ctx q _) in w's class does not say which arm of
+; q the leaf was reached from.  Keying the split on that paired a leaf from
+; one region with an arm of another, and split x again inside x > 0, without
+; end.
+;
+; (Arm g a r): a is the arm of region r where g holds.  (After r k): r splits
+; only on variables the driver ranked above k, so a set of guards is built in
+; one order rather than in every order; every set is still reachable, since
+; Splits does not depend on the region.
 
-(rule ((Splits p w) (= w (Var v)) (Root r))
+(relation Rank (String i64))           ; set by the driver
+(relation LeafIn (Math String Math))
+(relation Arm (Prop Math Math))
+(relation After (Math i64))
+
+(rule ((Root r)) ((After r -1)) :ruleset branch)
+(rule ((Root r) (= w (Var v))) ((LeafIn r v w)) :ruleset branch)
+(rule ((Arm g a r) (LeafIn r v w)) ((LeafIn a v (Ctx g w))) :ruleset branch)
+
+; -- the split ----------------------------------------------------------
+; At the region's root.  The union is idempotent: one IfProp per region and
+; variable, however many nodes ask for it.
+
+(rule ((Splits p w) (LeafIn r v w) (After r k) (Rank v i) (> i k))
       ((let g (Gt w (Num 0.0)))
        (union r (IfProp g (Ctx g r) (Ctx (Not g) r)))
-       (Arm g (Ctx g r)) (Arm (Not g) (Ctx (Not g) r))) :ruleset branch)
-(rule ((Splits p w) (= w (Ctx q u)) (Arm q r))
-      ((let g (Gt w (Num 0.0)))
-       (union r (IfProp g (Ctx g r) (Ctx (Not g) r)))
-       (Arm g (Ctx g r)) (Arm (Not g) (Ctx (Not g) r))) :ruleset branch)
+       (Arm g (Ctx g r) r) (Arm (Not g) (Ctx (Not g) r) r)
+       (After (Ctx g r) i) (After (Ctx (Not g) r) i)) :ruleset branch)
 
 ; -- the conjugate ------------------------------------------------------
 ; rules.egg's conjugate is gated on its divisor being nonzero, which the
