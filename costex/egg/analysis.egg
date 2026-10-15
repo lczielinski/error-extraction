@@ -77,6 +77,21 @@
 (rule ((= h (rawhi e)))
       ((set (hi e) (max (* h 0.9999999999999998) (* h 1.0000000000000002)))) :ruleset ana)
 
+; A sum that lands in the subnormal range is exact, and a square root is never
+; subnormal, but a product or quotient can round there or underflow to zero,
+; where a relative step leaves the endpoint where it is.  So mul and div publish
+; to rawmlo/rawmhi, which also step out by the smallest subnormal, 2^-1074.
+
+(function rawmlo (Math) f64 :merge (max old new))
+(function rawmhi (Math) f64 :merge (min old new))
+
+(rule ((= l (rawmlo e)))
+      ((set (lo e) (min (min (* l 0.9999999999999998) (* l 1.0000000000000002))
+                        (- l 4.9406564584124654e-324)))) :ruleset ana)
+(rule ((= h (rawmhi e)))
+      ((set (hi e) (max (max (* h 0.9999999999999998) (* h 1.0000000000000002))
+                        (+ h 4.9406564584124654e-324)))) :ruleset ana)
+
 ; -- top ----------------------------------------------------------------
 
 (rule ((= e (Add a b))) ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
@@ -130,48 +145,59 @@
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (>= la 0.0) (> ha 0.0) (>= lb 0.0) (> hb 0.0))
-      ((set (rawlo e) (* la lb)) (set (rawhi e) (* ha hb))) :ruleset ana)
+      ((set (rawmlo e) (* la lb)) (set (rawmhi e) (* ha hb))) :ruleset ana)
 ; P * N
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (>= la 0.0) (> ha 0.0) (<= hb 0.0) (< lb 0.0))
-      ((set (rawlo e) (* ha lb)) (set (rawhi e) (* la hb))) :ruleset ana)
+      ((set (rawmlo e) (* ha lb)) (set (rawmhi e) (* la hb))) :ruleset ana)
 ; P * M
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (>= la 0.0) (> ha 0.0) (< lb 0.0) (> hb 0.0))
-      ((set (rawlo e) (* ha lb)) (set (rawhi e) (* ha hb))) :ruleset ana)
+      ((set (rawmlo e) (* ha lb)) (set (rawmhi e) (* ha hb))) :ruleset ana)
 ; N * P
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (<= ha 0.0) (< la 0.0) (>= lb 0.0) (> hb 0.0))
-      ((set (rawlo e) (* la hb)) (set (rawhi e) (* ha lb))) :ruleset ana)
+      ((set (rawmlo e) (* la hb)) (set (rawmhi e) (* ha lb))) :ruleset ana)
 ; N * N
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (<= ha 0.0) (< la 0.0) (<= hb 0.0) (< lb 0.0))
-      ((set (rawlo e) (* ha hb)) (set (rawhi e) (* la lb))) :ruleset ana)
+      ((set (rawmlo e) (* ha hb)) (set (rawmhi e) (* la lb))) :ruleset ana)
 ; N * M
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (<= ha 0.0) (< la 0.0) (< lb 0.0) (> hb 0.0))
-      ((set (rawlo e) (* la hb)) (set (rawhi e) (* la lb))) :ruleset ana)
+      ((set (rawmlo e) (* la hb)) (set (rawmhi e) (* la lb))) :ruleset ana)
 ; M * P
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< la 0.0) (> ha 0.0) (>= lb 0.0) (> hb 0.0))
-      ((set (rawlo e) (* la hb)) (set (rawhi e) (* ha hb))) :ruleset ana)
+      ((set (rawmlo e) (* la hb)) (set (rawmhi e) (* ha hb))) :ruleset ana)
 ; M * N
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< la 0.0) (> ha 0.0) (<= hb 0.0) (< lb 0.0))
-      ((set (rawlo e) (* ha lb)) (set (rawhi e) (* la lb))) :ruleset ana)
+      ((set (rawmlo e) (* ha lb)) (set (rawmhi e) (* la lb))) :ruleset ana)
 ; M * M
 (rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< la 0.0) (> ha 0.0) (< lb 0.0) (> hb 0.0))
-      ((set (rawlo e) (min (* la hb) (* ha lb)))
-       (set (rawhi e) (max (* la lb) (* ha hb)))) :ruleset ana)
+      ((set (rawmlo e) (min (* la hb) (* ha lb)))
+       (set (rawmhi e) (max (* la lb) (* ha hb)))) :ruleset ana)
+
+; The subnormal step costs a product its exact zero endpoints, as in
+; [0, 1] * [2, 3]; the operands' signs give them back.
+(rule ((= e (Mul a b)) (= la (lo a)) (= lb (lo b)) (>= la 0.0) (>= lb 0.0))
+      ((set (lo e) 0.0)) :ruleset ana)
+(rule ((= e (Mul a b)) (= ha (hi a)) (= hb (hi b)) (<= ha 0.0) (<= hb 0.0))
+      ((set (lo e) 0.0)) :ruleset ana)
+(rule ((= e (Mul a b)) (= la (lo a)) (= hb (hi b)) (>= la 0.0) (<= hb 0.0))
+      ((set (hi e) 0.0)) :ruleset ana)
+(rule ((= e (Mul a b)) (= ha (hi a)) (= lb (lo b)) (<= ha 0.0) (>= lb 0.0))
+      ((set (hi e) 0.0)) :ruleset ana)
 
 ; -- div ----------------------------------------------------------------
 ; Only fires when the divisor excludes zero; otherwise the quotient stays top.
@@ -182,32 +208,42 @@
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (> lb 0.0) (>= la 0.0))
-      ((set (rawlo e) (/ la hb)) (set (rawhi e) (/ ha lb))) :ruleset ana)
+      ((set (rawmlo e) (/ la hb)) (set (rawmhi e) (/ ha lb))) :ruleset ana)
 ; N / positive
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (> lb 0.0) (<= ha 0.0))
-      ((set (rawlo e) (/ la lb)) (set (rawhi e) (/ ha hb))) :ruleset ana)
+      ((set (rawmlo e) (/ la lb)) (set (rawmhi e) (/ ha hb))) :ruleset ana)
 ; M / positive
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (> lb 0.0) (< la 0.0) (> ha 0.0))
-      ((set (rawlo e) (/ la lb)) (set (rawhi e) (/ ha lb))) :ruleset ana)
+      ((set (rawmlo e) (/ la lb)) (set (rawmhi e) (/ ha lb))) :ruleset ana)
 ; P / negative
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< hb 0.0) (>= la 0.0))
-      ((set (rawlo e) (/ ha hb)) (set (rawhi e) (/ la lb))) :ruleset ana)
+      ((set (rawmlo e) (/ ha hb)) (set (rawmhi e) (/ la lb))) :ruleset ana)
 ; N / negative
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< hb 0.0) (<= ha 0.0))
-      ((set (rawlo e) (/ ha lb)) (set (rawhi e) (/ la hb))) :ruleset ana)
+      ((set (rawmlo e) (/ ha lb)) (set (rawmhi e) (/ la hb))) :ruleset ana)
 ; M / negative
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
        (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
        (< hb 0.0) (< la 0.0) (> ha 0.0))
-      ((set (rawlo e) (/ ha hb)) (set (rawhi e) (/ la hb))) :ruleset ana)
+      ((set (rawmlo e) (/ ha hb)) (set (rawmhi e) (/ la hb))) :ruleset ana)
+
+; and likewise for a quotient
+(rule ((= e (Div a b)) (= la (lo a)) (= lb (lo b)) (>= la 0.0) (> lb 0.0))
+      ((set (lo e) 0.0)) :ruleset ana)
+(rule ((= e (Div a b)) (= ha (hi a)) (= hb (hi b)) (<= ha 0.0) (< hb 0.0))
+      ((set (lo e) 0.0)) :ruleset ana)
+(rule ((= e (Div a b)) (= ha (hi a)) (= lb (lo b)) (<= ha 0.0) (> lb 0.0))
+      ((set (hi e) 0.0)) :ruleset ana)
+(rule ((= e (Div a b)) (= la (lo a)) (= hb (hi b)) (>= la 0.0) (< hb 0.0))
+      ((set (hi e) 0.0)) :ruleset ana)
 
 ; -- sqrt ---------------------------------------------------------------
 ; (max la 0.0) is load bearing: the radicand rule above may not have fired yet.
