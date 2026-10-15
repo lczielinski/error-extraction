@@ -3,10 +3,10 @@
 ; A Prop denotes a predicate on the reals, and every rule here must preserve its
 ; truth value at every v in B, the discipline rules.egg documents for Math.
 ;
-; An additive node e whose condition number exceeds KAPPA_MIN gets a predicate,
-; SameSgn or OppSgn of its operands, and the rules below reduce it, where they
-; can, to a comparison of one variable w against zero.  If w's box still
-; straddles zero where e is evaluated, e itself is split:
+; An additive node e whose condition number may exceed KAPPA_MIN gets a
+; predicate, SameSgn or OppSgn of its operands, and the rules below reduce it,
+; where they can, to a comparison of one variable w against zero.  If w's box
+; still straddles zero where e is evaluated, e itself is split:
 ; (IfProp (Gt w 0) (Ctx (Gt w 0) e) (Ctx (Not (Gt w 0)) e)) joins e's class.
 ; In each arm w has a sign, the gated rules in rules.egg fire where the
 ; narrower box licenses them, and the conjugate follows.  Only e's subterms are
@@ -15,17 +15,37 @@
 ; All of it runs in the `branch` ruleset, which the driver saturates once per
 ; round after the rewrite rules.
 
-; -- the predicate ------------------------------------------------------
-; x - c cancels where x and c share a sign; x + y where they differ.  A point
-; interval is skipped: cancellation there is exact, and there is nothing for a
-; branch to separate.  (Cancels e p): e asked for a split, and p is where it
-; cancels.
+; -- the trigger --------------------------------------------------------
+; The condition number of z = x + y is (|x| + |y|) / |z| (x - c reads y = -c):
+; how much relative errors in the operands are amplified in z.  It is exactly
+; 1 where x and y share a sign and exceeds 1 only where they differ, so x + y
+; can be ill-conditioned only where x and y can differ in sign, and x - c only
+; where x and c can share one.
+;
+; A node asks for a split when its operands' intervals allow that, and the
+; bound (max|x| + max|y|) / min|z| exceeds KAPPA_MIN, where min|z| is
+; max(0, lz, -hz), 0 while z straddles zero.  z's interval is the class's,
+; which every node in it shares, but the operands are the node's own, so two
+; nodes of one class can differ.  The sign test is one comparison:
+; max(min(hx, hc), -max(lx, lc)) > 0 says x and c can both be positive or both
+; negative; the Add form, one of each.  A point interval is skipped:
+; cancellation there is exact, and there is nothing for a branch to separate.
+;
+; (Cancels e p): e asked for a split, and p is where it can cancel.
 
 (relation Cancels (Math Prop))
 
-(rule ((= e (Sub x c)) (= k (kappa e)) (> k KAPPA_MIN) (= l (lo e)) (= h (hi e)) (< l h))
+(rule ((= e (Sub x c)) (= lz (lo e)) (= hz (hi e)) (< lz hz)
+       (= lx (lo x)) (= hx (hi x)) (= lc (lo c)) (= hc (hi c))
+       (> (max (min hx hc) (neg (max lx lc))) 0.0)
+       (> (+ (max (abs lx) (abs hx)) (max (abs lc) (abs hc)))
+          (* KAPPA_MIN (max 0.0 (max lz (neg hz))))))
       ((Cancels e (SameSgn x c))) :ruleset branch)
-(rule ((= e (Add x y)) (= k (kappa e)) (> k KAPPA_MIN) (= l (lo e)) (= h (hi e)) (< l h))
+(rule ((= e (Add x y)) (= lz (lo e)) (= hz (hi e)) (< lz hz)
+       (= lx (lo x)) (= hx (hi x)) (= ly (lo y)) (= hy (hi y))
+       (> (max (min hx (neg ly)) (min (neg lx) hy)) 0.0)
+       (> (+ (max (abs lx) (abs hx)) (max (abs ly) (abs hy)))
+          (* KAPPA_MIN (max 0.0 (max lz (neg hz))))))
       ((Cancels e (OppSgn x y))) :ruleset branch)
 
 (birewrite (SameSgn a b) (SameSgn b a) :ruleset branch)

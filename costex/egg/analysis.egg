@@ -224,53 +224,6 @@
 (rule ((= e (IfProp p t f)) (= ht (hi t)) (= hf (hi f)))
       ((set (hi e) (max ht hf))) :ruleset ana)
 
-; -- condition number ---------------------------------------------------
-; kappa(e) bounds the atomic condition number (|x| + |y|) / |x + y| of an
-; additive node e = x + y; a Sub reads y = -c.  With lambda = x/z it is
-; |lambda| + |1 - lambda|, and lambda is enclosed by both x/z and 1 - y/z, so
-; lamlo and lamhi merge as an intersection.  INF while z straddles zero.
-; Merging by min is sound because intervals only shrink.
-;
-; The quotient rules need every operand finite and z one-signed; (* lz hz) > 0
-; says both endpoints of z are nonzero and of one sign.  egglog's / panics on a
-; zero divisor rather than returning inf.
-
-(function kappa (Math) f64 :merge (min old new))
-(function lamlo (Math) f64 :merge (max old new))
-(function lamhi (Math) f64 :merge (min old new))
-
-(rule ((= e (Add x y)) (= lz (lo e)) (= hz (hi e)) (<= lz 0.0) (>= hz 0.0))
-      ((set (kappa e) inf)) :ruleset ana)
-(rule ((= e (Sub x c)) (= lz (lo e)) (= hz (hi e)) (<= lz 0.0) (>= hz 0.0))
-      ((set (kappa e) inf)) :ruleset ana)
-
-; x / z, for either node shape
-(rule ((= e (Add x y)) (= lx (lo x)) (= hx (hi x)) (= lz (lo e)) (= hz (hi e))
-       (> lx -inf) (< hx inf) (> lz -inf) (< hz inf) (> (* lz hz) 0.0))
-      ((set (lamlo e) (min (min (/ lx lz) (/ lx hz)) (min (/ hx lz) (/ hx hz))))
-       (set (lamhi e) (max (max (/ lx lz) (/ lx hz)) (max (/ hx lz) (/ hx hz)))))
-      :ruleset ana)
-(rule ((= e (Sub x c)) (= lx (lo x)) (= hx (hi x)) (= lz (lo e)) (= hz (hi e))
-       (> lx -inf) (< hx inf) (> lz -inf) (< hz inf) (> (* lz hz) 0.0))
-      ((set (lamlo e) (min (min (/ lx lz) (/ lx hz)) (min (/ hx lz) (/ hx hz))))
-       (set (lamhi e) (max (max (/ lx lz) (/ lx hz)) (max (/ hx lz) (/ hx hz)))))
-      :ruleset ana)
-; 1 - y/z.  For a Sub, y = -c, so 1 - y/z = 1 + c/z.
-(rule ((= e (Add x y)) (= ly (lo y)) (= hy (hi y)) (= lz (lo e)) (= hz (hi e))
-       (> ly -inf) (< hy inf) (> lz -inf) (< hz inf) (> (* lz hz) 0.0))
-      ((set (lamlo e) (- 1.0 (max (max (/ ly lz) (/ ly hz)) (max (/ hy lz) (/ hy hz)))))
-       (set (lamhi e) (- 1.0 (min (min (/ ly lz) (/ ly hz)) (min (/ hy lz) (/ hy hz))))))
-      :ruleset ana)
-(rule ((= e (Sub x c)) (= lc (lo c)) (= hc (hi c)) (= lz (lo e)) (= hz (hi e))
-       (> lc -inf) (< hc inf) (> lz -inf) (< hz inf) (> (* lz hz) 0.0))
-      ((set (lamlo e) (+ 1.0 (min (min (/ lc lz) (/ lc hz)) (min (/ hc lz) (/ hc hz)))))
-       (set (lamhi e) (+ 1.0 (max (max (/ lc lz) (/ lc hz)) (max (/ hc lz) (/ hc hz))))))
-      :ruleset ana)
-
-(rule ((= l (lamlo e)) (= h (lamhi e)) (<= l h))
-      ((set (kappa e) (+ (max (abs l) (abs h))
-                         (max (abs (- 1.0 l)) (abs (- 1.0 h)))))) :ruleset ana)
-
 ; -- contexts -----------------------------------------------------------
 ; A context inherits its subject's interval, since its region is part of B, and
 ; the refinement rules in branch.egg then tighten the leaves it constrains.
