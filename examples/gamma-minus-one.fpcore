@@ -1,4 +1,0 @@
-(FPCore (v)
-  :name "gamma - 1"
-  :pre (<= -0.9 v 0.9)
-  (/ (- 1 (sqrt (- 1 (* v v)))) (sqrt (- 1 (* v v)))))

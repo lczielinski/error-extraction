@@ -1,0 +1,17 @@
+\begin{table}[H] \centering \small
+\caption{Bounds on Benchmark (1), relative to ours, over the cores where both bound the error; a core only the tool bounds counts as ours looser.}\label{tab:tightness}
+\begin{tabular}{llrrrrc}
+\toprule
+Error & Tool & Supported & Failed & Geomean Ratio & Median Ratio & Ours tighter/tie/looser \\
+\midrule
+Absolute & FPTaylor & 362 & 8 & 0.607 & 0.828 & 74/23/265 \\
+ & Gappa & 370 & 0 & 2.29 & 0.928 & 87/43/240 \\
+ & Daisy & 358 & 12 & 3.42 & 1 & 140/161/57 \\
+ & Numerors & -- & -- & -- & -- & -- \\
+\midrule
+Relative & FPTaylor & 287 & 83 & 0.85 & 0.988 & 118/2/167 \\
+ & Gappa & 275 & 95 & 1.02 & 1 & 28/99/148 \\
+ & Numerors & -- & -- & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\end{table}

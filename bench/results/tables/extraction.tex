@@ -1,0 +1,15 @@
+\begin{table}[H] \centering
+\caption{Extracting by size and then bounding, compared to our extraction, on Benchmark (2); bound ratios cover the 86 cores where every method's program has a bound, and sampled ratios the 88 where every program was measured.}\label{tab:extraction}
+\begin{tabular}{lrrrrrr}
+\toprule
+& \multicolumn{2}{c}{Bound Ratio} & \multicolumn{2}{c}{Max Sampled Ratio} & & \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Method & Geomean & Median & Geomean & Median & Ours strictly better & Time (s) \\
+\midrule
+Size, top-1 & 0.494 & 1 & 0.192 & 1 & 58 & 111 \\
+Size, top-10 & 0.000121 & 1 & 0.0679 & 1 & 49 & 182 \\
+Size, top-100 & 7.79e-05 & 0.988 & 0.0656 & 1 & 42 & 742 \\
+Ours & 6.54e-05 & 0.8 & 0.0906 & 0.996 & -- & 496 \\
+\bottomrule
+\end{tabular}
+\end{table}

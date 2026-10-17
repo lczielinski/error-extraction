@@ -1,0 +1,14 @@
+\begin{table}[H] \centering
+\caption{Accuracy of rewritten programs on Benchmark (2), over the 82 cores where every tool returned a program equal to its input; the sound bounds cover the 79 of them where FPTaylor or Gappa bounds every program, and sampled errors the 82 where none is exact.}\label{tab:accuracy}
+\begin{tabular}{lrrrrrrr}
+\toprule
+& \multicolumn{2}{c}{Sound Bound Ratio} & \multicolumn{2}{c}{Max Sampled Ratio} & \multicolumn{2}{c}{Avg Sampled Ratio} & \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Tool & Geomean & Median & Geomean & Median & Geomean & Median & Speed \\
+\midrule
+Herbie & 0.203 & 0.969 & 0.0234 & 0.746 & 0.103 & 0.889 & 1.11 \\
+Daisy & 0.377 & 1 & 0.324 & 1 & 0.536 & 1 & 1.08 \\
+Ours & 0.254 & 0.909 & 0.215 & 0.998 & 0.275 & 0.948 & 1.11 \\
+\bottomrule
+\end{tabular}
+\end{table}

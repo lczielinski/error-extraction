@@ -1,0 +1,15 @@
+\begin{table}[H] \centering
+\caption{Ablations on Benchmark (2), without branching. Each metric compares the variants that track it, over the 85 (absolute) and 26 (relative) cores where all of them have a bound.}\label{tab:ablation}
+\begin{tabular}{lrrrrrr}
+\toprule
+& \multicolumn{2}{c}{Abs.\ Bound Ratio} & \multicolumn{2}{c}{Rel.\ Bound Ratio} & & \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Variant & Geomean & Median & Geomean & Median & No program & Time (s) \\
+\midrule
+Greedy readout & 0.247 & 0.796 & 3.74e-13 & 0.706 & 5 & 183 \\
+Absolute error only & 0.248 & 0.796 & -- & -- & 7 & 132 \\
+Relative error only & -- & -- & 3.76e-13 & 0.706 & 66 & 107 \\
+Ours & 0.246 & 0.795 & 3.74e-13 & 0.706 & 5 & 496 \\
+\bottomrule
+\end{tabular}
+\end{table}

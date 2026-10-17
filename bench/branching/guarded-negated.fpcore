@@ -1,4 +1,5 @@
 (FPCore (x)
   :name "-sqrt(x*x+1) - x"
+  :cx-expected "(> x 0)"
   :pre (<= -10 x 10)
   (- (- (sqrt (+ (* x x) 1))) x))

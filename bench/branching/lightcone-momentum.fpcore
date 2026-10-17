@@ -1,0 +1,5 @@
+(FPCore (m p)
+  :name "E + p"
+  :cx-expected "(> p 0)"
+  :pre (and (<= 0.1 m 1) (<= -10 p 10))
+  (+ (sqrt (+ (* m m) (* p p))) p))

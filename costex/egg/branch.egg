@@ -1,135 +1,18 @@
-; Branching.
-;
-; A Prop denotes a predicate on the reals, and every rule here must preserve its
-; truth value at every v in B, the discipline rules.egg documents for Math.
-;
-; An additive node e whose condition number may exceed KAPPA_MIN gets a
-; predicate, SameSgn or OppSgn of its operands, and the rules below reduce it,
-; where they can, to a comparison of one variable w against zero.  If w's box
-; still straddles zero where e is evaluated, e itself is split:
-; (IfProp (Gt w 0) (Ctx (Gt w 0) e) (Ctx (Not (Gt w 0)) e)) joins e's class.
-; In each arm w has a sign, the gated rules in rules.egg fire where the
-; narrower box licenses them, and the conjugate follows.  Only e's subterms are
-; copied, and the arms join again at e.
-;
-; All of it runs in the `branch` ruleset, which the driver saturates once per
-; round after the rewrite rules.
+; (SignOf e x): on e's region, the sign of e is that of the variable x, or its opposite.
+(relation SignOf (Math String))
+(rule ((= e (Var x))) ((SignOf e x)) :ruleset branch)
+(rule ((= e (Neg a)) (SignOf a x)) ((SignOf e x)) :ruleset branch)
+(rule ((= e (Mul a b)) (SignOf a x) (Nonzero b)) ((SignOf e x)) :ruleset branch)
 
-; -- the trigger --------------------------------------------------------
-; The condition number of z = x + y is (|x| + |y|) / |z| (x - c reads y = -c):
-; how much relative errors in the operands are amplified in z.  It is exactly
-; 1 where x and y share a sign and exceeds 1 only where they differ, so x + y
-; can be ill-conditioned only where x and y can differ in sign, and x - c only
-; where x and c can share one.
-;
-; A node asks for a split when its operands' intervals allow that, and the
-; bound (max|x| + max|y|) / min|z| exceeds KAPPA_MIN, where min|z| is
-; max(0, lz, -hz), 0 while z straddles zero.  z's interval is the class's,
-; which every node in it shares, but the operands are the node's own, so two
-; nodes of one class can differ.  The sign test is one comparison:
-; max(min(hx, hc), -max(lx, lc)) > 0 says x and c can both be positive or both
-; negative; the Add form, one of each.  A point interval is skipped:
-; cancellation there is exact, and there is nothing for a branch to separate.
-;
-; (Cancels e p): e asked for a split, and p is where it can cancel.
+; Split a + b where a's sign follows x, b's is fixed, and the condition number
+; (|a| + |b|) / |a + b| may exceed ten. Each arm also gets a - b, for the conjugate below.
+(rule ((= e (Add a b)) (SignOf a x) (Nonzero b) (= lx (lo (Var x))) (= hx (hi (Var x))) (< lx 0.0) (> hx 0.0)
+       (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b)) (= le (lo e)) (= he (hi e))
+       (> (+ (max (neg la) ha) (max (neg lb) hb)) (* 10.0 (max 0.0 (max le (neg he))))))
+      ((union e (If x 0.0 (Ctx x 0.0 true e) (Ctx x 0.0 false e)))
+       (Add (Ctx x 0.0 true a) (Neg (Ctx x 0.0 true b)))
+       (Add (Ctx x 0.0 false a) (Neg (Ctx x 0.0 false b)))) :ruleset branch)
 
-(relation Cancels (Math Prop))
-
-(rule ((= e (Sub x c)) (= lz (lo e)) (= hz (hi e)) (< lz hz)
-       (= lx (lo x)) (= hx (hi x)) (= lc (lo c)) (= hc (hi c))
-       (> (max (min hx hc) (neg (max lx lc))) 0.0)
-       (> (+ (max (abs lx) (abs hx)) (max (abs lc) (abs hc)))
-          (* KAPPA_MIN (max 0.0 (max lz (neg hz))))))
-      ((Cancels e (SameSgn x c))) :ruleset branch)
-(rule ((= e (Add x y)) (= lz (lo e)) (= hz (hi e)) (< lz hz)
-       (= lx (lo x)) (= hx (hi x)) (= ly (lo y)) (= hy (hi y))
-       (> (max (min hx (neg ly)) (min (neg lx) hy)) 0.0)
-       (> (+ (max (abs lx) (abs hx)) (max (abs ly) (abs hy)))
-          (* KAPPA_MIN (max 0.0 (max lz (neg hz))))))
-      ((Cancels e (OppSgn x y))) :ruleset branch)
-
-(birewrite (SameSgn a b) (SameSgn b a) :ruleset branch)
-(birewrite (OppSgn a b) (OppSgn b a) :ruleset branch)
-
-; -- reduction ----------------------------------------------------------
-; Each step is an equivalence on the reals.  A sign-definite operand fixes the
-; other's sign; a root is positive exactly where its radicand is; a negation
-; flips the side; a product's sign is a SameSgn.
-
-(rule ((= p (SameSgn a b)) (Pos b))      ((union p (Gt a (Num 0.0)))) :ruleset branch)
-(rule ((= p (SameSgn a b)) (Negative b)) ((union p (Gt (Num 0.0) a))) :ruleset branch)
-(rule ((= p (OppSgn a b))  (Pos b))      ((union p (Gt (Num 0.0) a))) :ruleset branch)
-(rule ((= p (OppSgn a b))  (Negative b)) ((union p (Gt a (Num 0.0)))) :ruleset branch)
-(rewrite (SameSgn a (Neg b)) (OppSgn a b) :ruleset branch)
-(rewrite (OppSgn a (Neg b)) (SameSgn a b) :ruleset branch)
-(rewrite (Gt (Sqrt a) (Num 0.0)) (Gt a (Num 0.0)) :ruleset branch)
-(rewrite (Gt (Neg a) (Num 0.0)) (Gt (Num 0.0) a) :ruleset branch)
-(rewrite (Gt (Num 0.0) (Neg a)) (Gt a (Num 0.0)) :ruleset branch)
-(rule ((= p (Gt (Mul a b) (Num 0.0)))) ((union p (SameSgn a b))) :ruleset branch)
-
-; -- leaves -------------------------------------------------------------
-; A leaf is a variable under any nest of contexts.  It is the only thing a
-; guard can refine, and the only comparison a float program decides the way
-; the real one does.  Computed in dist, which makes the context-wrapped ones,
-; so the analysis that runs next can already narrow them.
-
-(relation Leaf (Math))
-(rule ((= e (Var v))) ((Leaf e)) :ruleset dist)
-(rule ((= e (Ctx p a)) (Leaf a)) ((Leaf e)) :ruleset dist)
-
-; Splits p w: p reduced to the sign of leaf w, and w's box still straddles
-; zero.
-
-(relation Splits (Prop Math))
-(rule ((= p (Gt w (Num 0.0))) (Leaf w) (= l (lo w)) (< l 0.0) (= h (hi w)) (> h 0.0))
-      ((Splits p w)) :ruleset branch)
-(rule ((= p (Gt (Num 0.0) w)) (Leaf w) (= l (lo w)) (< l 0.0) (= h (hi w)) (> h 0.0))
-      ((Splits p w)) :ruleset branch)
-
-; -- the split ----------------------------------------------------------
-; At the node that asked.  The union is idempotent: one IfProp per node and
-; variable.  An arm's own nodes can ask in turn, and split it on another
-; variable; never on w, which reads one-signed in both arms and in every
-; context below them.  Nesting is therefore at most one level per variable.
-
-(rule ((Cancels e p) (Splits p w))
-      ((let g (Gt w (Num 0.0)))
-       (union e (IfProp g (Ctx g e) (Ctx (Not g) e)))) :ruleset branch)
-
-; -- the conjugate ------------------------------------------------------
-; rules.egg's conjugate is gated on its divisor being nonzero, which the
-; narrower box in the same-sign arm proves, so it fires there on its own.  The
-; Add form is the same rule mirrored.
-
-(rule ((= e (Add x y)) (= s (Sub x y)) (Nonzero s))
-      ((union e (Div (Sub (Mul x x) (Mul y y)) s))) :ruleset opt)
-
-; The divisor is built in both arms the round the split happens.  rules.egg's
-; prep would build the same node after distribution, a round later; having it
-; now lets the analysis bound it and the conjugate fire a round sooner.
-
-(rule ((= e (Sub x c)) (= p (SameSgn x c)) (Splits p w))
-      ((let g (Gt w (Num 0.0)))
-       (Add (Ctx g x) (Ctx g c)) (Add (Ctx (Not g) x) (Ctx (Not g) c))) :ruleset branch)
-(rule ((= e (Add x y)) (= p (OppSgn x y)) (Splits p w))
-      ((let g (Gt w (Num 0.0)))
-       (Sub (Ctx g x) (Ctx g y)) (Sub (Ctx (Not g) x) (Ctx (Not g) y))) :ruleset branch)
-
-; -- reading a guard as a box -------------------------------------------
-; Only a leaf is narrowed.  The guard's class can hold other comparisons the
-; reduction made equivalent to it -- some only inside another context, by sign
-; facts that hold there -- but the program tests the leaf, so that is all an
-; arm may assume.
-
-(rule ((= e (Ctx p w)) (= p (Gt w (Num k))) (Leaf w)) ((set (lo e) k)) :ruleset ana)
-(rule ((= e (Ctx q w)) (= q (Not p)) (= p (Gt w (Num k))) (Leaf w)) ((set (hi e) k)) :ruleset ana)
-
-; A leaf the guard does not constrain reads the same in both arms, so it stays
-; in the enclosing class; a context then costs only the subterms that depend
-; on the split.  Leaf is what keeps this from being the fatal union
-; analysis.egg warns of.
-
-(rule ((= e (Ctx p u)) (Leaf u) (= p (Gt w (Num k))) (Leaf w) (!= u w))
-      ((union e u)) :ruleset dist)
-(rule ((= e (Ctx q u)) (= q (Not p)) (Leaf u) (= p (Gt w (Num k))) (Leaf w) (!= u w))
-      ((union e u)) :ruleset dist)
+; a + b = (a*a - b*b) / (a - b)
+(rule ((= e (Add a b)) (= d (Add a (Neg b))) (Nonzero d))
+      ((union e (Div (Add (Mul a a) (Neg (Mul b b))) d))) :ruleset opt)

@@ -1,0 +1,337 @@
+{
+ "branching/guarded-hypot.fpcore": {
+  "expected": "(> x 0)",
+  "original": {
+   "program": "(- (sqrt (+ (* x x) 1)) x)",
+   "measured": {
+    "ulps": 174,
+    "mean": 1.0184,
+    "abs": 2.802530498880184e-15,
+    "rel": 2.3719833548581624e-14,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 9.769962616701392e-15,
+    "rel": Infinity
+   },
+   "ns": 0.531689
+  },
+  "ours-plain": {
+   "program": "(- (sqrt (+ (* x x) 1)) x)",
+   "measured": {
+    "ulps": 174,
+    "mean": 1.0184,
+    "abs": 2.802530498880184e-15,
+    "rel": 2.3719833548581624e-14,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 9.769962616701392e-15,
+    "rel": Infinity
+   },
+   "ns": 0.532822
+  },
+  "ours": {
+   "program": "(if (> x 0) (/ 1 (+ x (sqrt (+ (* x x) 1)))) (+ (- x) (sqrt (+ (* x x) 1))))",
+   "measured": {
+    "ulps": 4,
+    "mean": 1.0195,
+    "abs": 2.802530498880184e-15,
+    "rel": 2.930978153086962e-16,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 9.769962616701392e-15,
+    "rel": 8.215650382226242e-15
+   },
+   "ns": 0.724979
+  },
+  "herbie": {
+   "program": "(/ 1 (+ (sqrt (- (* x x) -1)) x))",
+   "measured": {
+    "ulps": 133,
+    "mean": 1.0304,
+    "abs": 4.677744212012678e-13,
+    "rel": 2.356484288005875e-14,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": Infinity,
+    "rel": Infinity
+   },
+   "ns": 0.821895
+  }
+ },
+ "branching/guarded-negated.fpcore": {
+  "expected": "(> x 0)",
+  "original": {
+   "program": "(- (- (sqrt (+ (* x x) 1))) x)",
+   "measured": {
+    "ulps": 178,
+    "mean": 1.0437,
+    "abs": 1.2283725185058781e-15,
+    "rel": 2.233226958308666e-14,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 9.769962616701392e-15,
+    "rel": Infinity
+   },
+   "ns": 0.533974
+  },
+  "ours-plain": {
+   "program": "(- (- (sqrt (+ (* x x) 1))) x)",
+   "measured": {
+    "ulps": 178,
+    "mean": 1.0437,
+    "abs": 1.2283725185058781e-15,
+    "rel": 2.233226958308666e-14,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 9.769962616701392e-15,
+    "rel": Infinity
+   },
+   "ns": 0.533348
+  },
+  "ours": {
+   "program": "(- (- (sqrt (+ (* x x) 1))) x)",
+   "measured": {
+    "ulps": 178,
+    "mean": 1.0437,
+    "abs": 1.2283725185058781e-15,
+    "rel": 2.233226958308666e-14,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 9.769962616701392e-15,
+    "rel": Infinity
+   },
+   "ns": 0.534088
+  },
+  "herbie": {
+   "program": "(- (- (sqrt (- (* x x) -1))) x)",
+   "measured": {
+    "ulps": 178,
+    "mean": 1.0437,
+    "abs": 1.2283725185058781e-15,
+    "rel": 2.233226958308666e-14,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 9.769962616701392e-15,
+    "rel": Infinity
+   },
+   "ns": 0.533931
+  }
+ },
+ "branching/guarded.fpcore": {
+  "expected": "(> b 0)",
+  "original": {
+   "program": "(+ (- b) (sqrt (- (* b b) d)))",
+   "measured": {
+    "ulps": 246,
+    "mean": 1.03,
+    "abs": 3.063278809449539e-15,
+    "rel": 2.752600029000238e-14,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 9.769962616701392e-15,
+    "rel": Infinity
+   },
+   "ns": 0.531802
+  },
+  "ours-plain": {
+   "program": "(+ (- b) (sqrt (- (* b b) d)))",
+   "measured": {
+    "ulps": 246,
+    "mean": 1.03,
+    "abs": 3.063278809449539e-15,
+    "rel": 2.752600029000238e-14,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 9.769962616701392e-15,
+    "rel": Infinity
+   },
+   "ns": 0.53135
+  },
+  "ours": {
+   "program": "(if (> b 0) (/ (- d) (+ b (sqrt (- (* b b) d)))) (- (sqrt (- (* b b) d)) b))",
+   "measured": {
+    "ulps": 3,
+    "mean": 1.2592,
+    "abs": 3.063278809449539e-15,
+    "rel": 2.530561023329436e-16,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 1.643130076445249e-14,
+    "rel": 8.215650382226242e-15
+   },
+   "ns": 0.765667
+  },
+  "herbie": {
+   "program": "(- (sqrt (- (* b b) d)) b)",
+   "measured": {
+    "ulps": 246,
+    "mean": 1.03,
+    "abs": 3.063278809449539e-15,
+    "rel": 2.752600029000238e-14,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 9.769962616701392e-15,
+    "rel": Infinity
+   },
+   "ns": 0.531364
+  }
+ },
+ "branching/lightcone-energy.fpcore": {
+  "expected": "(> p 0)",
+  "original": {
+   "program": "(- (sqrt (+ (* m m) (* p p))) p)",
+   "measured": {
+    "ulps": 7714,
+    "mean": 1.9524,
+    "abs": 8.362565576992307e-16,
+    "rel": 1.1092207742530862e-12,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 7.372314564381298e-14,
+    "rel": Infinity
+   },
+   "ns": 0.536092
+  },
+  "ours-plain": {
+   "program": "(- (sqrt (+ (* m m) (* p p))) p)",
+   "measured": {
+    "ulps": 7714,
+    "mean": 1.9524,
+    "abs": 8.362565576992307e-16,
+    "rel": 1.1092207742530862e-12,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 7.372314564381298e-14,
+    "rel": Infinity
+   },
+   "ns": 0.536249
+  },
+  "ours": {
+   "program": "(if (> p 0) (/ (* m m) (+ p (sqrt (+ (* m m) (* p p))))) (+ (- p) (sqrt (+ (* m m) (* p p)))))",
+   "measured": {
+    "ulps": 3,
+    "mean": 1.258,
+    "abs": 4.0893508690941765e-16,
+    "rel": 2.6806595700855575e-16,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 7.372314564381298e-14,
+    "rel": 7.197766688233696e-13
+   },
+   "ns": 0.719114
+  },
+  "herbie": {
+   "program": "(- (sqrt (+ (* m m) (* p p))) p)",
+   "measured": {
+    "ulps": 7714,
+    "mean": 1.9524,
+    "abs": 8.362565576992307e-16,
+    "rel": 1.1092207742530862e-12,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 7.372314564381298e-14,
+    "rel": Infinity
+   },
+   "ns": 0.536725
+  }
+ },
+ "branching/lightcone-momentum.fpcore": {
+  "expected": "(> p 0)",
+  "original": {
+   "program": "(+ (sqrt (+ (* m m) (* p p))) p)",
+   "measured": {
+    "ulps": 14853,
+    "mean": 1.8057,
+    "abs": 1.823274445907599e-15,
+    "rel": 2.3288599436884494e-12,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 7.427392034743591e-14,
+    "rel": Infinity
+   },
+   "ns": 0.536222
+  },
+  "ours-plain": {
+   "program": "(+ (sqrt (+ (* m m) (* p p))) p)",
+   "measured": {
+    "ulps": 14853,
+    "mean": 1.8057,
+    "abs": 1.823274445907599e-15,
+    "rel": 2.3288599436884494e-12,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 7.427392034743591e-14,
+    "rel": Infinity
+   },
+   "ns": 0.53638
+  },
+  "ours": {
+   "program": "(if (> p 0) (+ p (sqrt (+ (* m m) (* p p)))) (/ (- (* m m)) (- p (sqrt (+ (* m m) (* p p))))))",
+   "measured": {
+    "ulps": 3,
+    "mean": 1.0538,
+    "abs": 1.823274445907599e-15,
+    "rel": 2.696692123211077e-16,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 7.252864975277787e-12,
+    "rel": 7.253087019882706e-13
+   },
+   "ns": 0.879933
+  },
+  "herbie": {
+   "program": "(+ (sqrt (+ (* m m) (* p p))) p)",
+   "measured": {
+    "ulps": 14853,
+    "mean": 1.8057,
+    "abs": 1.823274445907599e-15,
+    "rel": 2.3288599436884494e-12,
+    "failed": 0,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 7.427392034743591e-14,
+    "rel": Infinity
+   },
+   "ns": 0.536495
+  }
+ }
+}

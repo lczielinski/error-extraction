@@ -1,287 +1,101 @@
-; Class intervals I_c, computed during saturation.
-;
-; I_c is the greatest fixed point of
-;     I_c = (intersection over e-nodes f(c1..ck) of c) f(I_c1..I_ck)  intersect  R_c
-; where R_c = [0,inf) when some class holds an e-node (Sqrt c).
-;
-; lo merges by max and hi by min, so the merge IS the intersection over the
-; e-nodes of a class, and iteration runs downward from top. Intervals therefore
-; only ever shrink, so a rewrite gated on an interval stays valid once it fires.
-
-; A guarded node carries its own precondition, so it needs no interval gate:
-; (IfProp p t f) is total and equal to both arms wherever each is defined, and
-; the arms are context copies of one value, so its interval is their hull.
-; Prop and Math are mutually recursive, hence datatype*.
-
-(datatype*
-  (Math
-    (Num f64)        ; a value exactly representable in the target format
-    (Lit i64)        ; index into the driver's table of inexact constants
-    (Var String)
-    (Add Math Math)
-    (Sub Math Math)
-    (Mul Math Math)
-    (Div Math Math)
-    (Neg Math)
-    (Sqrt Math)
-    (IfProp Prop Math Math)
-    (Ctx Prop Math))       ; e, reasoned about on the region where p holds
-  (Prop
-    (Gt Math Math)         ; a > b over the reals
-    (Not Prop)             ; the else arm's region
-    (SameSgn Math Math)    ; a*b > 0: both nonzero and of one sign
-    (OppSgn Math Math)))   ; a*b < 0: both nonzero and of opposite sign
-
-; (Ctx p e) denotes the same value as e.  It is kept in its own class ONLY so
-; that an equality or an interval derived under p stays there -- egglog's union
-; is global, so a rule unioning (Ctx p a) with a would collapse every context at
-; once and stop the mechanism working.  Never write that rule.
-;
-; It cannot be checked cheaply, and the reason is worth knowing: collapsing a
-; context into its subject is exactly what branch.egg's unconstrained-variable
-; rule does on purpose, and it is how the arms share everything the split does
-; not touch.  The intended collapse and the fatal one are the same operation,
-; distinguished only by whether the guard constrains what is being collapsed --
-; so a detector has to know the guard's variable, not just spot the union.
-;
-; The tighter interval a context carries is an enclosure on p's region, not on
-; B, so it is sound only because (Ctx p e) is reached only through the arm of an
-; (IfProp p ...).  A rule putting a context term into a class that is evaluated
-; unconditionally would be unsound, not merely imprecise.  This is the same
-; obligation rules.egg's header records, and it is why every gated rule builds
-; its right hand side from matched subterms.
-
-(function lo (Math) f64 :merge (max old new))
-(function hi (Math) f64 :merge (min old new))
-
-; an empty interval means the input box breaks the definedness assumption
-(relation Bad (Math))
+(datatype Math
+  (Num f64)
+  (Lit String)
+  (Var String)
+  (Add Math Math)
+  (Mul Math Math)
+  (Div Math Math)
+  (Neg Math)
+  (Sqrt Math)
+  (If String f64 Math Math)
+  (Ctx String f64 bool Math))
 
 (ruleset ana)
 (ruleset opt)
 (ruleset dist)
-(ruleset branch)          ; branch.egg
+(ruleset branch)
 
+(relation Root (Math))
+(relation Bad (Math))
+(function lo (Math) f64 :merge (max old new))
+(function hi (Math) f64 :merge (min old new))
 
-; -- widening -----------------------------------------------------------
-; The arithmetic rules below evaluate their formulas in f64, so each endpoint
-; carries the error of the handful of roundings that formula performed. They
-; publish to rawlo/rawhi, and these two rules move an endpoint one relative
-; 2^-52 outward on the way to lo/hi -- more than enough to cover that.
-
-(function rawlo (Math) f64 :merge (max old new))
-(function rawhi (Math) f64 :merge (min old new))
-
-(rule ((= l (rawlo e)))
+; f64 rounds each formula below, so the result moves one relative step outward, and a
+; product or quotient, which can round into the subnormals, also one subnormal step.
+; A bound that overflowed toward the inside says nothing and is dropped.
+(function rlo (Math) f64 :merge (max old new))
+(function rhi (Math) f64 :merge (min old new))
+(function rmlo (Math) f64 :merge (max old new))
+(function rmhi (Math) f64 :merge (min old new))
+(rule ((= l (rlo e)) (< l inf))
       ((set (lo e) (min (* l 0.9999999999999998) (* l 1.0000000000000002)))) :ruleset ana)
-(rule ((= h (rawhi e)))
+(rule ((= h (rhi e)) (> h -inf))
       ((set (hi e) (max (* h 0.9999999999999998) (* h 1.0000000000000002)))) :ruleset ana)
+(rule ((= l (rmlo e)) (< l inf))
+      ((set (lo e) (min (min (* l 0.9999999999999998) (* l 1.0000000000000002)) (- l 4.9406564584124654e-324)))) :ruleset ana)
+(rule ((= h (rmhi e)) (> h -inf))
+      ((set (hi e) (max (max (* h 0.9999999999999998) (* h 1.0000000000000002)) (+ h 4.9406564584124654e-324)))) :ruleset ana)
 
-; A sum that lands in the subnormal range is exact, and a square root is never
-; subnormal, but a product or quotient can round there or underflow to zero,
-; where a relative step leaves the endpoint where it is.  So mul and div publish
-; to rawmlo/rawmhi, which also step out by the smallest subnormal, 2^-1074.
-
-(function rawmlo (Math) f64 :merge (max old new))
-(function rawmhi (Math) f64 :merge (min old new))
-
-(rule ((= l (rawmlo e)))
-      ((set (lo e) (min (min (* l 0.9999999999999998) (* l 1.0000000000000002))
-                        (- l 4.9406564584124654e-324)))) :ruleset ana)
-(rule ((= h (rawmhi e)))
-      ((set (hi e) (max (max (* h 0.9999999999999998) (* h 1.0000000000000002))
-                        (+ h 4.9406564584124654e-324)))) :ruleset ana)
-
-; -- top ----------------------------------------------------------------
-
-(rule ((= e (Add a b))) ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
-(rule ((= e (Sub a b))) ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
-(rule ((= e (Mul a b))) ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
-(rule ((= e (Div a b))) ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
-(rule ((= e (Neg a)))   ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
-(rule ((= e (Sqrt a)))  ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
-(rule ((= e (IfProp p t f))) ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
-(rule ((= e (Ctx p a))) ((set (lo e) -inf) (set (hi e) inf)) :ruleset ana)
-
-; -- leaves and the radicand constraint ---------------------------------
-; Var and Lit bounds are seeded by the driver. A Num is exactly representable
-; and negation is exact, so neither needs widening.
+(rule ((= l (lo e)) (= h (hi e)) (> l h)) ((Bad e)) :ruleset ana)
 
 (rule ((= e (Num n))) ((set (lo e) n) (set (hi e) n)) :ruleset ana)
 
-(rule ((= e (Sqrt a))) ((set (lo a) 0.0)) :ruleset ana)
+(rule ((= e (Neg a)) (= h (hi a))) ((set (lo e) (neg h))) :ruleset ana)
+(rule ((= e (Neg a)) (= l (lo a))) ((set (hi e) (neg l))) :ruleset ana)
 
-(rule ((= la (lo e)) (= ha (hi e)) (> la ha)) ((Bad e)) :ruleset ana)
+(rule ((= e (Add a b)) (= la (lo a)) (= lb (lo b))) ((set (rlo e) (+ la lb))) :ruleset ana)
+(rule ((= e (Add a b)) (= ha (hi a)) (= hb (hi b))) ((set (rhi e) (+ ha hb))) :ruleset ana)
 
-(rule ((= e (Neg a)) (= ha (hi a))) ((set (lo e) (neg ha))) :ruleset ana)
-(rule ((= e (Neg a)) (= la (lo a))) ((set (hi e) (neg la))) :ruleset ana)
-
-; -- add, sub -----------------------------------------------------------
-
-(rule ((= e (Add a b)) (= la (lo a)) (= lb (lo b)) (< la inf) (< lb inf))
-      ((set (rawlo e) (+ la lb))) :ruleset ana)
-(rule ((= e (Add a b)) (= ha (hi a)) (= hb (hi b)) (> ha -inf) (> hb -inf))
-      ((set (rawhi e) (+ ha hb))) :ruleset ana)
-
-(rule ((= e (Sub a b)) (= la (lo a)) (= hb (hi b)) (< la inf) (> hb -inf))
-      ((set (rawlo e) (- la hb))) :ruleset ana)
-(rule ((= e (Sub a b)) (= ha (hi a)) (= lb (lo b)) (> ha -inf) (< lb inf))
-      ((set (rawhi e) (- ha lb))) :ruleset ana)
-
-; -- mul ----------------------------------------------------------------
-; P is lo >= 0 and hi > 0, N is hi <= 0 and lo < 0, M straddles zero.
-
-; a square is non-negative, which the sign cases below cannot see: they split on
-; two independent operands, and a*a lands in M*M
+(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
+       (> la -inf) (< ha inf) (> lb -inf) (< hb inf))
+      ((set (rmlo e) (min (min (* la lb) (* la hb)) (min (* ha lb) (* ha hb))))
+       (set (rmhi e) (max (max (* la lb) (* la hb)) (max (* ha lb) (* ha hb))))) :ruleset ana)
 (rule ((= e (Mul a a))) ((set (lo e) 0.0)) :ruleset ana)
+(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= la 0.0) (= ha 0.0)) ((set (lo e) 0.0) (set (hi e) 0.0)) :ruleset ana)
+(rule ((= e (Mul a b)) (= lb (lo b)) (= hb (hi b)) (= lb 0.0) (= hb 0.0)) ((set (lo e) 0.0) (set (hi e) 0.0)) :ruleset ana)
+(rule ((= e (Mul a b)) (= la (lo a)) (= lb (lo b)) (>= la 0.0) (>= lb 0.0)) ((set (lo e) 0.0)) :ruleset ana)
+(rule ((= e (Mul a b)) (= ha (hi a)) (= hb (hi b)) (<= ha 0.0) (<= hb 0.0)) ((set (lo e) 0.0)) :ruleset ana)
+(rule ((= e (Mul a b)) (= la (lo a)) (= hb (hi b)) (>= la 0.0) (<= hb 0.0)) ((set (hi e) 0.0)) :ruleset ana)
+(rule ((= e (Mul a b)) (= ha (hi a)) (= lb (lo b)) (<= ha 0.0) (>= lb 0.0)) ((set (hi e) 0.0)) :ruleset ana)
 
-; a zero operand pins the product to zero, whatever the other operand is
-(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= la 0.0) (= ha 0.0))
-      ((set (lo e) 0.0) (set (hi e) 0.0)) :ruleset ana)
-(rule ((= e (Mul a b)) (= lb (lo b)) (= hb (hi b)) (= lb 0.0) (= hb 0.0))
-      ((set (lo e) 0.0) (set (hi e) 0.0)) :ruleset ana)
-
-; P * P
-(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (>= la 0.0) (> ha 0.0) (>= lb 0.0) (> hb 0.0))
-      ((set (rawmlo e) (* la lb)) (set (rawmhi e) (* ha hb))) :ruleset ana)
-; P * N
-(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (>= la 0.0) (> ha 0.0) (<= hb 0.0) (< lb 0.0))
-      ((set (rawmlo e) (* ha lb)) (set (rawmhi e) (* la hb))) :ruleset ana)
-; P * M
-(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (>= la 0.0) (> ha 0.0) (< lb 0.0) (> hb 0.0))
-      ((set (rawmlo e) (* ha lb)) (set (rawmhi e) (* ha hb))) :ruleset ana)
-; N * P
-(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (<= ha 0.0) (< la 0.0) (>= lb 0.0) (> hb 0.0))
-      ((set (rawmlo e) (* la hb)) (set (rawmhi e) (* ha lb))) :ruleset ana)
-; N * N
-(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (<= ha 0.0) (< la 0.0) (<= hb 0.0) (< lb 0.0))
-      ((set (rawmlo e) (* ha hb)) (set (rawmhi e) (* la lb))) :ruleset ana)
-; N * M
-(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (<= ha 0.0) (< la 0.0) (< lb 0.0) (> hb 0.0))
-      ((set (rawmlo e) (* la hb)) (set (rawmhi e) (* la lb))) :ruleset ana)
-; M * P
-(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (< la 0.0) (> ha 0.0) (>= lb 0.0) (> hb 0.0))
-      ((set (rawmlo e) (* la hb)) (set (rawmhi e) (* ha hb))) :ruleset ana)
-; M * N
-(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (< la 0.0) (> ha 0.0) (<= hb 0.0) (< lb 0.0))
-      ((set (rawmlo e) (* ha lb)) (set (rawmhi e) (* la lb))) :ruleset ana)
-; M * M
-(rule ((= e (Mul a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (< la 0.0) (> ha 0.0) (< lb 0.0) (> hb 0.0))
-      ((set (rawmlo e) (min (* la hb) (* ha lb)))
-       (set (rawmhi e) (max (* la lb) (* ha hb)))) :ruleset ana)
-
-; The subnormal step costs a product its exact zero endpoints, as in
-; [0, 1] * [2, 3]; the operands' signs give them back.
-(rule ((= e (Mul a b)) (= la (lo a)) (= lb (lo b)) (>= la 0.0) (>= lb 0.0))
-      ((set (lo e) 0.0)) :ruleset ana)
-(rule ((= e (Mul a b)) (= ha (hi a)) (= hb (hi b)) (<= ha 0.0) (<= hb 0.0))
-      ((set (lo e) 0.0)) :ruleset ana)
-(rule ((= e (Mul a b)) (= la (lo a)) (= hb (hi b)) (>= la 0.0) (<= hb 0.0))
-      ((set (hi e) 0.0)) :ruleset ana)
-(rule ((= e (Mul a b)) (= ha (hi a)) (= lb (lo b)) (<= ha 0.0) (>= lb 0.0))
-      ((set (hi e) 0.0)) :ruleset ana)
-
-; -- div ----------------------------------------------------------------
-; Only fires when the divisor excludes zero; otherwise the quotient stays top.
-; P is just lo >= 0 and N just hi <= 0: they overlap only on the zero interval,
-; where both formulas give [0,0].
-
-; P / positive
 (rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (> lb 0.0) (>= la 0.0))
-      ((set (rawmlo e) (/ la hb)) (set (rawmhi e) (/ ha lb))) :ruleset ana)
-; N / positive
-(rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (> lb 0.0) (<= ha 0.0))
-      ((set (rawmlo e) (/ la lb)) (set (rawmhi e) (/ ha hb))) :ruleset ana)
-; M / positive
-(rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (> lb 0.0) (< la 0.0) (> ha 0.0))
-      ((set (rawmlo e) (/ la lb)) (set (rawmhi e) (/ ha lb))) :ruleset ana)
-; P / negative
-(rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (< hb 0.0) (>= la 0.0))
-      ((set (rawmlo e) (/ ha hb)) (set (rawmhi e) (/ la lb))) :ruleset ana)
-; N / negative
-(rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (< hb 0.0) (<= ha 0.0))
-      ((set (rawmlo e) (/ ha lb)) (set (rawmhi e) (/ la hb))) :ruleset ana)
-; M / negative
-(rule ((= e (Div a b)) (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b))
-       (< la inf) (> ha -inf) (< lb inf) (> hb -inf)
-       (< hb 0.0) (< la 0.0) (> ha 0.0))
-      ((set (rawmlo e) (/ ha hb)) (set (rawmhi e) (/ la hb))) :ruleset ana)
+       (> la -inf) (< ha inf) (> lb -inf) (< hb inf) (> (max lb (neg hb)) 0.0))
+      ((set (rmlo e) (min (min (/ la lb) (/ la hb)) (min (/ ha lb) (/ ha hb))))
+       (set (rmhi e) (max (max (/ la lb) (/ la hb)) (max (/ ha lb) (/ ha hb))))) :ruleset ana)
+(rule ((= e (Div a b)) (= la (lo a)) (= lb (lo b)) (>= la 0.0) (> lb 0.0)) ((set (lo e) 0.0)) :ruleset ana)
+(rule ((= e (Div a b)) (= ha (hi a)) (= hb (hi b)) (<= ha 0.0) (< hb 0.0)) ((set (lo e) 0.0)) :ruleset ana)
+(rule ((= e (Div a b)) (= la (lo a)) (= hb (hi b)) (>= la 0.0) (< hb 0.0)) ((set (hi e) 0.0)) :ruleset ana)
+(rule ((= e (Div a b)) (= ha (hi a)) (= lb (lo b)) (<= ha 0.0) (> lb 0.0)) ((set (hi e) 0.0)) :ruleset ana)
 
-; and likewise for a quotient
-(rule ((= e (Div a b)) (= la (lo a)) (= lb (lo b)) (>= la 0.0) (> lb 0.0))
-      ((set (lo e) 0.0)) :ruleset ana)
-(rule ((= e (Div a b)) (= ha (hi a)) (= hb (hi b)) (<= ha 0.0) (< hb 0.0))
-      ((set (lo e) 0.0)) :ruleset ana)
-(rule ((= e (Div a b)) (= ha (hi a)) (= lb (lo b)) (<= ha 0.0) (> lb 0.0))
-      ((set (hi e) 0.0)) :ruleset ana)
-(rule ((= e (Div a b)) (= la (lo a)) (= hb (hi b)) (>= la 0.0) (< hb 0.0))
-      ((set (hi e) 0.0)) :ruleset ana)
+(rule ((= e (Sqrt a))) ((set (lo a) 0.0)) :ruleset ana)
+(rule ((= e (Sqrt a)) (= l (lo a)) (= h (hi a)) (>= h 0.0))
+      ((set (rlo e) (sqrt (max l 0.0))) (set (rhi e) (sqrt h))) :ruleset ana)
 
-; -- sqrt ---------------------------------------------------------------
-; (max la 0.0) is load bearing: the radicand rule above may not have fired yet.
+(relation Pos (Math))
+(relation Nonneg (Math))
+(relation Nonzero (Math))
+(rule ((= l (lo e)) (> l 0.0)) ((Pos e) (Nonzero e)) :ruleset ana)
+(rule ((= l (lo e)) (>= l 0.0)) ((Nonneg e)) :ruleset ana)
+(rule ((= h (hi e)) (< h 0.0)) ((Nonzero e)) :ruleset ana)
 
-(rule ((= e (Sqrt a)) (= la (lo a)) (= ha (hi a)) (>= ha 0.0))
-      ((set (rawlo e) (sqrt (max la 0.0))) (set (rawhi e) (sqrt ha))) :ruleset ana)
+; (Ctx x k true e) is e where x > k and (Ctx x k false e) is e where x <= k. Each moves
+; down to the leaves, where it narrows (Var x) and is the identity on every other leaf. At
+; a constant it stops: subsuming keeps it from moving into the terms equal to that constant.
+(relation Leaf (Math))
+(rule ((= e (Var x))) ((Leaf e)) :ruleset dist)
+(rule ((= e (Ctx x k s (Var x)))) ((Leaf e)) :ruleset dist)
+(rule ((= e (Ctx x k s u)) (Leaf u) (= v (Var x)) (!= u v)) ((union e u)) :ruleset dist)
+(rewrite (Ctx x k s (Num n)) (Num n) :subsume :ruleset dist)
+(rewrite (Ctx x k s (Lit c)) (Lit c) :subsume :ruleset dist)
+(rewrite (Ctx x k s (Add a b)) (Add (Ctx x k s a) (Ctx x k s b)) :ruleset dist)
+(rewrite (Ctx x k s (Mul a b)) (Mul (Ctx x k s a) (Ctx x k s b)) :ruleset dist)
+(rewrite (Ctx x k s (Div a b)) (Div (Ctx x k s a) (Ctx x k s b)) :ruleset dist)
+(rewrite (Ctx x k s (Neg a)) (Neg (Ctx x k s a)) :ruleset dist)
+(rewrite (Ctx x k s (Sqrt a)) (Sqrt (Ctx x k s a)) :ruleset dist)
 
-; -- guarded ------------------------------------------------------------
-; The hull of the arms. Both denote the same real value, so this is sound, and
-; the merge then intersects it with whatever else the class holds.
-
-(rule ((= e (IfProp p t f)) (= lt (lo t)) (= lf (lo f)))
-      ((set (lo e) (min lt lf))) :ruleset ana)
-(rule ((= e (IfProp p t f)) (= ht (hi t)) (= hf (hi f)))
-      ((set (hi e) (max ht hf))) :ruleset ana)
-
-; -- contexts -----------------------------------------------------------
-; A context inherits its subject's interval, since its region is part of B, and
-; the refinement rules in branch.egg then tighten the leaves it constrains.
-; Never the other direction: a context's interval does not hold on all of B.
-
-(rule ((= e (Ctx p a)) (= l (lo a))) ((set (lo e) l)) :ruleset ana)
-(rule ((= e (Ctx p a)) (= h (hi a))) ((set (hi e) h)) :ruleset ana)
-
-; Distribution pushes the marker to the leaves, which is what a rule cannot do
-; by substitution: (Ctx p (Var v)) is the leaf whose box the guard refines.
-; The undistributed node is left in place, not subsumed: rewriting can put a
-; compound node into a variable's class, and subsuming (Ctx p (Var x)) on that
-; account would leave the leaf's class with no node egglog can print.
-
-(rewrite (Ctx p (Add a b)) (Add (Ctx p a) (Ctx p b)) :ruleset dist)
-(rewrite (Ctx p (Sub a b)) (Sub (Ctx p a) (Ctx p b)) :ruleset dist)
-(rewrite (Ctx p (Mul a b)) (Mul (Ctx p a) (Ctx p b)) :ruleset dist)
-(rewrite (Ctx p (Div a b)) (Div (Ctx p a) (Ctx p b)) :ruleset dist)
-(rewrite (Ctx p (Neg a)) (Neg (Ctx p a)) :ruleset dist)
-(rewrite (Ctx p (Sqrt a)) (Sqrt (Ctx p a)) :ruleset dist)
-
-; a constant is the same in every context, and nesting one context is idempotent
-(rewrite (Ctx p (Num n)) (Num n) :subsume :ruleset dist)
-(rewrite (Ctx p (Lit i)) (Lit i) :subsume :ruleset dist)
-(rewrite (Ctx p (Ctx p a)) (Ctx p a) :ruleset dist)
+(rule ((= e (Ctx x k s a)) (= l (lo a))) ((set (lo e) l)) :ruleset ana)
+(rule ((= e (Ctx x k s a)) (= h (hi a))) ((set (hi e) h)) :ruleset ana)
+(rule ((= e (Ctx x k true (Var x)))) ((set (lo e) k)) :ruleset ana)
+(rule ((= e (Ctx x k false (Var x)))) ((set (hi e) k)) :ruleset ana)
+(rule ((= e (If x k a b)) (= la (lo a)) (= lb (lo b))) ((set (lo e) (min la lb))) :ruleset ana)
+(rule ((= e (If x k a b)) (= ha (hi a)) (= hb (hi b))) ((set (hi e) (max ha hb))) :ruleset ana)

@@ -1,0 +1,33 @@
+\begin{table}[H] \centering \small
+\caption{Branching on Benchmark (3). Bound is our bound on the relative error, and max sampled error is in ulps.}\label{tab:branching}
+\begin{tabular}{llllrrr}
+\toprule
+Benchmark & Expected & Tool & Branch points & Bound & Max sampled error & Speed \\
+\midrule
+guarded-hypot & (> x 0) & No branch & -- & inf & 174 & 1 \\
+ &  & Ours & (> x 0) & 8.22e-15 & 4 & 1.36 \\
+ &  & Daisy & n/a & -- & -- & -- \\
+ &  & Herbie & none & inf & 133 & 1.54 \\
+\midrule
+guarded-negated & (> x 0) & No branch & -- & inf & 178 & 1 \\
+ &  & Ours & none & inf & 178 & 1 \\
+ &  & Daisy & n/a & -- & -- & -- \\
+ &  & Herbie & none & inf & 178 & 1 \\
+\midrule
+guarded & (> b 0) & No branch & -- & inf & 246 & 1 \\
+ &  & Ours & (> b 0) & 8.22e-15 & 3 & 1.44 \\
+ &  & Daisy & n/a & -- & -- & -- \\
+ &  & Herbie & none & inf & 246 & 1 \\
+\midrule
+lightcone-energy & (> p 0) & No branch & -- & inf & 7714 & 1 \\
+ &  & Ours & (> p 0) & 7.2e-13 & 3 & 1.34 \\
+ &  & Daisy & n/a & -- & -- & -- \\
+ &  & Herbie & none & inf & 7714 & 1 \\
+\midrule
+lightcone-momentum & (> p 0) & No branch & -- & inf & 14853 & 1 \\
+ &  & Ours & (> p 0) & 7.25e-13 & 3 & 1.64 \\
+ &  & Daisy & n/a & -- & -- & -- \\
+ &  & Herbie & none & inf & 14853 & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}

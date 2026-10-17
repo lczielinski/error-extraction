@@ -1,7 +1,7 @@
 #lang s-exp herbie/syntax/platform-language
 
-;;; The operators costex and Daisy's rewriter can express: +, -, *, /, neg,
-;;; sqrt, PI and E, over binary64 and binary32.  Herbie's own platforms carry
+;;; The operators costex and Daisy's rewriter can express: +, -, *, /, neg and
+;;; sqrt, over binary64 and binary32.  Herbie's own platforms carry
 ;;; the whole of libm, so it would answer with fma, hypot, expm1 and friends --
 ;;; programs the other two rewriters cannot reach and this benchmark cannot
 ;;; evaluate.  Restricting the platform keeps the three searching one language.
@@ -46,9 +46,6 @@
   [<=.f32 #:spec (<= x y) #:impl <=         #:cost move32]
   [>=.f32 #:spec (>= x y) #:impl >=         #:cost move32])
 
-(define-operations () <binary32> #:fpcore (! :precision binary32 _)
-  [PI.f32 #:spec (PI) #:impl (const (flsingle pi))      #:fpcore PI #:cost move32]
-  [E.f32  #:spec (E)  #:impl (const (flsingle (exp 1))) #:fpcore E  #:cost move32])
 
 (define-operation (neg.f32 [x <binary32>]) <binary32>
   #:spec (neg x) #:impl (compose flsingle -)
@@ -81,9 +78,6 @@
   [<=.f64 #:spec (<= x y) #:impl <=         #:cost move64]
   [>=.f64 #:spec (>= x y) #:impl >=         #:cost move64])
 
-(define-operations () <binary64> #:fpcore (! :precision binary64 _)
-  [PI.f64 #:spec (PI) #:impl (const pi)      #:fpcore PI #:cost move64]
-  [E.f64  #:spec (E)  #:impl (const (exp 1)) #:fpcore E  #:cost move64])
 
 (define-operation (neg.f64 [x <binary64>]) <binary64>
   #:spec (neg x) #:impl -

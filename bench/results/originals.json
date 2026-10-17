@@ -1,0 +1,2962 @@
+{
+ "cores/fpbench-daisy-000-carthesiantopolar-radius.fpcore": {
+  "ulps": 2,
+  "mean": 1.1713,
+  "abs": 1.9878631041095788e-14,
+  "rel": 1.8325859232360555e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-daisy-005-matrixdeterminant.fpcore": {
+  "ulps": 14154,
+  "mean": 1.1597,
+  "abs": 6.168816244416581e-28,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-daisy-006-matrixdeterminant2.fpcore": {
+  "ulps": 5970,
+  "mean": 1.1504,
+  "abs": 1.6970813087264457e-28,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-extra-001-delta4.fpcore": {
+  "ulps": 84918021022,
+  "mean": 3.5574,
+  "abs": 2.4572887465285346e-14,
+  "rel": 1.059668942932367e-05,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-extra-002-delta.fpcore": {
+  "ulps": 14,
+  "mean": 2.833,
+  "abs": 4.0685369235043427e-13,
+  "rel": 1.4484727818891625e-15,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-extra-003-sqrt-add.fpcore": {
+  "ulps": 3,
+  "mean": 1.3357,
+  "abs": 8.971313045919522e-17,
+  "rel": 2.517403363376321e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-extra-006-floudas.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 6.31526589649125e-17,
+  "rel": 1.0802200398563872e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-extra-008-x-by-xy.fpcore": {
+  "ulps": 2,
+  "mean": 1.2628,
+  "abs": 7.042680933781279e-08,
+  "rel": 1.151824926922551e-07,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-extra-009-hypot.fpcore": {
+  "ulps": 2,
+  "mean": 1.1639,
+  "abs": 1.743453010597404e-14,
+  "rel": 1.8813171355478715e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-extra-010-hypot32.fpcore": {
+  "ulps": 2,
+  "mean": 1.1684,
+  "abs": 8.307101879343786e-06,
+  "rel": 9.926226866322734e-08,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-extra-012-sum.fpcore": {
+  "ulps": 3,
+  "mean": 1.3562,
+  "abs": 8.881784197001252e-16,
+  "rel": 2.823878820419541e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-extra-013-nonlin1.fpcore": {
+  "ulps": 2,
+  "mean": 1.0197,
+  "abs": 1.3588479963892089e-16,
+  "rel": 1.88065202483991e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-extra-014-nonlin2.fpcore": {
+  "ulps": 129,
+  "mean": 1.4027,
+  "abs": 7.078536945390117e-15,
+  "rel": 1.4184877857014141e-14,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-extra-017-himmilbeau.fpcore": {
+  "ulps": 3,
+  "mean": 1.0351,
+  "abs": 4.09630592554456e-14,
+  "rel": 2.431566047070851e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-real2float-003-floudas1.fpcore": {
+  "ulps": 4,
+  "mean": 1.2338,
+  "abs": 4.0628342175444964e-14,
+  "rel": 3.0144638774460364e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-real2float-004-floudas2.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 1.1102230246251565e-16,
+  "rel": 1.0496335475094844e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-real2float-005-floudas3.fpcore": {
+  "ulps": 2,
+  "mean": 1.1038,
+  "abs": 2.255131954912182e-15,
+  "rel": 2.1418398300881443e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-real2float-008-kepler0.fpcore": {
+  "ulps": 5,
+  "mean": 1.5824,
+  "abs": 3.0975742604137646e-14,
+  "rel": 4.809376419728488e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-real2float-009-kepler1.fpcore": {
+  "ulps": 10,
+  "mean": 1.9005,
+  "abs": 7.778803916789499e-14,
+  "rel": 1.382618409384298e-15,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-real2float-010-kepler2.fpcore": {
+  "ulps": 15,
+  "mean": 2.8036,
+  "abs": 3.8434571633501795e-13,
+  "rel": 1.515557145745401e-15,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-tests-000-intro-example.fpcore": {
+  "ulps": 2,
+  "mean": 1.0184,
+  "abs": 1.200923160909232e-16,
+  "rel": 1.8439647836961454e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-tests-001-sec4-example.fpcore": {
+  "ulps": 128,
+  "mean": 1.4036,
+  "abs": 7.0657553861570956e-15,
+  "rel": 1.4158964339337578e-14,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-tests-002-test01-sum3.fpcore": {
+  "ulps": 3,
+  "mean": 1.3566,
+  "abs": 4.76837158203125e-07,
+  "rel": 1.5043314968955864e-07,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-tests-003-test02-sum8.fpcore": {
+  "ulps": 3,
+  "mean": 1.4034,
+  "abs": 3.9968028886505635e-15,
+  "rel": 3.200269940679628e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-tests-004-test03-nonlin2.fpcore": {
+  "ulps": 3,
+  "mean": 1.0357,
+  "abs": 2.447582994348639e-16,
+  "rel": 2.4475831574586884e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-tests-005-test04-dqmom9.fpcore": {
+  "ulps": 3417580,
+  "mean": 1.6862,
+  "abs": 1.413787844036615e-12,
+  "rel": 4.848747473637094e-10,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-tests-006-test05-nonlin1-r4.fpcore": {
+  "ulps": 44357,
+  "mean": 3.4331,
+  "abs": 2.4622449952985605e-12,
+  "rel": 4.9245177453915866e-12,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-tests-007-test05-nonlin1-test2.fpcore": {
+  "ulps": 2,
+  "mean": 1.3354,
+  "abs": 8.222510761734654e-17,
+  "rel": 1.657087654992103e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-tests-008-test06-sums4-sum1.fpcore": {
+  "ulps": 704610305,
+  "mean": 1.0469,
+  "abs": 5.960464477539063e-08,
+  "rel": 1.0000000000036298,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-fptaylor-tests-009-test06-sums4-sum2.fpcore": {
+  "ulps": 662700033,
+  "mean": 1.0463,
+  "abs": 6.332993507385254e-08,
+  "rel": 16777215.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-graphics-000-an-eigenvalue-calculation-from-tng.fpcore": {
+  "ulps": 4399871655900490367,
+  "mean": 291.5324,
+  "abs": 4.82482208156743e-14,
+  "rel": 2.2647492489877905,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-hamming-ch3-000-nmse-example-3-1.fpcore": {
+  "ulps": 6,
+  "mean": 1.0332,
+  "abs": 2.829121908567728e-16,
+  "rel": 7.091099883253995e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-hamming-ch3-005-nmse-problem-3-3-1.fpcore": {
+  "ulps": 5,
+  "mean": 1.8878,
+  "abs": 1.3592539266703685e-16,
+  "rel": 6.039335434242645e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-herbie-000-complex-square-root.fpcore": {
+  "ulps": 2,
+  "mean": 1.1799,
+  "abs": 3.895663270262486e-16,
+  "rel": 1.8721884121884887e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-000-doppler1.fpcore": {
+  "ulps": 4,
+  "mean": 1.3001,
+  "abs": 1.8105348478609058e-14,
+  "rel": 3.9251643459435586e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-001-doppler2.fpcore": {
+  "ulps": 4,
+  "mean": 1.3061,
+  "abs": 1.890235694476054e-14,
+  "rel": 4.086839803434239e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-002-doppler3.fpcore": {
+  "ulps": 5,
+  "mean": 1.3062,
+  "abs": 1.462231742293646e-14,
+  "rel": 4.2864743037893377e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-003-rigidbody1.fpcore": {
+  "ulps": 2053656076,
+  "mean": 1.0048,
+  "abs": 4.1965454674096474e-16,
+  "rel": 3.967555147512376e-07,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-004-rigidbody2.fpcore": {
+  "ulps": 3743163696983029,
+  "mean": 1.071,
+  "abs": 1.3583338677420197e-13,
+  "rel": 0.7110825251676872,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-006-turbine1.fpcore": {
+  "ulps": 4,
+  "mean": 1.455,
+  "abs": 4.648370213532143e-15,
+  "rel": 3.7311825951154325e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-007-turbine2.fpcore": {
+  "ulps": 8761227616929369757,
+  "mean": 2.9593,
+  "abs": 5.712958377876021e-15,
+  "rel": 106.02284533236632,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-008-turbine3.fpcore": {
+  "ulps": 4,
+  "mean": 1.3524,
+  "abs": 3.1647975940234696e-15,
+  "rel": 3.908952423043115e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-009-verhulst.fpcore": {
+  "ulps": 2,
+  "mean": 1.3212,
+  "abs": 1.6539578647335194e-16,
+  "rel": 2.1468760974502922e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-010-predatorprey.fpcore": {
+  "ulps": 3,
+  "mean": 1.4217,
+  "abs": 7.928548431796695e-17,
+  "rel": 2.92959323468795e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-011-carbongas.fpcore": {
+  "ulps": 3,
+  "mean": 1.4469,
+  "abs": 2.938746372251672e-09,
+  "rel": 3.4385216200390407e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-012-sine.fpcore": {
+  "ulps": 2,
+  "mean": 1.0049,
+  "abs": 1.2761191220446247e-16,
+  "rel": 1.9996230968769912e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-013-sqroot.fpcore": {
+  "ulps": 3,
+  "mean": 1.0082,
+  "abs": 3.9335278551998054e-16,
+  "rel": 3.5265036411643314e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-014-sineorder3.fpcore": {
+  "ulps": 3,
+  "mean": 1.1342,
+  "abs": 2.189490979847992e-16,
+  "rel": 5.8549562274026824e-15,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-019-triangle.fpcore": {
+  "ulps": 27,
+  "mean": 8.6048,
+  "abs": 2.2830205590884873e-14,
+  "rel": 3.624432505601832e-15,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rosa-032-bspline3.fpcore": {
+  "ulps": 3,
+  "mean": 1.1163,
+  "abs": 1.520365719065286e-17,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rump-000-rump-s-example-with-pow.fpcore": {
+  "ulps": 5,
+  "mean": 1.6683,
+  "abs": 5.735039727735453e-08,
+  "rel": 5.129998884081671e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rump-001-rump-s-example-from-c-program.fpcore": {
+  "ulps": 7,
+  "mean": 2.0035,
+  "abs": 7.482865005708633e-08,
+  "rel": 7.966842547924574e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/fpbench-rump-002-rump-s-example-revisited-for-floating-po.fpcore": {
+  "ulps": 7,
+  "mean": 2.006,
+  "abs": 7.27250786465271e-08,
+  "rel": 6.56190652893581e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-demo-002-subtraction-fraction.fpcore": {
+  "ulps": 3,
+  "mean": 1.4913,
+  "abs": 6.103262859525401e-16,
+  "rel": 2.4378516062145264e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-demo-006-sqrt-sqr.fpcore": {
+  "ulps": 4368491638549381121,
+  "mean": 6.456630641775986e+17,
+  "abs": 1.1102230246251565e-16,
+  "rel": null,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-demo-010-x-1-to-x-20.fpcore": {
+  "ulps": 12,
+  "mean": 3.2068,
+  "abs": 16.104138557918017,
+  "rel": 1.4070787225778937e-15,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-graphics-pbrt-006-uniformsamplecone-z.fpcore": {
+  "ulps": 2,
+  "mean": 1.0252,
+  "abs": 5.8493423506069065e-08,
+  "rel": 9.736207009861067e-08,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-hamming-rearrangement-000-2sqrt-example-3-1.fpcore": {
+  "ulps": 4485581437300251489,
+  "mean": 3.217792205847345e+18,
+  "abs": 1.0778366237824435e-08,
+  "rel": 2.6143347784196047,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-hamming-rearrangement-001-2isqrt-example-3-6.fpcore": {
+  "ulps": 4255696023192697767,
+  "mean": 1.3068042678263823e+18,
+  "abs": 1.5917251164800823e-16,
+  "rel": 5.2779707039688315,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-hamming-rearrangement-002-2frac-problem-3-3-1.fpcore": {
+  "ulps": 5,
+  "mean": 1.8982,
+  "abs": 1.307706018913516e-16,
+  "rel": 6.172194496722569e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-000-optimisation-circlepacking-place-from-ci.fpcore": {
+  "ulps": 2,
+  "mean": 1.1258,
+  "abs": 3.767863225908997e-16,
+  "rel": 1.351780417617668e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-001-optimisation-circlepacking-place-from-ci.fpcore": {
+  "ulps": 3,
+  "mean": 1.2958,
+  "abs": 3.0613517365051464e-17,
+  "rel": 2.539420868510459e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-003-optimisation-circlepacking-place-from-ci.fpcore": {
+  "ulps": 3,
+  "mean": 1.2613,
+  "abs": 9.124161255937824e-16,
+  "rel": 2.444147358877907e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-004-optimisation-circlepacking-place-from-ci.fpcore": {
+  "ulps": 2352015259308,
+  "mean": 6.4718,
+  "abs": 6.149582947529216e-16,
+  "rel": 0.00033164329770298635,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-005-optimisation-circlepacking-place-from-ci.fpcore": {
+  "ulps": 3,
+  "mean": 1.246,
+  "abs": 9.698495954773974e-16,
+  "rel": 2.25265896879306e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-006-optimisation-circlepacking-place-from-ci.fpcore": {
+  "ulps": 3,
+  "mean": 1.2703,
+  "abs": 7.955550774592481e-14,
+  "rel": 2.817389110389379e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-007-optimisation-circlepacking-place-from-ci.fpcore": {
+  "ulps": 2,
+  "mean": 1.2578,
+  "abs": 5.3971084234369575e-14,
+  "rel": 2.2005846880598704e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-008-optimisation-circlepacking-place-from-ci.fpcore": {
+  "ulps": 2,
+  "mean": 1.1173,
+  "abs": 4.440892098500626e-15,
+  "rel": 1.386180235293507e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-009-data-colour-matrix-determinant-from-colo.fpcore": {
+  "ulps": 4,
+  "mean": 1.43,
+  "abs": 0.00010349031866840931,
+  "rel": 3.390702804257316e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-010-data-colour-matrix-inverse-from-colour-2.fpcore": {
+  "ulps": 3,
+  "mean": 1.3407,
+  "abs": 2.3574261321614075e-15,
+  "rel": 2.9064793481856996e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-011-data-colour-cie-chromaticity-chromacoord.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 8.881784197001252e-16,
+  "rel": 1.1094917455128169e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-012-data-colour-rgb-hslsv-from-colour-2-3-3-.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 4.440892098500626e-16,
+  "rel": 1.1102108131071512e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-013-data-colour-rgb-hslsv-from-colour-2-3-3-.fpcore": {
+  "ulps": 2,
+  "mean": 1.2605,
+  "abs": 7.2672087513066576e-12,
+  "rel": 2.0896443385030932e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-014-data-colour-rgb-hslsv-from-colour-2-3-3-.fpcore": {
+  "ulps": 3,
+  "mean": 1.6416,
+  "abs": 2.483475757643862e-16,
+  "rel": 2.668363930217964e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-015-data-colour-rgb-hslsv-from-colour-2-3-3-.fpcore": {
+  "ulps": 3,
+  "mean": 1.434,
+  "abs": 1.6565156976863045e-16,
+  "rel": 2.664757933829225e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-016-data-colour-rgb-hslsv-from-colour-2-3-3-.fpcore": {
+  "ulps": 2,
+  "mean": 1.2593,
+  "abs": 8.615058014037286e-16,
+  "rel": 2.0460206664690677e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-017-data-colour-rgbspace-hsl-hsl-from-colour.fpcore": {
+  "ulps": 4386355922864416953,
+  "mean": 10.9107,
+  "abs": 1.7726622373716199e-15,
+  "rel": 21.487281956914913,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-018-data-colour-rgbspace-hsl-hsl-from-colour.fpcore": {
+  "ulps": 2,
+  "mean": 1.0868,
+  "abs": 3.462962314481634e-15,
+  "rel": 2.1060956372954396e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-019-data-colour-rgbspace-hsl-hsl-from-colour.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 4.440892098500626e-16,
+  "rel": 1.1098559226216018e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-020-data-colour-rgbspace-hsl-hsl-from-colour.fpcore": {
+  "ulps": 4,
+  "mean": 1.5424,
+  "abs": 4.0437059953192186e-13,
+  "rel": 4.098808098572928e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-021-data-colour-rgbspace-hsl-hsl-from-colour.fpcore": {
+  "ulps": 3,
+  "mean": 1.4663,
+  "abs": 3.927800050306367e-13,
+  "rel": 3.734053258697599e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-022-data-colour-rgbspace-hsl-hsl-from-colour.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 1.4802973661668753e-16,
+  "rel": 7.401168612821569e-17,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-023-data-colour-rgbspace-hsl-hsl-from-colour.fpcore": {
+  "ulps": 2,
+  "mean": 1.3462,
+  "abs": 7.401486830834377e-17,
+  "rel": 1.1101711358654998e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-024-data-colour-rgbspace-hsv-hsv-from-colour.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 8.880347368914324e-16,
+  "rel": 1.1030164597735091e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-025-data-colour-rgbspace-hsv-hsv-from-colour.fpcore": {
+  "ulps": 2,
+  "mean": 1.2626,
+  "abs": 5.360371110973936e-14,
+  "rel": 2.060393973186119e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-026-data-colour-rgbspace-hsv-hsv-from-colour.fpcore": {
+  "ulps": 3,
+  "mean": 1.2666,
+  "abs": 5.450345428429774e-14,
+  "rel": 2.263866067145479e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-027-data-colour-srgb-invtransferfunction-fro.fpcore": {
+  "ulps": 2,
+  "mean": 1.2287,
+  "abs": 3.2668867229036966e-16,
+  "rel": 3.136701039146934e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-028-data-colour-srgb-transferfunction-from-c.fpcore": {
+  "ulps": 3,
+  "mean": 1.5094,
+  "abs": 5.007988730820444e-15,
+  "rel": 3.0710268450618324e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-029-data-colour-cie-lightness-from-colour-2-.fpcore": {
+  "ulps": 2,
+  "mean": 1.0656,
+  "abs": 1.4210854715202004e-14,
+  "rel": 1.258144125527461e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-030-data-colour-cie-cielabview-from-colour-2.fpcore": {
+  "ulps": 2,
+  "mean": 1.2091,
+  "abs": 1.3239019643582486e-15,
+  "rel": 1.5870901146910254e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-031-data-colour-cie-cielabview-from-colour-2.fpcore": {
+  "ulps": 2,
+  "mean": 1.2542,
+  "abs": 4.4941828036826337e-13,
+  "rel": 2.1850796949678915e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-032-data-colour-cie-cielabview-from-colour-2.fpcore": {
+  "ulps": 2,
+  "mean": 1.272,
+  "abs": 2.0250467969162855e-13,
+  "rel": 1.9631713264137517e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-033-data-colour-cie-cielab-from-colour-2-3-3.fpcore": {
+  "ulps": 3,
+  "mean": 1.3742,
+  "abs": 8.149811228788781e-15,
+  "rel": 2.4935704491411584e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-034-data-colour-cie-cielab-from-colour-2-3-3.fpcore": {
+  "ulps": 2,
+  "mean": 1.2651,
+  "abs": 2.871266442996095e-17,
+  "rel": 1.9546604222375718e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-035-data-colour-cie-cielab-from-colour-2-3-3.fpcore": {
+  "ulps": 2,
+  "mean": 1.0003,
+  "abs": 2.220446049250313e-16,
+  "rel": 1.1095813455707285e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-036-data-colour-cie-cielab-from-colour-2-3-3.fpcore": {
+  "ulps": 2,
+  "mean": 1.0008,
+  "abs": 1.1102230246251565e-16,
+  "rel": 1.0999231878694858e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-037-diagrams-solve-tridiagonal-solvetridiago.fpcore": {
+  "ulps": 4,
+  "mean": 1.4949,
+  "abs": 9.421911953261003e-18,
+  "rel": 3.864304942194249e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-038-diagrams-solve-tridiagonal-solvetridiago.fpcore": {
+  "ulps": 3,
+  "mean": 1.3419,
+  "abs": 2.998830048176e-19,
+  "rel": 2.6824756895481823e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-039-diagrams-solve-tridiagonal-solvetridiago.fpcore": {
+  "ulps": 2,
+  "mean": 1.2471,
+  "abs": 2.8184761545895556e-14,
+  "rel": 2.0886307133646563e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-040-diagrams-solve-tridiagonal-solvecyclictr.fpcore": {
+  "ulps": 2,
+  "mean": 1.2672,
+  "abs": 1.0583635677460132e-16,
+  "rel": 1.9861140402001955e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-041-diagrams-solve-tridiagonal-solvecyclictr.fpcore": {
+  "ulps": 4,
+  "mean": 1.4327,
+  "abs": 3.0771321170941734e-18,
+  "rel": 4.1445808972588093e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-042-diagrams-solve-polynomial-quadform-from-.fpcore": {
+  "ulps": 2,
+  "mean": 1.2525,
+  "abs": 1.1184681335779008e-13,
+  "rel": 2.0782384302482015e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-043-diagrams-solve-polynomial-quadform-from-.fpcore": {
+  "ulps": 3,
+  "mean": 1.3614,
+  "abs": 4.851778686966232e-15,
+  "rel": 2.6411043093259e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-044-diagrams-solve-polynomial-quadform-from-.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 1.3877173935788688e-17,
+  "rel": 1.1043166934900591e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-045-diagrams-solve-polynomial-cubform-from-d.fpcore": {
+  "ulps": 3,
+  "mean": 1.3495,
+  "abs": 5.054142956348954e-09,
+  "rel": 2.8493666985740265e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-046-diagrams-solve-polynomial-cubform-from-d.fpcore": {
+  "ulps": 4391208393430410147,
+  "mean": 9.5034,
+  "abs": 6.975554068094098e-15,
+  "rel": 2.686682237619178,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-047-diagrams-solve-polynomial-cubform-from-d.fpcore": {
+  "ulps": 2,
+  "mean": 1.2633,
+  "abs": 2.442561566132372e-17,
+  "rel": 2.1042185654464676e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-049-diagrams-solve-polynomial-cubform-from-d.fpcore": {
+  "ulps": 3,
+  "mean": 1.35,
+  "abs": 0.00032471311479162756,
+  "rel": 2.578923304435622e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-050-diagrams-solve-polynomial-cubform-from-d.fpcore": {
+  "ulps": 2,
+  "mean": 1.2643,
+  "abs": 5.518619450837394e-14,
+  "rel": 2.104661378216606e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-051-diagrams-solve-polynomial-cubform-from-d.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 4.440892098500626e-16,
+  "rel": 1.109518219058698e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-052-diagrams-solve-polynomial-cubform-from-d.fpcore": {
+  "ulps": 2,
+  "mean": 1.241,
+  "abs": 3.8703497507817137e-16,
+  "rel": 1.9416606186239538e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-053-diagrams-solve-polynomial-cubform-from-d.fpcore": {
+  "ulps": 4,
+  "mean": 1.4348,
+  "abs": 1.528171824554124e-14,
+  "rel": 3.371160707779205e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-054-diagrams-solve-polynomial-cubform-from-d.fpcore": {
+  "ulps": 5,
+  "mean": 1.556,
+  "abs": 1.7835893926732367e-14,
+  "rel": 4.461339753874121e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-056-diagrams-solve-polynomial-quartform-from.fpcore": {
+  "ulps": 4368491638549381121,
+  "mean": 3.927,
+  "abs": 2.220446049250313e-16,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-057-diagrams-solve-polynomial-quartform-from.fpcore": {
+  "ulps": 4398413565893227633,
+  "mean": 5.7361,
+  "abs": 1.3975310971669174e-14,
+  "rel": 2.1554274985811595,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-058-diagrams-solve-polynomial-quartform-from.fpcore": {
+  "ulps": 3,
+  "mean": 1.3618,
+  "abs": 4.1767521351143965e-11,
+  "rel": 2.934789844784523e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-059-diagrams-solve-polynomial-quartform-from.fpcore": {
+  "ulps": 4372904722665087105,
+  "mean": 3.6667,
+  "abs": 8.7790259473339455e-16,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-060-diagrams-solve-polynomial-quartform-from.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 0.0,
+  "rel": 0.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-061-text-parsec-token-maketokenparser-from-p.fpcore": {
+  "ulps": 2,
+  "mean": 1.2748,
+  "abs": 1.3322676295501878e-16,
+  "rel": 1.7585739813653215e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-062-text-parsec-token-maketokenparser-from-p.fpcore": {
+  "ulps": 2,
+  "mean": 1.2574,
+  "abs": 5.477884849376021e-14,
+  "rel": 2.1873647677651138e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-063-numeric-interval-internal-bisect-from-in.fpcore": {
+  "ulps": 2,
+  "mean": 1.2618,
+  "abs": 6.661338147750939e-16,
+  "rel": 1.6651097756366676e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-064-numeric-interval-internal-scale-from-int.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 4.440511577344242e-16,
+  "rel": 1.1008080990494142e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-065-linear-v2-cdot-from-linear-1-19-1-3-a.fpcore": {
+  "ulps": 2,
+  "mean": 1.2603,
+  "abs": 4.505528193559769e-13,
+  "rel": 2.0922324834142405e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-066-linear-v3-cross-from-linear-1-19-1-3.fpcore": {
+  "ulps": 2,
+  "mean": 1.246,
+  "abs": 4.4224016550139596e-13,
+  "rel": 2.0804167514651989e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-067-linear-v3-cdot-from-linear-1-19-1-3-b.fpcore": {
+  "ulps": 2,
+  "mean": 1.2507,
+  "abs": 1.1409271159275209e-10,
+  "rel": 2.0578520018439701e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-068-linear-v4-cdot-from-linear-1-19-1-3-c.fpcore": {
+  "ulps": 2,
+  "mean": 1.2451,
+  "abs": 2.9533411032215484e-08,
+  "rel": 2.135957332143622e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-069-main-bigenough2-from-a.fpcore": {
+  "ulps": 3,
+  "mean": 1.328,
+  "abs": 6.72186659961352e-14,
+  "rel": 2.852580977843966e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-070-main-bigenough1-from-b.fpcore": {
+  "ulps": 2,
+  "mean": 1.1917,
+  "abs": 6.660150509267457e-16,
+  "rel": 1.6512906122483362e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-071-main-bigenough3-from-c.fpcore": {
+  "ulps": 6,
+  "mean": 2.5115,
+  "abs": 2.9173180152628944e-16,
+  "rel": 8.537672514686443e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-072-linear-quaternion-c-from-linear-1-19-1-3.fpcore": {
+  "ulps": 3,
+  "mean": 1.3416,
+  "abs": 6.413151348445917e-13,
+  "rel": 2.677312036920662e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-073-linear-quaternion-c-from-linear-1-19-1-3.fpcore": {
+  "ulps": 4,
+  "mean": 1.4488,
+  "abs": 5.6213233710125935e-14,
+  "rel": 3.7911379997438166e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-074-linear-quaternion-c-from-linear-1-19-1-3.fpcore": {
+  "ulps": 3,
+  "mean": 1.3513,
+  "abs": 4.6318883211717397e-14,
+  "rel": 2.583609303877161e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-075-linear-quaternion-c-from-linear-1-19-1-3.fpcore": {
+  "ulps": 3,
+  "mean": 1.291,
+  "abs": 3.150278538752582e-14,
+  "rel": 2.306168777184754e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-076-linear-quaternion-c-from-linear-1-19-1-3.fpcore": {
+  "ulps": 3,
+  "mean": 1.3465,
+  "abs": 4.2670129842302614e-14,
+  "rel": 2.766588881279731e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-077-graphics-rasterific-linear-cquadrance-fr.fpcore": {
+  "ulps": 2,
+  "mean": 1.2373,
+  "abs": 1.0570174036535483e-14,
+  "rel": 2.0362872246236584e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-084-linear-quaternion-clog-from-linear-1-19-.fpcore": {
+  "ulps": 2,
+  "mean": 1.1413,
+  "abs": 3.9146894818534246e-16,
+  "rel": 1.3783613609075715e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-086-linear-matrix-det44-from-linear-1-19-1-3.fpcore": {
+  "ulps": 126945,
+  "mean": 14.006,
+  "abs": 6036171288163.301,
+  "rel": 1.4234424212063452e-11,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-087-linear-matrix-det33-from-linear-1-19-1-3.fpcore": {
+  "ulps": 4,
+  "mean": 1.4213,
+  "abs": 2.4220539967056685e-05,
+  "rel": 3.5686408325299017e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-088-linear-matrix-fromquaternion-from-linear.fpcore": {
+  "ulps": 3,
+  "mean": 1.381,
+  "abs": 3.86699001118643e-15,
+  "rel": 3.0882831540555565e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-089-linear-matrix-fromquaternion-from-linear.fpcore": {
+  "ulps": 2,
+  "mean": 1.2177,
+  "abs": 5.655402749803333e-15,
+  "rel": 1.8756859684316805e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-090-linear-projection-inverseinfiniteperspec.fpcore": {
+  "ulps": 3,
+  "mean": 1.3636,
+  "abs": 4.998396966961911e-12,
+  "rel": 2.8217500640783706e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-091-linear-projection-infiniteperspective-fr.fpcore": {
+  "ulps": 3,
+  "mean": 1.3676,
+  "abs": 7.334823297446854e-19,
+  "rel": 2.80632950038501e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-092-linear-projection-inverseperspective-fro.fpcore": {
+  "ulps": 3,
+  "mean": 1.3729,
+  "abs": 9.204300848623209e-17,
+  "rel": 2.878823692168112e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-093-linear-projection-inverseperspective-fro.fpcore": {
+  "ulps": 3,
+  "mean": 1.3762,
+  "abs": 1.533177827746381e-16,
+  "rel": 2.857391303031491e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-094-linear-projection-perspective-from-linea.fpcore": {
+  "ulps": 3,
+  "mean": 1.5039,
+  "abs": 6.010838269224865e-16,
+  "rel": 2.4593082725627505e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-095-linear-projection-perspective-from-linea.fpcore": {
+  "ulps": 3,
+  "mean": 1.3651,
+  "abs": 1.5386706173610588e-15,
+  "rel": 2.8231181173918563e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-096-physics-forcelayout-coulombforce-from-fo.fpcore": {
+  "ulps": 2,
+  "mean": 1.2527,
+  "abs": 1.732001459822018e-17,
+  "rel": 1.9884576696698968e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-097-codec-picture-types-tonemapping-from-jui.fpcore": {
+  "ulps": 3,
+  "mean": 1.5277,
+  "abs": 2.5848144863238256e-16,
+  "rel": 3.513226322903466e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-099-main-i-from.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 8.881784197001252e-16,
+  "rel": 1.1100031892316136e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-100-main-z-from.fpcore": {
+  "ulps": 34,
+  "mean": 7.1636,
+  "abs": 3.6220619886409914e-15,
+  "rel": 5.017699208721742e-15,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-101-diagrams-threed-shapes-frustum-from-diag.fpcore": {
+  "ulps": 4,
+  "mean": 1.4948,
+  "abs": 1.8674936409705092,
+  "rel": 3.878269411564576e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-102-diagrams-threed-shapes-frustum-from-diag.fpcore": {
+  "ulps": 3,
+  "mean": 1.3643,
+  "abs": 3.9181528433449084e-14,
+  "rel": 2.772662014899781e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-106-diagrams-color-hsv-lerp-from-diagrams-co.fpcore": {
+  "ulps": 3,
+  "mean": 1.2829,
+  "abs": 7.390638205913124e-15,
+  "rel": 2.1537228274943855e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-107-diagrams-twod-segment-bernstein-evaluate.fpcore": {
+  "ulps": 3,
+  "mean": 1.3778,
+  "abs": 3.6362486713703898e-16,
+  "rel": 2.9012746429725515e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-108-diagrams-segment-catparam-from-diagrams-.fpcore": {
+  "ulps": 3,
+  "mean": 1.3735,
+  "abs": 1.8669190877369617e-14,
+  "rel": 2.884612310002215e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-109-diagrams-segment-catparam-from-diagrams-.fpcore": {
+  "ulps": 3,
+  "mean": 1.3726,
+  "abs": 7.98702696369501e-14,
+  "rel": 2.678867337822645e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-110-diagrams-segment-catparam-from-diagrams-.fpcore": {
+  "ulps": 2,
+  "mean": 1.2569,
+  "abs": 8.604786808819986e-16,
+  "rel": 2.0385448128153627e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-111-diagrams-tangent-catparam-from-diagrams-.fpcore": {
+  "ulps": 4503599627370495,
+  "mean": 7.6411,
+  "abs": 5.2795115123958765e-15,
+  "rel": 0.9999999999999993,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-112-diagrams-tangent-catparam-from-diagrams-.fpcore": {
+  "ulps": 3,
+  "mean": 1.5817,
+  "abs": 4.764358312522181e-15,
+  "rel": 3.2813402992553985e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-113-diagrams-tangent-catparam-from-diagrams-.fpcore": {
+  "ulps": 2,
+  "mean": 1.2711,
+  "abs": 1.7307205004912158e-15,
+  "rel": 1.990207178291285e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-114-diagrams-trail-splitatparam-from-diagram.fpcore": {
+  "ulps": 2,
+  "mean": 1.3558,
+  "abs": 1.6520287915875708e-16,
+  "rel": 2.932443671042985e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-115-diagrams-trail-splitatparam-from-diagram.fpcore": {
+  "ulps": 3,
+  "mean": 1.3044,
+  "abs": 3.8804259560208415e-16,
+  "rel": 3.043300368846046e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-116-diagrams-trail-splitatparam-from-diagram.fpcore": {
+  "ulps": 2,
+  "mean": 1.3236,
+  "abs": 1.5283229307938865e-16,
+  "rel": 1.8682707464841182e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-117-diagrams-trail-splitatparam-from-diagram.fpcore": {
+  "ulps": 2,
+  "mean": 1.164,
+  "abs": 2.9543644189360127e-16,
+  "rel": 1.6969511440711519e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-118-diagrams-twod-arc-bezierfromsweepq1-from.fpcore": {
+  "ulps": 3,
+  "mean": 1.3593,
+  "abs": 1.567621972050832e-17,
+  "rel": 2.7403504182954906e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-119-diagrams-twod-arc-arcbetween-from-diagra.fpcore": {
+  "ulps": 3,
+  "mean": 1.6712,
+  "abs": 2.4296884859992044e-16,
+  "rel": 2.5121700102450097e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-121-graphics-rendering-chart-axis-types-invl.fpcore": {
+  "ulps": 169884312222,
+  "mean": 2.1703,
+  "abs": 3.850461194314038e-15,
+  "rel": 2.250557125399035e-05,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-122-diagrams-twod-segment-bezierclip-from-di.fpcore": {
+  "ulps": 3,
+  "mean": 1.2826,
+  "abs": 2.8918685897916673e-14,
+  "rel": 2.1154273829455486e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-123-data-octree-internal-octantdistance-from.fpcore": {
+  "ulps": 2,
+  "mean": 1.168,
+  "abs": 1.4412343183755243e-15,
+  "rel": 1.795131644798221e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-124-graphics-rasterific-shading-sradialgradi.fpcore": {
+  "ulps": 2,
+  "mean": 1.2654,
+  "abs": 7.060742699003213e-15,
+  "rel": 2.073776623413925e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-127-diagrams-twod-apollonian-descartes-from-.fpcore": {
+  "ulps": 2,
+  "mean": 1.1798,
+  "abs": 5.884633368865173e-15,
+  "rel": 1.7583691551644254e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-128-diagrams-twod-apollonian-initialconfig-f.fpcore": {
+  "ulps": 3,
+  "mean": 1.3541,
+  "abs": 1.8757715791101354e-14,
+  "rel": 3.0213350991095047e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-129-diagrams-twod-apollonian-initialconfig-f.fpcore": {
+  "ulps": 3,
+  "mean": 1.2931,
+  "abs": 3.7864658635040586e-14,
+  "rel": 2.7446564910982544e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-130-diagrams-backend-rasterific-rasterificra.fpcore": {
+  "ulps": 4,
+  "mean": 1.4306,
+  "abs": 2.0014248764423146e-15,
+  "rel": 3.2119722488760535e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-131-data-hashtable-st-basic-computeoverhead-.fpcore": {
+  "ulps": 4,
+  "mean": 1.5318,
+  "abs": 5.900852168933952e-16,
+  "rel": 3.2762098065657185e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-132-language-haskell-hscolour-colourhighligh.fpcore": {
+  "ulps": 3,
+  "mean": 1.274,
+  "abs": 8.666476173556842e-14,
+  "rel": 2.343687953583256e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-133-system-random-mwc-distributions-blocks-f.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 1.110167276979285e-16,
+  "rel": 1.10836458038802e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-134-system-random-mwc-distributions-standard.fpcore": {
+  "ulps": 2049,
+  "mean": 1.2207,
+  "abs": 3.329402545879655e-16,
+  "rel": 2.331446332716156e-13,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-135-synthbasics-oscsamplebasedaux-from-yampa.fpcore": {
+  "ulps": 3,
+  "mean": 1.351,
+  "abs": 3.9405393170758967e-14,
+  "rel": 2.7525065536776367e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-138-ai-clustering-hierarchical-internal-aver.fpcore": {
+  "ulps": 2,
+  "mean": 1.2664,
+  "abs": 4.957374484830834e-17,
+  "rel": 1.9458070632465878e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-140-graphics-rasterific-quadraticformula-dis.fpcore": {
+  "ulps": 2,
+  "mean": 1.2545,
+  "abs": 1.1202439743159157e-13,
+  "rel": 1.9954777251154642e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-141-graphics-rasterific-cubicbezier-cachedbe.fpcore": {
+  "ulps": 3,
+  "mean": 1.3469,
+  "abs": 5.271661216634736e-09,
+  "rel": 2.9177256428350943e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-142-graphics-rasterific-cubicbezier-issuffic.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 3.5516173923198778e-15,
+  "rel": 1.0860482946234193e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-143-graphics-rasterific-shading-sgradientcol.fpcore": {
+  "ulps": 3,
+  "mean": 1.3836,
+  "abs": 1.6985838763983702e-16,
+  "rel": 2.72272639858573e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-144-graphics-rasterific-shading-sradialgradi.fpcore": {
+  "ulps": 2,
+  "mean": 1.1722,
+  "abs": 6.655987145878334e-16,
+  "rel": 1.64808977131586e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-145-graphics-rasterific-shading-sradialgradi.fpcore": {
+  "ulps": 4,
+  "mean": 1.4709,
+  "abs": 6.194220739504276e-12,
+  "rel": 3.993985492059796e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-148-data-number-erf-cinvnormcdf-from-erf-2-0.fpcore": {
+  "ulps": 4369294522109579270,
+  "mean": 9.8871,
+  "abs": 3.2805191515235737e-16,
+  "rel": 6.0082471314862165,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-150-crypto-random-test-calculate-from-crypto.fpcore": {
+  "ulps": 2,
+  "mean": 1.2363,
+  "abs": 8.304770740403955e-16,
+  "rel": 2.000132248072785e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-151-numeric-log-cexpm1-from-log-domain-0-10-.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 4.4389105502956375e-16,
+  "rel": 1.1011764266903171e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-152-numeric-log-cexpm1-from-log-domain-0-10-.fpcore": {
+  "ulps": 2,
+  "mean": 1.2467,
+  "abs": 4.01769460154984e-15,
+  "rel": 1.9521871054278569e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-153-numeric-log-clog1p-from-log-domain-0-10-.fpcore": {
+  "ulps": 2,
+  "mean": 1.2358,
+  "abs": 1.1017556509069128e-14,
+  "rel": 1.8905258032539392e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-154-numeric-log-clog1p-from-log-domain-0-10-.fpcore": {
+  "ulps": 3,
+  "mean": 1.3421,
+  "abs": 1.5838509566630465e-16,
+  "rel": 2.361368665848033e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-155-data-approximate-numerics-blog-from-appr.fpcore": {
+  "ulps": 3,
+  "mean": 1.3582,
+  "abs": 2.2337700501201552e-16,
+  "rel": 3.5424433317707515e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-159-graphics-rasterific-svg-pathconverter-ar.fpcore": {
+  "ulps": 3,
+  "mean": 1.3392,
+  "abs": 7.067689357737559e-17,
+  "rel": 2.728609546933873e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-160-development-shake-profile-generatetrace-.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 0.0,
+  "rel": null,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-161-development-shake-progress-decay-from-sh.fpcore": {
+  "ulps": 5,
+  "mean": 1.6097,
+  "abs": 1.339426717507523e-16,
+  "rel": 4.660886266972379e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-162-development-shake-progress-message-from-.fpcore": {
+  "ulps": 3,
+  "mean": 1.3595,
+  "abs": 6.951049877891885e-15,
+  "rel": 2.753224639381093e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-163-diagrams-backend-rasterific-crender-from.fpcore": {
+  "ulps": 4384051132101334989,
+  "mean": 3.5159,
+  "abs": 3.9718531835297726e-15,
+  "rel": 1.5783086573377612,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-164-numeric-histogram-binbounds-from-chart-1.fpcore": {
+  "ulps": 3,
+  "mean": 1.2434,
+  "abs": 9.660437757158307e-16,
+  "rel": 2.2914539033434664e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-165-graphics-rendering-chart-drawing-drawtex.fpcore": {
+  "ulps": 2,
+  "mean": 1.2292,
+  "abs": 6.0996192733485824e-15,
+  "rel": 1.9377732014331545e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-166-graphics-rendering-chart-axis-types-hbuf.fpcore": {
+  "ulps": 4503599627370497,
+  "mean": 3.2904,
+  "abs": 3.3306690738754696e-16,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-167-graphics-rendering-chart-axis-types-linm.fpcore": {
+  "ulps": 13759913031440,
+  "mean": 6.3537,
+  "abs": 1.4163332395658136e-15,
+  "rel": 0.001587233797467162,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-168-graphics-rendering-chart-plot-vectors-re.fpcore": {
+  "ulps": 2,
+  "mean": 1.1879,
+  "abs": 1.2945050693599734e-15,
+  "rel": 1.6163502859448979e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-170-graphics-rendering-chart-plot-areaspots-.fpcore": {
+  "ulps": 4,
+  "mean": 1.4643,
+  "abs": 4.0689816107942776e-16,
+  "rel": 3.2996422248928773e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-171-graphics-rendering-chart-plot-pie-render.fpcore": {
+  "ulps": 2,
+  "mean": 1.2647,
+  "abs": 8.881784197001252e-16,
+  "rel": 2.2178287744266653e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-172-graphics-rendering-chart-sparkline-rende.fpcore": {
+  "ulps": 4,
+  "mean": 1.5027,
+  "abs": 1.154728934064639e-13,
+  "rel": 3.9713626184911857e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-173-graphics-rendering-chart-backend-diagram.fpcore": {
+  "ulps": 3,
+  "mean": 1.3932,
+  "abs": 5.243086909024064e-15,
+  "rel": 2.9937720914900437e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-174-graphics-rendering-chart-backend-diagram.fpcore": {
+  "ulps": 3,
+  "mean": 1.3299,
+  "abs": 1.9369645053652703e-16,
+  "rel": 3.812813421717411e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-175-ai-clustering-hierarchical-internal-aver.fpcore": {
+  "ulps": 2,
+  "mean": 1.2606,
+  "abs": 4.9645460569670246e-17,
+  "rel": 2.1420304087101604e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-176-ai-clustering-hierarchical-internal-ward.fpcore": {
+  "ulps": 8,
+  "mean": 1.6291,
+  "abs": 2.0776406534882486e-13,
+  "rel": 8.922811907681134e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-178-numeric-specfunctions-inverfc-from-math-.fpcore": {
+  "ulps": 21065495436,
+  "mean": 8.8116,
+  "abs": 3.4724834311921605e-16,
+  "rel": 3.840356002888046e-06,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-179-numeric-specfunctions-loggamma-from-math.fpcore": {
+  "ulps": 3,
+  "mean": 1.4144,
+  "abs": 2.5379698106417976e-15,
+  "rel": 2.6958413936124185e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-180-numeric-specfunctions-loggamma-from-math.fpcore": {
+  "ulps": 3,
+  "mean": 1.2041,
+  "abs": 4.480252356856019e-16,
+  "rel": 2.2292716373783603e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-181-numeric-specfunctions-loggamma-from-math.fpcore": {
+  "ulps": 6,
+  "mean": 1.7817,
+  "abs": 1.933067619965391e-16,
+  "rel": 5.894108671285066e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-182-numeric-specfunctions-loggamma-from-math.fpcore": {
+  "ulps": 7,
+  "mean": 1.9287,
+  "abs": 1.3587924484932036e-14,
+  "rel": 8.722031543051822e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-183-numeric-specfunctions-slogfactorial-from.fpcore": {
+  "ulps": 2,
+  "mean": 1.2674,
+  "abs": 1.5929602896117604e-16,
+  "rel": 1.622749739043748e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-186-numeric-specfunctions-loggammacorrection.fpcore": {
+  "ulps": 2,
+  "mean": 1.1972,
+  "abs": 4.4406308096812816e-16,
+  "rel": 2.1781519912880865e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-187-numeric-specfunctions-log1p-from-math-fu.fpcore": {
+  "ulps": 2,
+  "mean": 1.2966,
+  "abs": 3.4977613440285498e-15,
+  "rel": 2.1578793336021582e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-190-numeric-specfunctions-choose-from-math-f.fpcore": {
+  "ulps": 3,
+  "mean": 1.355,
+  "abs": 6.420055553429304e-16,
+  "rel": 2.893874382700808e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-193-numeric-specfunctions-incompletegamma-fr.fpcore": {
+  "ulps": 4,
+  "mean": 1.4787,
+  "abs": 7.795964738301713e-15,
+  "rel": 3.405034379746962e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-194-numeric-specfunctions-invincompletegamma.fpcore": {
+  "ulps": 85,
+  "mean": 2.4753,
+  "abs": 1.4628756885664741e-16,
+  "rel": 9.94485535397239e-15,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-196-numeric-specfunctions-invincompletegamma.fpcore": {
+  "ulps": 3740984784325,
+  "mean": 8.6399,
+  "abs": 4.826375688587606e-16,
+  "rel": 0.0007221641345128941,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-197-numeric-specfunctions-invincompletegamma.fpcore": {
+  "ulps": 8725813907958308465,
+  "mean": 2.4796,
+  "abs": 7.183620866387643e-16,
+  "rel": 6.263497799145162,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-198-numeric-specfunctions-incompletebetaappr.fpcore": {
+  "ulps": 6,
+  "mean": 1.9253,
+  "abs": 1.4854269206735395e-17,
+  "rel": 5.770742566658469e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-202-numeric-specfunctions-invincompletebetaw.fpcore": {
+  "ulps": 3,
+  "mean": 1.3348,
+  "abs": 2.613559364304949e-15,
+  "rel": 2.637334726230205e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-203-numeric-specfunctions-invincompletebetaw.fpcore": {
+  "ulps": 56084636,
+  "mean": 24.1981,
+  "abs": 4.66543043211148e-16,
+  "rel": 8.418968327915968e-09,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-204-numeric-specfunctions-invincompletebetaw.fpcore": {
+  "ulps": 3,
+  "mean": 1.4046,
+  "abs": 2.3966193064192294e-15,
+  "rel": 2.825119403357752e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-207-numeric-specfunctions-invincompletebetaw.fpcore": {
+  "ulps": 1456662648384817,
+  "mean": 4.2369,
+  "abs": 4.624971193516649e-17,
+  "rel": 0.27749313899119293,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-210-numeric-specfunctions-loggamma-from-math.fpcore": {
+  "ulps": 6,
+  "mean": 1.6931,
+  "abs": 8.140094316584707e-15,
+  "rel": 5.621067907643968e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-211-statistics-math-rootfinding-ridders-from.fpcore": {
+  "ulps": 4,
+  "mean": 1.4451,
+  "abs": 1.776639365697946e-11,
+  "rel": 3.342676717065024e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-214-statistics-correlation-kendall-numofties.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 1.1098037591846095e-16,
+  "rel": 1.0997116987642181e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-215-statistics-sample-robustsumvarweighted-f.fpcore": {
+  "ulps": 3,
+  "mean": 1.3497,
+  "abs": 1.219860031356318e-12,
+  "rel": 2.6401820215408486e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-216-statistics-sample-swelfordmean-from-math.fpcore": {
+  "ulps": 2,
+  "mean": 1.067,
+  "abs": 2.7221653151521183e-16,
+  "rel": 1.234951369579203e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-217-statistics-sample-skurtosis-from-math-fu.fpcore": {
+  "ulps": 2,
+  "mean": 1.0079,
+  "abs": 2.349337706138033e-16,
+  "rel": 8.076540690706661e-17,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-218-statistics-distribution-beta-centropy-fr.fpcore": {
+  "ulps": 4,
+  "mean": 1.4946,
+  "abs": 5.367033088354454e-11,
+  "rel": 4.021348899306388e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-219-statistics-distribution-beta-cvariance-f.fpcore": {
+  "ulps": 4,
+  "mean": 1.4335,
+  "abs": 7.584519966520125e-19,
+  "rel": 3.19234922249802e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-221-statistics-distribution-binomial-cvarian.fpcore": {
+  "ulps": 2,
+  "mean": 1.2594,
+  "abs": 1.2867015533660577e-14,
+  "rel": 1.9821112173852678e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-223-statistics-distribution-cauchylorentz-cd.fpcore": {
+  "ulps": 4,
+  "mean": 1.4276,
+  "abs": 1.6864630163553741e-19,
+  "rel": 3.3843710929091686e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-224-examples-basics-basictests-f3-from-sbv-4.fpcore": {
+  "ulps": 3,
+  "mean": 1.4867,
+  "abs": 2.423645525002181e-14,
+  "rel": 3.2425496857298083e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-225-examples-basics-basictests-f2-from-sbv-4.fpcore": {
+  "ulps": 3,
+  "mean": 1.2871,
+  "abs": 7.230775528023129e-15,
+  "rel": 2.1269084960980953e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-226-examples-basics-basictests-f1-from-sbv-4.fpcore": {
+  "ulps": 2,
+  "mean": 1.2499,
+  "abs": 9.878350381452212e-15,
+  "rel": 2.3215296008242196e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-227-examples-basics-prooftests-f4-from-sbv-4.fpcore": {
+  "ulps": 2,
+  "mean": 1.2351,
+  "abs": 1.471290652240617e-14,
+  "rel": 2.1102699929968782e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-230-data-random-distribution-normal-normalta.fpcore": {
+  "ulps": 2,
+  "mean": 1.2348,
+  "abs": 2.871010643879521e-15,
+  "rel": 1.7664846417839962e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-231-data-random-distribution-normal-doublest.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 0.0,
+  "rel": 0.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-232-data-random-distribution-t-ccdf-from-ran.fpcore": {
+  "ulps": 2,
+  "mean": 1.2339,
+  "abs": 1.2303233952632018e-16,
+  "rel": 2.0519849169885556e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-233-data-random-distribution-triangular-tria.fpcore": {
+  "ulps": 2,
+  "mean": 1.0009,
+  "abs": 5.567652433929321e-17,
+  "rel": 5.572119070468363e-17,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-234-data-random-distribution-triangular-tria.fpcore": {
+  "ulps": 4,
+  "mean": 1.4578,
+  "abs": 9.961293187898304e-19,
+  "rel": 3.356317414354028e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-235-data-random-dice-roll-from-dice-0-1.fpcore": {
+  "ulps": 524288,
+  "mean": 2.8313,
+  "abs": 2.220182165712196e-16,
+  "rel": 7.682218227377683e-11,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-237-reporttypes-explainfloat-from-gipeda-0-1.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 0.0,
+  "rel": null,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-238-hakyll-web-tags-rendertagcloud-from-haky.fpcore": {
+  "ulps": 6,
+  "mean": 1.5666,
+  "abs": 1.0292615755634277e-13,
+  "rel": 5.359780728246735e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-239-data-histogram-bin-binf-cfromindex-from-.fpcore": {
+  "ulps": 2,
+  "mean": 1.1501,
+  "abs": 5.634437496515055e-15,
+  "rel": 1.6320576856243268e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-240-data-histogram-bin-logbind-cbinsizen-fro.fpcore": {
+  "ulps": 2,
+  "mean": 1.3156,
+  "abs": 1.7728376338719197e-15,
+  "rel": 2.1939796382330295e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-241-numeric-signal-interpolate-from-hsignal-.fpcore": {
+  "ulps": 501240410642,
+  "mean": 2.1916,
+  "abs": 2.882387681476464e-15,
+  "rel": 6.760176687154773e-05,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-242-numeric-signal-multichannel-cget-from-hs.fpcore": {
+  "ulps": 2,
+  "mean": 1.1357,
+  "abs": 1.498164572104609e-14,
+  "rel": 1.938528685479755e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-243-numeric-signal-multichannel-cput-from-hs.fpcore": {
+  "ulps": 4,
+  "mean": 1.4586,
+  "abs": 2.060748631802601e-14,
+  "rel": 3.406197149817717e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-244-data-hyperloglog-config-hll-from-hyperlo.fpcore": {
+  "ulps": 2,
+  "mean": 1.2522,
+  "abs": 1.3533220483614861e-14,
+  "rel": 1.9974929673719369e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-247-diagrams-backend-cairo-internal-settextu.fpcore": {
+  "ulps": 3,
+  "mean": 1.3674,
+  "abs": 2.3165826748914478e-15,
+  "rel": 2.947981946568841e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-248-numeric-integration-tanhsinh-simpson-fro.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 1.776203774046487e-15,
+  "rel": 1.0955924246555965e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-249-numeric-integration-tanhsinh-everywhere-.fpcore": {
+  "ulps": 3,
+  "mean": 1.2499,
+  "abs": 2.6043723484596958e-14,
+  "rel": 2.416264007975823e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-250-data-metrics-snapshot-quantile-from-metr.fpcore": {
+  "ulps": 3,
+  "mean": 1.4228,
+  "abs": 7.668674838107289e-13,
+  "rel": 3.784914278820193e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-251-graphics-rendering-plot-render-plot-lege.fpcore": {
+  "ulps": 2,
+  "mean": 1.2114,
+  "abs": 1.7763568394002505e-15,
+  "rel": 1.9601245679268217e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-252-graphics-rendering-plot-render-plot-lege.fpcore": {
+  "ulps": 3,
+  "mean": 1.3624,
+  "abs": 9.251296348528512e-14,
+  "rel": 2.863114567777342e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-253-graphics-rendering-plot-render-plot-lege.fpcore": {
+  "ulps": 2,
+  "mean": 1.2877,
+  "abs": 8.881784197001252e-15,
+  "rel": 2.3847605593423994e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-254-graphics-rendering-plot-render-plot-lege.fpcore": {
+  "ulps": 2,
+  "mean": 1.2489,
+  "abs": 3.6708007890142985e-14,
+  "rel": 2.0195569215995376e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-255-graphics-rendering-plot-render-plot-axis.fpcore": {
+  "ulps": 2,
+  "mean": 1.2344,
+  "abs": 9.088234811988797e-16,
+  "rel": 2.234281946549193e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-256-graphics-rendering-plot-render-plot-axis.fpcore": {
+  "ulps": 3,
+  "mean": 1.2732,
+  "abs": 9.45952735855583e-16,
+  "rel": 2.540762522017977e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-257-graphics-rendering-plot-render-plot-axis.fpcore": {
+  "ulps": 52188310493472,
+  "mean": 6.9447,
+  "abs": 1.3598983074518996e-15,
+  "rel": 0.008126822597993215,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-258-graphics-rendering-plot-render-plot-axis.fpcore": {
+  "ulps": 28317008205080,
+  "mean": 2.4037,
+  "abs": 3.953608757307317e-15,
+  "rel": 0.004441717319846452,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-259-graphics-rendering-plot-render-plot-axis.fpcore": {
+  "ulps": 2,
+  "mean": 1.2425,
+  "abs": 2.338934220703268e-15,
+  "rel": 2.1192177711163325e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-260-graphics-rendering-plot-render-plot-axis.fpcore": {
+  "ulps": 3,
+  "mean": 1.2702,
+  "abs": 9.510273386357787e-16,
+  "rel": 2.399489430033165e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-261-graphics-rendering-plot-render-plot-axis.fpcore": {
+  "ulps": 17029386349009,
+  "mean": 8.3035,
+  "abs": 1.7611594709476812e-15,
+  "rel": 0.0026094124530733932,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-262-data-array-repa-algorithms-pixel-doubler.fpcore": {
+  "ulps": 2,
+  "mean": 1.205,
+  "abs": 3.2738553784540653e-15,
+  "rel": 1.969119423833523e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-263-data-array-repa-algorithms-colorramp-ram.fpcore": {
+  "ulps": 4,
+  "mean": 1.3504,
+  "abs": 3.747268054346757e-15,
+  "rel": 2.945807693339043e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-264-data-array-repa-algorithms-colorramp-ram.fpcore": {
+  "ulps": 2,
+  "mean": 1.275,
+  "abs": 6.554266092373028e-16,
+  "rel": 2.0570209832578663e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-265-data-array-repa-algorithms-colorramp-ram.fpcore": {
+  "ulps": 3,
+  "mean": 1.3073,
+  "abs": 3.7571144008731515e-15,
+  "rel": 2.554386899526274e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-266-data-spline-key-interpolatekeys-from-smo.fpcore": {
+  "ulps": 2,
+  "mean": 1.2745,
+  "abs": 4.320572529445432e-16,
+  "rel": 1.9377329575032677e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-haskell-267-frp-yampa-vector3-vector3rho-from-yampa-.fpcore": {
+  "ulps": 2,
+  "mean": 1.1753,
+  "abs": 5.494805016338325e-15,
+  "rel": 1.7364156559729127e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-basilisk-008-semi-latus-rectum.fpcore": {
+  "ulps": 2,
+  "mean": 1.2612,
+  "abs": 1.3442722411107333e-14,
+  "rel": 2.0308470452283508e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-basilisk-010-angular-momentum.fpcore": {
+  "ulps": 2,
+  "mean": 1.1321,
+  "abs": 3.6044232434322574e-16,
+  "rel": 1.3738972423284034e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-basilisk-018-drag-accel-mag.fpcore": {
+  "ulps": 5,
+  "mean": 1.7321,
+  "abs": 2.172979015875812e-07,
+  "rel": 5.012771282725522e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-coolprop-007-b-delta2.fpcore": {
+  "ulps": 5,
+  "mean": 1.6214,
+  "abs": 1.8627641382852484e-12,
+  "rel": 4.0754924805023785e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-coolprop-008-b-tau3.fpcore": {
+  "ulps": 6,
+  "mean": 1.8518,
+  "abs": 1.891227472544107e-10,
+  "rel": 6.136242545384876e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-coolprop-013-d2psi-ddelta2-over-psi.fpcore": {
+  "ulps": 4383385691016675212,
+  "mean": 2.2268,
+  "abs": 3.803596075933728e-14,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-fast-math-000-fastmath-dist.fpcore": {
+  "ulps": 2,
+  "mean": 1.2248,
+  "abs": 1.1281291047873054e-14,
+  "rel": 1.9166560983292004e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-fast-math-001-fastmath-test1.fpcore": {
+  "ulps": 2,
+  "mean": 1.2648,
+  "abs": 7.549516567451064e-15,
+  "rel": 1.938302574411571e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-fast-math-002-fastmath-test2.fpcore": {
+  "ulps": 2,
+  "mean": 1.2998,
+  "abs": 1.5051694785675968e-14,
+  "rel": 2.3063066833140836e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-fast-math-003-fastmath-dist3.fpcore": {
+  "ulps": 3,
+  "mean": 1.267,
+  "abs": 3.5776731203704215e-14,
+  "rel": 2.452084811098103e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-fast-math-004-fastmath-dist4.fpcore": {
+  "ulps": 4,
+  "mean": 1.4315,
+  "abs": 4.7339342937557685e-14,
+  "rel": 3.453746601127249e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-fast-math-005-fastmath-test3.fpcore": {
+  "ulps": 2,
+  "mean": 1.2401,
+  "abs": 1.2879799400848413e-14,
+  "rel": 1.987475436815413e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-fast-math-006-fastmath-repmul.fpcore": {
+  "ulps": 3,
+  "mean": 1.3418,
+  "abs": 2.3908445658013667e-15,
+  "rel": 2.965746134757901e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-fast-math-007-fastmath-test5.fpcore": {
+  "ulps": 5,
+  "mean": 1.7615,
+  "abs": 3.240714056430112e-13,
+  "rel": 6.158492594829665e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-jmatjs-004-jmat-real-dawson.fpcore": {
+  "ulps": 6,
+  "mean": 1.8406,
+  "abs": 3.60782606775523e-16,
+  "rel": 6.852512887816986e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-mathjs-arithmetic-000-modulus.fpcore": {
+  "ulps": 2,
+  "mean": 1.1739,
+  "abs": 1.4123870807331928e-15,
+  "rel": 1.834581151426076e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-mathjs-arithmetic-001-modulus-sqr.fpcore": {
+  "ulps": 2,
+  "mean": 1.2447,
+  "abs": 1.017506571882422e-14,
+  "rel": 1.9223654411005776e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-mathjs-arithmetic-002-re-sqr.fpcore": {
+  "ulps": 3,
+  "mean": 1.2768,
+  "abs": 7.22230528420503e-15,
+  "rel": 2.1218110534885843e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-mathjs-arithmetic-003-im-sqr.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 1.7763154132810126e-15,
+  "rel": 1.1028411320217977e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-mathjs-arithmetic-004-math-cube-on-real.fpcore": {
+  "ulps": 2,
+  "mean": 1.2596,
+  "abs": 8.435523247168965e-16,
+  "rel": 2.0164693010083513e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-mathjs-arithmetic-017-multiplycomplex-real-part.fpcore": {
+  "ulps": 3,
+  "mean": 1.2792,
+  "abs": 1.1492803784505306e-13,
+  "rel": 2.1839242904724017e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-mathjs-arithmetic-018-multiplycomplex-imaginary-part.fpcore": {
+  "ulps": 2,
+  "mean": 1.2271,
+  "abs": 5.6265504963603395e-14,
+  "rel": 1.9570945449321182e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-octave-collocwt-000-octave-3-8-jcobi-1.fpcore": {
+  "ulps": 46,
+  "mean": 1.0017,
+  "abs": 7.806666234628492e-17,
+  "rel": 5.223868672189149e-15,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-octave-collocwt-002-octave-3-8-jcobi-3.fpcore": {
+  "ulps": 4,
+  "mean": 1.0828,
+  "abs": 3.8228459700993017e-17,
+  "rel": 4.67209134603546e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-libraries-octave-randgamma-000-octave-3-8-oct-fill-randg.fpcore": {
+  "ulps": 4,
+  "mean": 1.4686,
+  "abs": 1.2747169315543945e-15,
+  "rel": 3.5070553239256977e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-mathematics-arvind-002-quotient-of-products.fpcore": {
+  "ulps": 3,
+  "mean": 1.3476,
+  "abs": 2.037542542463423e-18,
+  "rel": 2.8144170086068096e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-mathematics-beta-distribution-000-a-parameter-of-renormalized-beta-distrib.fpcore": {
+  "ulps": 1189800662305611009,
+  "mean": 1.1522,
+  "abs": 1.1583551481690702e+285,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-mathematics-beta-distribution-001-b-parameter-of-renormalized-beta-distrib.fpcore": {
+  "ulps": 2970713727716795465,
+  "mean": 1.0342,
+  "abs": 3.873959390680015e+284,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-mathematics-excel-000-x0-1-x1-x0.fpcore": {
+  "ulps": 2,
+  "mean": 1.0891,
+  "abs": 2.7622454243494787e-16,
+  "rel": 1.2732124285368025e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-mathematics-gui-007-ab-angle-abcf-d.fpcore": {
+  "ulps": 3,
+  "mean": 1.3458,
+  "abs": 3.927819067356486e-14,
+  "rel": 2.7410881794237214e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-conte-004-ena-section-1-4-exercise-4b-n-2.fpcore": {
+  "ulps": 4638089024936869889,
+  "mean": 3.7042224869219424e+17,
+  "abs": 119.20928955078125,
+  "rel": 1.393682284145012,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-conte-005-ena-section-1-4-exercise-4b-n-5.fpcore": {
+  "ulps": 5047998312500128029,
+  "mean": 1.986220409537903e+17,
+  "abs": 2.9802322387695315e+29,
+  "rel": 1.1949451724717837,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-every-cs-002-difference-of-squares.fpcore": {
+  "ulps": 3,
+  "mean": 1.2734,
+  "abs": 7.231832489482103e-15,
+  "rel": 2.2132754833894555e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-every-cs-006-x-x-2-1.fpcore": {
+  "ulps": 3,
+  "mean": 1.4263,
+  "abs": 1.0612459459915286e-16,
+  "rel": 2.222224147649196e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-every-cs-007-complex-division-real-part.fpcore": {
+  "ulps": 4,
+  "mean": 1.4652,
+  "abs": 3.246773520192759e-17,
+  "rel": 3.8670054362146084e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-every-cs-008-complex-division-imag-part.fpcore": {
+  "ulps": 530298241024166,
+  "mean": 10.6603,
+  "abs": 8.022211342905028e-18,
+  "rel": 0.09439329158912418,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-fma-000-fma-test1.fpcore": {
+  "ulps": 4138642943204596797,
+  "mean": 4.136892554886354e+18,
+  "abs": 4.840000000000001e-32,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-fma-001-fma-test2.fpcore": {
+  "ulps": 18446744073709551616,
+  "mean": 1.8446744073709552e+19,
+  "abs": Infinity,
+  "rel": Infinity,
+  "failed": 10000,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-great-debate-003-kahan-p13-example-1.fpcore": {
+  "ulps": 2,
+  "mean": 1.1809,
+  "abs": 1.2982597614301628e-16,
+  "rel": 1.9096199651917981e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-great-debate-004-kahan-p13-example-2.fpcore": {
+  "ulps": 2,
+  "mean": 1.1797,
+  "abs": 1.2512690421642376e-16,
+  "rel": 1.8355712712765267e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-great-debate-005-kahan-p13-example-3.fpcore": {
+  "ulps": 2,
+  "mean": 1.2826,
+  "abs": 1.4023575379241842e-16,
+  "rel": 2.094406854965428e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-hamming-misc-002-radioactive-exchange-between-two-surface.fpcore": {
+  "ulps": 4,
+  "mean": 1.4197,
+  "abs": 7.708513693111398e-13,
+  "rel": 3.54720332676196e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-martel-000-rectangular-parallelepiped-of-dimension-.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 2.6042268478861695e-17,
+  "rel": 5.551115123125783e-17,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-martel-001-expression-p14.fpcore": {
+  "ulps": 2,
+  "mean": 1.0396,
+  "abs": 4.5915155992223804e-12,
+  "rel": 2.1139799321991324e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-martel-002-expression-1-p15.fpcore": {
+  "ulps": 3,
+  "mean": 1.3977,
+  "abs": 1.2878587085651816e-14,
+  "rel": 2.966253031229834e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-martel-003-expression-2-p15.fpcore": {
+  "ulps": 2,
+  "mean": 1.0011,
+  "abs": 4.179404240268175e-16,
+  "rel": 1.1057648807351213e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-martel-004-expression-3-p15.fpcore": {
+  "ulps": 2,
+  "mean": 1.0153,
+  "abs": 1.0692096439402351e-15,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-martel-005-expression-4-p15.fpcore": {
+  "ulps": 3,
+  "mean": 1.0209,
+  "abs": 2.1464368956664595e-14,
+  "rel": 2.7960833541419307e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-martel-006-expression-p6.fpcore": {
+  "ulps": 4391009636686233601,
+  "mean": 319.4666,
+  "abs": 5.329070518200751e-15,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-polynomial-cancellation-000-from-warwick-tucker-s-validated-numerics.fpcore": {
+  "ulps": 316806651996147070,
+  "mean": 3.168066519961471e+17,
+  "abs": 1.1805916207174113e+21,
+  "rel": 1.4268760486885696e+21,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-rosa-000-rosa-s-dopplerbench.fpcore": {
+  "ulps": 5,
+  "mean": 1.59,
+  "abs": 1.410697020446046e-16,
+  "rel": 4.262134523847738e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-rosa-001-rosa-s-benchmark.fpcore": {
+  "ulps": 3,
+  "mean": 1.569,
+  "abs": 2.5841917195535645e-16,
+  "rel": 2.733343704464132e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-rosa-002-rosa-s-floatvsdoublebenchmark.fpcore": {
+  "ulps": 11,
+  "mean": 2.402,
+  "abs": 4.66534472536051e-13,
+  "rel": 1.1749294841728293e-15,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-rump-000-rump-s-expression-from-stadtherr-s-award.fpcore": {
+  "ulps": 5,
+  "mean": 1.6745,
+  "abs": 6.006013325338968e-08,
+  "rel": 5.084795702032706e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-rump-001-from-rump-in-a-1983-paper.fpcore": {
+  "ulps": 9,
+  "mean": 1.56,
+  "abs": 1.0049151312594643e-12,
+  "rel": 9.926417124896998e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-numerics-rump-002-from-rump-in-a-1983-paper-rewritten.fpcore": {
+  "ulps": 9,
+  "mean": 1.625,
+  "abs": 7.93996191979353e-13,
+  "rel": 8.666695951243985e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-physics-kalman-000-kalman-filter-per-k.fpcore": {
+  "ulps": 2,
+  "mean": 1.018,
+  "abs": 1.1336408733903708e-16,
+  "rel": 1.1336409714100817e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-physics-kalman-001-kalman-filter-per-x.fpcore": {
+  "ulps": 4446913119366017763,
+  "mean": 2.586432604388147e+18,
+  "abs": 2.0562827202462428e-11,
+  "rel": 1.6977774467636482,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-physics-kalman-002-kalman-filter-per-p.fpcore": {
+  "ulps": 4386506037058863104,
+  "mean": 2.0632379514276536e+18,
+  "abs": 3.027913631389704e-15,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-physics-sidey-000-given-s-rotation-svd-example.fpcore": {
+  "ulps": 2,
+  "mean": 1.1862,
+  "abs": 1.1796810946398015e-16,
+  "rel": 1.2088048257373662e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-physics-tea-whistle-000-henrywood-and-agarwal-equation-3.fpcore": {
+  "ulps": 3,
+  "mean": 1.2879,
+  "abs": 2.779249719411873e-17,
+  "rel": 2.510943746481738e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-physics-tea-whistle-001-henrywood-and-agarwal-equation-9a.fpcore": {
+  "ulps": 2,
+  "mean": 1.2007,
+  "abs": 2.516421669476521e-16,
+  "rel": 1.688239399700092e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-physics-universal-linear-optics-000-bouland-and-aaronson-equation-24.fpcore": {
+  "ulps": 5,
+  "mean": 1.5593,
+  "abs": 2.2880954833396003e-12,
+  "rel": 4.342869319516535e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-physics-universal-linear-optics-001-bouland-and-aaronson-equation-25.fpcore": {
+  "ulps": 13,
+  "mean": 2.0905,
+  "abs": 1.988037879024674e-12,
+  "rel": 1.2870018950257893e-15,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-physics-universal-linear-optics-002-bouland-and-aaronson-equation-26.fpcore": {
+  "ulps": 4,
+  "mean": 1.6517,
+  "abs": 1.7817842571465339e-12,
+  "rel": 4.541442958435191e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-krovak-008-mod-dx.fpcore": {
+  "ulps": 2,
+  "mean": 1.4757,
+  "abs": 3.3778781192175075e-18,
+  "rel": 1.1463098336001847e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-krovak-009-mod-dy.fpcore": {
+  "ulps": 2,
+  "mean": 1.3902,
+  "abs": 3.108083932525643e-18,
+  "rel": 1.235328994967567e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-omerc-001-forward-half-diff.fpcore": {
+  "ulps": 33554433,
+  "mean": 1.8863,
+  "abs": 8.325350817068585e-17,
+  "rel": 3.7252902845841263e-09,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-omerc-002-forward-half-sum.fpcore": {
+  "ulps": 2,
+  "mean": 1.1263,
+  "abs": 1.3877501125927278e-16,
+  "rel": 1.3863667512390054e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-omerc-006-forward-rot-x.fpcore": {
+  "ulps": 3,
+  "mean": 1.3421,
+  "abs": 1.0041360871060712e-11,
+  "rel": 2.828126684592995e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-omerc-007-forward-rot-y.fpcore": {
+  "ulps": 3,
+  "mean": 1.3234,
+  "abs": 3.0899585938778904e-12,
+  "rel": 2.6694035046653065e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-omerc-009-inverse-up.fpcore": {
+  "ulps": 3,
+  "mean": 1.3484,
+  "abs": 6.344289436765729e-13,
+  "rel": 2.741433696452682e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-omerc-019-init-p.fpcore": {
+  "ulps": 3,
+  "mean": 1.4311,
+  "abs": 1.771334188428902e-16,
+  "rel": 2.671379692331173e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-omerc-020-init-j.fpcore": {
+  "ulps": 3,
+  "mean": 1.6846,
+  "abs": 2.5644405049453823e-16,
+  "rel": 2.6203543031326603e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-som-002-seraz0-fc-a2.fpcore": {
+  "ulps": 4,
+  "mean": 1.4498,
+  "abs": 5.0105783882564444e-14,
+  "rel": 3.3779507919629025e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-som-003-seraz0-fc-c1.fpcore": {
+  "ulps": 4,
+  "mean": 1.5147,
+  "abs": 2.466631229593119e-14,
+  "rel": 3.824894397476032e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-som-015-setup-w.fpcore": {
+  "ulps": 4373624283542891542,
+  "mean": 1.0163,
+  "abs": 1.108615129376991e-09,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-som-016-setup-t.fpcore": {
+  "ulps": 72,
+  "mean": 1.6347,
+  "abs": 7.205817497005668e-12,
+  "rel": 1.358337424832127,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-som-017-setup-xj.fpcore": {
+  "ulps": 2,
+  "mean": 1.0859,
+  "abs": 5.717147957316681e-16,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-tmerc-012-clenshaw-final-real.fpcore": {
+  "ulps": 3,
+  "mean": 1.3425,
+  "abs": 1.305989678367313e-09,
+  "rel": 2.911865502142029e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-proj-tmerc-013-clenshaw-final-imag.fpcore": {
+  "ulps": 3,
+  "mean": 1.3415,
+  "abs": 3.2501287068100923e-10,
+  "rel": 2.978331320169483e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-regression-000-xlohi-overflows.fpcore": {
+  "ulps": 4602678819172646913,
+  "mean": 4.602678819172647e+18,
+  "abs": 0.5,
+  "rel": 1.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-regression-003-x-used-to-be-hard-to-sample.fpcore": {
+  "ulps": 1,
+  "mean": 1.0,
+  "abs": 0.0,
+  "rel": 0.0,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-regression-006-sqrt-a-should-all-be-same.fpcore": {
+  "ulps": 2,
+  "mean": 1.1215,
+  "abs": 3.193716446410785e-16,
+  "rel": 1.5763557811330313e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-regression-007-sqrt-b-should-all-be-same.fpcore": {
+  "ulps": 2,
+  "mean": 1.1227,
+  "abs": 3.2421498633104534e-16,
+  "rel": 1.6127426345538168e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-regression-008-sqrt-c-should-all-be-same.fpcore": {
+  "ulps": 2,
+  "mean": 1.1261,
+  "abs": 3.183417647437749e-16,
+  "rel": 1.548513184779879e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-regression-009-sqrt-d-should-all-be-same.fpcore": {
+  "ulps": 2,
+  "mean": 1.127,
+  "abs": 3.273222585103649e-16,
+  "rel": 1.6140939662694747e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-regression-010-sqrt-e-should-all-be-same.fpcore": {
+  "ulps": 2,
+  "mean": 1.126,
+  "abs": 3.286684372017307e-16,
+  "rel": 1.628823891993746e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-regression-016-bug366-missed-optimization.fpcore": {
+  "ulps": 2,
+  "mean": 1.2039,
+  "abs": 6.1546852937870355e-15,
+  "rel": 2.112200211384363e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-regression-017-bug366-discussion-missed-optimization.fpcore": {
+  "ulps": 2,
+  "mean": 1.1817,
+  "abs": 9.543966870176578e-16,
+  "rel": 1.9832956261143433e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-tutorial-000-cancel-like-terms.fpcore": {
+  "ulps": 3,
+  "mean": 1.7462,
+  "abs": 2.220446049250313e-16,
+  "rel": 2.220446049250313e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-tutorial-001-expanding-a-square.fpcore": {
+  "ulps": 4,
+  "mean": 1.8605,
+  "abs": 2.1992621576701725e-15,
+  "rel": 4.421949142508088e-16,
+  "failed": 0,
+  "equivalent": true
+ },
+ "cores/herbie-tutorial-002-commute-and-associate.fpcore": {
+  "ulps": 4395513236313604097,
+  "mean": 1.152695423905553e+18,
+  "abs": 7.105427357601002e-15,
+  "rel": null,
+  "failed": 0,
+  "equivalent": true
+ }
+}

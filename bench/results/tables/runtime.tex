@@ -1,0 +1,17 @@
+\begin{table}[H] \centering
+\caption{Running times in seconds: bounding the 370 inputs of Benchmark (1), and rewriting the 94 of Benchmark (2). When our extraction times out, it still returns the frontier of the last round it finished.}\label{tab:runtime}
+\begin{tabular}{llrrrr}
+\toprule
+Task & Tool & Median & Geomean & Max & Timeouts \\
+\midrule
+Bounding & FPTaylor & 0.105 & 0.435 & 109 & 0 \\
+ & Gappa & 0.03 & 0.0434 & 1.49 & 0 \\
+ & Daisy & 4.62 & 4.72 & 300 & 2 \\
+ & Ours & 0.021 & 0.0213 & 0.0461 & 0 \\
+\midrule
+Rewriting & Herbie & 2.94 & 2.72 & 8.63 & 0 \\
+ & Daisy & 7.21 & 8.94 & 300 & 3 \\
+ & Ours & 0.115 & 0.253 & 121 & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}

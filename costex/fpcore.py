@@ -1,323 +1,142 @@
-"""S-expressions, an FPCore subset, and the expression AST:
+"""FPCore in and out, for the signature of Section 4 and conditionals on a variable.
 
-    ('var', name) | ('num', Fraction) | ('const', 'PI'|'E')
-    ('add'|'sub'|'mul'|'div', a, b) | ('neg', a) | ('sqrt', a)
+A program is a tuple: ("Var", name), ("Num", Fraction), ("Add", a, b), ("Mul", a, b),
+("Div", a, b), ("Neg", a), ("Sqrt", a), or ("If", (op, name, Fraction), then, else).
 """
-
-from __future__ import annotations
 
 import decimal
 import math
 import re
+from collections import namedtuple
 from fractions import Fraction
 
-
-class Sym(str):
-    pass
-
-
-class Str(str):
-    pass
+Core = namedtuple("Core", "name args box precision body props")
+SYMBOLS = {"Add": "+", "Mul": "*", "Div": "/", "Neg": "-", "Sqrt": "sqrt"}
+FLIP = {">": "<", ">=": "<=", "<": ">", "<=": ">="}
 
 
-class _Paren:
-    """Not a str, so no symbol can be one."""
-
-    def __init__(self, text):
-        self.text = text
-
-    def __repr__(self):
-        return self.text
-
-
-OPEN, CLOSE = _Paren("("), _Paren(")")
-
-_TOKEN = re.compile(r'\s*(?:;[^\n]*|([(\[])|([)\]])|"((?:[^"\\]|\\.)*)"|([^\s()\[\]";]+))')
+def read(text):
+    stack = [[]]
+    for token in re.findall(r'"[^"]*"|;[^\n]*|[()]|[^\s()";]+', text):
+        if token == "(":
+            stack.append([])
+        elif token == ")":
+            done = stack.pop()
+            stack[-1].append(done)
+        elif token[0] != ";":
+            stack[-1].append(token)
+    return stack[0]
 
 
-def tokenize(text: str):
-    pos, out = 0, []
-    while pos < len(text):
-        m = _TOKEN.match(text, pos)
-        if m is None:
-            if text[pos:].strip() == "":
-                break
-            raise SyntaxError(f"cannot tokenize at {text[pos:pos + 30]!r}")
-        pos = m.end()
-        lparen, rparen, string, atom = m.groups()
-        if lparen is not None:
-            out.append(OPEN)
-        elif rparen is not None:
-            out.append(CLOSE)
-        elif string is not None:
-            out.append(Str(string))
-        elif atom is not None:
-            out.append(Sym(atom))
-    return out
-
-
-def parse_sexps(text: str) -> list:
-    toks = tokenize(text)
-    pos = 0
-
-    def parse():
-        nonlocal pos
-        tok = toks[pos]
-        pos += 1
-        if tok is CLOSE:
-            raise SyntaxError("unbalanced )")
-        if tok is not OPEN:
-            return tok
-        items = []
-        while True:
-            if pos >= len(toks):
-                raise SyntaxError("unexpected end of input")
-            if toks[pos] is CLOSE:
-                pos += 1
-                return items
-            items.append(parse())
-
-    out = []
-    while pos < len(toks):
-        out.append(parse())
-    return out
-
-
-# -- expressions --------------------------------------------------------
-
-_BINOPS = {"+": "add", "-": "sub", "*": "mul", "/": "div"}
-_SYMBOLS = {v: k for k, v in _BINOPS.items()}      # for to_sexp
-_CONSTS = {"PI", "E"}
-
-# Guards and the guarded node.  ('ifprop', guard, then, else) is the
-# conditional the analysis reads as one node, and a guard is a comparison,
-# possibly under and/or/not.
-#
-# The analysis only ever builds ('gt', v, 0), the else arm being implicit; the
-# rest exist so that a branched program from another rewriter parses and can
-# be sampled.
-_CMP = {"<": "lt", "<=": "le", ">": "gt", ">=": "ge", "==": "eq", "!=": "ne"}
-_CMP_SYM = {v: k for k, v in _CMP.items()}
-_JOIN = ("and", "or")
-
-
-def _conj(preds: list) -> tuple:
-    out = preds[0]
-    for q in preds[1:]:
-        out = ("and", out, q)
-    return out
-
-
-def _is_number(tok) -> bool:
-    if not isinstance(tok, Sym):
-        return False
+def number(token):
     try:
-        Fraction(str(tok))
-        return True
-    except ValueError:
-        return False
+        return Fraction(token)
+    except (TypeError, ValueError):
+        return None
 
 
-def parse_expr(s) -> tuple:
-    if isinstance(s, Sym):
-        if _is_number(s):
-            return ("num", Fraction(str(s)))
-        if str(s) in _CONSTS:
-            return ("const", str(s))
-        return ("var", str(s))
-    if not isinstance(s, list) or not s:
-        raise SyntaxError(f"bad expression {s!r}")
-    head = str(s[0])
-    if head == "if":
-        args = [parse_expr(a) for a in s[1:]]
-        if len(args) != 3:
-            raise SyntaxError("if takes a condition and two branches")
-        return ("ifprop",) + tuple(args)
-    if head in _CMP:
-        args = [parse_expr(a) for a in s[1:]]
-        if len(args) < 2:
-            raise SyntaxError(f"{head} needs at least two arguments")
-        # FPCore comparisons chain: (< a b c) is a < b and b < c
-        return _conj([(_CMP[head], x, y) for x, y in zip(args, args[1:])])
-    if head in _JOIN:
-        args = [parse_expr(a) for a in s[1:]]
-        if not args:
-            raise SyntaxError(f"{head} needs an argument")
-        out = args[0]
-        for q in args[1:]:
-            out = (head, out, q)
-        return out
-    if head == "not":
-        args = [parse_expr(a) for a in s[1:]]
-        if len(args) != 1:
-            raise SyntaxError("not takes one argument")
-        return ("not", args[0])
-    if head != "sqrt" and head not in _BINOPS:
-        raise SyntaxError(f"unsupported operation {head!r}")
-    args = [parse_expr(a) for a in s[1:]]
-    if head == "sqrt":
-        if len(args) != 1:
-            raise SyntaxError("sqrt takes one argument")
-        return ("sqrt", args[0])
-    if head == "-" and len(args) == 1:
-        return ("neg", args[0])
-    if len(args) < 2:
-        raise SyntaxError(f"{head} needs at least two arguments")
-    if head in ("-", "/") and len(args) > 2:
-        raise SyntaxError(f"{head} is binary here")
-    out = args[0]
-    for a in args[1:]:
-        out = (_BINOPS[head], out, a)
-    return out
+def expr(s):
+    if isinstance(s, str):
+        return ("Var", s) if number(s) is None else ("Num", number(s))
+    op, *args = s
+    if op == "if" and len(args) == 3:
+        return ("If", condition(args[0]), expr(args[1]), expr(args[2]))
+    args = [expr(a) for a in args]
+    if op == "-" and len(args) == 1:
+        return ("Neg", args[0])
+    if op == "-" and len(args) == 2:
+        return ("Add", args[0], ("Neg", args[1]))
+    if op == "/" and len(args) == 2:
+        return ("Div", *args)
+    if op == "sqrt" and len(args) == 1:
+        return ("Sqrt", args[0])
+    if op in ("+", "*") and len(args) >= 2:
+        e = args[0]
+        for a in args[1:]:
+            e = ("Add" if op == "+" else "Mul", e, a)
+        return e
+    raise SyntaxError(f"unsupported expression {s}")
 
 
-def num_str(f: Fraction) -> str:
-    """A literal, decimal where that is exact."""
-    if f.denominator == 1:
-        return str(f.numerator)
-    with decimal.localcontext() as ctx:
-        ctx.prec = 80
-        s = str(decimal.Decimal(f.numerator) / decimal.Decimal(f.denominator))
-    return s if Fraction(s) == f else f"(/ {f.numerator} {f.denominator})"
+def condition(c):
+    match c:
+        case [op, str(a), str(b)] if op in FLIP and number(a) is None and number(b) is not None:
+            return (op, a, number(b))
+        case [op, str(a), str(b)] if op in FLIP and number(a) is not None and number(b) is None:
+            return (FLIP[op], b, number(a))
+    raise SyntaxError(f"unsupported condition {c}")
 
 
-def to_sexp(e) -> str:
-    op = e[0]
-    if op == "var":
-        return e[1]
-    if op == "num":
-        return num_str(e[1])
-    if op == "const":
-        return e[1]
-    if op == "neg":
-        return f"(- {to_sexp(e[1])})"
-    if op == "sqrt":
-        return f"(sqrt {to_sexp(e[1])})"
-    if op in _CMP_SYM:
-        return f"({_CMP_SYM[op]} {to_sexp(e[1])} {to_sexp(e[2])})"
-    if op in _JOIN:
-        return f"({op} {to_sexp(e[1])} {to_sexp(e[2])})"
-    if op == "not":
-        return f"(not {to_sexp(e[1])})"
-    if op == "ifprop":
-        return f"(if {to_sexp(e[1])} {to_sexp(e[2])} {to_sexp(e[3])})"
-    return f"({_SYMBOLS[op]} {to_sexp(e[1])} {to_sexp(e[2])})"
-
-
-def to_fpcore(name: str, args: list, box: dict, body: str,
-              precision: str = "binary64") -> str:
-    bounds = []
-    for v, (lo, hi) in box.items():
-        if not (math.isfinite(lo) and math.isfinite(hi)):
-            raise ValueError(f"unbounded box on {v}: [{lo!r}, {hi!r}]")
-        bounds.append(f"(<= {lo!r} {v} {hi!r})")
-    out = [f'(FPCore ({" ".join(args)})', f'  :name "{name}"']
-    if precision != "binary64":
-        out.append(f"  :precision {precision}")
-    if bounds:
-        out.append("  :pre " + (bounds[0] if len(bounds) == 1
-                                else f"(and {' '.join(bounds)})"))
-    out.append(f"  {body})")
-    return "\n".join(out) + "\n"
-
-
-def variables(e) -> set:
-    if e[0] == "var":
+def variables(e):
+    if e[0] == "Var":
         return {e[1]}
-    out = set()
-    for a in e[1:]:
-        if isinstance(a, tuple):
-            out |= variables(a)
-    return out
+    if e[0] == "Num":
+        return set()
+    if e[0] == "If":
+        return {e[1][1]} | variables(e[2]) | variables(e[3])
+    return set().union(*map(variables, e[1:]))
 
 
-# -- FPCore -------------------------------------------------------------
-
-
-class Core:
-    def __init__(self, name, args, box, body, precision="binary64", props=None):
-        self.name = name
-        self.args = args
-        self.box = box             # var -> (float lo, float hi)
-        self.body = body
-        self.precision = precision
-        self.props = props or {}   # raw, keyed with the leading colon
-
-    def __repr__(self):
-        return f"Core({self.name!r}, {self.args}, {self.box}, {to_sexp(self.body)})"
-
-
-def core_from_form(form) -> Core:
-    if not (isinstance(form, list) and form and str(form[0]) == "FPCore"):
-        raise SyntaxError("not an FPCore form")
-    rest = form[1:]
-    name = None if not rest or isinstance(rest[0], list) else str(rest.pop(0))
-    if len(rest) < 2 or not isinstance(rest[0], list):
-        raise SyntaxError("expected an argument list and one body expression")
-    if any(isinstance(a, list) for a in rest[0]):
-        raise SyntaxError("annotated arguments")
-    args = [str(a) for a in rest[0]]
-    body, rest = rest[-1], rest[1:-1]
-    for key in rest[::2]:
-        if not str(key).startswith(":"):
-            raise SyntaxError(f"expected a property, got {str(key)!r}")
-    if len(rest) % 2 or (not isinstance(body, list) and str(body).startswith(":")):
-        raise SyntaxError("property without a value")
-    props = {str(k): v for k, v in zip(rest[::2], rest[1::2])}
-    precision = str(props.get(":precision", "binary64"))
-    if precision not in ("binary64", "binary32"):
-        raise SyntaxError(f"precision {precision}")
-
-    body = parse_expr(body)
-    if name is None and ":name" in props:
-        name = str(props[":name"])
-    unknown = variables(body) - set(args)
-    if unknown:
-        raise SyntaxError(f"free variables: {sorted(unknown)}")
-
-    box = {a: (-math.inf, math.inf) for a in args}
-    if ":pre" in props:
-        for var, lo, hi in _parse_pre(props[":pre"], set(args)):
-            olo, ohi = box[var]
-            box[var] = (max(olo, lo), min(ohi, hi))
-    return Core(name, args, box, body, precision, props)
-
-
-def parse_fpcore(text: str) -> Core:
-    forms = [f for f in parse_sexps(text)
-             if isinstance(f, list) and f and str(f[0]) == "FPCore"]
-    if len(forms) != 1:
-        raise SyntaxError("expected exactly one (FPCore ...) form")
-    return core_from_form(forms[0])
-
-
-def _parse_pre(pre, args: set):
-    """An unreadable conjunct is an error: dropping it would widen the box."""
-    def bail():
-        raise SyntaxError(f"unsupported precondition {pre!r}")
-
-    if not isinstance(pre, list) or not pre:
-        bail()
-    head = str(pre[0])
-    if head == "and":
+def bounds(pre):
+    """(name, lo, hi) for each conjunct of :pre, widened outward to floats."""
+    if pre[0] == "and":
         for p in pre[1:]:
-            yield from _parse_pre(p, args)
+            yield from bounds(p)
         return
-    if head != "<=" or len(pre) < 3:
-        bail()
-    for left, right in zip(pre[1:], pre[2:]):
-        lv, rv = str(left), str(right)
-        if lv in args and _is_number(right):
-            yield lv, -math.inf, _bound(Fraction(rv), upper=True)
-        elif rv in args and _is_number(left):
-            yield rv, _bound(Fraction(lv), upper=False), math.inf
+    if pre[0] != "<=":
+        raise SyntaxError(f"unsupported precondition {pre}")
+    for a, b in zip(pre[1:], pre[2:]):
+        if number(a) is not None and number(b) is None:
+            q, f = number(a), float(number(a))
+            yield b, f if Fraction(f) <= q else math.nextafter(f, -math.inf), math.inf
+        elif number(a) is None and number(b) is not None:
+            q, f = number(b), float(number(b))
+            yield a, -math.inf, f if Fraction(f) >= q else math.nextafter(f, math.inf)
         else:
-            bail()
+            raise SyntaxError(f"unsupported precondition {pre}")
 
 
-def _bound(value: Fraction, upper: bool) -> float:
-    """A float bound, widened outward."""
-    x = float(value)
-    if upper:
-        return x if Fraction(x) >= value else math.nextafter(x, math.inf)
-    return x if Fraction(x) <= value else math.nextafter(x, -math.inf)
+def parse(text):
+    form = next(f for f in read(text) if isinstance(f, list) and f[:1] == ["FPCore"])
+    rest = form[1:]
+    name = rest.pop(0) if isinstance(rest[0], str) else None
+    args, *props, body = rest
+    props = dict(zip(props[::2], props[1::2]))
+    box = {x: (-math.inf, math.inf) for x in args}
+    for x, lo, hi in bounds(props.get(":pre", ["and"])):
+        box[x] = (max(box[x][0], lo), min(box[x][1], hi))
+    body = expr(body)
+    if not variables(body) <= set(args):
+        raise SyntaxError(f"free variables {variables(body) - set(args)}")
+    name = props.get(":name", name or "").strip('"')
+    return Core(name, args, box, props.get(":precision", "binary64"), body, props)
+
+
+def numeral(q):
+    if q.denominator == 1:
+        return str(q.numerator)
+    s = repr(float(q))
+    return s if Fraction(s) == q else f"{q.numerator}/{q.denominator}"
+
+
+def show(e):
+    match e:
+        case ("Var", x):
+            return x
+        case ("Num", q):
+            return numeral(q)
+        case ("Add", a, ("Neg", b)):
+            return f"(- {show(a)} {show(b)})"
+        case ("If", (op, x, k), a, b):
+            return f"(if ({op} {x} {numeral(Fraction(repr(float(k))))}) {show(a)} {show(b)})"
+        case (op, *args):
+            return f"({SYMBOLS[op]} {' '.join(map(show, args))})"
+
+
+def fpcore(core, body=None):
+    if not all(map(math.isfinite, sum(core.box.values(), ()))):
+        raise ValueError(f"unbounded box {core.box}")
+    pre = [f"(<= {decimal.Decimal(lo):f} {x} {decimal.Decimal(hi):f})" for x, (lo, hi) in core.box.items()]
+    pre = "" if not pre else f" :pre {pre[0]}" if len(pre) == 1 else f" :pre (and {' '.join(pre)})"
+    return (f'(FPCore ({" ".join(core.args)}) :name "{core.name}" :precision {core.precision}{pre}'
+            f" {show(core.body if body is None else body)})")

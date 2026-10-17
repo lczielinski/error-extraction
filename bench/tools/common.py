@@ -1,109 +1,61 @@
-"""Paths, FPCore export and the run cache, shared by the tool modules."""
-
-from __future__ import annotations
-
-import functools
 import hashlib
 import json
 import os
+import re
+import signal
 import subprocess
-import sys
-from typing import NamedTuple
+import time
 
 BENCH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.dirname(BENCH))
-
-from costex.analysis import METRICS as _MU                                   # noqa: E402
-from costex.fpcore import parse_expr, parse_sexps, parse_fpcore, to_fpcore   # noqa: E402
-
-CORES = os.path.join(BENCH, "cores")
-RESULTS = os.path.join(BENCH, "results")
 CACHE = os.path.join(BENCH, ".cache")
-
 FPBENCH = os.path.expanduser(os.environ.get("FPBENCH", "~/fpbench"))
 
 
-class Metric(NamedTuple):
-    """An error metric and the results.json keys naming it, derived in one
-    place so the record and the reports cannot drift apart."""
-
-    name: str
-    label: str
-    seed: str
-    best: str
-    best_expr: str
-
-
-def _metric(name: str) -> Metric:
-    return Metric(name, f"mu_{name}", f"seed_{name}", f"best_{name}",
-                  f"best_expr_{name}")
-
-
-METRICS = tuple(_metric(m) for m in _MU)    # costex's order is the reports' order
-BY_NAME = {m.name: m for m in METRICS}
+def run(cmd, timeout, **kw):
+    """(output, seconds), or (None, seconds) if it timed out, in which case its whole
+    process group is killed: Daisy's launcher leaves a JVM behind otherwise."""
+    start = time.time()
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                            errors="replace", start_new_session=True, **kw)
+    try:
+        out = proc.communicate(timeout=timeout)[0]
+    except subprocess.TimeoutExpired:
+        os.killpg(proc.pid, signal.SIGKILL)
+        proc.communicate()
+        out = None
+    return out, round(time.time() - start, 2)
 
 
-def has_const(expr: str) -> bool:
-    """Does it mention PI or E?  FPBench's Scala and Gappa backends refuse
-    those, so Daisy and Gappa cannot be given the core at all."""
-    def walk(e):
-        return e[0] == "const" or any(walk(a) for a in e[1:] if isinstance(a, tuple))
-    return walk(parse_expr(parse_sexps(expr)[0]))
-
-
-@functools.lru_cache(maxsize=None)
-def core(file: str):
-    return parse_fpcore(open(os.path.join(CORES, file)).read())
-
-
-def unit(name: str, file: str, expr: str, **extra) -> dict:
-    """One program to hand a tool: the expression plus the core it came from."""
-    c = core(file)
-    return {"name": name, "file": file, "args": c.args, "box": c.box,
-            "precision": c.precision, "consts": has_const(expr), "expr": expr,
-            **extra}
-
-
-def seed_units(results: list) -> list:
-    """The bounds report compares analysers on the seed alone."""
-    return [unit(f"cx{i:05d}", r["file"], r["expr"])
-            for i, r in enumerate(r for r in results if r["status"] == "ok")]
-
-
-# -- the run cache --
-
-
-def key(tool: str, u: dict, ver: str, opts: tuple) -> str:
-    payload = repr((tool, u["expr"], sorted(u["box"].items()),
-                    u["precision"], opts, ver))
-    return hashlib.sha256(payload.encode()).hexdigest()[:32]
-
-
-def cached(tool: str, k: str):
-    path = os.path.join(CACHE, tool, k + ".json")
-    if os.path.exists(path):
-        with open(path) as f:
-            return json.load(f)
-    return None
-
-
-def store(tool: str, k: str, report: dict) -> None:
-    os.makedirs(os.path.join(CACHE, tool), exist_ok=True)
-    with open(os.path.join(CACHE, tool, k + ".json"), "w") as f:
-        json.dump(report, f)
-
-
-def fpbench(batch: list, stem: str, lang: str, extra: list = ()) -> str:
-    """FPCore -> a tool's input format, one racket call for the whole batch."""
-    src = "".join(to_fpcore(u["name"], u["args"], u["box"], u["expr"], u["precision"])
-                  for u in batch)
+def export(texts, lang, stem):
+    """FPCore texts in another language, in order, through one FPBench call."""
     with open(stem + ".fpcore", "w") as f:
-        f.write(src)
-    out = f"{stem}.{lang}"
-    run = subprocess.run(["racket", os.path.join(FPBENCH, "fpbench.rkt"), "export",
-                          "--lang", lang, *extra, stem + ".fpcore", out],
-                         cwd=FPBENCH, capture_output=True, text=True, errors="replace")
-    if run.returncode != 0 or not os.path.exists(out):
-        raise RuntimeError(f"fpbench {lang} export failed:\n"
-                           f"{(run.stdout + run.stderr)[:600]}")
+        f.write("\n".join(rename(t, f"p{i}") for i, t in enumerate(texts)))
+    fpbench = ["racket", os.path.join(FPBENCH, "fpbench.rkt"), "export", "--lang", lang]
+    run(fpbench + [stem + ".fpcore", f"{stem}.{lang}"], 3600, cwd=FPBENCH)
+    with open(f"{stem}.{lang}") as f:
+        return f.read()
+
+
+def rename(text, name):
+    """The FPCore with a new :name, since some exporters drop programs whose names repeat."""
+    return re.sub(r':name "[^"]*"', f':name "{name}"', text, count=1)
+
+
+def cached(tool, texts, work):
+    """{text: report} for FPCore texts, calling work(texts) on the ones not yet cached. tool
+    names the tool and its options; delete .cache/ after upgrading a tool."""
+    def path(text):
+        return os.path.join(CACHE, tool, hashlib.sha256(text.encode()).hexdigest()[:32] + ".json")
+
+    out = {}
+    for text in texts:
+        if os.path.exists(path(text)):
+            with open(path(text)) as f:
+                out[text] = json.load(f)
+    todo = [t for t in dict.fromkeys(texts) if t not in out]
+    for text, report in (work(todo) if todo else {}).items():
+        os.makedirs(os.path.dirname(path(text)), exist_ok=True)
+        with open(path(text), "w") as f:
+            json.dump(report, f)
+        out[text] = report
     return out
