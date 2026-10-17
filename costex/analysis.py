@@ -1,7 +1,7 @@
 """The (S, D) domain and its transfer functions.
 
 (S, D) for a program z~ of class c: z~ is defined everywhere on B,
-z~ - z in D on B, and z~/z in S wherever z != 0.  BOTTOM: may be undefined,
+z~ - z in D on B, and z~/z in S wherever z != 0.  FAIL: may be undefined,
 which includes may overflow.  So a pair always bounds z~, and (TOP, TOP) --
 which does not -- is never the result of an operation.
 
@@ -16,9 +16,9 @@ from __future__ import annotations
 import gmpy2
 from gmpy2 import mpfr
 
-from .interval import INF, ONE, TOP, ZERO, Iv
+from .interval import INF, ONE, TOP, UP, ZERO, Iv
 
-BOTTOM = None
+FAIL = None
 
 NONNEG = Iv(0, INF)
 
@@ -43,12 +43,7 @@ def set_target(mantissa_bits: int) -> None:
 
 def _div_up(a, b):
     """A bound on a deviation, so never rounded down."""
-    ctx = gmpy2.get_context()
-    ctx.clear_flags()
-    q = a / b
-    if not ctx.inexact or not gmpy2.is_finite(q):
-        return q
-    return gmpy2.next_above(q)
+    return UP.div(a, b)
 
 
 def ufp(x):
@@ -137,15 +132,20 @@ def _finish(Sh: Iv, Dh: Iv, Ic: Iv, exact=_never) -> Pair:
     Sh, Dh = rho(Sh, Dh, Ic)
     Ih = enc(Sh, Dh, Ic)
     if Ih.mag > omega:
-        return BOTTOM
+        return FAIL
     if exact(Ih):
         return Pair(Sh, Dh)
     return Pair(*rho(Sh * urel(Ih), Dh + gamma(Ih), Ic))
 
 
-def pow2(p: Pair, I: Iv):
-    """k when the operand is computed exactly and is the constant +-2^k."""
-    if p != EXACT or I.lo != I.hi or I.lo == 0 or not gmpy2.is_finite(I.lo):
+def pow2(p: Pair, I: Iv, const: bool):
+    """k when the operand is the constant +-2^k.
+
+    const says the operand's class holds a constant, so I is that constant,
+    and a term of the class computes it exactly when its pair is EXACT.
+    Asking the class rather than the term keeps the cost local.
+    """
+    if not const or p != EXACT or I.lo != I.hi or I.lo == 0 or not gmpy2.is_finite(I.lo):
         return None
     e, m = gmpy2.frexp(abs(I.lo))       # (exponent, mantissa), m in [1/2, 1)
     return e - 1 if m == 0.5 else None
@@ -177,8 +177,8 @@ def constant(exact: bool, Ic: Iv) -> Pair:
 
 
 def neg(p: Pair, Ic: Iv) -> Pair:
-    if p is BOTTOM:
-        return BOTTOM
+    if p is FAIL:
+        return FAIL
     return Pair(*rho(p.S, -p.D, Ic))
 
 
@@ -196,20 +196,6 @@ def _lam(I1: Iv, I2: Iv, Ic: Iv):
     return lam
 
 
-def kappa(I1: Iv, I2: Iv, Ic: Iv):
-    """A bound on the atomic condition number of x + y.
-
-    Pointwise (|x| + |y|) / |x + y| = |lambda| + |1 - lambda|, exactly 1 for a
-    same-signed sum.  Taking each magnitude over the interval separately
-    overestimates, but lambda in [0,1] still bounds both by 1, so a same-signed
-    sum never exceeds 2 however wide its intervals: above that is cancellation.
-    """
-    lam = _lam(I1, I2, Ic)
-    if lam is None:
-        return INF
-    return lam.mag + (ONE - lam).mag
-
-
 def _combine(t, S1: Iv, S2: Iv) -> Iv:
     ti = Iv(t, t)
     return ti * S1 + (ONE - ti) * S2
@@ -224,8 +210,8 @@ def _ratio(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Iv:
 
 
 def add(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
-    if p1 is BOTTOM or p2 is BOTTOM:
-        return BOTTOM
+    if p1 is FAIL or p2 is FAIL:
+        return FAIL
     Sh = _ratio(p1, p2, I1, I2, Ic)
     Dh = p1.D + p2.D
     It1, It2 = enc(p1.S, p1.D, I1), enc(p2.S, p2.D, I2)
@@ -233,42 +219,42 @@ def add(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
 
 
 def sub(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
-    if p2 is BOTTOM:
-        return BOTTOM
+    if p2 is FAIL:
+        return FAIL
     return add(p1, Pair(p2.S, -p2.D), I1, -I2, Ic)
 
 
-def mul(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
+def mul(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv, consts=(False, False)) -> Pair:
     """x~ y~ - x y = x d2 + y d1 + d1 d2."""
-    if p1 is BOTTOM or p2 is BOTTOM:
-        return BOTTOM
+    if p1 is FAIL or p2 is FAIL:
+        return FAIL
     Sh = p1.S * p2.S
     Dh = I1 * p2.D + I2 * p1.D + p1.D * p2.D
-    k1, k2 = pow2(p1, I1), pow2(p2, I2)
+    k1, k2 = pow2(p1, I1, consts[0]), pow2(p2, I2, consts[1])
     return _finish(Sh, Dh, Ic, lambda Ih: any(k is not None and scales_exactly(k, Ih)
                                                for k in (k1, k2)))
 
 
-def div(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv) -> Pair:
+def div(p1: Pair, p2: Pair, I1: Iv, I2: Iv, Ic: Iv, consts=(False, False)) -> Pair:
     """x~/y~ - x/y = (d1 - x (s2 - 1)) / y~."""
-    if p1 is BOTTOM or p2 is BOTTOM:
-        return BOTTOM
+    if p1 is FAIL or p2 is FAIL:
+        return FAIL
     It2 = enc(p2.S, p2.D, I2)
     if It2.contains_zero:
-        return BOTTOM          # the divisor may round to zero
+        return FAIL          # the divisor may round to zero
     Sh = p1.S / p2.S
     Dh = (p1.D - I1 * (p2.S - ONE)) / It2
-    k = pow2(p2, I2)
+    k = pow2(p2, I2, consts[1])
     return _finish(Sh, Dh, Ic, lambda Ih: k is not None and scales_exactly(-k, Ih))
 
 
 def sqrt(p1: Pair, I1: Iv, Ic: Iv) -> Pair:
     """sqrt(x~) - sqrt(x) = d1 / (sqrt(x~) + sqrt(x))."""
-    if p1 is BOTTOM:
-        return BOTTOM
+    if p1 is FAIL:
+        return FAIL
     It1 = enc(p1.S, p1.D, I1)
     if not It1.issubset(NONNEG):
-        return BOTTOM          # the radicand may round negative
+        return FAIL          # the radicand may round negative
     Sh = p1.S.sqrt()
     Dh = p1.D / (It1.sqrt() + I1.sqrt())
     return _finish(Sh, Dh, Ic)
@@ -282,8 +268,8 @@ def ifprop(pt: Pair, pe: Pair, Ic: Iv) -> Pair:
     adds no rounding; what makes the arms' assumptions legitimate is that the
     guard compares a variable with zero, which extract.py insists on.
     """
-    if pt is BOTTOM or pe is BOTTOM:
-        return BOTTOM
+    if pt is FAIL or pe is FAIL:
+        return FAIL
     return Pair(*rho(pt.S.hull(pe.S), pt.D.hull(pe.D), Ic))
 
 
@@ -294,15 +280,17 @@ def ctx(p: Pair, Ic: Iv) -> Pair:
     interval, which is tighter than the subject's and is where the whole point
     of a context lands.
     """
-    if p is BOTTOM:
-        return BOTTOM
+    if p is FAIL:
+        return FAIL
     return Pair(*rho(p.S, p.D, Ic))
 
 
 _BINARY = {"add": add, "sub": sub, "mul": mul, "div": div}
 
 
-def transfer(op: str, pairs: list, ivs: list, Ic: Iv) -> Pair:
+def transfer(op: str, pairs: list, ivs: list, Ic: Iv, consts=(False, False)) -> Pair:
+    """consts[i]: the i-th operand's class holds a constant, which only the
+    power-of-two scalings ask."""
     if op == "neg":
         return neg(pairs[0], Ic)
     if op == "sqrt":
@@ -311,6 +299,8 @@ def transfer(op: str, pairs: list, ivs: list, Ic: Iv) -> Pair:
         return ifprop(pairs[0], pairs[1], Ic)
     if op == "ctx":
         return ctx(pairs[0], Ic)
+    if op in ("mul", "div"):
+        return _BINARY[op](pairs[0], pairs[1], ivs[0], ivs[1], Ic, consts)
     return _BINARY[op](pairs[0], pairs[1], ivs[0], ivs[1], Ic)
 
 

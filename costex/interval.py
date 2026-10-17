@@ -1,9 +1,15 @@
 """Intervals over MPFR, rounded outward.
 
-Every operation returns (down, up), widened by an ulp exactly when it was
-inexact: round to nearest can move an endpoint inward, which would drop a
-value the interval must hold.  An exact result is left alone, since the
-exactness rules in analysis.py turn on it.
+Every operation computes its lower endpoint rounded down and its upper one
+rounded up.  That leaves an exact result alone, which the exactness rules in
+analysis.py turn on, and keeps the arithmetic monotone under inclusion, which
+extraction's optimality turns on.
+
+An interval is bounded or TOP, "no bound could be derived".  To arithmetic,
+one unbounded on either side is TOP, and any operation involving TOP returns
+TOP, with two exceptions: TOP meet K is K, and 0 * TOP is 0, since TOP is
+still a real.  The second is load bearing: an exactly computed radicand that
+can be zero has d1 = 0 over sqrt(x~) + sqrt(x), which straddles zero.
 """
 
 from __future__ import annotations
@@ -13,9 +19,13 @@ from gmpy2 import mpfr
 
 DEFAULT_PRECISION = 200
 
+DOWN = gmpy2.context(round=gmpy2.RoundDown)
+UP = gmpy2.context(round=gmpy2.RoundUp)
+
 
 def set_precision(bits: int) -> None:
-    gmpy2.get_context().precision = bits
+    for ctx in (gmpy2.get_context(), DOWN, UP):
+        ctx.precision = bits
 
 
 set_precision(DEFAULT_PRECISION)
@@ -24,57 +34,24 @@ INF = mpfr("inf")
 NINF = -INF
 
 
-def _out(r):
-    if not gmpy2.get_context().inexact or not gmpy2.is_finite(r):
-        return r, r
-    return gmpy2.next_below(r), gmpy2.next_above(r)
-
-
-def _widen(f, *args):
-    ctx = gmpy2.get_context()
-    ctx.clear_flags()
-    return _out(f(*args))
-
-
-def _add(a, b):
-    return _widen(lambda x, y: x + y, a, b)
-
-
 def _add_lo(a, b):
-    if a == NINF or b == NINF:
-        return NINF
-    return _add(a, b)[0]
+    return DOWN.add(a, b)
 
 
 def _add_hi(a, b):
-    if a == INF or b == INF:
-        return INF
-    return _add(a, b)[1]
+    return UP.add(a, b)
 
 
 def _mul(a, b):
-    # 0 * inf = 0
-    if a == 0 or b == 0:
-        return mpfr(0), mpfr(0)
-    return _widen(lambda x, y: x * y, a, b)
+    return DOWN.mul(a, b), UP.mul(a, b)
 
 
 def _recip(x):
-    # 1/inf = 0
-    if x == INF or x == NINF:
-        return mpfr(0), mpfr(0)
-    return _widen(lambda t: 1 / t, x)
+    return DOWN.div(1, x), UP.div(1, x)
 
 
 def _sqrt(x):
-    return _widen(gmpy2.sqrt, x)
-
-
-def _signed_sqrt(t):
-    if t < 0:
-        lo, hi = _widen(gmpy2.sqrt, -t)
-        return -hi, -lo
-    return _widen(gmpy2.sqrt, t)
+    return DOWN.sqrt(x), UP.sqrt(x)
 
 
 def _fmt(x) -> str:
@@ -114,6 +91,10 @@ class Iv:
         if self.is_empty:
             return hash("empty")
         return hash((float(self.lo), float(self.hi)))
+
+    @property
+    def is_top(self) -> bool:
+        return self.lo == NINF or self.hi == INF
 
     @property
     def contains_zero(self) -> bool:
@@ -156,6 +137,8 @@ class Iv:
     def __add__(self, other: "Iv") -> "Iv":
         if self.is_empty or other.is_empty:
             return EMPTY
+        if self.is_top or other.is_top:
+            return TOP
         return Iv(_add_lo(self.lo, other.lo), _add_hi(self.hi, other.hi))
 
     def __sub__(self, other: "Iv") -> "Iv":
@@ -164,14 +147,16 @@ class Iv:
     def __mul__(self, other: "Iv") -> "Iv":
         if self.is_empty or other.is_empty:
             return EMPTY
-        corners = (_mul(self.lo, other.lo), _mul(self.lo, other.hi),
+        if self.is_top or other.is_top:
+            return ZERO if ZERO in (self, other) else TOP
+        corners =(_mul(self.lo, other.lo), _mul(self.lo, other.hi),
                    _mul(self.hi, other.lo), _mul(self.hi, other.hi))
         return Iv(min(lo for lo, _ in corners), max(hi for _, hi in corners))
 
     def recip(self) -> "Iv":
         if self.is_empty:
             return EMPTY
-        if self.contains_zero:
+        if self.is_top or self.contains_zero:
             return TOP
         return Iv(_recip(self.hi)[0], _recip(self.lo)[1])
 
@@ -179,15 +164,14 @@ class Iv:
         return self * other.recip()
 
     def sqrt(self) -> "Iv":
-        if self.is_empty or self.hi < 0:
+        if self.is_empty:
+            return EMPTY
+        if self.is_top:
+            return TOP
+        if self.hi < 0:
             return EMPTY
         lo = self.lo if self.lo > 0 else mpfr(0)
         return Iv(_sqrt(lo)[0], _sqrt(self.hi)[1])
-
-    def signed_sqrt(self) -> "Iv":
-        if self.is_empty:
-            return EMPTY
-        return Iv(_signed_sqrt(self.lo)[0], _signed_sqrt(self.hi)[1])
 
 
 TOP = Iv(NINF, INF)

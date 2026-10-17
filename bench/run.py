@@ -38,7 +38,7 @@ HEADROOM = 4.0                    # ulps the seed must lose before a core counts
 HEADROOM_STEPS = (2.0, 4.0, 8.0, 64.0)
 ITERS = egg.DEFAULT_ITERS
 BRANCH = True                # split on cancellation; a timeout falls back to plain
-MAX_STEPS = 1_000_000        # kalman-filter-per-p needs ~770k to reach its root
+MAX_STEPS = 2_000_000        # node evaluations; kalman-filter-per-p needs ~1.01M to reach its fixpoint
 EGGLOG_TIMEOUT = 60.0
 EXTRACT_TIMEOUT = 120.0      # a step cap alone does not bound extraction
 TOOL_TIMEOUT = 300.0
@@ -95,11 +95,11 @@ def run_one(path: str) -> dict:
         out.update(status="ok", branched=branched,
                    classes=len(g.nodes), nodes=sum(map(len, g.nodes.values())),
                    egglog_s=round(t1 - t0, 3), extract_s=round(time.time() - t1, 3),
-                   steps=front.steps, truncated=front.truncated,
+                   steps=front.steps, height=front.height, truncated=front.truncated,
                    frontier=len(front.entries.get(g.root, [])),
                    root_interval=[_f(Ic.lo), _f(Ic.hi)])
         for m in common.METRICS:
-            out[m.seed] = None if seed is A.BOTTOM else _f(A.METRICS[m.name](seed, Ic))
+            out[m.seed] = None if seed is A.FAIL else _f(A.METRICS[m.name](seed, Ic))
             best = front.best(g.root, Ic, m.name)
             out[m.best] = _f(best[0]) if best else None
             out[m.best_expr] = to_sexp(best[2]) if best else None

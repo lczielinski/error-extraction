@@ -74,12 +74,13 @@ def main(argv=None) -> int:
     print(f"  {g}, {args.iters} iterations, {elapsed:.2f}s"
           + ("" if branched or args.no_branch else
              f"  (branching exceeded {args.timeout:g}s; plain analysis)"))
-    print(f"  extraction {front.steps} steps, frontier {len(front.entries.get(g.root, []))}"
-          + (", truncated" if front.truncated else ""))
+    print(f"  extraction {front.steps} steps, {front.height} rounds, "
+          f"frontier {len(front.entries.get(g.root, []))}"
+          + (f", truncated: optimal up to height {front.height}" if front.truncated else ""))
 
     seed = extract.analyze_program(g, core.body)
     print(f"\n  input   {to_sexp(core.body)}")
-    print("          " + (_mus(seed, Ic) if seed is not A.BOTTOM
+    print("          " + (_mus(seed, Ic) if seed is not A.FAIL
                           else "may be undefined on B"))
 
     if not front.entries.get(g.root):
