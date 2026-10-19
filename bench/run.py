@@ -1,4 +1,4 @@
-"""Every experiment of Section 6, in order. A step saves results/<step>.json and is skipped
+"""Every experiment of the evaluation, in order. A step saves results/<step>.json and is skipped
 when that file exists; the external tools also cache each program in .cache/.
 
     uv run python bench/run.py && uv run python bench/tables.py
@@ -27,7 +27,7 @@ from tools import daisy, fptaylor, gappa, herbie  # noqa: E402
 RESULTS = os.path.join(BENCH, "results")
 JOBS = os.cpu_count()
 EGGLOG_LIMIT, EXTRACT_LIMIT, TOOL_LIMIT = 300, 120, 300
-HEADROOM = 4
+HEADROOM = 3
 SIZES = (1, 10, 100)
 
 
@@ -77,9 +77,8 @@ def safe(f, *args):
         return {"error": f"{type(e).__name__}: {e}"[:300]}
 
 
-def bound(g, e):
-    I = g.interval[g.root]
-    return {m: math.inf if e is FAIL else float(b(e, I)) for m, b in BOUNDS.items()}
+def bound(e):
+    return {m: math.inf if e is FAIL else float(b(e)) for m, b in BOUNDS.items()}
 
 
 def fielded(bounds):
@@ -87,11 +86,17 @@ def fielded(bounds):
     return "rel" if bounds["rel"] < math.inf else "abs"
 
 
+def reported(bounds):
+    """The metric bounds are compared on: relative error only where ours is below 1, since a
+    relative bound of 1 or more says nothing."""
+    return "rel" if bounds["rel"] < 1 else "abs"
+
+
 def bound_input(core, body):
     """Our bound on a program as it is: no rewriting, no new branches."""
     g = build(core._replace(body=body), 0, False)
     F, _, _ = extract(g)
-    return bound(g, F[g.root][0][0] if F[g.root] else FAIL)
+    return bound(F[g.root][0][0] if F[g.root] else FAIL)
 
 
 def ours_one(name):
@@ -102,13 +107,12 @@ def ours_one(name):
     g = build(core, 4, False, EGGLOG_LIMIT)
     built = time.time()
     F, k, cut = extract(g, EXTRACT_LIMIT)
-    I = g.interval[g.root]
-    chosen = {m: best(F[g.root], I, b) for m, b in BOUNDS.items()} if F[g.root] else {}
+    chosen = {m: best(F[g.root], b) for m, b in BOUNDS.items()} if F[g.root] else {}
     return dict(out, egglog_s=built - start, extract_s=time.time() - built, rounds=k, cut=cut,
                 nodes=sum(map(len, g.nodes.values())), classes=len(g.nodes), root_frontier=len(F[g.root]),
-                max_frontier=max(map(len, F.values())), original=bound(g, variants.analyze(g, core.body)),
+                max_frontier=max(map(len, F.values())), original=bound(variants.analyze(g, core.body)),
                 programs={m: show(p) for m, (e, p) in chosen.items()},
-                bounds={m: bound(g, e)[m] for m, (e, p) in chosen.items()} or bound(g, FAIL))
+                bounds={m: bound(e)[m] for m, (e, p) in chosen.items()} or bound(FAIL))
 
 
 @step
@@ -150,12 +154,12 @@ def variants_one(name):
     built = time.time() - start
 
     def chosen(p):
-        return {"program": show(p), **bound(g, variants.analyze(g, p))} if p else bound(g, FAIL)
+        return {"program": show(p), **bound(variants.analyze(g, p))} if p else bound(FAIL)
 
     out = {}
     for n in SIZES:
         start = time.time()
-        found = [(p, bound(g, variants.analyze(g, p))) for p in variants.smallest(g, n, EXTRACT_LIMIT)]
+        found = [(p, bound(variants.analyze(g, p))) for p in variants.smallest(g, n, EXTRACT_LIMIT)]
         out[f"size{n}"] = {m: chosen(min(found, key=lambda f: f[1][m])[0] if found else None) for m in BOUNDS}
         out[f"size{n}"]["seconds"] = built + time.time() - start
     start = time.time()
@@ -185,9 +189,10 @@ def alternatives():
 def candidates(name):
     """The programs of a Benchmark (2) core that are compared, by who produced them."""
     o, r, v = ours()[name], rewrites()[name], alternatives()[name]
-    out = {"ours": o["programs"].get(fielded(o["bounds"]))}
+    m = fielded(o["bounds"])
+    out = {"ours": o["programs"].get(m)}
     out.update({tool: r[tool].get("program") for tool in r})
-    out.update({f"size{n}": v[f"size{n}"][fielded(o["bounds"])].get("program") for n in SIZES})
+    out.update({f"size{n}": v.get(f"size{n}", {}).get(m, {}).get("program") for n in SIZES})
     return {who: p for who, p in out.items() if p}
 
 
@@ -235,18 +240,20 @@ def speeds():
             for n in benchmark2()}
 
 
-def branching_one(name, herbie_report):
+def branching_one(name, reports):
     core = load(name)
     programs = {"original": core.body}
     for who, branch in (("ours-plain", False), ("ours", True)):
         g = build(core, 4, branch, EGGLOG_LIMIT)
         F, _, _ = extract(g, EXTRACT_LIMIT)
-        I = g.interval[g.root]
-        m = fielded({m: min(float(b(e, I)) for e, _ in F[g.root]) for m, b in BOUNDS.items()})
-        programs[who] = best(F[g.root], I, BOUNDS[m])[1]
-    if herbie_report.get("program"):
-        programs["herbie"] = program(herbie_report["program"])
+        chosen = {m: best(F[g.root], b) for m, b in BOUNDS.items()}
+        programs[who] = chosen[fielded({m: bound(e)[m] for m, (e, p) in chosen.items()})][1]
     out = {"expected": core.props.get(":cx-expected", "").strip('"')}
+    for who, report in reports.items():
+        if report.get("program"):
+            programs[who] = program(report["program"])
+        else:
+            out[who] = {"status": report.get("status", "fail")}
     measured = sample.measure(core, core.body, programs)
     for who, p in programs.items():
         out[who] = {"program": show(p), "measured": measured[who], "bound": safe(bound_input, core, p)}
@@ -255,14 +262,15 @@ def branching_one(name, herbie_report):
 
 @step
 def branching():
-    """Benchmark (3): our branches against Herbie's regimes, timed one core at a time."""
+    """Benchmark (3): our branches against Herbie's and Daisy's regimes, timed one core at a time."""
     names = cores("branching")
     texts = [fpcore(load(n)) for n in names]
     with tempfile.TemporaryDirectory() as d:
-        found = herbie.rewrite(texts, d, TOOL_LIMIT, JOBS, branch=True)
-    out = each(branching_one, names, [found[t] for t in texts])
+        found = {"herbie": herbie.rewrite(texts, d, TOOL_LIMIT, JOBS, branch=True),
+                 "daisy": daisy.rewrite(texts, d, TOOL_LIMIT, JOBS, regimes=True)}
+    out = each(branching_one, names, [{who: f[t] for who, f in found.items()} for t in texts])
     for name, r in out.items():
-        whos = [w for w in r if w != "expected"]
+        whos = [w for w in r if w != "expected" and "program" in r[w]]
         times = speed.measure(load(name), {w: program(r[w]["program"]) for w in whos}, sample.points(load(name), 1000))
         for w in whos:
             r[w]["ns"] = times[w]

@@ -1,11 +1,12 @@
-"""The alternatives to frontier extraction that Section 6 compares it with."""
+"""The alternatives to frontier extraction that the evaluation compares it with."""
 
 import heapq
 import time
 
 from costex import analysis as A
-from costex.analysis import FAIL, ONE, TOP, ZERO, err, never, power_of_two, sterbenz
+from costex.analysis import BOUNDS, FAIL, ONE, TOP, ZERO, err, never, power_of_two, sterbenz
 from costex.extract import assumes, boxes, extract, program
+from costex.interval import Iv
 
 
 def analyze(g, p):
@@ -14,16 +15,14 @@ def analyze(g, p):
     num = {c: any(n.op == "Num" for n in ns) for c, ns in g.nodes.items()}
 
     def walk(p):
-        if p[0] == "Num" and ("Num", p[1], ()) not in index:
-            c = index[("Lit", p[1], ())]
-            return c, err("Lit", g.interval[c], [], [], [])
         if p[0] in ("Var", "Num"):
-            c, kids = index[(p[0], p[1], ())], []
+            op, kids = p[0] if (p[0], p[1], ()) in index else "Lit", []
+            c = index[(op, p[1], ())]
         else:
-            kids = [walk(q) for q in p[1:]]
-            c = index[(p[0], None, tuple(k for k, _ in kids))]
+            op, kids = p[0], [walk(q) for q in p[1:]]
+            c = index[(op, None, tuple(k for k, _ in kids))]
         Xs = [g.interval[k] for k, _ in kids]
-        return c, err(p[0], g.interval[c], Xs, [e for _, e in kids], [num[k] for k, _ in kids])
+        return c, err(op, g.interval[c], Xs, [e for _, e in kids], [num[k] for k, _ in kids])
 
     return walk(p)[1]
 
@@ -76,8 +75,7 @@ def sums(m, lists, n):
 
 def greedy(metric):
     """The order that keeps a single cost per class: the one with the smallest bound."""
-    bound = (lambda e: e.D.mag) if metric == "abs" else (lambda e: (e.S - ONE).mag)
-    return lambda e1, e2: bound(e1) <= bound(e2)
+    return lambda e1, e2: BOUNDS[metric](e1) <= BOUNDS[metric](e2)
 
 
 def abs_only(op, I, Xs, Ds, consts):
@@ -85,11 +83,12 @@ def abs_only(op, I, Xs, Ds, consts):
     if any(D is FAIL for D in Ds):
         return FAIL
 
-    def rounded(D, exact):
-        Ih = I + D
+    def rounded(D, J=TOP, exact=never, eta=A.ETA):
+        Ih = (I + D) & J
         if Ih.mag > A.OMEGA:
             return FAIL
-        return D if exact(Ih) else D + A.gamma_a(Ih)
+        h = A.gamma_a(Ih, eta)
+        return D if exact(Ih) else D + Iv(-h, h)
 
     def scale(i):
         return power_of_two(Xs[i], A.Pair(ONE, Ds[i]), consts[i])
@@ -98,27 +97,29 @@ def abs_only(op, I, Xs, Ds, consts):
         case "Var" | "Num":
             return ZERO
         case "Lit":
-            return rounded(ZERO, never)
+            return rounded(ZERO)
         case "Neg":
             return -Ds[0]
         case "Add":
             Xt, Yt = Xs[0] + Ds[0], Xs[1] + Ds[1]
-            return rounded(Ds[0] + Ds[1], lambda Ih: sterbenz(Xt, Yt))
+            return rounded(Ds[0] + Ds[1], Xt + Yt, lambda Ih: sterbenz(Xt, Yt), 0)
         case "Mul":
             ks = [k for k in (scale(0), scale(1)) if k is not None]
             D = Xs[0] * Ds[1] + Xs[1] * Ds[0] + Ds[0] * Ds[1]
-            return rounded(D, lambda Ih: any(A.scales_exactly(k, Ih) for k in ks))
+            J = (Xs[0] + Ds[0]) * (Xs[1] + Ds[1])
+            return rounded(D, J, lambda Ih: any(A.scales_exactly(k, Ih) for k in ks))
         case "Div":
             Yt = Xs[1] + Ds[1]
             if 0 in Yt:
                 return FAIL
             k = scale(1)
-            return rounded((Ds[0] - I * Ds[1]) / Yt, lambda Ih: k is not None and A.scales_exactly(-k, Ih))
+            J = (Xs[0] + Ds[0]) / Yt
+            return rounded((Ds[0] - I * Ds[1]) / Yt, J, lambda Ih: k is not None and A.scales_exactly(-k, Ih))
         case "Sqrt":
             Xt = Xs[0] + Ds[0]
             if Xt.lo < 0:
                 return FAIL
-            return rounded(Ds[0] / (Xt.sqrt() + Xs[0].sqrt()), never)
+            return rounded(Ds[0] / (Xt.sqrt() + Xs[0].sqrt()), Xt.sqrt())
 
 
 def rel_only(op, I, Xs, Ss, consts):
@@ -126,11 +127,12 @@ def rel_only(op, I, Xs, Ss, consts):
     if any(S is FAIL for S in Ss):
         return FAIL
 
-    def rounded(S, exact):
-        Ih = TOP if 0 in I else I * S
+    def rounded(S, J=TOP, exact=never, eta=A.ETA):
+        Ih = (TOP if 0 in I else I * S) & J
         if Ih.mag > A.OMEGA:
             return FAIL
-        return S if exact(Ih) else S * A.gamma_r(Ih)
+        g = A.gamma_r(Ih, eta)
+        return S if exact(Ih) else S * (ONE + Iv(-g, g))
 
     def scale(i):
         return power_of_two(Xs[i], A.Pair(Ss[i], ZERO), consts[i])
@@ -142,7 +144,7 @@ def rel_only(op, I, Xs, Ss, consts):
         case "Var" | "Num":
             return ONE
         case "Lit":
-            return rounded(ONE, never)
+            return rounded(ONE)
         case "Neg":
             return Ss[0]
         case "Add":
@@ -152,19 +154,20 @@ def rel_only(op, I, Xs, Ss, consts):
                 lam = (X / I) & (ONE - Y / I) & (ONE / (ONE + Y / X))
                 S = A.mix(lam.lo, *Ss) | A.mix(lam.hi, *Ss)
             Xt, Yt = computed(0), computed(1)
-            return rounded(S, lambda Ih: sterbenz(Xt, Yt))
+            return rounded(S, Xt + Yt, lambda Ih: sterbenz(Xt, Yt), 0)
         case "Mul":
             ks = [k for k in (scale(0), scale(1)) if k is not None]
-            return rounded(Ss[0] * Ss[1], lambda Ih: any(A.scales_exactly(k, Ih) for k in ks))
+            return rounded(Ss[0] * Ss[1], computed(0) * computed(1), lambda Ih: any(A.scales_exactly(k, Ih) for k in ks))
         case "Div":
             if 0 in computed(1):
                 return FAIL
             k = scale(1)
-            return rounded(Ss[0] / Ss[1], lambda Ih: k is not None and A.scales_exactly(-k, Ih))
+            J = computed(0) / computed(1)
+            return rounded(Ss[0] / Ss[1], J, lambda Ih: k is not None and A.scales_exactly(-k, Ih))
         case "Sqrt":
             if computed(0).lo < 0:
                 return FAIL
-            return rounded(Ss[0].sqrt(), never)
+            return rounded(Ss[0].sqrt(), computed(0).sqrt())
 
 
 def single(g, metric, time_limit=None):

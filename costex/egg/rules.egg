@@ -1,56 +1,138 @@
-; Each rule keeps the real value of every class on the whole box. A rule may assume its
-; left side is defined there (a divisor is nonzero, a radicand nonnegative); facts beyond
-; that come from the intervals, and such a rule builds its right side only from matched
-; terms, so a fact true in one arm of a branch is never applied to the other.
+; Herbie's rules over + - * / neg sqrt, with a - b written (Add a (Neg b)). Each rule keeps
+; the real value of every class on the whole box. A rule may assume its left side is defined
+; there (a divisor is nonzero, a radicand nonnegative); facts beyond that come from the
+; intervals, and such a rule builds its right side only from matched terms, so a fact true in
+; one arm of a branch is never applied to the other.
 
-(birewrite (Add a b) (Add b a) :ruleset opt)
-(birewrite (Mul a b) (Mul b a) :ruleset opt)
-(birewrite (Add (Add a b) c) (Add a (Add b c)) :ruleset opt)
-(birewrite (Mul (Mul a b) c) (Mul a (Mul b c)) :ruleset opt)
-(birewrite (Neg (Add a b)) (Add (Neg a) (Neg b)) :ruleset opt)
-(birewrite (Mul (Neg a) b) (Neg (Mul a b)) :ruleset opt)
+; Constant folding, which Herbie does in its e-graph analysis, run to saturation
+(rewrite (Add (Num p) (Num q)) (Num (+ p q)) :ruleset fold)
+(rewrite (Mul (Num p) (Num q)) (Num (* p q)) :ruleset fold)
+(rewrite (Neg (Num p)) (Num (neg p)) :ruleset fold)
+(rule ((= e (Div (Num p) (Num q))) (!= q $zero)) ((union e (Num (/ p q)))) :ruleset fold)
+(rule ((= e (Sqrt (Num p))) (= r (sqrt p))) ((union e (Num r))) :ruleset fold)
+
+; Commutativity and associativity
+(rewrite (Add a b) (Add b a) :ruleset opt)
+(rewrite (Mul a b) (Mul b a) :ruleset opt)
+(birewrite (Add a (Add b c)) (Add (Add a b) c) :ruleset opt)
+(rewrite (Add (Add a (Neg b)) c) (Add a (Neg (Add b (Neg c)))) :ruleset opt)
+(rewrite (Add a (Neg (Add b c))) (Add (Add a (Neg b)) (Neg c)) :ruleset opt)
+(rewrite (Add (Add a (Neg b)) (Neg c)) (Add a (Neg (Add b c))) :ruleset opt)
+(rewrite (Add a (Neg (Add b (Neg c)))) (Add (Add a (Neg b)) c) :ruleset opt)
+(birewrite (Mul a (Mul b c)) (Mul (Mul a b) c) :ruleset opt)
+(rewrite (Mul a (Div b c)) (Div (Mul a b) c) :ruleset opt)
+(rewrite (Mul (Div a b) c) (Div (Mul a c) b) :ruleset opt)
+(rewrite (Div a (Mul b c)) (Div (Div a b) c) :ruleset opt)
+(rewrite (Div a (Div b c)) (Mul (Div a b) c) :ruleset opt)
+(rewrite (Div (Div b c) a) (Div b (Mul c a)) :ruleset opt)
+(rewrite (Div (Mul b c) a) (Mul b (Div c a)) :ruleset opt)
+
+; Identity
+(rewrite (Div (Num $one) (Div (Num $one) a)) a :ruleset opt)
+(rewrite (Mul a (Div (Num $one) a)) (Num $one) :ruleset opt)
+(rewrite (Mul (Div (Num $one) a) a) (Num $one) :ruleset opt)
+(rewrite (Add a (Neg a)) (Num $zero) :ruleset opt)
+(rewrite (Div (Num $zero) a) (Num $zero) :ruleset opt)
+(rewrite (Mul (Num $zero) a) (Num $zero) :ruleset opt)
+(rewrite (Mul a (Num $zero)) (Num $zero) :ruleset opt)
+(rewrite (Div a a) (Num $one) :ruleset opt)
+(rewrite (Add (Num $zero) a) a :ruleset opt)
+(rewrite (Add a (Num $zero)) a :ruleset opt)
+(rewrite (Add a (Neg (Num $zero))) a :ruleset opt)
 (rewrite (Neg (Neg a)) a :ruleset opt)
-(rewrite (Neg (Num n)) (Num (neg n)) :ruleset opt)
-(rewrite (Neg (Add a (Neg b))) (Add b (Neg a)) :ruleset opt)
+(rewrite (Mul (Num $one) a) a :ruleset opt)
+(rewrite (Mul a (Num $one)) a :ruleset opt)
+(rewrite (Div a (Num $one)) a :ruleset opt)
+(rewrite (Mul (Num $neg-one) a) (Neg a) :ruleset opt)
 
-(rewrite (Add a (Num 0.0)) a :ruleset opt)
-(rewrite (Mul a (Num 1.0)) a :ruleset opt)
-(rewrite (Mul a (Num 0.0)) (Num 0.0) :ruleset opt)
-(rewrite (Div a (Num 1.0)) a :ruleset opt)
-(rewrite (Div (Num 0.0) a) (Num 0.0) :ruleset opt)
-(rewrite (Add a (Neg a)) (Num 0.0) :ruleset opt)
+; Counting
+(birewrite (Add x x) (Mul (Num $two) x) :ruleset opt)
+(rewrite (Num $two) (Add (Num $one) (Num $one)) :ruleset opt)
+(rewrite (Num $one) (Mul (Num $two) (Num $half)) :ruleset opt)
+
+; Distributivity
+(rewrite (Mul a (Add b c)) (Add (Mul a b) (Mul a c)) :ruleset opt)
+(rewrite (Mul a (Add b c)) (Add (Mul b a) (Mul c a)) :ruleset opt)
+(rewrite (Add (Mul a b) (Mul a c)) (Mul a (Add b c)) :ruleset opt)
+(rewrite (Add (Mul a b) (Neg (Mul a c))) (Mul a (Add b (Neg c))) :ruleset opt)
+(rewrite (Add (Mul b a) (Mul c a)) (Mul a (Add b c)) :ruleset opt)
+(rewrite (Add (Mul b a) (Neg (Mul c a))) (Mul a (Add b (Neg c))) :ruleset opt)
+(rewrite (Add (Mul b a) a) (Mul (Add b (Num $one)) a) :ruleset opt)
+(rewrite (Add a (Mul c a)) (Mul (Add c (Num $one)) a) :ruleset opt)
+
+; Safe distributivity
+(rewrite (Neg (Mul a b)) (Mul (Neg a) b) :ruleset opt)
+(rewrite (Neg (Mul a b)) (Mul a (Neg b)) :ruleset opt)
+(rewrite (Mul (Neg a) b) (Neg (Mul a b)) :ruleset opt)
+(rewrite (Mul a (Neg b)) (Neg (Mul a b)) :ruleset opt)
+(birewrite (Neg (Add a b)) (Add (Neg a) (Neg b)) :ruleset opt)
+(rewrite (Div (Neg a) b) (Neg (Div a b)) :ruleset opt)
+(rewrite (Div a (Neg b)) (Neg (Div a b)) :ruleset opt)
+(rewrite (Neg (Div a b)) (Div (Neg a) b) :ruleset opt)
+(rewrite (Neg (Div a b)) (Div a (Neg b)) :ruleset opt)
+(birewrite (Add a (Neg (Mul (Neg b) c))) (Add a (Mul b c)) :ruleset opt)
+(birewrite (Add a (Mul (Neg b) c)) (Add a (Neg (Mul b c))) :ruleset opt)
+(birewrite (Neg (Add b (Neg a))) (Add a (Neg b)) :ruleset opt)
+(rewrite (Add a b) (Add a (Neg (Neg b))) :ruleset opt)
+
+; Difference of squares
+(birewrite (Mul (Mul a b) (Mul a b)) (Mul (Mul a a) (Mul b b)) :ruleset opt)
+(birewrite (Add (Mul a a) (Neg (Mul b b))) (Mul (Add a b) (Add a (Neg b))) :ruleset opt)
+(birewrite (Add (Mul a a) (Neg (Num $one))) (Mul (Add a (Num $one)) (Add a (Neg (Num $one)))) :ruleset opt)
+(birewrite (Add (Mul a a) (Num $neg-one)) (Mul (Add a (Num $one)) (Add a (Neg (Num $one)))) :ruleset opt)
+(birewrite (Mul (Add a b) (Add a b)) (Add (Add (Mul a a) (Mul (Num $two) (Mul a b))) (Mul b b)) :ruleset opt)
+(birewrite (Mul (Add a (Neg b)) (Add a (Neg b)))
+           (Add (Add (Mul a a) (Neg (Mul (Num $two) (Mul a b)))) (Mul b b)) :ruleset opt)
+
+; Sum and difference of cubes
+(birewrite (Add (Mul (Mul a a) a) (Mul (Mul b b) b))
+           (Mul (Add (Mul a a) (Add (Mul b b) (Neg (Mul a b)))) (Add a b)) :ruleset opt)
+(birewrite (Add (Mul (Mul a a) a) (Neg (Mul (Mul b b) b)))
+           (Mul (Add (Mul a a) (Add (Mul b b) (Mul a b))) (Add a (Neg b))) :ruleset opt)
+
+; Fractions
+(birewrite (Div a b) (Mul a (Div (Num $one) b)) :ruleset opt)
+(rule ((= e (Div a b)) (Nonzero a)) ((union e (Div (Num $one) (Div b a)))) :ruleset opt)
+(rewrite (Div (Num $one) (Div b a)) (Div a b) :ruleset opt)
+(rewrite (Mul (Add (Num $one) (Div b a)) a) (Add a b) :ruleset opt)
+(rewrite (Mul (Add (Num $one) (Neg (Div b a))) a) (Add a (Neg b)) :ruleset opt)
+(birewrite (Add c (Div b a)) (Div (Add (Mul c a) b) a) :ruleset opt)
+(birewrite (Add c (Neg (Div b a))) (Div (Add (Mul c a) (Neg b)) a) :ruleset opt)
+(rewrite (Add (Div a b) (Div c d)) (Div (Add (Mul a d) (Mul c b)) (Mul b d)) :ruleset opt)
+(birewrite (Div (Add a (Neg b)) c) (Add (Div a c) (Neg (Div b c))) :ruleset opt)
+(rewrite (Div (Mul a b) (Mul c d)) (Mul (Div a c) (Div b d)) :ruleset opt)
+(birewrite (Div (Add a b) c) (Add (Div a c) (Div b c)) :ruleset opt)
+(rewrite (Add (Div a b) (Div c d)) (Div (Add (Mul a d) (Mul b c)) (Mul b d)) :ruleset opt)
+(rewrite (Add (Div a b) (Neg (Div c d))) (Div (Add (Mul a d) (Neg (Mul b c))) (Mul b d)) :ruleset opt)
+(rewrite (Mul (Div a b) (Div c d)) (Div (Mul a c) (Mul b d)) :ruleset opt)
+(birewrite (Div a b) (Div (Neg a) (Neg b)) :ruleset opt)
+
+; Square roots; Herbie's forms with fabs hold here where the intervals fix the sign
+(rewrite (Mul (Sqrt x) (Sqrt x)) x :ruleset opt)
+(birewrite (Mul (Neg x) (Neg x)) (Mul x x) :ruleset opt)
+(rewrite (Mul (Sqrt x) (Sqrt y)) (Sqrt (Mul x y)) :ruleset opt)
+(rewrite (Div (Sqrt x) (Sqrt y)) (Sqrt (Div x y)) :ruleset opt)
+(rule ((= e (Sqrt (Mul a a))) (Nonneg a)) ((union e a)) :ruleset opt)
+(rule ((= e (Sqrt (Mul a b))) (Nonneg a) (Nonneg b)) ((union e (Mul (Sqrt a) (Sqrt b)))) :ruleset opt)
+(rule ((= e (Sqrt (Mul a b))) (Nonpos a) (Nonpos b)) ((union e (Mul (Sqrt (Neg a)) (Sqrt (Neg b))))) :ruleset opt)
+(rule ((= e (Sqrt (Div a b))) (Pos b)) ((union e (Div (Sqrt a) (Sqrt b)))) :ruleset opt)
+(rule ((= e (Add (Sqrt a) (Sqrt b)))) ((Add (Sqrt a) (Neg (Sqrt b)))) :ruleset opt)
+(rule ((= e (Add (Sqrt a) (Sqrt b))) (= d (Add (Sqrt a) (Neg (Sqrt b)))) (Nonzero d))
+      ((union e (Div (Add a (Neg b)) d))) :ruleset opt)
+(rule ((= e (Add (Sqrt a) (Neg (Sqrt b))))) ((Add (Sqrt a) (Sqrt b))) :ruleset opt)
+(rule ((= e (Add (Sqrt a) (Neg (Sqrt b)))) (= d (Add (Sqrt a) (Sqrt b))) (Nonzero d))
+      ((union e (Div (Add a (Neg b)) d))) :ruleset opt)
+
+; Not in Herbie: cancellations Herbie needs several steps for, and the conjugate of any
+; difference, a - c = (a*a - c*c) / (a + c), with a + c built for each difference
 (rewrite (Add (Add a b) (Neg a)) b :ruleset opt)
 (rewrite (Add (Add a b) (Neg b)) a :ruleset opt)
 (rewrite (Add a (Neg (Add a b))) (Neg b) :ruleset opt)
 (rewrite (Add b (Neg (Add a b))) (Neg a) :ruleset opt)
-
-(birewrite (Add a a) (Mul (Num 2.0) a) :ruleset opt)
-(birewrite (Mul a (Add b c)) (Add (Mul a b) (Mul a c)) :ruleset opt)
-(birewrite (Mul a (Add b (Neg c))) (Add (Mul a b) (Neg (Mul a c))) :ruleset opt)
-(birewrite (Add a (Mul a b)) (Mul a (Add (Num 1.0) b)) :ruleset opt)
-(birewrite (Add a (Neg (Mul a b))) (Mul a (Add (Num 1.0) (Neg b))) :ruleset opt)
-(birewrite (Add (Mul a a) (Neg (Mul b b))) (Mul (Add a b) (Add a (Neg b))) :ruleset opt)
-
-(rewrite (Div a a) (Num 1.0) :ruleset opt)
 (rewrite (Div (Mul a b) b) a :ruleset opt)
 (rewrite (Div (Mul a b) a) b :ruleset opt)
 (rewrite (Mul b (Div a b)) a :ruleset opt)
 (rewrite (Div (Mul a b) (Mul a c)) (Div b c) :ruleset opt)
-(rewrite (Div (Num 1.0) (Div (Num 1.0) a)) a :ruleset opt)
-(birewrite (Div a b) (Mul a (Div (Num 1.0) b)) :ruleset opt)
-(birewrite (Div (Div a b) c) (Div a (Mul b c)) :ruleset opt)
-(birewrite (Div (Add a b) c) (Add (Div a c) (Div b c)) :ruleset opt)
-(birewrite (Div (Add a (Neg b)) c) (Add (Div a c) (Neg (Div b c))) :ruleset opt)
-(rewrite (Add (Div a b) (Neg (Div c d))) (Div (Add (Mul a d) (Neg (Mul c b))) (Mul b d)) :ruleset opt)
-
-(rewrite (Mul (Sqrt a) (Sqrt a)) a :ruleset opt)
-(rewrite (Mul (Sqrt a) (Sqrt b)) (Sqrt (Mul a b)) :ruleset opt)
-(rewrite (Div (Sqrt a) (Sqrt b)) (Sqrt (Div a b)) :ruleset opt)
-(rule ((= e (Sqrt (Mul a a))) (Nonneg a)) ((union e a)) :ruleset opt)
-(rule ((= e (Sqrt (Mul a b))) (Nonneg a) (Nonneg b)) ((union e (Mul (Sqrt a) (Sqrt b)))) :ruleset opt)
-(rule ((= e (Sqrt (Div a b))) (Pos b)) ((union e (Div (Sqrt a) (Sqrt b)))) :ruleset opt)
-
-; a - c = (a*a - c*c) / (a + c), with a + c built for each difference
 (rule ((= e (Add a (Neg c)))) ((Add a c)) :ruleset opt)
 (rule ((= e (Add a (Neg c))) (= d (Add a c)) (Nonzero d))
       ((union e (Div (Add (Mul a a) (Neg (Mul c c))) d))) :ruleset opt)

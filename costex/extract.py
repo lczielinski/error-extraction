@@ -64,7 +64,7 @@ def extract(g, time_limit=None, cost=err, leq=precedes):
     box = boxes(g)
     num = {c: any(n.op == "Num" for n in nodes) for c, nodes in g.nodes.items()}
     nodes = [(c, n) for c, ns in g.nodes.items() for n in ns
-             if assumes(n, box) is not None and assumes(n, box) <= box[c]]
+             if (guards := assumes(n, box)) is not None and guards <= box[c]]
     members, readers = {c: [] for c in g.nodes}, {c: set() for c in g.nodes}
     for i, (c, n) in enumerate(nodes):
         members[c].append(i)
@@ -104,5 +104,5 @@ def extract(g, time_limit=None, cost=err, leq=precedes):
     return F, k, False
 
 
-def best(front, I, bound):
-    return min(front, key=lambda entry: bound(entry[0], I))
+def best(front, bound):
+    return min(front, key=lambda entry: bound(entry[0]))

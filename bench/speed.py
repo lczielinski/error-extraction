@@ -5,13 +5,13 @@ import os
 import subprocess
 import tempfile
 
-from sample import single
+from sample import rounded
 
 TIMES = 10
 
 
 def literal(q, fmt):
-    return float.hex(single(float(q))) + "f" if fmt == "binary32" else float.hex(float(q))
+    return float.hex(rounded(q, fmt)) + "f" * (fmt == "binary32")
 
 
 def c(e, fmt):

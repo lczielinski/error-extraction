@@ -1,6 +1,7 @@
 import gmpy2
 from gmpy2 import mpfr
 
+# so that negation and doubling, which use the default context, are exact
 gmpy2.get_context().precision = 200
 DOWN = gmpy2.context(precision=200, round=gmpy2.RoundDown)
 UP = gmpy2.context(precision=200, round=gmpy2.RoundUp)
@@ -37,7 +38,7 @@ class Iv:
 
     @property
     def mag(self):
-        return max(-self.lo, self.hi)
+        return max(self.hi, -self.lo)
 
     @property
     def mig(self):
@@ -68,7 +69,7 @@ class Iv:
                   max(UP.mul(a, c), UP.mul(a, d), UP.mul(b, c), UP.mul(b, d)))
 
     def __truediv__(self, other):
-        # K/L = K * TOP when 0 is in L, so [0,0]/L = [0,0], which sqrt's D^ relies on
+        # K/L = K * TOP when 0 is in L, so [0,0]/L = [0,0]
         if other.top or 0 in other:
             return self * TOP
         return self * Iv(DOWN.div(1, other.hi), UP.div(1, other.lo))

@@ -25,7 +25,7 @@ def main(argv=None):
           f"value in {I}, frontier of {len(F[g.root])} at height {k}{' (cut short)' * cut}")
     for name, bound in BOUNDS.items():
         if F[g.root]:
-            e, p = best(F[g.root], I, bound)
-            print(f"{name} {float(bound(e, I)):.3e}  {show(p)}")
+            e, p = best(F[g.root], bound)
+            print(f"{name} {float(bound(e)):.3e}  {show(p)}")
         else:
             print(f"{name} none: every program may fail")

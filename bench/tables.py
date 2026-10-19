@@ -1,11 +1,11 @@
-"""The tables of Section 6, from results/*.json into results/tables/<name>.tex."""
+"""The tables of the evaluation, from results/*.json into results/tables/<name>.tex."""
 
 import math
 import os
 import statistics
 
 import run
-from run import BOUNDS, SIZES, fielded
+from run import BOUNDS, SIZES, reported
 
 NAMES = {"fptaylor": "FPTaylor", "gappa": "Gappa", "daisy": "Daisy", "herbie": "Herbie", "ours": "Ours",
          "ours-plain": "No branch", "greedy": "Greedy readout", "abs-only": "Absolute error only",
@@ -52,8 +52,8 @@ def table(caption, label, columns, head, rows, small=False):
 
 
 def sound(name, who):
-    """The smaller of FPTaylor's and Gappa's bounds, on the metric our program is chosen by."""
-    m = fielded(run.ours()[name]["bounds"])
+    """The smaller of FPTaylor's and Gappa's bounds, on the metric bounds are compared on."""
+    m = reported(run.ours()[name]["bounds"])
     found = [run.bounds()[name][t].get(who, {}).get(m) for t in ("fptaylor", "gappa")]
     return min((b for b in found if b is not None), default=None)
 
@@ -88,7 +88,7 @@ def tightness():
             wins = f"{sum(b < a for a, b in got)}/{sum(b == a for a, b in got)}/{sum(b > a for a, b in got)}"
             rows.append([label if t == tools[0] else "", NAMES[t], len(got), len(pairs) - len(got),
                          *spread(ratios(got)), wins])
-        rows += [["", "Numerors", "--", "--", "--", "--", "--"], "\\midrule"]
+        rows.append("\\midrule")
     return table("Bounds on Benchmark (1), relative to ours, over the cores where both bound the error; "
                  "a core only the tool bounds counts as ours looser.", "tab:tightness", "llrrrrc",
                  "Error & Tool & Supported & Failed & Geomean Ratio & Median Ratio & Ours tighter/tie/looser",
@@ -118,23 +118,22 @@ def seconds(name, who):
 
 def extraction():
     measured, names = run.measured(), run.benchmark2()
-    m = {n: fielded(run.ours()[n]["bounds"]) for n in names}
-    methods = [f"size{n}" for n in SIZES] + ["ours"]
-    bounds, n_bound = shared(methods, names, lambda w, n: (bound(n, w, m[n]), run.ours()[n]["original"][m[n]]))
+    m = {n: reported(run.ours()[n]["bounds"]) for n in names}
+    methods = [f"size{n}" for n in SIZES]
+    bounds, n_bound = shared(methods, names, lambda w, n: (bound(n, w, m[n]), bound(n, "ours", m[n])))
     worst, n_sampled = shared(methods, names,
-                              lambda w, n: (measured[n].get(w, {}).get("ulps"), measured[n]["original"]["ulps"]))
-    rows = []
-    for who in methods:
-        better = sum(bound(n, "ours", m[n]) < bound(n, who, m[n]) for n in names)
-        rows.append(["Ours" if who == "ours" else f"Size, top-{who[4:]}", *spread(bounds[who]),
-                     *spread(worst[who]), "--" if who == "ours" else better,
-                     num(sum(seconds(n, who) for n in names))])
+                              lambda w, n: (measured[n].get(w, {}).get("ulps"), measured[n].get("ours", {}).get("ulps")))
+    rows = [[f"Size, top-{w[4:]}", *spread(bounds[w]), *spread(worst[w]),
+             sum(bound(n, "ours", m[n]) < bound(n, w, m[n]) for n in names),
+             num(sum(seconds(n, w) for n in names))] for w in methods]
+    rows.append(["Ours", *["--"] * 5, num(sum(seconds(n, "ours") for n in names))])
     head = ("& \\multicolumn{2}{c}{Bound Ratio} & \\multicolumn{2}{c}{Max Sampled Ratio} & & \\\\\n"
             "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\n"
             "Method & Geomean & Median & Geomean & Median & Ours strictly better & Time (s)")
-    return table(f"Extracting by size and then bounding, compared to our extraction, on Benchmark (2); bound "
-                 f"ratios cover the {n_bound} cores where every method's program has a bound, and sampled ratios "
-                 f"the {n_sampled} where every program was measured.", "tab:extraction", "lrrrrrr", head, rows)
+    return table(f"Extracting by size and then bounding, divided by our extraction, on Benchmark (2), so a ratio "
+                 f"above 1 means ours is better; bound ratios cover the {n_bound} cores where every method's program "
+                 f"has a bound, and sampled ratios the {n_sampled} where every program was measured.",
+                 "tab:extraction", "lrrrrrr", head, rows)
 
 
 def runtime():
@@ -187,8 +186,8 @@ def branching():
             first = who == "ours-plain"
             cells = [os.path.basename(name)[:-7] if first else "", r["expected"] if first else "", NAMES[who]]
             p = r.get(who)
-            if p is None:
-                rows.append(cells + ["n/a", "--", "--", "--"])
+            if p is None or "program" not in p:
+                rows.append(cells + ["n/a" if p is None else p["status"], "--", "--", "--"])
                 continue
             points = "--" if first else ", ".join(conditions(p["program"])) or "none"
             rows.append(cells + [points, num(p["bound"].get("rel")), num(p["measured"]["ulps"]),

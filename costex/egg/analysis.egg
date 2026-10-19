@@ -1,6 +1,5 @@
 (datatype Math
-  (Num f64)
-  (Lit String)
+  (Num BigRat)
   (Var String)
   (Add Math Math)
   (Mul Math Math)
@@ -10,8 +9,15 @@
   (If String f64 Math Math)
   (Ctx String f64 bool Math))
 
+(let $zero (bigrat (bigint 0) (bigint 1)))
+(let $one (bigrat (bigint 1) (bigint 1)))
+(let $neg-one (bigrat (bigint -1) (bigint 1)))
+(let $two (bigrat (bigint 2) (bigint 1)))
+(let $half (bigrat (bigint 1) (bigint 2)))
+
 (ruleset ana)
 (ruleset opt)
+(ruleset fold)
 (ruleset dist)
 (ruleset branch)
 
@@ -38,7 +44,8 @@
 
 (rule ((= l (lo e)) (= h (hi e)) (> l h)) ((Bad e)) :ruleset ana)
 
-(rule ((= e (Num n))) ((set (lo e) n) (set (hi e) n)) :ruleset ana)
+(rule ((= e (Num r))) ((set (rmlo e) (to-f64 r)) (set (rmhi e) (to-f64 r))) :ruleset ana)
+(rule ((= e (Num $zero))) ((set (lo e) 0.0) (set (hi e) 0.0)) :ruleset ana)
 
 (rule ((= e (Neg a)) (= h (hi a))) ((set (lo e) (neg h))) :ruleset ana)
 (rule ((= e (Neg a)) (= l (lo a))) ((set (hi e) (neg l))) :ruleset ana)
@@ -74,8 +81,10 @@
 (relation Pos (Math))
 (relation Nonneg (Math))
 (relation Nonzero (Math))
+(relation Nonpos (Math))
 (rule ((= l (lo e)) (> l 0.0)) ((Pos e) (Nonzero e)) :ruleset ana)
 (rule ((= l (lo e)) (>= l 0.0)) ((Nonneg e)) :ruleset ana)
+(rule ((= h (hi e)) (<= h 0.0)) ((Nonpos e)) :ruleset ana)
 (rule ((= h (hi e)) (< h 0.0)) ((Nonzero e)) :ruleset ana)
 
 ; (Ctx x k true e) is e where x > k and (Ctx x k false e) is e where x <= k. Each moves
@@ -86,7 +95,6 @@
 (rule ((= e (Ctx x k s (Var x)))) ((Leaf e)) :ruleset dist)
 (rule ((= e (Ctx x k s u)) (Leaf u) (= v (Var x)) (!= u v)) ((union e u)) :ruleset dist)
 (rewrite (Ctx x k s (Num n)) (Num n) :subsume :ruleset dist)
-(rewrite (Ctx x k s (Lit c)) (Lit c) :subsume :ruleset dist)
 (rewrite (Ctx x k s (Add a b)) (Add (Ctx x k s a) (Ctx x k s b)) :ruleset dist)
 (rewrite (Ctx x k s (Mul a b)) (Mul (Ctx x k s a) (Ctx x k s b)) :ruleset dist)
 (rewrite (Ctx x k s (Div a b)) (Div (Ctx x k s a) (Ctx x k s b)) :ruleset dist)

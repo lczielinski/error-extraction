@@ -9,6 +9,7 @@ import math
 import random
 import statistics
 import struct
+from fractions import Fraction
 
 import gmpy2
 from gmpy2 import mpfr
@@ -25,6 +26,12 @@ def single(x):
         return struct.unpack("f", struct.pack("f", x))[0]
     except OverflowError:
         return math.copysign(math.inf, x)
+
+
+def rounded(q, fmt):
+    """A Fraction or mpfr rounded once to the format."""
+    ctx = gmpy2.ieee(32 if fmt == "binary32" else 64)
+    return float(ctx.div(q.numerator, q.denominator) if isinstance(q, Fraction) else ctx.plus(q))
 
 
 def ordinal(x, fmt):
@@ -49,9 +56,9 @@ def run(e, env, fmt):
         case ("Var", x):
             return env[x]
         case ("Num", q):
-            return rnd(q)
+            return rounded(q, fmt)
         case ("If", (op, x, k), a, b):
-            return run(a if taken(op, env[x], rnd(k)) else b, env, fmt)
+            return run(a if taken(op, env[x], rounded(k, fmt)) else b, env, fmt)
         case ("Neg", a):
             return -run(a, env, fmt)
         case ("Sqrt", a):
@@ -114,10 +121,9 @@ def score(e, env, ref, fmt):
     got = run(e, env, fmt)
     if not math.isfinite(got):
         return 1 << (32 if fmt == "binary32" else 64), math.inf, math.inf
-    nearest = single(float(ref)) if fmt == "binary32" else float(ref)
     with gmpy2.context(precision=256):
         d = abs(mpfr(got) - ref)
-        return 1 + abs(ordinal(got, fmt) - ordinal(nearest, fmt)), float(d), float(d / abs(ref)) if ref else None
+        return abs(ordinal(got, fmt) - ordinal(rounded(ref, fmt), fmt)), float(d), float(d / abs(ref)) if ref else None
 
 
 def climb(f, start, box, fmt, budget):
