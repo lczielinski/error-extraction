@@ -1,9 +1,7 @@
-; from herbie proj/som.fpcore core 3
-; box: default
 (FPCore (mult h xj s)
   :name "seraz0-fc-c1"
   :cx-source "herbie:proj/som.fpcore:3"
   :cx-box "default"
-  :cx-kind "rewrite"
-  :pre (and (<= 1.0 mult 2.0) (<= 4.0 h 8.0) (<= 16.0 xj 32.0) (<= 64.0 s 128.0))
+  :precision binary64
+  :pre (and (<= 1 mult 2) (<= 4 h 8) (<= 16 xj 32) (<= 64 s 128))
   (* mult (/ (* s (+ h xj)) (sqrt (+ (* xj xj) (* s s))))))

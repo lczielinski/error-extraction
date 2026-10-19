@@ -28,7 +28,7 @@ def precedes(e1, e2):
 
 
 def computed(I, e):
-    """X~: where the computed value lies, for a real value in I."""
+    """X~, where the computed value lies."""
     return I + e.D if 0 in I else (I + e.D) & (I * e.S)
 
 
@@ -41,7 +41,7 @@ def ufp(r):
 
 
 def ufp_below(M):
-    """The largest ufp(r) of a non-float r with |r| <= M: a power of two M is a float."""
+    """The largest ufp(r) of a non-float r with |r| <= M."""
     return ufp(M) / 2 if ufp(M) == M else ufp(M)
 
 
@@ -50,9 +50,6 @@ def gamma_a(Ih, eta):
 
 
 def gamma_r(Ih, eta):
-    # u ufp(r)/|r| is u just above each power of two and falls across a binade, so its sup
-    # on Ih is u unless Ih's non-floats lie inside one binade; there, like eta/|r|, it
-    # peaks at Ih.mig.
     m = Ih.mig
     if m == 0:
         return 1 if eta else U
@@ -60,19 +57,14 @@ def gamma_r(Ih, eta):
     return min(1, max(g, UP.div(eta, m)))
 
 
-def never(Ih):
-    return False
-
-
-def rounded(I, S, D, J=TOP, exact=never, sum=False):
-    """The pair of an operation from its pre-rounding pair and J, the operation applied to
-    its computed operands: FAIL if it may overflow. A sum of floats is exact where it is
-    subnormal, so it has no eta."""
+def rounded(I, S, D, J=TOP, exact=False, scale=None, sum=False):
+    """The pair after rounding, from the pair before it and J = f(X~, Y~). scale is k when the
+    operation multiplies by 2^k; a sum has no eta."""
     e = reduce(I, S, D)
     Ih = computed(I, e) & J
     if Ih.mag > OMEGA:
         return FAIL
-    if exact(Ih) or Ih.lo == Ih.hi == FLOATS.plus(Ih.lo):
+    if exact or Ih.lo == Ih.hi == FLOATS.plus(Ih.lo) or scale is not None and (scale >= 0 or Ih.mig >= TINY):
         return e
     eta = 0 if sum else ETA
     g, h = gamma_r(Ih, eta), gamma_a(Ih, eta)
@@ -80,17 +72,11 @@ def rounded(I, S, D, J=TOP, exact=never, sum=False):
 
 
 def power_of_two(X, e, const):
-    """k if the operand computes the constant +-2^k exactly: its class holds a constant and
-    its pair is EXACT. Asking the class rather than the term keeps err local."""
+    """k if the operand's class is the constant 2^k or -2^k and its pair is EXACT."""
     if const and e == EXACT:
         k, m = gmpy2.frexp(X.lo)
         if abs(m) == 0.5:
             return k - 1
-    return None
-
-
-def scales_exactly(k, Ih):
-    return k >= 0 or Ih.mig >= TINY
 
 
 def sterbenz(Xt, Yt):
@@ -104,20 +90,18 @@ def mix(lam, S1, S2):
 
 
 def add(I, X, Y, e1, e2):
-    if 0 in X or 0 in Y:
-        S = TOP
-    else:
+    S = TOP
+    if 0 not in X and 0 not in Y:
         lam = (X / I) & (ONE - Y / I) & (ONE / (ONE + Y / X))
         S = mix(lam.lo, e1.S, e2.S) | mix(lam.hi, e1.S, e2.S)
     Xt, Yt = computed(X, e1), computed(Y, e2)
-    return rounded(I, S, e1.D + e2.D, Xt + Yt, lambda Ih: sterbenz(Xt, Yt), sum=True)
+    return rounded(I, S, e1.D + e2.D, Xt + Yt, exact=sterbenz(Xt, Yt), sum=True)
 
 
 def mul(I, X, Y, e1, e2, c1, c2):
     ks = [k for k in (power_of_two(X, e1, c1), power_of_two(Y, e2, c2)) if k is not None]
-    S, D = e1.S * e2.S, X * e2.D + Y * e1.D + e1.D * e2.D
-    J = computed(X, e1) * computed(Y, e2)
-    return rounded(I, S, D, J, lambda Ih: any(scales_exactly(k, Ih) for k in ks))
+    D = X * e2.D + Y * e1.D + e1.D * e2.D
+    return rounded(I, e1.S * e2.S, D, computed(X, e1) * computed(Y, e2), scale=max(ks, default=None))
 
 
 def div(I, X, Y, e1, e2, c2):
@@ -125,8 +109,8 @@ def div(I, X, Y, e1, e2, c2):
     if 0 in Yt:
         return FAIL
     k = power_of_two(Y, e2, c2)
-    S, D = e1.S / e2.S, (e1.D - X * (e2.S - ONE)) / Yt
-    return rounded(I, S, D, computed(X, e1) / Yt, lambda Ih: k is not None and scales_exactly(-k, Ih))
+    D = (e1.D - X * (e2.S - ONE)) / Yt
+    return rounded(I, e1.S / e2.S, D, computed(X, e1) / Yt, scale=None if k is None else -k)
 
 
 def sqrt(I, X, e1):
@@ -137,7 +121,8 @@ def sqrt(I, X, e1):
 
 
 def err(op, I, Xs, es, consts):
-    """err_s of an e-node, from its class interval I and its children's intervals and costs."""
+    """err_s of a node, from its class's interval I, its children's intervals Xs and costs es,
+    and whether each child's class holds a constant."""
     if FAIL in es:
         return FAIL
     match op:

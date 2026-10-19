@@ -1,8 +1,6 @@
-; from herbie numerics/martel.fpcore core 0
-; box: pre
 (FPCore ()
   :name "Rectangular parallelepiped of dimension a×b×c"
   :cx-source "herbie:numerics/martel.fpcore:0"
   :cx-box "pre"
-  :cx-kind "rewrite"
+  :precision binary64
   (* 2 (+ (+ (* 1 (/ 1 9)) (* (/ 1 9) (/ 1 9))) (* (/ 1 9) 1))))

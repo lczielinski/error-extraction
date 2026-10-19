@@ -9,6 +9,7 @@ import math
 import re
 from collections import namedtuple
 from fractions import Fraction
+from itertools import pairwise
 
 Core = namedtuple("Core", "name args box precision body props")
 SYMBOLS = {"Add": "+", "Mul": "*", "Div": "/", "Neg": "-", "Sqrt": "sqrt"}
@@ -17,10 +18,10 @@ FLIP = {">": "<", ">=": "<=", "<": ">", "<=": ">="}
 
 def read(text):
     stack = [[]]
-    for token in re.findall(r'"[^"]*"|;[^\n]*|[()]|[^\s()";]+', text):
-        if token == "(":
+    for token in re.findall(r'"[^"]*"|;[^\n]*|[()\[\]]|[^\s()\[\]";]+', text):
+        if token in "([":
             stack.append([])
-        elif token == ")":
+        elif token in ")]":
             done = stack.pop()
             stack[-1].append(done)
         elif token[0] != ";":
@@ -85,7 +86,7 @@ def bounds(pre):
         return
     if pre[0] != "<=":
         raise SyntaxError(f"unsupported precondition {pre}")
-    for a, b in zip(pre[1:], pre[2:]):
+    for a, b in pairwise(pre[1:]):
         if number(a) is not None and number(b) is None:
             q, f = number(a), float(number(a))
             yield b, f if Fraction(f) <= q else math.nextafter(f, -math.inf), math.inf

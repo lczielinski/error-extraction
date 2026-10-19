@@ -4,41 +4,40 @@ import heapq
 import time
 
 from costex import analysis as A
-from costex.analysis import BOUNDS, FAIL, ONE, TOP, ZERO, err, never, power_of_two, sterbenz
-from costex.extract import assumes, boxes, extract, program
+from costex.analysis import BOUNDS, FAIL, ONE, TOP, ZERO, err, mix, power_of_two, sterbenz
+from costex.extract import extract, participants, program
 from costex.interval import Iv
 
 
 def analyze(g, p):
-    """err of the program p as a term of g, with g's class intervals."""
+    """err of the program p as a term of g, with its conditions written as guarded writes them."""
     index = {(n.op, n.payload, n.children): c for c, ns in g.nodes.items() for n in ns}
     num = {c: any(n.op == "Num" for n in ns) for c, ns in g.nodes.items()}
 
-    def walk(p):
-        if p[0] in ("Var", "Num"):
-            op, kids = p[0] if (p[0], p[1], ()) in index else "Lit", []
-            c = index[(op, p[1], ())]
-        else:
-            op, kids = p[0], [walk(q) for q in p[1:]]
-            c = index[(op, None, tuple(k for k, _ in kids))]
+    def node(op, payload, kids):
+        c = index[(op, payload, tuple(k for k, _ in kids))]
         Xs = [g.interval[k] for k, _ in kids]
         return c, err(op, g.interval[c], Xs, [e for _, e in kids], [num[k] for k, _ in kids])
 
-    return walk(p)[1]
+    def walk(p, guard):
+        match p:
+            case ("Var", x) if x in guard:
+                return node("Ctx", guard[x], [walk(p, {})])
+            case ("Var" | "Num", v):
+                return node(p[0] if (p[0], v, ()) in index else "Lit", v, [])
+            case ("If", (_, x, k), a, b):
+                return node("If", (x, k), [walk(a, guard | {x: (x, k, True)}), walk(b, guard | {x: (x, k, False)})])
+            case (op, *args):
+                return node(op, None, [walk(a, guard) for a in args])
+
+    return walk(p, {})[1]
 
 
 def smallest(g, n, time_limit=None):
     """The n smallest programs of the root class, counting operations and leaves, found in
     rounds like extraction's."""
     deadline = time_limit and time.monotonic() + time_limit
-    box = boxes(g)
-    nodes = [(c, m) for c, ms in g.nodes.items() for m in ms
-             if assumes(m, box) is not None and assumes(m, box) <= box[c]]
-    members, readers = {c: [] for c in g.nodes}, {c: set() for c in g.nodes}
-    for i, (c, m) in enumerate(nodes):
-        members[c].append(i)
-        for child in m.children:
-            readers[child].add(i)
+    nodes, members, readers = participants(g)
     best, shares, todo = {c: [] for c in g.nodes}, {}, range(len(nodes))
     while todo and not (deadline and time.monotonic() > deadline):
         for i in todo:
@@ -83,14 +82,16 @@ def abs_only(op, I, Xs, Ds, consts):
     if any(D is FAIL for D in Ds):
         return FAIL
 
-    def rounded(D, J=TOP, exact=never, eta=A.ETA):
+    def rounded(D, J=TOP, exact=False, scale=None, eta=A.ETA):
         Ih = (I + D) & J
         if Ih.mag > A.OMEGA:
             return FAIL
+        if exact or scale is not None and (scale >= 0 or Ih.mig >= A.TINY):
+            return D
         h = A.gamma_a(Ih, eta)
-        return D if exact(Ih) else D + Iv(-h, h)
+        return D + Iv(-h, h)
 
-    def scale(i):
+    def k(i):
         return power_of_two(Xs[i], A.Pair(ONE, Ds[i]), consts[i])
 
     match op:
@@ -102,19 +103,17 @@ def abs_only(op, I, Xs, Ds, consts):
             return -Ds[0]
         case "Add":
             Xt, Yt = Xs[0] + Ds[0], Xs[1] + Ds[1]
-            return rounded(Ds[0] + Ds[1], Xt + Yt, lambda Ih: sterbenz(Xt, Yt), 0)
+            return rounded(Ds[0] + Ds[1], Xt + Yt, exact=sterbenz(Xt, Yt), eta=0)
         case "Mul":
-            ks = [k for k in (scale(0), scale(1)) if k is not None]
+            ks = [x for x in (k(0), k(1)) if x is not None]
             D = Xs[0] * Ds[1] + Xs[1] * Ds[0] + Ds[0] * Ds[1]
-            J = (Xs[0] + Ds[0]) * (Xs[1] + Ds[1])
-            return rounded(D, J, lambda Ih: any(A.scales_exactly(k, Ih) for k in ks))
+            return rounded(D, (Xs[0] + Ds[0]) * (Xs[1] + Ds[1]), scale=max(ks, default=None))
         case "Div":
             Yt = Xs[1] + Ds[1]
             if 0 in Yt:
                 return FAIL
-            k = scale(1)
-            J = (Xs[0] + Ds[0]) / Yt
-            return rounded((Ds[0] - I * Ds[1]) / Yt, J, lambda Ih: k is not None and A.scales_exactly(-k, Ih))
+            scale = None if k(1) is None else -k(1)
+            return rounded((Ds[0] - I * Ds[1]) / Yt, (Xs[0] + Ds[0]) / Yt, scale=scale)
         case "Sqrt":
             Xt = Xs[0] + Ds[0]
             if Xt.lo < 0:
@@ -127,14 +126,16 @@ def rel_only(op, I, Xs, Ss, consts):
     if any(S is FAIL for S in Ss):
         return FAIL
 
-    def rounded(S, J=TOP, exact=never, eta=A.ETA):
+    def rounded(S, J=TOP, exact=False, scale=None, eta=A.ETA):
         Ih = (TOP if 0 in I else I * S) & J
         if Ih.mag > A.OMEGA:
             return FAIL
+        if exact or scale is not None and (scale >= 0 or Ih.mig >= A.TINY):
+            return S
         g = A.gamma_r(Ih, eta)
-        return S if exact(Ih) else S * (ONE + Iv(-g, g))
+        return S * (ONE + Iv(-g, g))
 
-    def scale(i):
+    def k(i):
         return power_of_two(Xs[i], A.Pair(Ss[i], ZERO), consts[i])
 
     def computed(i):
@@ -152,18 +153,17 @@ def rel_only(op, I, Xs, Ss, consts):
             if 0 not in Xs[0] and 0 not in Xs[1]:
                 X, Y = Xs
                 lam = (X / I) & (ONE - Y / I) & (ONE / (ONE + Y / X))
-                S = A.mix(lam.lo, *Ss) | A.mix(lam.hi, *Ss)
+                S = mix(lam.lo, *Ss) | mix(lam.hi, *Ss)
             Xt, Yt = computed(0), computed(1)
-            return rounded(S, Xt + Yt, lambda Ih: sterbenz(Xt, Yt), 0)
+            return rounded(S, Xt + Yt, exact=sterbenz(Xt, Yt), eta=0)
         case "Mul":
-            ks = [k for k in (scale(0), scale(1)) if k is not None]
-            return rounded(Ss[0] * Ss[1], computed(0) * computed(1), lambda Ih: any(A.scales_exactly(k, Ih) for k in ks))
+            ks = [x for x in (k(0), k(1)) if x is not None]
+            return rounded(Ss[0] * Ss[1], computed(0) * computed(1), scale=max(ks, default=None))
         case "Div":
             if 0 in computed(1):
                 return FAIL
-            k = scale(1)
-            J = computed(0) / computed(1)
-            return rounded(Ss[0] / Ss[1], J, lambda Ih: k is not None and A.scales_exactly(-k, Ih))
+            scale = None if k(1) is None else -k(1)
+            return rounded(Ss[0] / Ss[1], computed(0) / computed(1), scale=scale)
         case "Sqrt":
             if computed(0).lo < 0:
                 return FAIL

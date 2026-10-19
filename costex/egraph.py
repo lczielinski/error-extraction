@@ -23,26 +23,25 @@ EGraph = namedtuple("EGraph", "nodes interval root")
 
 
 class BadBox(Exception):
-    """Some subexpression is undefined somewhere on the input box."""
+    """Some subexpression is undefined on the input box."""
 
 
 def context(precision, round=gmpy2.RoundToNearest):
     return gmpy2.context(gmpy2.ieee(64 if precision == "binary64" else 32), round=round)
 
 
-def rounded(q, precision, round=gmpy2.RoundToNearest):
+def to_float(q, precision, round=gmpy2.RoundToNearest):
     return context(precision, round).div(mpz(q.numerator), mpz(q.denominator))
 
 
 def representable(q, precision):
-    f = rounded(q, precision)
+    f = to_float(q, precision)
     return gmpy2.is_finite(f) and Fraction(*f.as_integer_ratio()) == q
 
 
 def threshold(op, c, precision):
-    """The float k of the format with: x op c iff x > k (> and >=) or iff not x > k (< and <=),
-    for every float x, the literal c being rounded to the format as the program does."""
-    k = rounded(c, precision)
+    """The float k with x op fl(c) iff x > k for > and >=, and iff not x > k for < and <=."""
+    k = to_float(c, precision)
     return float(context(precision).next_below(k) if op in (">=", "<") else k)
 
 
@@ -52,6 +51,22 @@ def f64(x):
 
 def rational(q):
     return f'(bigrat (from-string "{q.numerator}") (from-string "{q.denominator}"))'
+
+
+def guarded(e, box, precision):
+    """e with each condition as x > k for a float k, keeping only the arm of one the box decides."""
+    match e:
+        case ("If", (op, x, c), a, b):
+            k = threshold(op, c, precision)
+            above, below = (a, b) if op in (">", ">=") else (b, a)
+            lo, hi = box[x]
+            if lo > k or hi <= k:
+                return guarded(above if lo > k else below, box, precision)
+            return ("If", (">", x, Fraction(k)), guarded(above, box, precision), guarded(below, box, precision))
+        case ("Var" | "Num", _):
+            return e
+        case (op, *args):
+            return (op, *(guarded(a, box, precision) for a in args))
 
 
 def program(core, iters, branch):
@@ -67,29 +82,23 @@ def program(core, iters, branch):
             case ("Num", q):
                 consts.add(q)
                 return f"(Num {rational(q)})"
-            case ("If", (op, x, c), a, b):
+            case ("If", (_, x, k), a, b):
                 if x in guard:
                     raise ValueError(f"conditions on {x} are nested, which is not supported")
-                k = threshold(op, c, core.precision)
-                above, below = (a, b) if op in (">", ">=") else (b, a)
-                lo, hi = core.box[x]
-                if lo > k or hi <= k:
-                    return term(above if lo > k else below, guard)
-                return (f'(If "{x}" {f64(k)} {term(above, {**guard, x: f"{f64(k)} true"})} '
-                        f'{term(below, {**guard, x: f"{f64(k)} false"})})')
+                arms = (term(a, guard | {x: f"{f64(k)} true"}), term(b, guard | {x: f"{f64(k)} false"}))
+                return f'(If "{x}" {f64(k)} {arms[0]} {arms[1]})'
             case (op, *args):
                 return f"({op} {' '.join(term(a, guard) for a in args)})"
 
     files = ["analysis.egg", "rules.egg"] + ["branch.egg"] * branch
     lines = [Path(RULES, f).read_text() for f in files]
-    lines.append(f"(Root {term(core.body, {})})")
+    lines.append(f"(Root {term(guarded(core.body, core.box, core.precision), {})})")
     for x, (lo, hi) in core.box.items():
         lines += [f'(set (lo (Var "{x}")) {f64(lo)})', f'(set (hi (Var "{x}")) {f64(hi)})']
     for q in consts:
-        lo, hi = rounded(q, "binary64", gmpy2.RoundDown), rounded(q, "binary64", gmpy2.RoundUp)
+        lo, hi = to_float(q, "binary64", gmpy2.RoundDown), to_float(q, "binary64", gmpy2.RoundUp)
         lines += [f"(set (lo (Num {rational(q)})) {f64(lo)})", f"(set (hi (Num {rational(q)})) {f64(hi)})"]
     analysis = "(repeat 30 ana)" if iters else "(saturate ana)"
-    # As in Herbie, a rule that matches too often backs off for a few iterations.
     lines.append(f"(run-schedule (let-scheduler bo (back-off)) (repeat {iters} (saturate dist) (repeat 30 ana)"
                  f" (run-with bo opt) (saturate fold) (saturate branch)) (saturate dist) {analysis})")
     lines += [f"(print-function {t} 1000000000)" for t in TABLES]

@@ -1,10 +1,7 @@
-; from herbie regression.fpcore core 3
-; 1 precondition conjunct(s) dropped, widening the box
-; box: default
 (FPCore (x)
   :name "x (used to be hard to sample)"
   :cx-source "herbie:regression.fpcore:3"
-  :cx-box "default"
-  :cx-kind "analysis"
-  :pre (<= 1.0 x 2.0)
+  :cx-box "pre"
+  :precision binary64
+  :pre (and (<= 0 x 10))
   x)

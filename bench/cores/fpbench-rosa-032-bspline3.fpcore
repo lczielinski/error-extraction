@@ -1,9 +1,7 @@
-; from fpbench rosa.fpcore core 32
-; box: pre
 (FPCore (u)
   :name "bspline3"
   :cx-source "fpbench:rosa.fpcore:32"
   :cx-box "pre"
-  :cx-kind "rewrite"
-  :pre (<= 0.0 u 1.0)
+  :precision binary64
+  :pre (and (<= 0 u 1))
   (/ (- (* (* u u) u)) 6))

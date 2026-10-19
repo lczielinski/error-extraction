@@ -1,10 +1,7 @@
-; from herbie numerics/rump.fpcore core 2
-; 2 precondition conjunct(s) dropped, widening the box
-; box: default
 (FPCore (x y)
   :name "From Rump in a 1983 paper, rewritten"
   :cx-source "herbie:numerics/rump.fpcore:2"
-  :cx-box "default"
-  :cx-kind "rewrite"
-  :pre (and (<= 1.0 x 2.0) (<= 4.0 y 8.0))
+  :cx-box "pre"
+  :precision binary64
+  :pre (and (<= 10864 x 10864) (<= 18817 y 18817))
   (- (* 9 (* (* (* x x) x) x)) (* (* y y) (- (* y y) 2))))

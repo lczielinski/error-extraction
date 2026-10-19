@@ -1,0 +1,7 @@
+(FPCore (re im)
+  :name "math.square on complex, real part"
+  :cx-source "herbie:libraries/mathjs/arithmetic.fpcore:2"
+  :cx-box "default"
+  :precision binary64
+  :pre (and (<= 1 re 2) (<= 4 im 8))
+  (- (* re re) (* im im)))

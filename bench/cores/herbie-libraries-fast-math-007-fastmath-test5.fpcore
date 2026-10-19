@@ -1,9 +1,7 @@
-; from herbie libraries/fast-math.fpcore core 7
-; box: default
 (FPCore (d1)
   :name "FastMath test5"
   :cx-source "herbie:libraries/fast-math.fpcore:7"
   :cx-box "default"
-  :cx-kind "rewrite"
-  :pre (<= 1.0 d1 2.0)
+  :precision binary64
+  :pre (and (<= 1 d1 2))
   (* (* d1 (* (* (* (* (* d1 (* d1 d1)) d1) d1) (* d1 d1)) d1)) d1))

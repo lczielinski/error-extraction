@@ -1,9 +1,7 @@
-; from fpbench rosa.fpcore core 2
-; box: pre
 (FPCore (u v T)
   :name "doppler3"
   :cx-source "fpbench:rosa.fpcore:2"
   :cx-box "pre"
-  :cx-kind "rewrite"
-  :pre (and (<= -30.0 u 120.0) (<= 320.0 v 20300.0) (<= -50.0 T 30.0))
+  :precision binary64
+  :pre (and (<= -30 u 120) (<= 320 v 20300) (<= -50 T 30))
   (/ (* (- (+ 331.4 (* 0.6 T))) v) (* (+ (+ 331.4 (* 0.6 T)) u) (+ (+ 331.4 (* 0.6 T)) u))))

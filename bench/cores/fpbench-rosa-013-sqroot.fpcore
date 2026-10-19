@@ -1,9 +1,7 @@
-; from fpbench rosa.fpcore core 13
-; box: pre
 (FPCore (x)
   :name "sqroot"
   :cx-source "fpbench:rosa.fpcore:13"
   :cx-box "pre"
-  :cx-kind "rewrite"
-  :pre (<= 0.0 x 1.0)
+  :precision binary64
+  :pre (and (<= 0 x 1))
   (- (+ (- (+ 1 (* 0.5 x)) (* (* 0.125 x) x)) (* (* (* 0.0625 x) x) x)) (* (* (* (* 0.0390625 x) x) x) x)))

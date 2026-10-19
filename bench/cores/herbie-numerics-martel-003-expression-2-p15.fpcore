@@ -1,9 +1,7 @@
-; from herbie numerics/martel.fpcore core 3
-; box: pre
 (FPCore (x)
   :name "Expression 2, p15"
   :cx-source "herbie:numerics/martel.fpcore:3"
   :cx-box "pre"
-  :cx-kind "analysis"
-  :pre (<= 0.0 x 2.0)
+  :precision binary64
+  :pre (and (<= 0 x 2))
   (+ x (* x x)))

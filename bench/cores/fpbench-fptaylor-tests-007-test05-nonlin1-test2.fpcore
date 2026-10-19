@@ -1,9 +1,7 @@
-; from fpbench fptaylor-tests.fpcore core 7
-; box: pre
 (FPCore (x)
   :name "test05_nonlin1, test2"
   :cx-source "fpbench:fptaylor-tests.fpcore:7"
   :cx-box "pre"
-  :cx-kind "analysis"
-  :pre (<= 1.0000100000000002875566451621125452220439910888671875 x 1.9999999999999997779553950749686919152736663818359375)
+  :precision binary64
+  :pre (and (<= 1.000010000000000065512040237081237137317657470703125 x 1.9999999999999997779553950749686919152736663818359375))
   (/ 1 (+ x 1)))

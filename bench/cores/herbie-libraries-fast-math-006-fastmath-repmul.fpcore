@@ -1,9 +1,7 @@
-; from herbie libraries/fast-math.fpcore core 6
-; box: default
 (FPCore (d1)
   :name "FastMath repmul"
   :cx-source "herbie:libraries/fast-math.fpcore:6"
   :cx-box "default"
-  :cx-kind "analysis"
-  :pre (<= 1.0 d1 2.0)
+  :precision binary64
+  :pre (and (<= 1 d1 2))
   (* (* (* d1 d1) d1) d1))

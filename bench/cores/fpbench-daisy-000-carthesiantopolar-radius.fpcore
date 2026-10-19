@@ -1,9 +1,7 @@
-; from fpbench daisy.fpcore core 0
-; box: pre
 (FPCore (x y)
   :name "carthesianToPolar, radius"
   :cx-source "fpbench:daisy.fpcore:0"
   :cx-box "pre"
-  :cx-kind "analysis"
-  :pre (and (<= 1.0 x 100.0) (<= 1.0 y 100.0))
+  :precision binary64
+  :pre (and (<= 1 x 100) (<= 1 y 100))
   (sqrt (+ (* x x) (* y y))))

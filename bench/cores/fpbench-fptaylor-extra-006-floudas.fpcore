@@ -1,10 +1,7 @@
-; from fpbench fptaylor-extra.fpcore core 6
-; 1 precondition conjunct(s) dropped, widening the box
-; box: pre
 (FPCore (x1 x2)
   :name "floudas"
   :cx-source "fpbench:fptaylor-extra.fpcore:6"
   :cx-box "pre"
-  :cx-kind "analysis"
-  :pre (and (<= 0.0 x1 2.0) (<= 0.0 x2 3.0))
+  :precision binary64
+  :pre (and (<= 0 x1 2) (<= 0 x2 3))
   (+ x1 x2))

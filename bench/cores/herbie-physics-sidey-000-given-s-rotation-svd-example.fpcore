@@ -1,10 +1,7 @@
-; from herbie physics/sidey.fpcore core 0
-; 2 precondition conjunct(s) dropped, widening the box
-; box: default
 (FPCore (p x)
   :name "Given's Rotation SVD example"
   :cx-source "herbie:physics/sidey.fpcore:0"
   :cx-box "default"
-  :cx-kind "rewrite"
-  :pre (and (<= 1.0 p 2.0) (<= 4.0 x 8.0))
+  :precision binary64
+  :pre (and (<= 1 p 2) (<= 4 x 8))
   (sqrt (* 0.5 (+ 1 (/ x (sqrt (+ (* (* 4 p) p) (* x x))))))))

@@ -1,9 +1,7 @@
-; from fpbench rosa.fpcore core 3
-; box: pre
 (FPCore (x1 x2 x3)
   :name "rigidBody1"
   :cx-source "fpbench:rosa.fpcore:3"
   :cx-box "pre"
-  :cx-kind "rewrite"
-  :pre (and (<= -15.0 x1 15.0) (<= -15.0 x2 15.0) (<= -15.0 x3 15.0))
+  :precision binary64
+  :pre (and (<= -15 x1 15) (<= -15 x2 15) (<= -15 x3 15))
   (- (- (- (- (* x1 x2)) (* (* 2 x2) x3)) x1) x3))

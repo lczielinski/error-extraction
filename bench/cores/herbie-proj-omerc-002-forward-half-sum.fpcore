@@ -1,9 +1,7 @@
-; from herbie proj/omerc.fpcore core 2
-; box: default
 (FPCore (W)
   :name "forward-half-sum"
   :cx-source "herbie:proj/omerc.fpcore:2"
   :cx-box "default"
-  :cx-kind "rewrite"
-  :pre (<= 1.0 W 2.0)
+  :precision binary64
+  :pre (and (<= 1 W 2))
   (* 0.5 (+ W (/ 1 W))))

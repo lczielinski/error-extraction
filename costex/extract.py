@@ -54,15 +54,10 @@ def boxes(g):
         box = new
 
 
-def extract(g, time_limit=None, cost=err, leq=precedes):
-    """F_k for the largest k reached, k, and whether the time limit stopped it before
-    F_{k+1} = F_k, for a local cost function and the partial order leq on its values.
-
-    Only nodes whose children's boxes contain their class's box take part, and a node is
-    evaluated again only when a child's frontier changed in the last round."""
-    deadline = time_limit and time.monotonic() + time_limit
+def participants(g):
+    """The nodes whose children's boxes contain their class's box; for each class, the indices
+    of its nodes and of the nodes that read it."""
     box = boxes(g)
-    num = {c: any(n.op == "Num" for n in nodes) for c, nodes in g.nodes.items()}
     nodes = [(c, n) for c, ns in g.nodes.items() for n in ns
              if (guards := assumes(n, box)) is not None and guards <= box[c]]
     members, readers = {c: [] for c in g.nodes}, {c: set() for c in g.nodes}
@@ -70,9 +65,18 @@ def extract(g, time_limit=None, cost=err, leq=precedes):
         members[c].append(i)
         for child in n.children:
             readers[child].add(i)
+    return nodes, members, readers
+
+
+def extract(g, time_limit=None, cost=err, leq=precedes):
+    """F_k for the largest k reached, k, and whether the time limit cut it short. A node is
+    evaluated again only when a child's frontier changed in the last round."""
+    deadline = time_limit and time.monotonic() + time_limit
+    nodes, members, readers = participants(g)
+    num = {c: any(n.op == "Num" for n in ns) for c, ns in g.nodes.items()}
 
     def share(c, node):
-        """The costs node contributes to X_{k+1}(c), from its children's F_k."""
+        """What node adds to X_{k+1}(c), or None at the deadline."""
         Xs = [g.interval[child] for child in node.children]
         consts = [num[child] for child in node.children]
         out = []

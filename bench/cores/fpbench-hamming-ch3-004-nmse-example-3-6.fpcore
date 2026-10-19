@@ -1,0 +1,7 @@
+(FPCore (x)
+  :name "NMSE example 3.6"
+  :cx-source "fpbench:hamming-ch3.fpcore:4"
+  :cx-box "pre"
+  :precision binary64
+  :pre (and (<= 0 x 2))
+  (- (/ 1 (sqrt x)) (/ 1 (sqrt (+ x 1)))))

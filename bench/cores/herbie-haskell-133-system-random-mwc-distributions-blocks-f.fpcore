@@ -1,9 +1,7 @@
-; from herbie haskell.fpcore core 133
-; box: default
 (FPCore (x)
   :name "System.Random.MWC.Distributions:blocks from mwc-random-0.13.3.2"
   :cx-source "herbie:haskell.fpcore:133"
   :cx-box "default"
-  :cx-kind "analysis"
-  :pre (<= 1.0 x 2.0)
+  :precision binary64
+  :pre (and (<= 1 x 2))
   (* (* x 0.5) x))

@@ -1,0 +1,7 @@
+(FPCore (a b c)
+  :name "Q^3 (Cubic Equation Discriminant Part)"
+  :cx-source "herbie:demo.fpcore:12"
+  :cx-box "pre"
+  :precision binary64
+  :pre (and (<= -1000000000 a 1000000000) (<= -1000000000 b 1000000000) (<= -1000000000 c 1000000000))
+  (* (* (/ (- (* 3 (* a c)) (* b b)) (* 9 (* a a))) (/ (- (* 3 (* a c)) (* b b)) (* 9 (* a a)))) (/ (- (* 3 (* a c)) (* b b)) (* 9 (* a a)))))

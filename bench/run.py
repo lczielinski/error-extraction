@@ -7,6 +7,7 @@ when that file exists; the external tools also cache each program in .cache/.
 import json
 import math
 import os
+import subprocess
 import sys
 import tempfile
 import time
@@ -19,7 +20,7 @@ import sample  # noqa: E402
 import speed  # noqa: E402
 import variants  # noqa: E402
 from costex.analysis import BOUNDS, FAIL, set_format  # noqa: E402
-from costex.egraph import build  # noqa: E402
+from costex.egraph import build, guarded  # noqa: E402
 from costex.extract import best, extract  # noqa: E402
 from costex.fpcore import expr, fpcore, parse, read, show  # noqa: E402
 from tools import daisy, fptaylor, gappa, herbie  # noqa: E402
@@ -71,25 +72,30 @@ def each(f, *args):
 
 
 def safe(f, *args):
+    start = time.time()
     try:
         return f(*args)
     except Exception as e:
-        return {"error": f"{type(e).__name__}: {e}"[:300]}
+        return {"error": f"{type(e).__name__}: {e}"[:300], "seconds": time.time() - start}
 
 
 def bound(e):
     return {m: math.inf if e is FAIL else float(b(e)) for m, b in BOUNDS.items()}
 
 
-def fielded(bounds):
-    """The metric our program is chosen by: relative error, unless no program bounds it."""
-    return "rel" if bounds["rel"] < math.inf else "abs"
-
-
-def reported(bounds):
-    """The metric bounds are compared on: relative error only where ours is below 1, since a
-    relative bound of 1 or more says nothing."""
+def metric(bounds):
+    """The metric a program is picked by and compared on, from the best bound on each: relative
+    error where it is below 1, since a relative bound of 1 or more says nothing."""
     return "rel" if bounds["rel"] < 1 else "abs"
+
+
+def ours_metric(o):
+    """metric() of our program on a core, which is the input when we found none."""
+    return metric(o["bounds"] if o.get("programs") else o.get("original") or o.get("bound") or bound(FAIL))
+
+
+def failure(e):
+    return "timeout" if isinstance(e, subprocess.TimeoutExpired) else f"{type(e).__name__}: {e}"[:300]
 
 
 def bound_input(core, body):
@@ -100,19 +106,26 @@ def bound_input(core, body):
 
 
 def ours_one(name):
+    """Our bound on the input, then our rewrite of it. When the rewrite fails, the input's bound
+    survives and stands for the input's bound in our e-graph."""
     core = load(name)
     start = time.time()
     out = {"bound": bound_input(core, core.body), "bound_s": time.time() - start}
     start = time.time()
-    g = build(core, 4, False, EGGLOG_LIMIT)
-    built = time.time()
-    F, k, cut = extract(g, EXTRACT_LIMIT)
-    chosen = {m: best(F[g.root], b) for m, b in BOUNDS.items()} if F[g.root] else {}
-    return dict(out, egglog_s=built - start, extract_s=time.time() - built, rounds=k, cut=cut,
-                nodes=sum(map(len, g.nodes.values())), classes=len(g.nodes), root_frontier=len(F[g.root]),
-                max_frontier=max(map(len, F.values())), original=bound(variants.analyze(g, core.body)),
-                programs={m: show(p) for m, (e, p) in chosen.items()},
-                bounds={m: bound(e)[m] for m, (e, p) in chosen.items()} or bound(FAIL))
+    try:
+        g = build(core, 4, False, EGGLOG_LIMIT)
+        built = time.time()
+        F, k, cut = extract(g, EXTRACT_LIMIT)
+        chosen = {m: best(F[g.root], b) for m, b in BOUNDS.items()} if F[g.root] else {}
+        return dict(out, egglog_s=built - start, extract_s=time.time() - built, rounds=k, cut=cut,
+                    nodes=sum(map(len, g.nodes.values())), classes=len(g.nodes), root_frontier=len(F[g.root]),
+                    max_frontier=max(map(len, F.values())),
+                    original=bound(variants.analyze(g, guarded(core.body, core.box, core.precision))),
+                    programs={m: show(p) for m, (e, p) in chosen.items()},
+                    bounds={m: bound(e)[m] for m, (e, p) in chosen.items()} or bound(FAIL))
+    except Exception as e:
+        return dict(out, egglog_s=time.time() - start, extract_s=0, failed=failure(e), original=out["bound"],
+                    programs={}, bounds=bound(FAIL))
 
 
 @step
@@ -172,7 +185,10 @@ def variants_one(name):
         start = time.time()
         p = chosen(variants.single(g, m, EXTRACT_LIMIT))
         out[f"{m}-only"] = {"abs": p, "rel": p, "seconds": built + time.time() - start}
-    g = build(core, 4, True, EGGLOG_LIMIT)
+    try:
+        g = build(core, 4, True, EGGLOG_LIMIT)
+    except Exception:
+        return out
     nodes = [(c, n) for c, ns in g.nodes.items() for n in ns]
     out["proposed"] = sum(n.op == "Add" and sum(g.interval[x].mag for x in n.children) > 10 * g.interval[c].mig
                           for c, n in nodes)
@@ -189,8 +205,8 @@ def alternatives():
 def candidates(name):
     """The programs of a Benchmark (2) core that are compared, by who produced them."""
     o, r, v = ours()[name], rewrites()[name], alternatives()[name]
-    m = fielded(o["bounds"])
-    out = {"ours": o["programs"].get(m)}
+    m = ours_metric(o)
+    out = {"ours": o.get("programs", {}).get(m)}
     out.update({tool: r[tool].get("program") for tool in r})
     out.update({f"size{n}": v.get(f"size{n}", {}).get(m, {}).get("program") for n in SIZES})
     return {who: p for who, p in out.items() if p}
@@ -243,12 +259,19 @@ def speeds():
 def branching_one(name, reports):
     core = load(name)
     programs = {"original": core.body}
-    for who, branch in (("ours-plain", False), ("ours", True)):
-        g = build(core, 4, branch, EGGLOG_LIMIT)
-        F, _, _ = extract(g, EXTRACT_LIMIT)
-        chosen = {m: best(F[g.root], b) for m, b in BOUNDS.items()}
-        programs[who] = chosen[fielded({m: bound(e)[m] for m, (e, p) in chosen.items()})][1]
     out = {"expected": core.props.get(":cx-expected", "").strip('"')}
+    for who, branch in (("ours-plain", False), ("ours", True)):
+        try:
+            g = build(core, 4, branch, EGGLOG_LIMIT)
+            F, _, _ = extract(g, EXTRACT_LIMIT)
+        except Exception as e:
+            out[who] = {"status": failure(e)}
+            continue
+        if not F[g.root]:
+            out[who] = {"status": "no program"}
+            continue
+        chosen = {m: best(F[g.root], b) for m, b in BOUNDS.items()}
+        programs[who] = chosen[metric({m: bound(e)[m] for m, (e, p) in chosen.items()})][1]
     for who, report in reports.items():
         if report.get("program"):
             programs[who] = program(report["program"])
@@ -270,10 +293,12 @@ def branching():
                  "daisy": daisy.rewrite(texts, d, TOOL_LIMIT, JOBS, regimes=True)}
     out = each(branching_one, names, [{who: f[t] for who, f in found.items()} for t in texts])
     for name, r in out.items():
-        whos = [w for w in r if w != "expected" and "program" in r[w]]
-        times = speed.measure(load(name), {w: program(r[w]["program"]) for w in whos}, sample.points(load(name), 1000))
-        for w in whos:
-            r[w]["ns"] = times[w]
+        whos = [w for w in r if isinstance(r[w], dict) and "program" in r[w]]
+        if whos:
+            times = speed.measure(load(name), {w: program(r[w]["program"]) for w in whos},
+                                  sample.points(load(name), 1000))
+            for w in whos:
+                r[w]["ns"] = times[w]
     return out
 
 
