@@ -1,3 +1,5 @@
+; Terms of Section 4.1, with a - b written (Add a (Neg b)). (If x k a b) is a where x > k and
+; b where x <= k, and (Ctx x k side e) marks e on one side of that split (below).
 (datatype Math
   (Num BigRat)
   (Var String)
@@ -15,6 +17,8 @@
 (let $two (bigrat (bigint 2) (bigint 1)))
 (let $half (bigrat (bigint 1) (bigint 2)))
 
+; ana: the interval analysis; opt: rewrite rules; fold: constant folding; dist: moving Ctx
+; markers to the leaves; branch: proposing splits (branch.egg)
 (ruleset ana)
 (ruleset opt)
 (ruleset fold)
@@ -26,9 +30,14 @@
 (function lo (Math) f64 :merge (max old new))
 (function hi (Math) f64 :merge (min old new))
 
-; f64 rounds each formula below, so the result moves one relative step outward, and a
-; product or quotient, which can round into the subnormals, also one subnormal step.
-; A bound that overflowed toward the inside says nothing and is dropped.
+; I_c, as (lo e) and (hi e) with binary64 endpoints. Each class's interval is the intersection
+; of its nodes' intervals, which is what the merges compute.
+;
+; f64 rounds each formula below to nearest, so a rule puts the raw bound in rlo/rhi, which moves
+; one relative step (2^-52) outward into lo/hi. That covers sums and square roots, which never
+; round in the subnormals. A product, quotient or constant puts it in rmlo/rmhi, which also
+; moves one subnormal outward. Negation and the sign rules are exact and set lo/hi directly.
+; A raw bound that overflowed toward the inside of the interval says nothing and is dropped.
 (function rlo (Math) f64 :merge (max old new))
 (function rhi (Math) f64 :merge (min old new))
 (function rmlo (Math) f64 :merge (max old new))
@@ -42,6 +51,7 @@
 (rule ((= h (rmhi e)) (> h -inf))
       ((set (hi e) (max (max (* h 0.9999999999999998) (* h 1.0000000000000002)) (+ h 4.9406564584124654e-324)))) :ruleset ana)
 
+; An empty interval means some subexpression is undefined on the box, and the input is rejected
 (rule ((= l (lo e)) (= h (hi e)) (> l h)) ((Bad e)) :ruleset ana)
 
 (rule ((= e (Num r))) ((set (rmlo e) (to-f64 r)) (set (rmhi e) (to-f64 r))) :ruleset ana)
@@ -74,10 +84,12 @@
 (rule ((= e (Div a b)) (= la (lo a)) (= hb (hi b)) (>= la 0.0) (< hb 0.0)) ((set (hi e) 0.0)) :ruleset ana)
 (rule ((= e (Div a b)) (= ha (hi a)) (= lb (lo b)) (<= ha 0.0) (> lb 0.0)) ((set (hi e) 0.0)) :ruleset ana)
 
+; The real semantics is defined on the box, so every radicand is nonnegative
 (rule ((= e (Sqrt a))) ((set (lo a) 0.0)) :ruleset ana)
 (rule ((= e (Sqrt a)) (= l (lo a)) (= h (hi a)) (>= h 0.0))
       ((set (rlo e) (sqrt (max l 0.0))) (set (rhi e) (sqrt h))) :ruleset ana)
 
+; Sign facts from the intervals, for the conditional rules
 (relation Pos (Math))
 (relation Nonneg (Math))
 (relation Nonzero (Math))
@@ -101,6 +113,8 @@
 (rewrite (Ctx x k s (Neg a)) (Neg (Ctx x k s a)) :ruleset dist)
 (rewrite (Ctx x k s (Sqrt a)) (Sqrt (Ctx x k s a)) :ruleset dist)
 
+; A marker's interval is within its child's, and narrows x to its side of k. An If's is the
+; hull of its arms'.
 (rule ((= e (Ctx x k s a)) (= l (lo a))) ((set (lo e) l)) :ruleset ana)
 (rule ((= e (Ctx x k s a)) (= h (hi a))) ((set (hi e) h)) :ruleset ana)
 (rule ((= e (Ctx x k true (Var x)))) ((set (lo e) k)) :ruleset ana)

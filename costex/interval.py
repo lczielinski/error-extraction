@@ -1,7 +1,9 @@
+"""Interval arithmetic with 200-bit endpoints, rounded outward (Appendix B)."""
+
 import gmpy2
 from gmpy2 import mpfr
 
-# so that negation and doubling, which use the default context, are exact
+# Negation and doubling use the default context, so it gets the same precision to keep them exact
 gmpy2.get_context().precision = 200
 DOWN = gmpy2.context(precision=200, round=gmpy2.RoundDown)
 UP = gmpy2.context(precision=200, round=gmpy2.RoundUp)
@@ -9,7 +11,8 @@ INF = mpfr("inf")
 
 
 class Iv:
-    """A closed interval with mpfr endpoints, rounded outward. One with an infinite endpoint is TOP."""
+    """A closed interval. One with an infinite endpoint is TOP, and any operation involving TOP
+    returns TOP, except TOP & K = K and [0, 0] * TOP = [0, 0]."""
 
     __slots__ = ("lo", "hi")
 
@@ -30,6 +33,7 @@ class Iv:
         return self.lo <= x <= self.hi
 
     def __le__(self, other):
+        """Containment."""
         return other.lo <= self.lo and self.hi <= other.hi
 
     @property
@@ -38,16 +42,20 @@ class Iv:
 
     @property
     def mag(self):
+        """The largest |x| in the interval."""
         return max(self.hi, -self.lo)
 
     @property
     def mig(self):
+        """The smallest |x| in the interval."""
         return max(self.lo, -self.hi, 0)
 
     def __and__(self, other):
+        """Intersection."""
         return Iv(max(self.lo, other.lo), min(self.hi, other.hi))
 
     def __or__(self, other):
+        """Hull."""
         return Iv(min(self.lo, other.lo), max(self.hi, other.hi))
 
     def __neg__(self):
@@ -69,12 +77,13 @@ class Iv:
                   max(UP.mul(a, c), UP.mul(a, d), UP.mul(b, c), UP.mul(b, d)))
 
     def __truediv__(self, other):
-        # K/L = K * TOP when 0 is in L, so [0,0]/L = [0,0]
+        """K/L = K * TOP when 0 is in L, so [0, 0]/L = [0, 0]."""
         if other.top or 0 in other:
             return self * TOP
         return self * Iv(DOWN.div(1, other.hi), UP.div(1, other.lo))
 
     def sqrt(self):
+        """The image of the interval's nonnegative part."""
         if self.top:
             return TOP
         return Iv(DOWN.sqrt(max(self.lo, 0)), UP.sqrt(self.hi))

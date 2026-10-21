@@ -12,12 +12,11 @@ from costex.interval import Iv
 def analyze(g, p):
     """err of the program p as a term of g, with its conditions written as guarded writes them."""
     index = {(n.op, n.payload, n.children): c for c, ns in g.nodes.items() for n in ns}
-    num = {c: any(n.op == "Num" for n in ns) for c, ns in g.nodes.items()}
 
     def node(op, payload, kids):
         c = index[(op, payload, tuple(k for k, _ in kids))]
         Xs = [g.interval[k] for k, _ in kids]
-        return c, err(op, g.interval[c], Xs, [e for _, e in kids], [num[k] for k, _ in kids])
+        return c, err(op, g.interval[c], Xs, [e for _, e in kids])
 
     def walk(p, guard):
         match p:
@@ -77,7 +76,7 @@ def greedy(metric):
     return lambda e1, e2: BOUNDS[metric](e1) <= BOUNDS[metric](e2)
 
 
-def abs_only(op, I, Xs, Ds, consts):
+def abs_only(op, I, Xs, Ds):
     """x~ - x in D, tracked alone: no S, no reduction."""
     if any(D is FAIL for D in Ds):
         return FAIL
@@ -92,7 +91,7 @@ def abs_only(op, I, Xs, Ds, consts):
         return D + Iv(-h, h)
 
     def k(i):
-        return power_of_two(Xs[i], A.Pair(ONE, Ds[i]), consts[i])
+        return power_of_two(Xs[i], A.Pair(ONE, Ds[i]))
 
     match op:
         case "Var" | "Num":
@@ -121,7 +120,7 @@ def abs_only(op, I, Xs, Ds, consts):
             return rounded(Ds[0] / (Xt.sqrt() + Xs[0].sqrt()), Xt.sqrt())
 
 
-def rel_only(op, I, Xs, Ss, consts):
+def rel_only(op, I, Xs, Ss):
     """x~/x in S, tracked alone: no D, no reduction, and nothing where a value can be 0."""
     if any(S is FAIL for S in Ss):
         return FAIL
@@ -136,7 +135,7 @@ def rel_only(op, I, Xs, Ss, consts):
         return S * (ONE + Iv(-g, g))
 
     def k(i):
-        return power_of_two(Xs[i], A.Pair(Ss[i], ZERO), consts[i])
+        return power_of_two(Xs[i], A.Pair(Ss[i], ZERO))
 
     def computed(i):
         return TOP if 0 in Xs[i] else Xs[i] * Ss[i]

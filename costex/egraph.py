@@ -1,4 +1,5 @@
-"""The e-graph: built by egglog from the rules in egg/, then read back."""
+"""The sound e-graph (Section 4.1): egglog builds it from the rules in egg/, and we read back its
+nodes and each class's interval I_c."""
 
 import os
 import subprocess
@@ -69,7 +70,8 @@ def guarded(e, box, precision):
             return (op, *(guarded(a, box, precision) for a in args))
 
 
-def program(core, iters, branch):
+def script(core, iters, branch):
+    """The egglog program that builds the e-graph of a core and prints it."""
     consts = set()
 
     def term(e, guard):
@@ -95,18 +97,21 @@ def program(core, iters, branch):
     lines.append(f"(Root {term(guarded(core.body, core.box, core.precision), {})})")
     for x, (lo, hi) in core.box.items():
         lines += [f'(set (lo (Var "{x}")) {f64(lo)})', f'(set (hi (Var "{x}")) {f64(hi)})']
-    for q in consts:
+    for q in consts:  # the tightest binary64 enclosure; constants made by folding are widened instead
         lo, hi = to_float(q, "binary64", gmpy2.RoundDown), to_float(q, "binary64", gmpy2.RoundUp)
         lines += [f"(set (lo (Num {rational(q)})) {f64(lo)})", f"(set (hi (Num {rational(q)})) {f64(hi)})"]
-    analysis = "(repeat 30 ana)" if iters else "(saturate ana)"
-    lines.append(f"(run-schedule (let-scheduler bo (back-off)) (repeat {iters} (saturate dist) (repeat 30 ana)"
-                 f" (run-with bo opt) (saturate fold) (saturate branch)) (saturate dist) {analysis})")
+    # Each iteration moves the Ctx markers to the leaves, bounds the classes, rewrites once with
+    # back-off, folds constants, and branches. With no rewriting, the bounds run to a fixed point.
+    iteration = "(saturate dist) (repeat 30 ana) (run-with bo opt) (saturate fold) (saturate branch)"
+    last = "(repeat 30 ana)" if iters else "(saturate ana)"
+    lines.append(f"(run-schedule (let-scheduler bo (back-off)) (repeat {iters} {iteration}) (saturate dist) {last})")
     lines += [f"(print-function {t} 1000000000)" for t in TABLES]
     return "\n".join(lines)
 
 
 def node(op, args, precision):
-    """A constant is a Num if the format represents it, and otherwise a Lit, which rounds."""
+    """A node from its row in egglog's dump. A constant is a Num if the format represents it, and
+    otherwise a Lit, which rounds."""
     match op:
         case "Num":
             _, (_, n), (_, d) = args[0]
@@ -123,6 +128,7 @@ def node(op, args, precision):
 
 
 def read_dump(text, precision):
+    """The e-graph from egglog's print-function output, one table per entry of TABLES."""
     tables = []
     for line in text.splitlines():
         if line == "(":
@@ -141,17 +147,20 @@ def read_dump(text, precision):
                 raise BadBox(lhs)
             else:
                 root = str(args[0])
-    interval = {c: Iv(mpfr(ends["lo"].get(c, -INF)), mpfr(ends["hi"].get(c, INF))) for c in nodes}
+    interval = {}
     for c, ns in nodes.items():
-        for q in {n.payload for n in ns if n.op in ("Num", "Lit")}:
-            interval[c] = Iv(DOWN.div(mpz(q.numerator), mpz(q.denominator)),
-                             UP.div(mpz(q.numerator), mpz(q.denominator)))
+        q = next((n.payload for n in ns if n.op in ("Num", "Lit")), None)
+        if q is None:
+            interval[c] = Iv(mpfr(ends["lo"].get(c, -INF)), mpfr(ends["hi"].get(c, INF)))
+        else:  # a class holding a constant gets the 200-bit enclosure of its exact value
+            n, d = mpz(q.numerator), mpz(q.denominator)
+            interval[c] = Iv(DOWN.div(n, d), UP.div(n, d))
     return EGraph(nodes, interval, root)
 
 
 def build(core, iters=4, branch=True, timeout=None):
     with tempfile.NamedTemporaryFile("w", suffix=".egg") as f:
-        f.write(program(core, iters, branch))
+        f.write(script(core, iters, branch))
         f.flush()
         run = subprocess.run([EGGLOG, f.name], capture_output=True, text=True, timeout=timeout)
     if run.returncode:
