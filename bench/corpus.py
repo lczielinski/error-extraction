@@ -23,8 +23,8 @@ BENCH = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(BENCH))
 
 import sample  # noqa: E402
-from costex import fpcore  # noqa: E402
-from costex.fpcore import Core, expr, number, read, show, variables  # noqa: E402
+from milo import fpcore  # noqa: E402
+from milo.fpcore import Core, expr, number, read, show, variables  # noqa: E402
 
 SUITES = {"herbie": os.path.expanduser("~/herbie/bench"), "fpbench": os.path.expanduser("~/fpbench/benchmarks")}
 FLIP = {**fpcore.FLIP, "==": "=="}

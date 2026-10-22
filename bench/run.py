@@ -19,10 +19,10 @@ sys.path.insert(0, os.path.dirname(BENCH))
 import sample  # noqa: E402
 import speed  # noqa: E402
 import variants  # noqa: E402
-from costex.analysis import BOUNDS, FAIL, set_format  # noqa: E402
-from costex.egraph import build, guarded  # noqa: E402
-from costex.extract import best, extract  # noqa: E402
-from costex.fpcore import expr, fpcore, parse, read, show  # noqa: E402
+from milo.analysis import BOUNDS, FAIL, set_format  # noqa: E402
+from milo.egraph import build, guarded  # noqa: E402
+from milo.extract import best, extract  # noqa: E402
+from milo.fpcore import expr, fpcore, parse, read, show  # noqa: E402
 from tools import daisy, fptaylor, gappa, herbie  # noqa: E402
 
 RESULTS = os.path.join(BENCH, "results")

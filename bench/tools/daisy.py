@@ -6,7 +6,7 @@ import os
 import re
 from concurrent.futures import ThreadPoolExecutor
 
-from costex.fpcore import expr, parse, read, show
+from milo.fpcore import expr, parse, read, show
 
 from .common import cached, export, run
 

@@ -1,9 +1,8 @@
-"""Interval arithmetic with 200-bit endpoints, rounded outward (Appendix B)."""
+"""Interval arithmetic with 200-bit endpoints, rounded outward."""
 
 import gmpy2
 from gmpy2 import mpfr
 
-# Negation and doubling use the default context, so it gets the same precision to keep them exact
 gmpy2.get_context().precision = 200
 DOWN = gmpy2.context(precision=200, round=gmpy2.RoundDown)
 UP = gmpy2.context(precision=200, round=gmpy2.RoundUp)

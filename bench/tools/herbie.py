@@ -5,7 +5,7 @@ import json
 import os
 import re
 
-from costex.fpcore import expr, read, show
+from milo.fpcore import expr, read, show
 
 from .common import cached, rename, run
 

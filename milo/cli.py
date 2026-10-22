@@ -7,7 +7,7 @@ from .fpcore import parse, show
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(prog="costex", description="Extract the programs with the "
+    parser = argparse.ArgumentParser(prog="milo", description="Extract the programs with the "
                                      "smallest absolute and relative error bounds.")
     parser.add_argument("file", help="an FPCore file")
     parser.add_argument("--iters", type=int, default=4, help="rewriting iterations; 0 bounds the input")

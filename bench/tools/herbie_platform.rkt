@@ -1,6 +1,6 @@
 #lang s-exp herbie/syntax/platform-language
 
-;;; The operators costex and Daisy's rewriter can express: +, -, *, /, neg and
+;;; The operators Milo and Daisy's rewriter can express: +, -, *, /, neg and
 ;;; sqrt, over binary64 and binary32.  Herbie's own platforms carry
 ;;; the whole of libm, so it would answer with fma, hypot, expm1 and friends --
 ;;; programs the other two rewriters cannot reach and this benchmark cannot

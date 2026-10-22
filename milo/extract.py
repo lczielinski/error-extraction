@@ -1,4 +1,4 @@
-"""Extraction (Section 3) on the e-graph read back from egglog. Each class's frontier F_k(c) is a
+"""Extraction on the e-graph read back from egglog. Each class's frontier F_k(c) is a
 list of (cost, program) entries whose costs are Min(X_k(c)).
 
 A cost that is FAIL is left out of every frontier: FAIL is above every pair, so it is minimal only
@@ -32,7 +32,7 @@ def program(node, programs):
             return (op, *programs)
 
 
-# Boxes (Section 6, "Boxes in extraction"). A guard (x, k, side) means x > k when side is True and
+# Input variable boxes. A guard (x, k, side) means x > k when side is True and
 # x <= k when it is False, and a box is a set of guards. Rewriting inside an arm can put a term that
 # relies on a guard into a class that is evaluated without it, so extraction only lets a node take
 # part when it relies on no guard beyond its class's box.

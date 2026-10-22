@@ -3,17 +3,6 @@ revision = 3
 requires-python = ">=3.10"
 
 [[package]]
-name = "costex"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "gmpy2" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "gmpy2", specifier = ">=2.2" }]
-
-[[package]]
 name = "gmpy2"
 version = "2.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -89,3 +78,14 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/80/49/2a388e1f8378ba3bddece602704da05a45f91c5ef763495812e43ab8f473/gmpy2-2.3.1-pp311-pypy311_pp73-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:00de568482f4876e815ec871e1fa2bc10b6b7fd162e82908282f830bebeb1329", size = 1045893, upload-time = "2026-06-24T01:22:21.931Z" },
     { url = "https://files.pythonhosted.org/packages/ee/f3/6a830923191aa3fa79f7e0088e4ad9aaa3d268bed1ad8584d64cd0951250/gmpy2-2.3.1-pp311-pypy311_pp73-win_amd64.whl", hash = "sha256:9bd518d118dbf7221eff8c108c3fe9870f940485ad6769b08e980f74247e9e14", size = 1238813, upload-time = "2026-06-24T01:22:23.551Z" },
 ]
+
+[[package]]
+name = "milo"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "gmpy2" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "gmpy2", specifier = ">=2.2" }]

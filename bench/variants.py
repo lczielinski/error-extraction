@@ -3,10 +3,10 @@
 import heapq
 import time
 
-from costex import analysis as A
-from costex.analysis import BOUNDS, FAIL, ONE, TOP, ZERO, err, mix, power_of_two, sterbenz
-from costex.extract import extract, participants, program
-from costex.interval import Iv
+from milo import analysis as A
+from milo.analysis import BOUNDS, FAIL, ONE, TOP, ZERO, err, mix, power_of_two, sterbenz
+from milo.extract import extract, participants, program
+from milo.interval import Iv
 
 
 def analyze(g, p):

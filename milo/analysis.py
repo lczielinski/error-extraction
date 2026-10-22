@@ -1,9 +1,9 @@
-"""The error analysis of Section 4 and Appendix B. For a term with real value x and computed value
-x~, err returns FAIL or a pair (S, D) with x~/x in S (when x != 0) and x~ - x in D.
+"""The error analysis. For a term with real value x and computed value x~, 
+err returns FAIL or a pair (S, D) with x~/x in S (when x != 0) and x~ - x in D.
 
 Each operation follows the same steps: compute (S^, D^), the pair for the exact result of the
 operation on the computed operands; reduce it; find I^, where that pre-rounding value lies; FAIL if
-I^ may overflow; and otherwise widen the pair by one rounding unless the operation is exact."""
+I^ may overflow; perform one rounding unless exact."""
 
 from collections import namedtuple
 
@@ -18,8 +18,8 @@ FORMATS = {"binary64": (53, -1022), "binary32": (24, -126)}
 
 
 def set_format(name):
-    """Set the rounding model for precision p and minimum exponent emin: U = u = 2^-p,
-    ETA = eta = 2^(emin - p), TINY = 2^emin, the smallest normal, OMEGA = Omega, the largest float,
+    """Set the rounding model for precision p and minimum exponent emin: U = 2^-p,
+    ETA = eta = 2^(emin - p), TINY = 2^emin, the smallest normal, OMEGA the largest float,
     and FLOATS, a context that rounds to the format."""
     global U, ETA, TINY, OMEGA, FLOATS
     p, emin = FORMATS[name]
@@ -43,7 +43,7 @@ def computed(X, e):
 
 
 def reduce(I, S, D):
-    """The reduction of Section 4.2: (S & (1 + D/I), D & I(S - 1)). The second intersection needs
+    """The reduction: (S & (1 + D/I), D & I(S - 1)). The second intersection needs
     x != 0, so it is dropped when 0 is in I."""
     return Pair(S & (ONE + D / I), D if 0 in I else D & (I * (S - ONE)))
 
@@ -70,9 +70,7 @@ def gamma_r(Ih, eta):
     """min(1, sup of e(r)/|r| over the nonzero r in I^)."""
     m = Ih.mig
     if m == 0:
-        return 1 if eta else U  # eta/|r| is unbounded near 0, while u ufp(r)/|r| < u
-    # u ufp(r)/|r| is largest at the bottom of a binade: at m if every non-float in I^ has m's
-    # ufp, and otherwise just above a power of two, where it approaches u
+        return 1 if eta else U 
     g = UP.div(U * ufp(m), m) if ufp(m) == ufp_below(Ih.mag) else U
     return min(1, max(g, UP.div(eta, m)))
 
@@ -95,8 +93,7 @@ def rounded(I, S, D, J=TOP, exact=False, scale=None, is_sum=False):
 
 
 def power_of_two(X, e):
-    """k when the operand is always 2^k or -2^k and computed exactly: its class interval X is that
-    one point and its pair is EXACT. Testing the class and the cost, not the term, keeps err local."""
+    """k when the operand is always 2^k or -2^k and computed exactly."""
     if e == EXACT and X.lo == X.hi:
         k, m = gmpy2.frexp(X.lo)
         if abs(m) == 0.5:
@@ -105,7 +102,7 @@ def power_of_two(X, e):
 
 def sterbenz(Xt, Yt):
     """Whether -y/x is in [1/2, 2] for every x in X~ and y in Y~, so that x + y is exact."""
-    a, b = (Xt, -Yt) if Xt.lo > 0 else (-Xt, Yt)  # -y/x = b/a, and a, b > 0 when x, y have opposite signs
+    a, b = (Xt, -Yt) if Xt.lo > 0 else (-Xt, Yt) 
     return a.lo > 0 and b.lo > 0 and b.hi <= 2 * a.lo and a.hi <= 2 * b.lo
 
 
