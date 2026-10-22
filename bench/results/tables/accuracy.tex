@@ -1,14 +1,16 @@
 \begin{table}[H] \centering
-\caption{Accuracy of rewritten programs on Benchmark (2), over the 82 cores where every tool returned a program equal to its input; the sound bounds cover the 78 of them where FPTaylor or Gappa bounds every program, and sampled errors the 81 where none is exact.}\label{tab:accuracy}
-\begin{tabular}{lrrrrrrr}
+\caption{Accuracy of rewritten programs on Benchmark (2), divided by the input. A tool that returns no program, or one that disagrees with its input over the reals at a sampled input, counts as returning its input (Failed). Each column covers the cores where every program's value is finite and nonzero (Cores). Speed is the geomean of run time divided by the input's, so above 1 is slower.}\label{tab:accuracy}
+\begin{tabular}{lrrrrrrrr}
 \toprule
-& \multicolumn{2}{c}{Sound Bound Ratio} & \multicolumn{2}{c}{Max Sampled Ratio} & \multicolumn{2}{c}{Avg Sampled Ratio} & \\
+& \multicolumn{2}{c}{Sound Bound Ratio} & \multicolumn{2}{c}{Max Sampled Ratio} & \multicolumn{2}{c}{Avg Sampled Ratio} & & \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
-Tool & Geomean & Median & Geomean & Median & Geomean & Median & Speed \\
+Tool & Geomean & Median & Geomean & Median & Geomean & Median & Speed & Failed \\
 \midrule
-Herbie & 0.492 & 0.958 & 0.0328 & 0.778 & 0.0774 & 0.761 & 1.11 \\
-Daisy & 0.921 & 1 & 0.544 & 1 & 0.547 & 1 & 1.08 \\
-Ours & 0.294 & 0.876 & 0.0612 & 0.833 & 0.0833 & 0.87 & 1.13 \\
+Herbie & 4.43e+03 & 0.963 & 0.028 & 0.8 & 0.057 & 0.772 & 1.07 & 0 \\
+Daisy & 0.924 & 1 & 0.574 & 1 & 0.577 & 1 & 1.07 & 12 \\
+Ours & 0.309 & 0.876 & 0.019 & 0.833 & 0.0236 & 0.87 & 1.07 & 3 \\
+\midrule
+Cores & \multicolumn{2}{c}{82} & \multicolumn{2}{c}{89} & \multicolumn{2}{c}{89} & 94 & 94 \\
 \bottomrule
 \end{tabular}
 \end{table}

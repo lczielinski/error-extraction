@@ -1,17 +1,17 @@
 \begin{table}[H] \centering
-\caption{Running times in seconds: bounding the 370 inputs of Benchmark (1), and rewriting the 94 of Benchmark (2). When our extraction times out, it still returns the frontier of the last round it finished.}\label{tab:runtime}
-\begin{tabular}{llrrrr}
+\caption{Running times in seconds: bounding the 370 inputs of Benchmark (1), and rewriting the 94 of Benchmark (2). Timeouts are runs stopped by a time limit. Our extraction stopped by its limit still returns the frontier of the last round it finished, but an e-graph not built within its limit gives no program. Failed counts other failures.}\label{tab:runtime}
+\begin{tabular}{llrrrrr}
 \toprule
-Task & Tool & Median & Geomean & Max & Timeouts \\
+Task & Tool & Median & Geomean & Max & Timeouts & Failed \\
 \midrule
-Bounding & FPTaylor & 0.105 & 0.435 & 109 & 0 \\
- & Gappa & 0.03 & 0.0434 & 1.49 & 0 \\
- & Daisy & 4.62 & 4.72 & 300 & 2 \\
- & Ours & 0.0226 & 0.0232 & 0.0509 & 0 \\
+Bounding & FPTaylor & 0.105 & 0.435 & 109 & 0 & 8 \\
+ & Gappa & 0.03 & 0.0434 & 1.49 & 0 & 0 \\
+ & Daisy & 4.62 & 4.72 & 300 & 2 & 10 \\
+ & Ours & 0.0226 & 0.0232 & 0.0509 & 0 & 0 \\
 \midrule
-Rewriting & Herbie & 2.94 & 2.72 & 8.63 & 0 \\
- & Daisy & 7.21 & 8.94 & 300 & 3 \\
- & Ours & 0.988 & 1.11 & 126 & 4 \\
+Rewriting & Herbie & 2.94 & 2.72 & 8.63 & 0 & 0 \\
+ & Daisy & 7.21 & 8.94 & 300 & 3 & 9 \\
+ & Ours & 0.988 & 1.11 & 126 & 4 & 0 \\
 \bottomrule
 \end{tabular}
 \end{table}

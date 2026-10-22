@@ -1,15 +1,15 @@
-\begin{table}[H] \centering
-\caption{Extracting by size and then bounding, divided by our extraction, on Benchmark (2), so a ratio above 1 means ours is better; bound ratios cover the 86 cores where every method's program has a bound, and sampled ratios the 86 where every program was measured.}\label{tab:extraction}
-\begin{tabular}{lrrrrrr}
+\begin{table}[H] \centering \small
+\caption{Extracting by size and then bounding, divided by our extraction, on the 94 cores of Benchmark (2), so a ratio above 1 means ours is better. A method with no program whose bound is finite counts as returning the input (Failed), and a relative bound of 1 or more counts as none. Bound ratios cover the 87 cores where every bound is finite and nonzero, and sampled ratios the 92 where every program was measured and none is exact. Time is the total over all cores.}\label{tab:extraction}
+\begin{tabular}{lrrrrrrr}
 \toprule
-& \multicolumn{2}{c}{Bound Ratio} & \multicolumn{2}{c}{Max Sampled Ratio} & & \\
+& \multicolumn{2}{c}{Bound Ratio} & \multicolumn{2}{c}{Max Sampled Ratio} & & & \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}
-Method & Geomean & Median & Geomean & Median & Ours strictly better & Time (s) \\
+Method & Geomean & Median & Geomean & Median & Ours strictly better & Failed & Time (s) \\
 \midrule
-Size, top-1 & 7.13e+03 & 1.25 & 14.3 & 1.02 & 72 & 89.3 \\
-Size, top-10 & 1.77 & 1.18 & 8.7 & 1 & 58 & 122 \\
-Size, top-100 & 1.69 & 1.04 & 6.79 & 1 & 50 & 1.64e+03 \\
-Ours & -- & -- & -- & -- & -- & 752 \\
+Size, top-1 & 1.86 & 1.24 & 12.1 & 1 & 72 & 7 & 89.3 \\
+Size, top-10 & 1.76 & 1.18 & 7.57 & 1 & 58 & 6 & 122 \\
+Size, top-100 & 1.68 & 1.02 & 6 & 1 & 50 & 4 & 1.64e+03 \\
+Ours & -- & -- & -- & -- & -- & 3 & 752 \\
 \bottomrule
 \end{tabular}
 \end{table}

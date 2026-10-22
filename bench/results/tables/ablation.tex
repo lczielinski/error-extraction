@@ -1,15 +1,15 @@
 \begin{table}[H] \centering
-\caption{Ablations on Benchmark (2), without branching. Each metric compares the variants that track it, over the 85 (absolute) and 34 (relative) cores where all of them have a bound.}\label{tab:ablation}
-\begin{tabular}{lrrrrrr}
+\caption{Ablations on the 94 cores of Benchmark (2), without branching: bounds divided by the input's. A variant with no program whose bound is finite counts as returning the input (Failed), and a relative bound of 1 or more counts as none. Each metric compares the variants that track it, over the 87 (absolute) and 33 (relative) cores where the input's bound is finite and nonzero. Time is the total over all cores.}\label{tab:ablation}
+\begin{tabular}{lrrrrrrr}
 \toprule
-& \multicolumn{2}{c}{Abs.\ Bound Ratio} & \multicolumn{2}{c}{Rel.\ Bound Ratio} & & \\
-\cmidrule(lr){2-3}\cmidrule(lr){4-5}
-Variant & Geomean & Median & Geomean & Median & No program & Time (s) \\
+& \multicolumn{3}{c}{Absolute Bound Ratio} & \multicolumn{3}{c}{Relative Bound Ratio} & \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Variant & Geomean & Median & Failed & Geomean & Median & Failed & Time (s) \\
 \midrule
-Greedy readout & 0.0406 & 0.693 & 1.9e-12 & 0.424 & 3 & 171 \\
-Absolute error only & 0.0456 & 0.693 & -- & -- & 6 & 107 \\
-Relative error only & -- & -- & 1.98e-12 & 0.487 & 22 & 105 \\
-Ours & 0.0405 & 0.693 & 1.9e-12 & 0.414 & 3 & 752 \\
+Greedy readout & 0.000734 & 0.682 & 3 & 0.231 & 0.501 & 53 & 171 \\
+Absolute error only & 0.049 & 0.71 & 6 & -- & -- & -- & 107 \\
+Relative error only & -- & -- & -- & 0.25 & 0.544 & 57 & 105 \\
+Ours & 0.000732 & 0.674 & 3 & 0.229 & 0.501 & 53 & 752 \\
 \bottomrule
 \end{tabular}
 \end{table}

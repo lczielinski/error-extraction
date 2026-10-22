@@ -211,7 +211,7 @@ def extraction():
                  "finite counts as returning the input (Failed), and a relative bound of 1 or more counts as none. "
                  f"Bound ratios cover the {n_bound} cores where every bound is finite and nonzero, and sampled "
                  f"ratios the {n_worst} where every program was measured and none is exact. Time is the total over "
-                 "all cores.", "tab:extraction", "lrrrrrrr", head, rows)
+                 "all cores.", "tab:extraction", "lrrrrrrr", head, rows, small=True)
 
 
 def runtime():

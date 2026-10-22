@@ -22,7 +22,11 @@ def main(argv=None):
     F, k, cut = extract(g, args.time_limit)
     I = g.interval[g.root]
     print(f"{core.name}: {sum(map(len, g.nodes.values()))} e-nodes, {len(g.nodes)} e-classes, "
-          f"value in {I}, frontier of {len(F[g.root])} at height {k}{' (cut short)' * cut}")
+          f"value in {I}, frontier of {len(F[g.root])}")
+    if cut:
+        print(f"no fixpoint: the time limit stopped extraction, so these are optimal only up to height {k}")
+    else:
+        print(f"fixpoint at height {k}: these are optimal among all programs in the e-graph")
     for name, bound in BOUNDS.items():
         if F[g.root]:
             e, p = best(F[g.root], bound)

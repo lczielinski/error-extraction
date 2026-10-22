@@ -1,15 +1,18 @@
 \begin{table}[H] \centering \small
-\caption{Bounds on Benchmark (1), relative to ours, over the cores where both bound the error; a core only the tool bounds counts as ours looser.}\label{tab:tightness}
-\begin{tabular}{llrrrrc}
+\caption{Bounds on the 370 inputs of Benchmark (1), divided by ours, so a ratio above 1 means ours is tighter. Bounded counts the inputs each tool bounds, where a relative bound of 1 or more counts as none. The ratios cover the inputs both bound, and tighter/tie/looser covers every input either bounds, so an input that only one bounds counts as tighter for that one.}\label{tab:tightness}
+\begin{tabular}{llrrrc}
 \toprule
-Error & Tool & Supported & Failed & Geomean Ratio & Median Ratio & Ours tighter/tie/looser \\
+Error & Tool & Bounded & Geomean Ratio & Median Ratio & Ours tighter/tie/looser \\
 \midrule
-Absolute & FPTaylor & 362 & 8 & 0.66 & 1 & 148/36/178 \\
- & Gappa & 370 & 0 & 2.49 & 1 & 96/93/181 \\
- & Daisy & 358 & 12 & 3.72 & 1.19 & 254/80/24 \\
+Absolute & Ours & 364 & -- & -- & -- \\
+ & FPTaylor & 362 & 0.661 & 1 & 150/36/178 \\
+ & Gappa & 368 & 2.48 & 1 & 96/91/181 \\
+ & Daisy & 358 & 3.71 & 1.19 & 260/80/24 \\
 \midrule
-Relative & FPTaylor & 287 & 83 & 0.863 & 0.991 & 120/1/166 \\
- & Gappa & 275 & 95 & 0.895 & 1 & 31/104/140 \\
+Relative & Ours & 265 & -- & -- & -- \\
+ & FPTaylor & 287 & 0.988 & 0.993 & 125/1/166 \\
+ & Gappa & 274 & 0.975 & 1 & 35/104/140 \\
+ & Daisy & 260 & 6.84 & 3.61 & 261/1/3 \\
 \bottomrule
 \end{tabular}
 \end{table}
