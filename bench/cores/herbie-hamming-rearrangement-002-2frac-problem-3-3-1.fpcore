@@ -1,7 +1,0 @@
-(FPCore (x)
-  :name "2frac (problem 3.3.1)"
-  :cx-source "herbie:hamming/rearrangement.fpcore:2"
-  :cx-box "default"
-  :precision binary64
-  :pre (and (<= 1 x 2))
-  (- (/ 1 (+ x 1)) (/ 1 x)))

@@ -1,7 +1,0 @@
-(FPCore (L H)
-  :name "init-p"
-  :cx-source "herbie:proj/omerc.fpcore:19"
-  :cx-box "default"
-  :precision binary64
-  :pre (and (<= 1 L 2) (<= 4 H 8))
-  (/ (- L H) (+ L H)))

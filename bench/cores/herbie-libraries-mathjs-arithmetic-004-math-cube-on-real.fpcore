@@ -1,7 +1,0 @@
-(FPCore (x)
-  :name "math.cube on real"
-  :cx-source "herbie:libraries/mathjs/arithmetic.fpcore:4"
-  :cx-box "default"
-  :precision binary64
-  :pre (and (<= 1 x 2))
-  (* (* x x) x))

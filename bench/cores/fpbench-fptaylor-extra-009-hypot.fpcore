@@ -1,7 +1,0 @@
-(FPCore (x1 x2)
-  :name "hypot"
-  :cx-source "fpbench:fptaylor-extra.fpcore:9"
-  :cx-box "pre"
-  :precision binary64
-  :pre (and (<= 1 x1 100) (<= 1 x2 100))
-  (sqrt (+ (* x1 x1) (* x2 x2))))

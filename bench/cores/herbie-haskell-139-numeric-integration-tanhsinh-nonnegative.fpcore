@@ -3,5 +3,5 @@
   :cx-source "herbie:haskell.fpcore:139"
   :cx-box "default"
   :precision binary64
-  :pre (and (<= 1 x 2))
+  :pre (and (<= 0.25 x 0.5))
   (/ x (- 1 x)))

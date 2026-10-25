@@ -1,7 +1,0 @@
-(FPCore (t)
-  :name "intro-example"
-  :cx-source "fpbench:fptaylor-tests.fpcore:0"
-  :cx-box "pre"
-  :precision binary64
-  :pre (and (<= 0 t 999))
-  (/ t (+ t 1)))

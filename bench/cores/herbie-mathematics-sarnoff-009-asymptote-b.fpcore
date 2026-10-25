@@ -3,5 +3,5 @@
   :cx-source "herbie:mathematics/sarnoff.fpcore:9"
   :cx-box "default"
   :precision binary64
-  :pre (and (<= 1 x 2))
+  :pre (and (<= 0.25 x 0.5))
   (+ (/ 1 (- x 1)) (/ x (+ x 1))))

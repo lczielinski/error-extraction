@@ -1,7 +1,0 @@
-(FPCore (x)
-  :name "sqrt D (should all be same)"
-  :cx-source "herbie:regression.fpcore:9"
-  :cx-box "default"
-  :precision binary64
-  :pre (and (<= 1 x 2))
-  (sqrt (* 2 (* x x))))

@@ -62,6 +62,23 @@ the input), `--time-limit S` (extraction time limit in seconds).
 - **Format:** `:precision binary64` (the default) or `binary32`. Inputs are floats in that format,
   and each operation is assumed to be correctly rounded to nearest.
 
+## Benchmarks
+
+- `bench/cores/`: Benchmark (1), the 388 programs of [Herbie] 2.3's `bench/` (tag `v2.3`) and
+  [FPBench]'s `benchmarks/` (commit `50b1227`) that are in Milo's language once `let`s are inlined
+  and whole powers written as products. `:cx-source "suite:file:i"` is the `i`th FPCore of that
+  file, and `:name` is its name. Its box keeps every bound of its precondition; the `i`th input
+  gets `[4^i, 2*4^i]` when the precondition does not bound it (`:cx-box "default"`), and width
+  `2*4^i` when it bounds it on one side only. When the program was undefined on that box, the first
+  box that made it defined was taken instead, trying with no range negated, then one, then two,
+  and so on, and for each, `4^i` then `4^-(i+1)`, with inputs counted from the first then the last.
+  Every program is proved defined on its box with interval arithmetic. Programs equal up to the
+  names of their variables, with the same box, appear once (FPBench's copy).
+- `bench/branching/`: Benchmark (3), 11 programs whose most accurate form branches; `:cx-source`
+  gives each one's origin and `:cx-expected` the branch point derived by hand.
+
 [egglog]: https://github.com/egraphs-good/egglog
 [uv]: https://docs.astral.sh/uv/
 [FPCore]: https://fpbench.org/spec/fpcore-2.0.html
+[Herbie]: https://github.com/herbie-fp/herbie
+[FPBench]: https://github.com/FPBench/FPBench

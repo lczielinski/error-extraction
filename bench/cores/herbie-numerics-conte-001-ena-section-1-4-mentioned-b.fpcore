@@ -1,7 +1,0 @@
-(FPCore (x)
-  :name "ENA, Section 1.4, Mentioned, B"
-  :cx-source "herbie:numerics/conte.fpcore:1"
-  :cx-box "pre"
-  :precision binary64
-  :pre (and (<= 0.99899999999999999911182158029987476766109466552734375 x 1.0010000000000001119104808822157792747020721435546875))
-  (/ 10 (- 1 (* x x))))
