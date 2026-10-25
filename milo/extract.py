@@ -1,8 +1,7 @@
 """Extraction on the e-graph read back from egglog. Each class's frontier F_k(c) is a
 list of (cost, program) entries whose costs are Min(X_k(c)).
 
-A cost that is FAIL is left out of every frontier: FAIL is above every pair, so it is minimal only
-when every program of the class may fail, and then the frontier is empty instead of {FAIL}."""
+A cost that is FAIL is left out of every frontier."""
 
 import time
 from itertools import product
@@ -18,7 +17,7 @@ def insert(front, entry, leq):
 
 
 def program(node, programs):
-    """The program of a node, from its children's. Ctx only marks a region, so it is left out."""
+    """The program of a node, from its children's."""
     match node.op:
         case "Var":
             return ("Var", node.payload)
@@ -32,14 +31,8 @@ def program(node, programs):
             return (op, *programs)
 
 
-# Input variable boxes. A guard (x, k, side) means x > k when side is True and
-# x <= k when it is False, and a box is a set of guards. Rewriting inside an arm can put a term that
-# relies on a guard into a class that is evaluated without it, so extraction only lets a node take
-# part when it relies on no guard beyond its class's box.
-
 def assumes(node, box):
-    """The guards a node relies on: its children's boxes, less the guard an If establishes for
-    each arm, plus a Ctx's own guard. None while some child's box is unknown."""
+    """The input box for a node."""
     if any(child not in box for child in node.children):
         return None
     guards = [box[child] for child in node.children]
@@ -54,8 +47,7 @@ def assumes(node, box):
 
 
 def boxes(g):
-    """The box of each class: the guards that all its nodes rely on. Starting from the leaves, a
-    class gets a box once one of its nodes has children with boxes, and the boxes only shrink."""
+    """A class's input box: the intersection of its nodes' boxes."""
     box = {}
     while True:
         new = {}
@@ -69,8 +61,7 @@ def boxes(g):
 
 
 def participants(g):
-    """The (class, node) pairs whose node relies on no guard beyond its class's box, and for each
-    class, the indices of its own pairs and of the pairs that read it."""
+    """The nodes whose input box is the same as the class's."""
     box = boxes(g)
     nodes = [(c, n) for c, ns in g.nodes.items() for n in ns
              if (guards := assumes(n, box)) is not None and guards <= box[c]]
@@ -85,7 +76,7 @@ def participants(g):
 def extract(g, time_limit=None, cost=err, leq=precedes):
     """F_k of every class for the largest k reached, k, and whether the time limit stopped it
     before F_{k+1} = F_k. Round k+1 evaluates again only the nodes with a child whose frontier
-    changed in round k; every other node adds the same costs as before."""
+    changed in round k."""
     deadline = time_limit and time.monotonic() + time_limit
     nodes, members, readers = participants(g)
 
@@ -110,9 +101,6 @@ def extract(g, time_limit=None, cost=err, leq=precedes):
                 return F, k, True
         changed = {}
         for c in {nodes[i][0] for i in todo}:
-            # F_{k+1}(c) = Min(X_{k+1}(c)). Starting from F_k(c) gives the same costs: each cost
-            # in F_k(c) is in A_{k+1}(c), so it is in F_{k+1}(c) or strictly above a cost there.
-            # It also keeps the earliest program found for each cost.
             front = list(F[c])
             for i in members[c]:
                 for entry in added[i]:

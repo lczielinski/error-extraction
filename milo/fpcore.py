@@ -1,4 +1,4 @@
-"""FPCore in and out, for the signature of Section 4 and conditionals on a variable.
+"""FPCore in and out.
 
 A program is a tuple: ("Var", name), ("Num", Fraction), ("Add", a, b), ("Mul", a, b),
 ("Div", a, b), ("Neg", a), ("Sqrt", a), or ("If", (op, name, Fraction), then, else).
@@ -79,7 +79,7 @@ def variables(e):
 
 
 def bounds(pre):
-    """(name, lo, hi) for each conjunct of :pre, widened outward to floats."""
+    """(name, lo, hi) for each bound in :pre, widened outward to floats."""
     if pre[0] == "and":
         for p in pre[1:]:
             yield from bounds(p)

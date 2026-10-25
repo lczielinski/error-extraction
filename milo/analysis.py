@@ -1,4 +1,4 @@
-"""The error analysis. For a term with real value x and computed value x~, 
+"""The error analysis. For a term with real value x and computed value x~,
 err returns FAIL or a pair (S, D) with x~/x in S (when x != 0) and x~ - x in D.
 
 Each operation follows the same steps: compute (S^, D^), the pair for the exact result of the
@@ -32,7 +32,7 @@ set_format("binary64")
 
 
 def precedes(e1, e2):
-    """The order on costs: (S, D) <= (S', D') when S is in S' and D is in D'."""
+    """The order on costs (S, D) <= (S', D')."""
     return e1.S <= e2.S and e1.D <= e2.D
 
 
@@ -49,7 +49,7 @@ def reduce(I, S, D):
 
 
 # Rounding. Every real r with |r| <= Omega has |fl(r) - r| <= e(r), where e(r) = 0 for a float and
-# max(u ufp(r), eta) otherwise, or u ufp(r) for a sum. gamma_a and gamma_r take its worst case over I^.
+# max(u * ufp(r), eta) otherwise, or u * ufp(r) for a sum. gamma_a and gamma_r take its worst case over I^.
 
 def ufp(r):
     """2^floor(log2 |r|), the value of r's leading bit."""
@@ -70,7 +70,7 @@ def gamma_r(Ih, eta):
     """min(1, sup of e(r)/|r| over the nonzero r in I^)."""
     m = Ih.mig
     if m == 0:
-        return 1 if eta else U 
+        return 1 if eta else U
     g = UP.div(U * ufp(m), m) if ufp(m) == ufp_below(Ih.mag) else U
     return min(1, max(g, UP.div(eta, m)))
 
@@ -102,7 +102,7 @@ def power_of_two(X, e):
 
 def sterbenz(Xt, Yt):
     """Whether -y/x is in [1/2, 2] for every x in X~ and y in Y~, so that x + y is exact."""
-    a, b = (Xt, -Yt) if Xt.lo > 0 else (-Xt, Yt) 
+    a, b = (Xt, -Yt) if Xt.lo > 0 else (-Xt, Yt)
     return a.lo > 0 and b.lo > 0 and b.hi <= 2 * a.lo and a.hi <= 2 * b.lo
 
 

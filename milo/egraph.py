@@ -1,5 +1,4 @@
-"""The sound e-graph (Section 4.1): egglog builds it from the rules in egg/, and we read back its
-nodes and each class's interval I_c."""
+"""Build the sound e-graph in egglog, read back its nodes and each class's interval I_c."""
 
 import os
 import subprocess
@@ -24,7 +23,7 @@ EGraph = namedtuple("EGraph", "nodes interval root")
 
 
 class BadBox(Exception):
-    """Some subexpression is undefined on the input box."""
+    """Some subexpression is undefined everywhere on the input box."""
 
 
 def context(precision, round=gmpy2.RoundToNearest):
@@ -41,7 +40,7 @@ def representable(q, precision):
 
 
 def threshold(op, c, precision):
-    """The float k with x op fl(c) iff x > k for > and >=, and iff not x > k for < and <=."""
+    """Turns x op c into x > k or not x > k."""
     k = to_float(c, precision)
     return float(context(precision).next_below(k) if op in (">=", "<") else k)
 
@@ -55,7 +54,7 @@ def rational(q):
 
 
 def guarded(e, box, precision):
-    """e with each condition as x > k for a float k, keeping only the arm of one the box decides."""
+    """Rewrites input program's ifs into x > k."""
     match e:
         case ("If", (op, x, c), a, b):
             k = threshold(op, c, precision)
@@ -63,7 +62,8 @@ def guarded(e, box, precision):
             lo, hi = box[x]
             if lo > k or hi <= k:
                 return guarded(above if lo > k else below, box, precision)
-            return ("If", (">", x, Fraction(k)), guarded(above, box, precision), guarded(below, box, precision))
+            arms = guarded(above, box, precision), guarded(below, box, precision)
+            return ("If", (">", x, Fraction(k)), *arms)
         case ("Var" | "Num", _):
             return e
         case (op, *args):
@@ -71,7 +71,7 @@ def guarded(e, box, precision):
 
 
 def script(core, iters, branch):
-    """The egglog program that builds the e-graph of a core and prints it."""
+    """Builds the egglog program."""
     consts = set()
 
     def term(e, guard):
@@ -97,14 +97,15 @@ def script(core, iters, branch):
     lines.append(f"(Root {term(guarded(core.body, core.box, core.precision), {})})")
     for x, (lo, hi) in core.box.items():
         lines += [f'(set (lo (Var "{x}")) {f64(lo)})', f'(set (hi (Var "{x}")) {f64(hi)})']
-    for q in consts:  # the tightest binary64 enclosure; constants made by folding are widened instead
+    for q in consts:
         lo, hi = to_float(q, "binary64", gmpy2.RoundDown), to_float(q, "binary64", gmpy2.RoundUp)
         lines += [f"(set (lo (Num {rational(q)})) {f64(lo)})", f"(set (hi (Num {rational(q)})) {f64(hi)})"]
-    # Each iteration moves the Ctx markers to the leaves, bounds the classes, rewrites once with
+    # Each iteration moves contexts to the leaves, bounds the classes, rewrites once with
     # back-off, folds constants, and branches. With no rewriting, the bounds run to a fixed point.
     iteration = "(saturate dist) (repeat 30 ana) (run-with bo opt) (saturate fold) (saturate branch)"
     last = "(repeat 30 ana)" if iters else "(saturate ana)"
-    lines.append(f"(run-schedule (let-scheduler bo (back-off)) (repeat {iters} {iteration}) (saturate dist) {last})")
+    lines.append(f"(run-schedule (let-scheduler bo (back-off)) (repeat {iters} {iteration})"
+                 f" (saturate dist) {last})")
     lines += [f"(print-function {t} 1000000000)" for t in TABLES]
     return "\n".join(lines)
 
@@ -122,7 +123,8 @@ def node(op, args, precision):
         case "If":
             return Node(op, (args[0].strip('"'), Fraction(float(args[1]))), (str(args[2]), str(args[3])))
         case "Ctx":
-            return Node(op, (args[0].strip('"'), Fraction(float(args[1])), args[2] == "true"), (str(args[3]),))
+            payload = (args[0].strip('"'), Fraction(float(args[1])), args[2] == "true")
+            return Node(op, payload, (str(args[3]),))
         case _:
             return Node(op, None, tuple(map(str, args)))
 
