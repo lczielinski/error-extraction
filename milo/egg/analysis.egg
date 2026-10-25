@@ -8,10 +8,10 @@
   (Sqrt Math)
   ; (If x k a b) has condition x > k
   (If String f64 Math Math)
-  ; (Ctx x k side e) is expression e restricted to x > k (true) or x <= k (false)
+  ; (Ctx x k side e) is e restricted to x > k (true) or x <= k (false)
   (Ctx String f64 bool Math))
 
-; Some constants
+; some constants
 (let $zero (bigrat (bigint 0) (bigint 1)))
 (let $one (bigrat (bigint 1) (bigint 1)))
 (let $neg-one (bigrat (bigint -1) (bigint 1)))
@@ -26,11 +26,11 @@
 
 (relation Root (Math)) ; class of the input term
 (relation Bad (Math)) ; class interval came out empty
-; Intersect class intervals
+; intersect intervals within a class
 (function lo (Math) f64 :merge (max old new)) ; lower bound on class interval
 (function hi (Math) f64 :merge (min old new)) ; upper bound on class interval
 
-; Outward rounding for class intervals
+; outward rounding for class intervals
 (function rlo (Math) f64 :merge (max old new))
 (function rhi (Math) f64 :merge (min old new))
 (function rmlo (Math) f64 :merge (max old new))
@@ -44,10 +44,10 @@
 (rule ((= h (rmhi e)) (> h -inf))
       ((set (hi e) (max (max (* h 0.9999999999999998) (* h 1.0000000000000002)) (+ h 4.9406564584124654e-324)))) :ruleset ana)
 
-; Some subexpression is undefined everywhere on the box, and the input is rejected
+; some subexpression is undefined everywhere on the box, input gets rejected
 (rule ((= l (lo e)) (= h (hi e)) (> l h)) ((Bad e)) :ruleset ana)
 
-; Interval analysis rules
+; interval analysis rules
 (rule ((= e (Num r))) ((set (rmlo e) (to-f64 r)) (set (rmhi e) (to-f64 r))) :ruleset ana)
 (rule ((= e (Num $zero))) ((set (lo e) 0.0) (set (hi e) 0.0)) :ruleset ana)
 
@@ -78,12 +78,12 @@
 (rule ((= e (Div a b)) (= la (lo a)) (= hb (hi b)) (>= la 0.0) (< hb 0.0)) ((set (hi e) 0.0)) :ruleset ana)
 (rule ((= e (Div a b)) (= ha (hi a)) (= lb (lo b)) (<= ha 0.0) (> lb 0.0)) ((set (hi e) 0.0)) :ruleset ana)
 
-; The real semantics is defined on the box, so every radicand is nonnegative
+; assume real semantics are defined, so every radicand is nonnegative
 (rule ((= e (Sqrt a))) ((set (lo a) 0.0)) :ruleset ana)
 (rule ((= e (Sqrt a)) (= l (lo a)) (= h (hi a)) (>= h 0.0))
       ((set (rlo e) (sqrt (max l 0.0))) (set (rhi e) (sqrt h))) :ruleset ana)
 
-; Sign facts from the intervals
+; sign facts from the intervals
 (relation Pos (Math))
 (relation Nonneg (Math))
 (relation Nonzero (Math))
@@ -93,7 +93,7 @@
 (rule ((= h (hi e)) (<= h 0.0)) ((Nonpos e)) :ruleset ana)
 (rule ((= h (hi e)) (< h 0.0)) ((Nonzero e)) :ruleset ana)
 
-; Move the context down to the leaves until it narrows (Var x) or disappears
+; move the context down to the leaves until it narrows (Var x) or disappears
 (relation Leaf (Math)) ; a Var or a contexted Var
 (rule ((= e (Var x))) ((Leaf e)) :ruleset dist)
 (rule ((= e (Ctx x k s (Var x)))) ((Leaf e)) :ruleset dist)

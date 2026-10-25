@@ -1,19 +1,19 @@
-; (SignOf e x): on e's region, the sign of e is that of the variable x, or its opposite.
+; (SignOf e x): sgn(e) follows sgn(x) (always same or always opposite)
 (relation SignOf (Math String))
 (rule ((= e (Var x))) ((SignOf e x)) :ruleset branch)
 (rule ((= e (Neg a)) (SignOf a x)) ((SignOf e x)) :ruleset branch)
 (rule ((= e (Mul a b)) (SignOf a x) (Nonzero b)) ((SignOf e x)) :ruleset branch)
 
-; Split a + b where a's sign follows x, b's is fixed, and the condition number
-; (|a| + |b|) / |a + b| may exceed ten. Each arm also gets b - a, for the conjugate below:
-; where a + b cancels, b - a has b's fixed sign, so the conjugate's divisor keeps it.
+; add an x > 0 branch to class of a + b where condition number bound > 10 if:
+; sgn(a) follows sgn(x), sgn(b) is fixed, and x crosses 0
 (rule ((= e (Add a b)) (SignOf a x) (Nonzero b) (= lx (lo (Var x))) (= hx (hi (Var x))) (< lx 0.0) (> hx 0.0)
        (= la (lo a)) (= ha (hi a)) (= lb (lo b)) (= hb (hi b)) (= le (lo e)) (= he (hi e))
        (> (+ (max (neg la) ha) (max (neg lb) hb)) (* 10.0 (max 0.0 (max le (neg he))))))
       ((union e (If x 0.0 (Ctx x 0.0 true e) (Ctx x 0.0 false e)))
+       ; build b - a in each arm
        (Add (Ctx x 0.0 true b) (Neg (Ctx x 0.0 true a)))
        (Add (Ctx x 0.0 false b) (Neg (Ctx x 0.0 false a)))) :ruleset branch)
 
-; a + b = (a*a - b*b) / (a - b)
+; conjugate rule: a + b = (a*a - b*b) / (a - b)
 (rule ((= e (Add a b)) (= d (Add a (Neg b))) (Nonzero d))
       ((union e (Div (Add (Mul a a) (Neg (Mul b b))) d))) :ruleset opt)
