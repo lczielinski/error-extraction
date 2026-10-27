@@ -1,17 +1,17 @@
-\begin{table}[H] \centering
-\caption{Running times in seconds: bounding the 370 inputs of Benchmark (1), and rewriting the 94 of Benchmark (2). Timeouts are runs stopped by a time limit. Our extraction stopped by its limit still returns the frontier of the last round it finished, but an e-graph not built within its limit gives no program. Failed counts other failures.}\label{tab:runtime}
-\begin{tabular}{llrrrrr}
+\begin{table}[H] \centering \small
+\caption{Running times in seconds (lower is better): bounding the 384 programs of Benchmark (1), and rewriting the 105 of Benchmark (2). Failed counts the runs that give no bound or no program, including those stopped by a time limit; our extraction stopped by its limit still returns the frontier of the last round it finished. Times leave out each tool's startup, its least time on a trivial program.}\label{tab:runtime}
+\begin{tabular}{lrrrrrr}
 \toprule
-Task & Tool & Median & Geomean & Max & Timeouts & Failed \\
+& \multicolumn{3}{c}{Bounding} & \multicolumn{3}{c}{Rewriting} \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Tool & Median & Max & Failed & Median & Max & Failed \\
 \midrule
-Bounding & FPTaylor & 0.105 & 0.435 & 109 & 0 & 8 \\
- & Gappa & 0.03 & 0.0434 & 1.49 & 0 & 0 \\
- & Daisy & 4.62 & 4.72 & 300 & 2 & 10 \\
- & Ours & 0.0226 & 0.0232 & 0.0509 & 0 & 0 \\
-\midrule
-Rewriting & Herbie & 2.94 & 2.72 & 8.63 & 0 & 0 \\
- & Daisy & 7.21 & 8.94 & 300 & 3 & 9 \\
- & Ours & 0.988 & 1.11 & 126 & 4 & 0 \\
+FPTaylor & 0.12 & 109 & 25 & -- & -- & -- \\
+Gappa & 0.02 & 1.47 & 4 & -- & -- & -- \\
+PRECiSA & 0.02 & 306 & 21 & -- & -- & -- \\
+Herbie & -- & -- & -- & 2.95 & 8.63 & 0 \\
+Daisy & 3.36 & 299 & 20 & 5.81 & 299 & 19 \\
+Ours & 0.0244 & 0.0779 & 13 & 1.36 & 128 & 7 \\
 \bottomrule
 \end{tabular}
 \end{table}

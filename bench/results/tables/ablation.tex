@@ -1,15 +1,14 @@
-\begin{table}[H] \centering
-\caption{Ablations on the 94 cores of Benchmark (2), without branching: bounds divided by the input's. A variant with no program whose bound is finite counts as returning the input (Failed), and a relative bound of 1 or more counts as none. Each metric compares the variants that track it, over the 87 (absolute) and 33 (relative) cores where the input's bound is finite and nonzero. Time is the total over all cores.}\label{tab:ablation}
-\begin{tabular}{lrrrrrrr}
+\begin{table}[H] \centering \small
+\caption{Ablations on the 105 programs of Benchmark (2), without branching, against the input. b/s/w counts the programs where the variant's bound is better than the input's by at least one bit (a factor of 2), within one bit of it, or worse by at least one bit, where a missing bound is infinite, and medians are of the variant's bound divided by the input's (lower is better). A variant with no program whose bound is finite counts as returning the input (Failed). Each error compares the variants that track it. Time is the total over all programs (lower is better).}\label{tab:ablation}
+\begin{tabular}{lcrrcrrr}
 \toprule
-& \multicolumn{3}{c}{Absolute Bound Ratio} & \multicolumn{3}{c}{Relative Bound Ratio} & \\
+& \multicolumn{3}{c}{Absolute Bound} & \multicolumn{3}{c}{Relative Bound} & \\
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}
-Variant & Geomean & Median & Failed & Geomean & Median & Failed & Time (s) \\
+Variant & b/s/w & Median & Failed & b/s/w & Median & Failed & Time (s) \\
 \midrule
-Greedy readout & 0.000734 & 0.682 & 3 & 0.231 & 0.501 & 53 & 171 \\
-Absolute error only & 0.049 & 0.71 & 6 & -- & -- & -- & 107 \\
-Relative error only & -- & -- & -- & 0.25 & 0.544 & 57 & 105 \\
-Ours & 0.000732 & 0.674 & 3 & 0.229 & 0.501 & 53 & 752 \\
+Absolute error only & 27/77/1 & 0.799 & 9 & -- & -- & -- & 151 \\
+Relative error only & -- & -- & -- & 20/85/0 & 1 & 68 & 284 \\
+Ours & 32/73/0 & 0.65 & 7 & 24/81/0 & 1 & 64 & 852 \\
 \bottomrule
 \end{tabular}
 \end{table}

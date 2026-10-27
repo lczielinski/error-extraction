@@ -1,7 +1,0 @@
-(FPCore (a b c)
-  :name "jeff quadratic root 2"
-  :cx-source "herbie:demo.fpcore:8"
-  :cx-box "default"
-  :precision binary64
-  :pre (and (<= -2 a -1) (<= 4 b 8) (<= 16 c 32))
-  (if (>= b 0) (/ (* 2 c) (- (- b) (sqrt (- (* b b) (* (* 4 a) c))))) (/ (+ (- b) (sqrt (- (* b b) (* (* 4 a) c)))) (* 2 a))))

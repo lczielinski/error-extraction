@@ -1,33 +1,13 @@
 \begin{table}[H] \centering \small
-\caption{Branching on Benchmark (3). Bound is our bound on the relative error (inf where it is 1 or more), max sampled error is in ulps, and Speed is run time divided by our unbranched program's.}\label{tab:branching}
-\begin{tabular}{llllrrr}
+\caption{Branching on the 11 programs of Benchmark (3). Branched counts the programs where the tool's program has a conditional. Max sampled error is in ulps (lower is better): b/s/w counts the programs where it is better than the input's by at least one bit (a factor of 2), within one bit of it, or worse by at least one bit, and its median is over all programs. Speed is the median of run time divided by our unbranched program's (lower is better). A tool that returns no program counts as returning its input (Failed).}\label{tab:branching}
+\begin{tabular}{lrcrrr}
 \toprule
-Benchmark & Expected & Tool & Branch points & Bound & Max sampled error & Speed \\
+Tool & Branched & b/s/w & Median max error & Speed & Failed \\
 \midrule
-guarded-hypot & (> x 0) & No branch & -- & inf & 173 & 1 \\
- &  & Ours & (> x 0) & 8.22e-15 & 3 & 1.36 \\
- &  & Daisy & none & inf & 173 & 1 \\
- &  & Herbie & none & inf & 132 & 1.54 \\
-\midrule
-guarded-negated & (> x 0) & No branch & -- & inf & 177 & 1 \\
- &  & Ours & none & inf & 177 & 1 \\
- &  & Daisy & none & inf & 177 & 1 \\
- &  & Herbie & none & inf & 177 & 1 \\
-\midrule
-guarded & (> b 0) & No branch & -- & inf & 245 & 1 \\
- &  & Ours & (> b 0) & 8.22e-15 & 2 & 1.39 \\
- &  & Daisy & fail & -- & -- & -- \\
- &  & Herbie & none & inf & 245 & 1 \\
-\midrule
-lightcone-energy & (> p 0) & No branch & -- & inf & 15645 & 1 \\
- &  & Ours & (> p 0) & 7.23e-13 & 2 & 1.36 \\
- &  & Daisy & fail & -- & -- & -- \\
- &  & Herbie & none & inf & 15645 & 0.998 \\
-\midrule
-lightcone-momentum & (> p 0) & No branch & -- & inf & 14852 & 1 \\
- &  & Ours & (> p 0) & 7.23e-13 & 2 & 1.54 \\
- &  & Daisy & fail & -- & -- & -- \\
- &  & Herbie & none & inf & 14852 & 0.994 \\
+No branch & 0 & 0/11/0 & 3685 & 1 & 1 \\
+Ours & 10 & 9/2/0 & 2 & 1.36 & 0 \\
+Herbie & 0 & 0/11/0 & 2366 & 0.996 & 1 \\
+Daisy & 0 & 0/11/0 & 2366 & 1 & 9 \\
 \bottomrule
 \end{tabular}
 \end{table}

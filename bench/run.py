@@ -20,10 +20,10 @@ import sample  # noqa: E402
 import speed  # noqa: E402
 import variants  # noqa: E402
 from milo.analysis import BOUNDS, FAIL, set_format  # noqa: E402
-from milo.egraph import build, guarded  # noqa: E402
+from milo.egraph import EGGLOG, build, guarded  # noqa: E402
 from milo.extract import best, extract  # noqa: E402
 from milo.fpcore import expr, fpcore, parse, read, show  # noqa: E402
-from tools import daisy, fptaylor, gappa, herbie  # noqa: E402
+from tools import daisy, fptaylor, gappa, herbie, precisa  # noqa: E402
 
 RESULTS = os.path.join(BENCH, "results")
 JOBS = os.cpu_count()
@@ -106,11 +106,13 @@ def bound_input(core, body):
 
 
 def ours_one(name):
-    """Our bound on the input, then our rewrite of it. When the rewrite fails, the input's bound
-    survives and stands for the input's bound in our e-graph."""
+    """Our bound on the input, then, for a rewriting core, our rewrite of it. When the rewrite fails,
+    the input's bound survives and stands for the input's bound in our e-graph."""
     core = load(name)
     start = time.time()
     out = {"bound": bound_input(core, core.body), "bound_s": time.time() - start}
+    if not name.startswith("rewriting_cores/"):
+        return out
     start = time.time()
     try:
         g = build(core, 4, False, EGGLOG_LIMIT)
@@ -130,8 +132,8 @@ def ours_one(name):
 
 @step
 def ours():
-    """Benchmark (1): our bound on each input, and our rewrite of it without branches."""
-    return each(ours_one, cores("cores"))
+    """Benchmark (1): our bound on each input, and our rewrite without branches of Benchmark (2)'s."""
+    return each(ours_one, benchmark1())
 
 
 def original_one(name):
@@ -142,12 +144,22 @@ def original_one(name):
 @step
 def originals():
     """Benchmark (1): the measured error of each input."""
-    return each(original_one, cores("cores"))
+    return each(original_one, benchmark1())
+
+
+def benchmark1():
+    """Every core: the ones we only bound, and the ones we also rewrite."""
+    return sorted(cores("bounding_cores") + cores("rewriting_cores"), key=os.path.basename)
 
 
 def benchmark2():
-    """The cores whose input loses more than HEADROOM ulps somewhere."""
-    return [n for n, r in originals().items() if (r.get("ulps") or 0) > HEADROOM]
+    """The rewriting cores: those whose input loses more than HEADROOM ulps somewhere, which the
+    measured error of the inputs confirms."""
+    names = cores("rewriting_cores")
+    lossy = {n for n, r in originals().items() if (r.get("ulps") or 0) > HEADROOM}
+    if lossy != set(names):
+        print(f"warning: rewriting_cores/ is not the cores above {HEADROOM} ulps: {sorted(lossy ^ set(names))}")
+    return names
 
 
 @step
@@ -203,12 +215,9 @@ def alternatives():
 
 
 def candidates(name):
-    """The programs of a Benchmark (2) core that are compared, by who produced them."""
-    o, r, v = ours()[name], rewrites()[name], alternatives()[name]
-    m = ours_metric(o)
-    out = {"ours": o.get("programs", {}).get(m)}
-    out.update({tool: r[tool].get("program") for tool in r})
-    out.update({f"size{n}": v.get(f"size{n}", {}).get(m, {}).get("program") for n in SIZES})
+    """The rewrites of a Benchmark (2) core by our tool, Herbie and Daisy, by who produced them."""
+    o, r = ours()[name], rewrites()[name]
+    out = {"ours": o.get("programs", {}).get(ours_metric(o)), **{tool: r[tool].get("program") for tool in r}}
     return {who: p for who, p in out.items() if p}
 
 
@@ -226,21 +235,41 @@ def measured():
 
 @step
 def bounds():
-    """Sound bounds from FPTaylor, Gappa and Daisy: on every input, and on Benchmark (2)'s rewrites."""
+    """Sound bounds from FPTaylor, Gappa, PRECiSA and Daisy: on every input, and on Benchmark (2)'s rewrites."""
     texts, b2 = {}, set(benchmark2())
-    for n in cores("cores"):
+    for n in benchmark1():
         core = load(n)
         texts[n] = {"original": fpcore(core)}
         if n in b2:
-            rewritten = {w: t for w, t in candidates(n).items() if w in ("ours", "herbie", "daisy")}
-            texts[n].update({w: fpcore(core, program(t)) for w, t in rewritten.items()})
+            texts[n].update({w: fpcore(core, program(t)) for w, t in candidates(n).items()})
     every = [t for ts in texts.values() for t in ts.values()]
     with tempfile.TemporaryDirectory() as d:
         found = {"fptaylor": fptaylor.bound(every, d, TOOL_LIMIT, JOBS),
                  "gappa": gappa.bound(every, d, TOOL_LIMIT, JOBS),
+                 "precisa": precisa.bound(every, d, TOOL_LIMIT, JOBS),
                  "daisy": daisy.bound([ts["original"] for ts in texts.values()], d, TOOL_LIMIT, JOBS)}
     return {n: {tool: {w: got[t] for w, t in ts.items() if t in got} for tool, got in found.items()}
             for n, ts in texts.items()}
+
+
+@step
+def startup():
+    """Each tool's startup, left out of its running times: for the tools launched once per program, the
+    least time of a few runs, one at a time, on a trivial program."""
+    texts = [f'(FPCore (x) :name "startup {i}" :precision binary64 :pre (<= 1 x 2) (+ x 1))' for i in range(5)]
+    with tempfile.TemporaryDirectory() as d:
+        found = {"fptaylor": fptaylor.bound(texts, d, TOOL_LIMIT, 1), "gappa": gappa.bound(texts, d, TOOL_LIMIT, 1),
+                 "precisa": precisa.bound(texts, d, TOOL_LIMIT, 1), "daisy": daisy.bound(texts, d, TOOL_LIMIT, 1),
+                 "daisy-rewrite": daisy.rewrite(texts, d, TOOL_LIMIT, 1)}
+        out = {tool: min(got[t]["seconds"] for t in texts) for tool, got in found.items()}
+        empty = os.path.join(d, "empty.egg")
+        open(empty, "w").close()
+        egglog = []
+        for _ in texts:
+            start = time.time()
+            subprocess.run([EGGLOG, empty], capture_output=True)
+            egglog.append(time.time() - start)
+    return dict(out, egglog=min(egglog))
 
 
 def speed_one(name, texts):
@@ -252,7 +281,7 @@ def speed_one(name, texts):
 @step
 def speeds():
     """Benchmark (2): run time of the input and of each rewrite, one core at a time."""
-    return {n: safe(speed_one, n, {w: t for w, t in candidates(n).items() if w in ("ours", "herbie", "daisy")})
+    return {n: safe(speed_one, n, candidates(n))
             for n in benchmark2()}
 
 
@@ -303,5 +332,5 @@ def branching():
 
 
 if __name__ == "__main__":
-    for f in (ours, originals, rewrites, alternatives, measured, bounds, speeds, branching):
+    for f in (ours, originals, rewrites, alternatives, measured, bounds, startup, speeds, branching):
         f()

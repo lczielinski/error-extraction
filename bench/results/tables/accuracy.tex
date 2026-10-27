@@ -1,16 +1,14 @@
-\begin{table}[H] \centering
-\caption{Accuracy of rewritten programs on Benchmark (2), divided by the input. A tool that returns no program, or one that disagrees with its input over the reals at a sampled input, counts as returning its input (Failed). Each column covers the cores where every program's value is finite and nonzero (Cores). Speed is the geomean of run time divided by the input's, so above 1 is slower.}\label{tab:accuracy}
-\begin{tabular}{lrrrrrrrr}
+\begin{table}[H] \centering \small
+\caption{Accuracy of the rewrites of the 105 programs of Benchmark (2), against the input. b/s/w counts the programs where the rewrite's bound or error is better than the input's by at least one bit (a factor of 2), within one bit of it, or worse by at least one bit, where a missing bound is infinite. Medians are of the rewrite's bound or error divided by the input's (lower is better). A tool that returns no program counts as returning its input (Failed). Speed is the geomean of run time divided by the input's (lower is better).}\label{tab:accuracy}
+\begin{tabular}{lcrcrcrrr}
 \toprule
-& \multicolumn{2}{c}{Sound Bound Ratio} & \multicolumn{2}{c}{Max Sampled Ratio} & \multicolumn{2}{c}{Avg Sampled Ratio} & & \\
+& \multicolumn{2}{c}{Sound Bound} & \multicolumn{2}{c}{Max Sampled Error} & \multicolumn{2}{c}{Avg Sampled Error} & & \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
-Tool & Geomean & Median & Geomean & Median & Geomean & Median & Speed & Failed \\
+Tool & b/s/w & Median & b/s/w & Median & b/s/w & Median & Speed & Failed \\
 \midrule
-Herbie & 4.43e+03 & 0.963 & 0.028 & 0.8 & 0.057 & 0.772 & 1.07 & 0 \\
-Daisy & 0.924 & 1 & 0.574 & 1 & 0.577 & 1 & 1.07 & 12 \\
-Ours & 0.309 & 0.876 & 0.019 & 0.833 & 0.0236 & 0.87 & 1.07 & 3 \\
-\midrule
-Cores & \multicolumn{2}{c}{82} & \multicolumn{2}{c}{89} & \multicolumn{2}{c}{89} & 94 & 94 \\
+Herbie & 22/74/9 & 0.998 & 38/64/3 & 0.8 & 28/77/0 & 0.768 & 1.1 & 0 \\
+Daisy & 2/103/0 & 1 & 6/99/0 & 1 & 2/103/0 & 1 & 1.06 & 19 \\
+Ours & 23/80/2 & 0.96 & 30/71/4 & 0.889 & 24/80/1 & 0.885 & 1.11 & 7 \\
 \bottomrule
 \end{tabular}
 \end{table}

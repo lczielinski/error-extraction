@@ -1,0 +1,8 @@
+{
+ "fptaylor": 0.03,
+ "gappa": 0.02,
+ "precisa": 0.25,
+ "daisy": 1.27,
+ "daisy-rewrite": 1.35,
+ "egglog": 0.01712203025817871
+}

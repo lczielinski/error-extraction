@@ -1,4 +1,42 @@
 {
+ "branching/complex-sqrt.fpcore": {
+  "expected": "(> re 0)",
+  "ours-plain": {
+   "status": "no program"
+  },
+  "herbie": {
+   "status": "crash"
+  },
+  "daisy": {
+   "status": "fail"
+  },
+  "original": {
+   "program": "(* 0.5 (sqrt (* 2 (+ (sqrt (+ (* re re) (* im im))) re))))",
+   "measured": {
+    "ulps": 5748,
+    "mean": 0.2501,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": Infinity,
+    "rel": Infinity
+   },
+   "ns": 1.06468
+  },
+  "ours": {
+   "program": "(* 0.5 (sqrt (if (> re 0) (+ (+ (sqrt (+ (* re re) (* im im))) (* re 2)) (sqrt (+ (* re re) (* im im)))) (/ (* 2 (* im im)) (* 0.5 (+ (+ (sqrt (+ (* re re) (* im im))) (* -2 re)) (sqrt (+ (* re re) (* im im)))))))))",
+   "measured": {
+    "ulps": 1,
+    "mean": 0.032,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 1.1423348046767925e-12,
+    "rel": 3.60829292826254e-13
+   },
+   "ns": 1.43215
+  }
+ },
  "branching/guarded-hypot.fpcore": {
   "expected": "(> x 0)",
   "original": {
@@ -6,80 +44,65 @@
    "measured": {
     "ulps": 173,
     "mean": 0.0184,
-    "abs": 2.802530498880184e-15,
-    "rel": 2.3719833548581624e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": Infinity
    },
-   "ns": 0.53077
+   "ns": 0.530673
   },
   "ours-plain": {
    "program": "(- (sqrt (+ (* x x) 1)) x)",
    "measured": {
     "ulps": 173,
     "mean": 0.0184,
-    "abs": 2.802530498880184e-15,
-    "rel": 2.3719833548581624e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": Infinity
    },
-   "ns": 0.530941
+   "ns": 0.529828
   },
   "ours": {
    "program": "(if (> x 0) (/ 1 (+ (sqrt (+ (* x x) 1)) x)) (+ (- x) (sqrt (+ (* x x) 1))))",
    "measured": {
     "ulps": 3,
     "mean": 0.0195,
-    "abs": 2.802530498880184e-15,
-    "rel": 2.930978153086962e-16,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": 8.215650382226242e-15
    },
-   "ns": 0.724454
+   "ns": 0.71565
   },
   "herbie": {
    "program": "(/ 1 (+ (sqrt (- (* x x) -1)) x))",
    "measured": {
     "ulps": 132,
     "mean": 0.0304,
-    "abs": 4.677744212012678e-13,
-    "rel": 2.356484288005875e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": Infinity,
     "rel": Infinity
    },
-   "ns": 0.82021
+   "ns": 0.819538
   },
   "daisy": {
    "program": "(- (sqrt (+ (* x x) 1)) x)",
    "measured": {
     "ulps": 173,
     "mean": 0.0184,
-    "abs": 2.802530498880184e-15,
-    "rel": 2.3719833548581624e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": Infinity
    },
-   "ns": 0.531166
+   "ns": 0.531321
   }
  },
  "branching/guarded-negated.fpcore": {
@@ -89,80 +112,65 @@
    "measured": {
     "ulps": 177,
     "mean": 0.0437,
-    "abs": 1.2283725185058781e-15,
-    "rel": 2.233226958308666e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": Infinity
    },
-   "ns": 0.530068
+   "ns": 0.544171
   },
   "ours-plain": {
    "program": "(- (- (sqrt (+ (* x x) 1))) x)",
    "measured": {
     "ulps": 177,
     "mean": 0.0437,
-    "abs": 1.2283725185058781e-15,
-    "rel": 2.233226958308666e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": Infinity
    },
-   "ns": 0.529843
+   "ns": 0.532792
   },
   "ours": {
    "program": "(- (- (sqrt (+ (* x x) 1))) x)",
    "measured": {
     "ulps": 177,
     "mean": 0.0437,
-    "abs": 1.2283725185058781e-15,
-    "rel": 2.233226958308666e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": Infinity
    },
-   "ns": 0.529954
+   "ns": 0.532538
   },
   "herbie": {
    "program": "(- (- (sqrt (- (* x x) -1))) x)",
    "measured": {
     "ulps": 177,
     "mean": 0.0437,
-    "abs": 1.2283725185058781e-15,
-    "rel": 2.233226958308666e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": Infinity
    },
-   "ns": 0.530166
+   "ns": 0.53234
   },
   "daisy": {
    "program": "(- (- (sqrt (+ (* x x) 1))) x)",
    "measured": {
     "ulps": 177,
     "mean": 0.0437,
-    "abs": 1.2283725185058781e-15,
-    "rel": 2.233226958308666e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": Infinity
    },
-   "ns": 0.53056
+   "ns": 0.532111
   }
  },
  "branching/guarded.fpcore": {
@@ -175,64 +183,168 @@
    "measured": {
     "ulps": 245,
     "mean": 0.03,
-    "abs": 3.063278809449539e-15,
-    "rel": 2.752600029000238e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": Infinity
    },
-   "ns": 0.530251
+   "ns": 0.533545
   },
   "ours-plain": {
    "program": "(+ (- b) (sqrt (- (* b b) d)))",
    "measured": {
     "ulps": 245,
     "mean": 0.03,
-    "abs": 3.063278809449539e-15,
-    "rel": 2.752600029000238e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": Infinity
    },
-   "ns": 0.53001
+   "ns": 0.532097
   },
   "ours": {
    "program": "(if (> b 0) (/ (- d) (+ (sqrt (- (* b b) d)) b)) (- (sqrt (- (* b b) d)) b))",
    "measured": {
     "ulps": 2,
     "mean": 0.2592,
-    "abs": 3.063278809449539e-15,
-    "rel": 2.530561023329436e-16,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 1.643130076445249e-14,
     "rel": 8.215650382226242e-15
    },
-   "ns": 0.735845
+   "ns": 0.749457
   },
   "herbie": {
    "program": "(- (sqrt (- (* b b) d)) b)",
    "measured": {
     "ulps": 245,
     "mean": 0.03,
-    "abs": 3.063278809449539e-15,
-    "rel": 2.752600029000238e-14,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 9.769962616701392e-15,
     "rel": Infinity
    },
-   "ns": 0.5299
+   "ns": 0.530263
+  }
+ },
+ "branching/householder-beta.fpcore": {
+  "expected": "(> x1 0)",
+  "daisy": {
+   "status": "fail"
+  },
+  "original": {
+   "program": "(/ (* 2 (* (- x1 (sqrt (+ (* x1 x1) (* x2 x2)))) (- x1 (sqrt (+ (* x1 x1) (* x2 x2)))))) (+ (* x2 x2) (* (- x1 (sqrt (+ (* x1 x1) (* x2 x2)))) (- x1 (sqrt (+ (* x1 x1) (* x2 x2)))))))",
+   "measured": {
+    "ulps": 29899,
+    "mean": 0.8869,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 2.4085999088962115e-05,
+    "rel": Infinity
+   },
+   "ns": 0.836057
+  },
+  "ours-plain": {
+   "program": "(+ (/ x1 (- (sqrt (+ (* x1 x1) (* x2 x2))))) 1)",
+   "measured": {
+    "ulps": 16818,
+    "mean": 0.6161,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 3.583555674426515e-11,
+    "rel": Infinity
+   },
+   "ns": 0.825866
+  },
+  "ours": {
+   "program": "(if (> x1 0) (/ (/ (* -2 (* x2 x2)) (+ (sqrt (+ (* x1 x1) (* x2 x2))) x1)) (* -2 (sqrt (+ (* x1 x1) (* x2 x2))))) (* (/ (- (sqrt (+ (* x1 x1) (* x2 x2))) x1) (- (sqrt (+ (* x1 x1) (* x2 x2))))) -1))",
+   "measured": {
+    "ulps": 4,
+    "mean": 0.0659,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 1.0807399419843147e-10,
+    "rel": 1.080857625624923e-12
+   },
+   "ns": 1.01358
+  },
+  "herbie": {
+   "program": "(* -2 (/ (* (- (sqrt (+ (* x2 x2) (* x1 x1))) x1) (- x1 (sqrt (+ (* x2 x2) (* x1 x1))))) (- (* x2 x2) (* (- (sqrt (+ (* x2 x2) (* x1 x1))) x1) (- x1 (sqrt (+ (* x2 x2) (* x1 x1))))))))",
+   "measured": {
+    "ulps": 29899,
+    "mean": 0.8869,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": Infinity,
+    "rel": Infinity
+   },
+   "ns": 0.853503
+  }
+ },
+ "branching/invariant-mass.fpcore": {
+  "expected": "(> p1 0), (> p2 0)",
+  "daisy": {
+   "status": "fail"
+  },
+  "original": {
+   "program": "(+ (+ (* m1 m1) (* m2 m2)) (+ (* (+ (sqrt (+ (* m1 m1) (* p1 p1))) p1) (- (sqrt (+ (* m2 m2) (* p2 p2))) p2)) (* (- (sqrt (+ (* m1 m1) (* p1 p1))) p1) (+ (sqrt (+ (* m2 m2) (* p2 p2))) p2))))",
+   "measured": {
+    "ulps": 3,
+    "mean": 0.2755,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 6.105334949370895e-12,
+    "rel": Infinity
+   },
+   "ns": 1.23854
+  },
+  "ours-plain": {
+   "program": "(+ (+ (+ (+ (* m1 m1) (* m2 m2)) (* (sqrt (+ (* m2 m2) (* p2 p2))) p1)) (* (sqrt (+ (* m2 m2) (* p2 p2))) (sqrt (+ (* m1 m1) (* p1 p1))))) (+ (* (- p2) p1) (+ (+ (* (sqrt (+ (* m2 m2) (* p2 p2))) (- p1)) (* (sqrt (+ (* m2 m2) (* p2 p2))) (sqrt (+ (* m1 m1) (* p1 p1))))) (* (- p2) p1))))",
+   "measured": {
+    "ulps": 2,
+    "mean": 0.3363,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 4.539788141651302e-12,
+    "rel": Infinity
+   },
+   "ns": 1.29647
+  },
+  "ours": {
+   "program": "(+ (+ (* (if (> p1 0) (+ p1 (sqrt (+ (* m1 m1) (* p1 p1)))) (/ (* m1 m1) (- (sqrt (+ (* m1 m1) (* p1 p1))) p1))) (if (> p2 0) (/ (* m2 m2) (+ p2 (sqrt (+ (* m2 m2) (* p2 p2))))) (- (sqrt (+ (* m2 m2) (* p2 p2))) p2))) (+ (* m1 m1) (* m2 m2))) (* (if (> p1 0) (/ (* m1 m1) (+ p1 (sqrt (+ (* m1 m1) (* p1 p1))))) (- (sqrt (+ (* m1 m1) (* p1 p1))) p1)) (if (> p2 0) (+ p2 (sqrt (+ (* m2 m2) (* p2 p2)))) (/ (* m2 m2) (- (sqrt (+ (* m2 m2) (* p2 p2))) p2)))))",
+   "measured": {
+    "ulps": 2,
+    "mean": 0.339,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 5.795481011959197e-10,
+    "rel": 1.4453274705711232e-12
+   },
+   "ns": 2.467
+  },
+  "herbie": {
+   "program": "(- (+ (* m2 m2) (* m1 m1)) (- (* (- p2 (sqrt (+ (* p2 p2) (* m2 m2)))) (+ (sqrt (+ (* p1 p1) (* m1 m1))) p1)) (* (+ (sqrt (+ (* p2 p2) (* m2 m2))) p2) (- (sqrt (+ (* p1 p1) (* m1 m1))) p1))))",
+   "measured": {
+    "ulps": 3,
+    "mean": 0.2755,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 6.105334949370895e-12,
+    "rel": Infinity
+   },
+   "ns": 1.24688
   }
  },
  "branching/lightcone-energy.fpcore": {
@@ -245,64 +357,52 @@
    "measured": {
     "ulps": 15645,
     "mean": 1.245,
-    "abs": 1.6962388568505887e-15,
-    "rel": 2.9013536204685362e-12,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 7.399636459127947e-14,
     "rel": Infinity
    },
-   "ns": 0.532
+   "ns": 0.536222
   },
   "ours-plain": {
    "program": "(- (sqrt (+ (* m m) (* p p))) p)",
    "measured": {
     "ulps": 15645,
     "mean": 1.245,
-    "abs": 1.6962388568505887e-15,
-    "rel": 2.9013536204685362e-12,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 7.399636459127947e-14,
     "rel": Infinity
    },
-   "ns": 0.53268
+   "ns": 0.535201
   },
   "ours": {
    "program": "(if (> p 0) (/ (* m m) (+ (sqrt (+ (* m m) (* p p))) p)) (+ (- p) (sqrt (+ (* m m) (* p p)))))",
    "measured": {
     "ulps": 2,
     "mean": 0.0545,
-    "abs": 8.824218637455347e-16,
-    "rel": 3.2283586983287927e-16,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 7.224554288149791e-12,
     "rel": 7.225331444267022e-13
    },
-   "ns": 0.725015
+   "ns": 0.726279
   },
   "herbie": {
    "program": "(- (sqrt (+ (* m m) (* p p))) p)",
    "measured": {
     "ulps": 15645,
     "mean": 1.245,
-    "abs": 1.6962388568505887e-15,
-    "rel": 2.9013536204685362e-12,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 7.399636459127947e-14,
     "rel": Infinity
    },
-   "ns": 0.531392
+   "ns": 0.535203
   }
  },
  "branching/lightcone-momentum.fpcore": {
@@ -315,64 +415,226 @@
    "measured": {
     "ulps": 14852,
     "mean": 0.8057,
-    "abs": 1.823274445907599e-15,
-    "rel": 2.3288599436884494e-12,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 7.399636459127947e-14,
     "rel": Infinity
    },
-   "ns": 0.533545
+   "ns": 0.536608
   },
   "ours-plain": {
    "program": "(+ (sqrt (+ (* m m) (* p p))) p)",
    "measured": {
     "ulps": 14852,
     "mean": 0.8057,
-    "abs": 1.823274445907599e-15,
-    "rel": 2.3288599436884494e-12,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 7.399636459127947e-14,
     "rel": Infinity
    },
-   "ns": 0.535791
+   "ns": 0.537012
   },
   "ours": {
    "program": "(if (> p 0) (+ p (sqrt (+ (* m m) (* p p)))) (/ (* m m) (- (sqrt (+ (* m m) (* p p))) p)))",
    "measured": {
     "ulps": 2,
     "mean": 0.0538,
-    "abs": 1.823274445907599e-15,
-    "rel": 2.696692123211077e-16,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 7.224554288149791e-12,
     "rel": 7.225331444267022e-13
    },
-   "ns": 0.825559
+   "ns": 0.861141
   },
   "herbie": {
    "program": "(+ (sqrt (+ (* m m) (* p p))) p)",
    "measured": {
     "ulps": 14852,
     "mean": 0.8057,
-    "abs": 1.823274445907599e-15,
-    "rel": 2.3288599436884494e-12,
-    "failed": 0,
     "equivalent": true
    },
    "bound": {
     "abs": 7.399636459127947e-14,
     "rel": Infinity
    },
-   "ns": 0.532808
+   "ns": 0.533944
+  }
+ },
+ "branching/lightcone-pair.fpcore": {
+  "expected": "(> p1 0), (> p2 0)",
+  "daisy": {
+   "status": "fail"
+  },
+  "original": {
+   "program": "(+ (- (sqrt (+ (* m1 m1) (* p1 p1))) p1) (- (sqrt (+ (* m2 m2) (* p2 p2))) p2))",
+   "measured": {
+    "ulps": 119,
+    "mean": 0.0848,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 1.5154544286135944e-13,
+    "rel": Infinity
+   },
+   "ns": 1.12082
+  },
+  "ours-plain": {
+   "program": "(+ (- (sqrt (+ (* m1 m1) (* p1 p1))) p1) (- (sqrt (+ (* m2 m2) (* p2 p2))) p2))",
+   "measured": {
+    "ulps": 119,
+    "mean": 0.0848,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 1.5154544286135944e-13,
+    "rel": Infinity
+   },
+   "ns": 1.12442
+  },
+  "ours": {
+   "program": "(+ (if (> p1 0) (/ (* m1 m1) (+ (sqrt (+ (* m1 m1) (* p1 p1))) p1)) (+ (- p1) (sqrt (+ (* m1 m1) (* p1 p1))))) (if (> p2 0) (/ (* m2 m2) (+ (sqrt (+ (* m2 m2) (* p2 p2))) p2)) (+ (- p2) (sqrt (+ (* m2 m2) (* p2 p2))))))",
+   "measured": {
+    "ulps": 2,
+    "mean": 0.1057,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 1.4452661289978383e-11,
+    "rel": 7.226441667291648e-13
+   },
+   "ns": 1.52215
+  },
+  "herbie": {
+   "program": "(- (- (sqrt (+ (* p1 p1) (* m1 m1))) p2) (- p1 (sqrt (+ (* p2 p2) (* m2 m2)))))",
+   "measured": {
+    "ulps": 183,
+    "mean": 0.0959,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 1.5154544286135944e-13,
+    "rel": Infinity
+   },
+   "ns": 1.12026
+  }
+ },
+ "branching/projectile-time.fpcore": {
+  "expected": "(> vy 0)",
+  "daisy": {
+   "status": "fail"
+  },
+  "original": {
+   "program": "(/ (+ vy (sqrt (+ (* vy vy) (* 2 (* g h))))) g)",
+   "measured": {
+    "ulps": 7549,
+    "mean": 0.3477,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 7.460490538514893e-14,
+    "rel": Infinity
+   },
+   "ns": 0.863452
+  },
+  "ours-plain": {
+   "program": "(/ (+ vy (sqrt (+ (* vy vy) (* 2 (* g h))))) g)",
+   "measured": {
+    "ulps": 7549,
+    "mean": 0.3477,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 7.460490538514893e-14,
+    "rel": Infinity
+   },
+   "ns": 0.837247
+  },
+  "ours": {
+   "program": "(if (> vy 0) (/ (+ (sqrt (+ (* vy vy) (* 2 (* g h)))) vy) g) (/ (/ (* 2 (* g h)) g) (+ (sqrt (+ (* vy vy) (* 2 (* g h)))) (* vy -1))))",
+   "measured": {
+    "ulps": 3,
+    "mean": 0.3045,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 7.186203981660629e-11,
+    "rel": 4.995624752734021e-13
+   },
+   "ns": 1.4174
+  },
+  "herbie": {
+   "program": "(/ (+ vy (sqrt (+ (* h g) (+ (* h g) (* vy vy))))) g)",
+   "measured": {
+    "ulps": 9990,
+    "mean": 0.3503,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 1.0785147931537244e-13,
+    "rel": Infinity
+   },
+   "ns": 0.827103
+  }
+ },
+ "branching/quadratic-root.fpcore": {
+  "expected": "(> b 0)",
+  "daisy": {
+   "status": "fail"
+  },
+  "original": {
+   "program": "(/ (+ (- b) (sqrt (- (* b b) (* 4 (* a c))))) (* 2 a))",
+   "measured": {
+    "ulps": 2366,
+    "mean": 0.3891,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 2.0083934515469922e-13,
+    "rel": Infinity
+   },
+   "ns": 0.837563
+  },
+  "ours-plain": {
+   "program": "(+ (/ (* b -1) (* 2 a)) (* (/ (sqrt (+ (* b b) (* -4 (* a c)))) a) 0.5))",
+   "measured": {
+    "ulps": 3685,
+    "mean": 0.5732,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 1.9906298831529892e-13,
+    "rel": Infinity
+   },
+   "ns": 1.12916
+  },
+  "ours": {
+   "program": "(if (> b 0) (/ (/ (* -4 (* a c)) (* 2 a)) (+ (sqrt (+ (* b b) (* -4 (* a c)))) b)) (/ (+ (sqrt (+ (* b b) (* -4 (* a c)))) (* b -1)) (* 2 a)))",
+   "measured": {
+    "ulps": 3,
+    "mean": 0.3089,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 1.851785391693715e-11,
+    "rel": 1.8529622280998136e-13
+   },
+   "ns": 1.40696
+  },
+  "herbie": {
+   "program": "(/ (- (sqrt (- (* b b) (* (* c a) 4))) b) (+ a a))",
+   "measured": {
+    "ulps": 2366,
+    "mean": 0.3891,
+    "equivalent": true
+   },
+   "bound": {
+    "abs": 2.1205150914482872e-13,
+    "rel": Infinity
+   },
+   "ns": 0.838961
   }
  }
 }

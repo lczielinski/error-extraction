@@ -117,13 +117,12 @@ def exact(e, env):
 
 
 def score(e, env, ref, fmt):
-    """(ulps, absolute error, relative error) at one point; a failure is the worst possible."""
+    """The error in ulps at one point: how many floats lie between the program's result and the
+    exact value rounded. An infinite or NaN result is the worst possible."""
     got = run(e, env, fmt)
     if not math.isfinite(got):
-        return 1 << (32 if fmt == "binary32" else 64), math.inf, math.inf
-    with gmpy2.context(precision=256):
-        d = abs(mpfr(got) - ref)
-        return abs(ordinal(got, fmt) - ordinal(rounded(ref, fmt), fmt)), float(d), float(d / abs(ref)) if ref else None
+        return 1 << (32 if fmt == "binary32" else 64)
+    return abs(ordinal(got, fmt) - ordinal(rounded(ref, fmt), fmt))
 
 
 def climb(f, start, box, fmt, budget):
@@ -161,8 +160,7 @@ def points(core, n=POINTS):
 
 
 def measure(core, original, programs):
-    """For each named program: worst and mean ulps, worst absolute and relative error, the
-    points where it failed (scored as the worst error), and whether it agreed with the
+    """For each named program: its worst and mean error in ulps, and whether it agreed with the
     original over the reals."""
     fmt, box, refs = core.precision, spans(core), {}
 
@@ -176,7 +174,7 @@ def measure(core, original, programs):
     found = []
     for e in programs.values():
         def ulps(env):
-            return None if ref(env) is None else score(e, env, ref(env), fmt)[0]
+            return None if ref(env) is None else score(e, env, ref(env), fmt)
         for env in sorted(uniform, key=ulps)[-CLIMBS:]:
             found += climb(ulps, env, box, fmt, STEPS // CLIMBS)
     pool = uniform + [env for env in found if ref(env) is not None]
@@ -185,9 +183,6 @@ def measure(core, original, programs):
         scores = [score(e, env, ref(env), fmt) for env in pool]
         agrees = all((v := exact(e, env)) is not None and abs(v - ref(env)) <= 1e-12 * max(abs(v), abs(ref(env)))
                      for env in uniform[:CHECKS])
-        out[name] = {"ulps": max((s[0] for s in scores), default=None),
-                     "mean": statistics.fmean(s[0] for s in scores[:len(uniform)]) if uniform else None,
-                     "abs": max((s[1] for s in scores), default=None),
-                     "rel": max((s[2] for s in scores if s[2] is not None), default=None),
-                     "failed": sum(s[1] == math.inf for s in scores), "equivalent": agrees}
+        out[name] = {"ulps": max(scores, default=None),
+                     "mean": statistics.fmean(scores[:len(uniform)]) if uniform else None, "equivalent": agrees}
     return out

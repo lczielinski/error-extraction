@@ -1,15 +1,14 @@
 \begin{table}[H] \centering \small
-\caption{Extracting by size and then bounding, divided by our extraction, on the 94 cores of Benchmark (2), so a ratio above 1 means ours is better. A method with no program whose bound is finite counts as returning the input (Failed), and a relative bound of 1 or more counts as none. Bound ratios cover the 87 cores where every bound is finite and nonzero, and sampled ratios the 92 where every program was measured and none is exact. Time is the total over all cores.}\label{tab:extraction}
-\begin{tabular}{lrrrrrrr}
+\caption{Other ways of choosing a program from the same e-graph as our extraction, on the 105 programs of Benchmark (2): extracting by size and then bounding, and greedy readout. Bounds are in the error we report for each program. b/s/w counts the programs where the method's bound is better than ours by at least one bit (a factor of 2), within one bit of it, or worse by at least one bit, and medians are of the method's bound divided by ours (lower is better). A method with no program whose bound is finite counts as returning the input (Failed). Proved optimal counts the programs where our extraction reaches its fixpoint, so that no program in the e-graph has a smaller bound. Time is the total over all programs, including building the e-graph (lower is better).}\label{tab:extraction}
+\begin{tabular}{lcrrrr}
 \toprule
-& \multicolumn{2}{c}{Bound Ratio} & \multicolumn{2}{c}{Max Sampled Ratio} & & & \\
-\cmidrule(lr){2-3}\cmidrule(lr){4-5}
-Method & Geomean & Median & Geomean & Median & Ours strictly better & Failed & Time (s) \\
+Method & b/s/w & Median & Proved optimal & Failed & Time (s) \\
 \midrule
-Size, top-1 & 1.86 & 1.24 & 12.1 & 1 & 72 & 7 & 89.3 \\
-Size, top-10 & 1.76 & 1.18 & 7.57 & 1 & 58 & 6 & 122 \\
-Size, top-100 & 1.68 & 1.02 & 6 & 1 & 50 & 4 & 1.64e+03 \\
-Ours & -- & -- & -- & -- & -- & 3 & 752 \\
+Size, top-1 & 0/82/23 & 1.25 & -- & 10 & 129 \\
+Size, top-10 & 0/87/18 & 1.18 & -- & 9 & 186 \\
+Size, top-100 & 0/89/16 & 1.07 & -- & 7 & 2463 \\
+Ours, greedy & 0/105/0 & 1 & -- & 6 & 246 \\
+Ours & -- & -- & 101 & 7 & 852 \\
 \bottomrule
 \end{tabular}
 \end{table}
