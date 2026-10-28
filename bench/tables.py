@@ -265,9 +265,6 @@ def branching():
                 speeds.append(p["ns"] / base)
         rows.append([NAMES[who], branched, compare(errors)[0], num(median([a for a, _ in errors])),
                      num(median(speeds)), failed])
-    found = [a for a in run.alternatives().values() if a.get("proposed") is not None]
-    print(f"Benchmark (2): {sum(a['proposed'] for a in found)} additions in the e-graphs may have a condition "
-          f"number above ten, and {sum(a['split'] for a in found)} conditionals were inserted.")
     return table(f"Branching on the {len(results)} programs of Benchmark (3). Branched counts the programs where the "
                  "tool's program has a conditional. Max sampled error is in ulps (lower is better): "
                  + BSW.format(who="it", base="the input's") + ", and its median is over all programs. Speed is the "

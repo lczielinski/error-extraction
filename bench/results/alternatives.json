@@ -75,9 +75,7 @@
     "rel": Infinity
    },
    "seconds": 0.3395252227783203
-  },
-  "proposed": 1565,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-daisy-006-matrixdeterminant2.fpcore": {
   "size1": {
@@ -155,9 +153,7 @@
     "rel": Infinity
    },
    "seconds": 0.298429012298584
-  },
-  "proposed": 1542,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-fptaylor-extra-001-delta4.fpcore": {
   "size1": {
@@ -237,9 +233,7 @@
     "rel": Infinity
    },
    "seconds": 1.098154067993164
-  },
-  "proposed": 2974,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-fptaylor-extra-002-delta.fpcore": {
   "size1": {
@@ -319,9 +313,7 @@
     "rel": Infinity
    },
    "seconds": 2.554626941680908
-  },
-  "proposed": 4263,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-fptaylor-extra-014-nonlin2.fpcore": {
   "size1": {
@@ -401,9 +393,7 @@
     "rel": 3.108624468950439e-16
    },
    "seconds": 0.9742300510406494
-  },
-  "proposed": 1634,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-fptaylor-real2float-008-kepler0.fpcore": {
   "size1": {
@@ -483,9 +473,7 @@
     "rel": 1.0632144078524636e-14
    },
    "seconds": 1.0391089916229248
-  },
-  "proposed": 2279,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-fptaylor-real2float-009-kepler1.fpcore": {
   "size1": {
@@ -563,9 +551,7 @@
     "rel": Infinity
    },
    "seconds": 2.344180107116699
-  },
-  "proposed": 2879,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-fptaylor-real2float-010-kepler2.fpcore": {
   "size1": {
@@ -645,9 +631,7 @@
     "rel": Infinity
    },
    "seconds": 2.5697832107543945
-  },
-  "proposed": 4000,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-fptaylor-tests-005-test04-dqmom9.fpcore": {
   "size1": {
@@ -725,9 +709,7 @@
     "rel": Infinity
    },
    "seconds": 1.4155802726745605
-  },
-  "proposed": 2637,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-fptaylor-tests-006-test05-nonlin1-r4.fpcore": {
   "size1": {
@@ -807,9 +789,7 @@
     "rel": 1.9428847420066569e-16
    },
    "seconds": 0.7894775867462158
-  },
-  "proposed": 1476,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-fptaylor-tests-008-test06-sums4-sum1.fpcore": {
   "size1": {
@@ -887,9 +867,7 @@
     "rel": Infinity
    },
    "seconds": 0.06476497650146484
-  },
-  "proposed": 801,
-  "split": 21
+  }
  },
  "rewriting_cores/fpbench-fptaylor-tests-009-test06-sums4-sum2.fpcore": {
   "size1": {
@@ -967,9 +945,7 @@
     "rel": Infinity
    },
    "seconds": 0.08289027214050293
-  },
-  "proposed": 998,
-  "split": 20
+  }
  },
  "rewriting_cores/fpbench-graphics-000-an-eigenvalue-calculation-from-tng.fpcore": {
   "size1": {
@@ -1049,9 +1025,7 @@
     "rel": Infinity
    },
    "seconds": 1.610496997833252
-  },
-  "proposed": 1583,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-hamming-ch3-000-nmse-example-3-1.fpcore": {
   "size1": {
@@ -1129,9 +1103,7 @@
     "rel": Infinity
    },
    "seconds": 0.0991520881652832
-  },
-  "proposed": 119,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-hamming-ch3-005-nmse-problem-3-3-1.fpcore": {
   "size1": {
@@ -1211,9 +1183,7 @@
     "rel": 3.108624468950439e-16
    },
    "seconds": 0.5314760208129883
-  },
-  "proposed": 326,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-hamming-ch3-012-nmse-p42-positive.fpcore": {
   "size1": {
@@ -1293,9 +1263,7 @@
     "rel": 2.1798687304937996e-15
    },
    "seconds": 0.8648083209991455
-  },
-  "proposed": 769,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-hamming-ch3-014-nmse-problem-3-2-1-positive.fpcore": {
   "size1": {
@@ -1375,9 +1343,7 @@
     "rel": Infinity
    },
    "seconds": 0.25503015518188477
-  },
-  "proposed": 157,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-rosa-002-doppler3.fpcore": {
   "size1": {
@@ -1455,9 +1421,7 @@
     "rel": Infinity
    },
    "seconds": 1.2940759658813477
-  },
-  "proposed": 7260,
-  "split": 7
+  }
  },
  "rewriting_cores/fpbench-rosa-003-rigidbody1.fpcore": {
   "size1": {
@@ -1535,9 +1499,7 @@
     "rel": Infinity
    },
    "seconds": 0.1260361671447754
-  },
-  "proposed": 818,
-  "split": 2
+  }
  },
  "rewriting_cores/fpbench-rosa-004-rigidbody2.fpcore": {
   "size1": {
@@ -1615,9 +1577,7 @@
     "rel": Infinity
    },
    "seconds": 0.3123509883880615
-  },
-  "proposed": 1645,
-  "split": 3
+  }
  },
  "rewriting_cores/fpbench-rosa-005-jetengine.fpcore": {
   "size1": {
@@ -1695,9 +1655,7 @@
     "rel": Infinity
    },
    "seconds": 2.172173023223877
-  },
-  "proposed": 2913,
-  "split": 12
+  }
  },
  "rewriting_cores/fpbench-rosa-007-turbine2.fpcore": {
   "size1": {
@@ -1777,9 +1735,7 @@
     "rel": Infinity
    },
    "seconds": 3.1212565898895264
-  },
-  "proposed": 3214,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-rosa-019-triangle.fpcore": {
   "size1": {
@@ -1859,9 +1815,7 @@
     "rel": 4.32913551205645e-16
    },
    "seconds": 1.6475462913513184
-  },
-  "proposed": 587,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-rump-000-rump-s-example-with-pow.fpcore": {
   "size1": {
@@ -1941,9 +1895,7 @@
     "rel": 8.724386008660707e-15
    },
    "seconds": 2.7849233150482178
-  },
-  "proposed": 3562,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-rump-001-rump-s-example-from-c-program.fpcore": {
   "size1": {
@@ -2023,9 +1975,7 @@
     "rel": 8.724386008660706e-15
    },
    "seconds": 2.7897820472717285
-  },
-  "proposed": 3809,
-  "split": 0
+  }
  },
  "rewriting_cores/fpbench-rump-002-rump-s-example-revisited-for-floating-po.fpcore": {
   "size1": {
@@ -2105,9 +2055,7 @@
     "rel": 1.2201995092248792e-15
    },
    "seconds": 2.8386709690093994
-  },
-  "proposed": 3843,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-demo-006-sqrt-sqr.fpcore": {
   "size1": {
@@ -2187,9 +2135,7 @@
     "rel": 0.0
    },
    "seconds": 0.6689329147338867
-  },
-  "proposed": 208,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-demo-010-x-1-to-x-20.fpcore": {
   "size1": {
@@ -2267,9 +2213,7 @@
     "rel": Infinity
    },
    "seconds": 7.6369030475616455
-  },
-  "proposed": 6443,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-hamming-rearrangement-000-2sqrt-example-3-1.fpcore": {
   "size1": {
@@ -2347,9 +2291,7 @@
     "rel": 3.885780586188049e-16
    },
    "seconds": 0.13667798042297363
-  },
-  "proposed": 285,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-hamming-rearrangement-001-2isqrt-example-3-6.fpcore": {
   "size1": {
@@ -2427,9 +2369,7 @@
     "rel": 1.0000000000000016
    },
    "seconds": 0.7966389656066895
-  },
-  "proposed": 1440,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-004-optimisation-circlepacking-place-from-ci.fpcore": {
   "size1": {
@@ -2509,9 +2449,7 @@
     "rel": Infinity
    },
    "seconds": 0.9101002216339111
-  },
-  "proposed": 712,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-017-data-colour-rgbspace-hsl-hsl-from-colour.fpcore": {
   "size1": {
@@ -2591,9 +2529,7 @@
     "rel": Infinity
    },
    "seconds": 0.14915871620178223
-  },
-  "proposed": 127,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-046-diagrams-solve-polynomial-cubform-from-d.fpcore": {
   "size1": {
@@ -2673,9 +2609,7 @@
     "rel": Infinity
    },
    "seconds": 0.13063883781433105
-  },
-  "proposed": 28,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-054-diagrams-solve-polynomial-cubform-from-d.fpcore": {
   "size1": {
@@ -2755,9 +2689,7 @@
     "rel": 3.338207956456443e-16
    },
    "seconds": 1.0904364585876465
-  },
-  "proposed": 673,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-056-diagrams-solve-polynomial-quartform-from.fpcore": {
   "size1": {
@@ -2837,9 +2769,7 @@
     "rel": Infinity
    },
    "seconds": 0.4383118152618408
-  },
-  "proposed": 102,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-057-diagrams-solve-polynomial-quartform-from.fpcore": {
   "size1": {
@@ -2919,9 +2849,7 @@
     "rel": Infinity
    },
    "seconds": 1.2217447757720947
-  },
-  "proposed": 520,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-059-diagrams-solve-polynomial-quartform-from.fpcore": {
   "size1": {
@@ -3001,9 +2929,7 @@
     "rel": Infinity
    },
    "seconds": 1.0871424674987793
-  },
-  "proposed": 670,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-071-main-bigenough3-from-c.fpcore": {
   "size1": {
@@ -3083,9 +3009,7 @@
     "rel": 3.03791831778458e-16
    },
    "seconds": 0.1653120517730713
-  },
-  "proposed": 78,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-086-linear-matrix-det44-from-linear-1-19-1-3.fpcore": {
   "size1": {
@@ -3163,9 +3087,7 @@
     "rel": Infinity
    },
    "seconds": 3.2684359550476074
-  },
-  "proposed": 5374,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-100-main-z-from.fpcore": {
   "size1": {
@@ -3245,9 +3167,7 @@
     "rel": 4.898264829691456e-16
    },
    "seconds": 2.1459591388702393
-  },
-  "proposed": 855,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-111-diagrams-tangent-catparam-from-diagrams-.fpcore": {
   "size1": {
@@ -3327,9 +3247,7 @@
     "rel": Infinity
    },
    "seconds": 0.4727442264556885
-  },
-  "proposed": 664,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-121-graphics-rendering-chart-axis-types-invl.fpcore": {
   "size1": {
@@ -3409,9 +3327,7 @@
     "rel": Infinity
    },
    "seconds": 2.0835070610046387
-  },
-  "proposed": 1943,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-134-system-random-mwc-distributions-standard.fpcore": {
   "size1": {
@@ -3491,9 +3407,7 @@
     "rel": Infinity
    },
    "seconds": 0.10209798812866211
-  },
-  "proposed": 40,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-148-data-number-erf-cinvnormcdf-from-erf-2-0.fpcore": {
   "size1": {
@@ -3573,9 +3487,7 @@
     "rel": Infinity
    },
    "seconds": 0.7747790813446045
-  },
-  "proposed": 329,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-161-development-shake-progress-decay-from-sh.fpcore": {
   "size1": {
@@ -3655,9 +3567,7 @@
     "rel": 4.591444094310037e-16
    },
    "seconds": 1.6579108238220215
-  },
-  "proposed": 980,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-163-diagrams-backend-rasterific-crender-from.fpcore": {
   "size1": {
@@ -3737,9 +3647,7 @@
     "rel": Infinity
    },
    "seconds": 0.17110729217529297
-  },
-  "proposed": 193,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-166-graphics-rendering-chart-axis-types-hbuf.fpcore": {
   "size1": {
@@ -3819,9 +3727,7 @@
     "rel": Infinity
    },
    "seconds": 0.6406650543212891
-  },
-  "proposed": 393,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-167-graphics-rendering-chart-axis-types-linm.fpcore": {
   "size1": {
@@ -3901,9 +3807,7 @@
     "rel": Infinity
    },
    "seconds": 1.9770381450653076
-  },
-  "proposed": 2356,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-176-ai-clustering-hierarchical-internal-ward.fpcore": {
   "size1": {
@@ -3983,9 +3887,7 @@
     "rel": 2.8965178741449154e-15
    },
    "seconds": 2.295560121536255
-  },
-  "proposed": 1550,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-178-numeric-specfunctions-inverfc-from-math-.fpcore": {
   "size1": {
@@ -4065,9 +3967,7 @@
     "rel": Infinity
    },
    "seconds": 2.39241099357605
-  },
-  "proposed": 826,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-181-numeric-specfunctions-loggamma-from-math.fpcore": {
   "size1": {
@@ -4147,9 +4047,7 @@
     "rel": Infinity
    },
    "seconds": 2.0165841579437256
-  },
-  "proposed": 1019,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-182-numeric-specfunctions-loggamma-from-math.fpcore": {
   "size1": {
@@ -4229,9 +4127,7 @@
     "rel": 1.5366798004146e-15
    },
    "seconds": 5.541049957275391
-  },
-  "proposed": 2622,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-194-numeric-specfunctions-invincompletegamma.fpcore": {
   "size1": {
@@ -4311,9 +4207,7 @@
     "rel": 1.795389234108166e-14
    },
    "seconds": 0.29622411727905273
-  },
-  "proposed": 246,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-196-numeric-specfunctions-invincompletegamma.fpcore": {
   "size1": {
@@ -4393,9 +4287,7 @@
     "rel": Infinity
    },
    "seconds": 2.2774112224578857
-  },
-  "proposed": 770,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-197-numeric-specfunctions-invincompletegamma.fpcore": {
   "size1": {
@@ -4475,9 +4367,7 @@
     "rel": Infinity
    },
    "seconds": 1.6634840965270996
-  },
-  "proposed": 1099,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-198-numeric-specfunctions-incompletebetaappr.fpcore": {
   "size1": {
@@ -4557,9 +4447,7 @@
     "rel": 5.807901400930242e-16
    },
    "seconds": 2.1276450157165527
-  },
-  "proposed": 481,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-203-numeric-specfunctions-invincompletebetaw.fpcore": {
   "size1": {
@@ -4639,9 +4527,7 @@
     "rel": Infinity
    },
    "seconds": 2.1273820400238037
-  },
-  "proposed": 646,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-207-numeric-specfunctions-invincompletebetaw.fpcore": {
   "size1": {
@@ -4721,9 +4607,7 @@
     "rel": Infinity
    },
    "seconds": 0.3932340145111084
-  },
-  "proposed": 244,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-210-numeric-specfunctions-loggamma-from-math.fpcore": {
   "size1": {
@@ -4803,9 +4687,7 @@
     "rel": 9.046260675714595e-16
    },
    "seconds": 2.0576698780059814
-  },
-  "proposed": 1146,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-235-data-random-dice-roll-from-dice-0-1.fpcore": {
   "size1": {
@@ -4885,9 +4767,7 @@
     "rel": Infinity
    },
    "seconds": 0.20966196060180664
-  },
-  "proposed": 283,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-238-hakyll-web-tags-rendertagcloud-from-haky.fpcore": {
   "size1": {
@@ -4967,9 +4847,7 @@
     "rel": 6.730934329166418e-16
    },
    "seconds": 1.7789323329925537
-  },
-  "proposed": 1708,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-241-numeric-signal-interpolate-from-hsignal-.fpcore": {
   "size1": {
@@ -5049,9 +4927,7 @@
     "rel": Infinity
    },
    "seconds": 1.0749080181121826
-  },
-  "proposed": 880,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-257-graphics-rendering-plot-render-plot-axis.fpcore": {
   "size1": {
@@ -5131,9 +5007,7 @@
     "rel": Infinity
    },
    "seconds": 1.0549991130828857
-  },
-  "proposed": 1355,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-258-graphics-rendering-plot-render-plot-axis.fpcore": {
   "size1": {
@@ -5213,9 +5087,7 @@
     "rel": Infinity
    },
    "seconds": 1.4208829402923584
-  },
-  "proposed": 1243,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-haskell-261-graphics-rendering-plot-render-plot-axis.fpcore": {
   "size1": {
@@ -5295,9 +5167,7 @@
     "rel": Infinity
    },
    "seconds": 1.3702211380004883
-  },
-  "proposed": 1704,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-libraries-basilisk-018-drag-accel-mag.fpcore": {
   "size1": {
@@ -5377,9 +5247,7 @@
     "rel": 6.661338147750941e-16
    },
    "seconds": 1.357210397720337
-  },
-  "proposed": 91,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-libraries-coolprop-007-b-delta2.fpcore": {
   "size1": {
@@ -5459,9 +5327,7 @@
     "rel": 5.484418489250674e-16
    },
    "seconds": 0.816551685333252
-  },
-  "proposed": 1417,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-libraries-coolprop-008-b-tau3.fpcore": {
   "size1": {
@@ -5541,9 +5407,7 @@
     "rel": 9.755383795139895e-16
    },
    "seconds": 2.6501569747924805
-  },
-  "proposed": 2655,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-libraries-coolprop-013-d2psi-ddelta2-over-psi.fpcore": {
   "size1": {
@@ -5621,9 +5485,7 @@
     "rel": Infinity
    },
    "seconds": 1.2627739906311035
-  },
-  "proposed": 1676,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-libraries-fast-math-007-fastmath-test5.fpcore": {
   "size1": {
@@ -5703,9 +5565,7 @@
     "rel": 9.992007221626413e-16
    },
    "seconds": 0.0673367977142334
-  },
-  "proposed": 0,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-libraries-jmatjs-004-jmat-real-dawson.fpcore": {
   "size1": {
@@ -5785,9 +5645,7 @@
     "rel": 2.084686039919277e-15
    },
    "seconds": 10.479052066802979
-  },
-  "proposed": 4008,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-libraries-octave-collocwt-000-octave-3-8-jcobi-1.fpcore": {
   "size1": {
@@ -5863,9 +5721,7 @@
     "rel": Infinity
    },
    "seconds": 0.6389670372009277
-  },
-  "proposed": 2822,
-  "split": 58
+  }
  },
  "rewriting_cores/herbie-libraries-octave-collocwt-001-octave-3-8-jcobi-2.fpcore": {
   "size1": {
@@ -5939,9 +5795,7 @@
     "rel": Infinity
    },
    "seconds": 1.0876941680908203
-  },
-  "proposed": 989,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-libraries-octave-collocwt-003-octave-3-8-jcobi-4.fpcore": {
   "size1": {
@@ -6021,9 +5875,7 @@
     "rel": Infinity
    },
    "seconds": 4.01272177696228
-  },
-  "proposed": 4029,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-mathematics-beta-distribution-000-a-parameter-of-renormalized-beta-distrib.fpcore": {
   "size1": {
@@ -6097,9 +5949,7 @@
     "rel": Infinity
    },
    "seconds": 0.5497457981109619
-  },
-  "proposed": 1282,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-mathematics-beta-distribution-001-b-parameter-of-renormalized-beta-distrib.fpcore": {
   "size1": {
@@ -6173,9 +6023,7 @@
     "rel": Infinity
    },
    "seconds": 0.8154470920562744
-  },
-  "proposed": 1784,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-mathematics-excel-000-x0-1-x1-x0.fpcore": {
   "size1": {
@@ -6255,9 +6103,7 @@
     "rel": 2.786078321832928e-16
    },
    "seconds": 0.8410491943359375
-  },
-  "proposed": 354,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-mathematics-gui-010-abcf-ab-angle-b.fpcore": {
   "size1": {
@@ -6337,9 +6183,7 @@
     "rel": 1.0204335149358213e-15
    },
    "seconds": 2.130808115005493
-  },
-  "proposed": 2481,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-mathematics-sarnoff-000-quadratic-roots-full-range.fpcore": {
   "size1": {
@@ -6419,9 +6263,7 @@
     "rel": 2.1798687304937996e-15
    },
    "seconds": 0.9154999256134033
-  },
-  "proposed": 769,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-mathematics-sarnoff-004-cubic-critical.fpcore": {
   "size1": {
@@ -6501,9 +6343,7 @@
     "rel": Infinity
    },
    "seconds": 0.9059140682220459
-  },
-  "proposed": 488,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-numerics-conte-004-ena-section-1-4-exercise-4b-n-2.fpcore": {
   "size1": {
@@ -6581,9 +6421,7 @@
     "rel": Infinity
    },
    "seconds": 0.24561381340026855
-  },
-  "proposed": 1299,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-numerics-conte-005-ena-section-1-4-exercise-4b-n-5.fpcore": {
   "size1": {
@@ -6661,9 +6499,7 @@
     "rel": Infinity
    },
    "seconds": 0.4192662239074707
-  },
-  "proposed": 1579,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-numerics-every-cs-008-complex-division-imag-part.fpcore": {
   "size1": {
@@ -6743,9 +6579,7 @@
     "rel": Infinity
    },
    "seconds": 0.8571603298187256
-  },
-  "proposed": 541,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-numerics-fma-000-fma-test1.fpcore": {
   "size1": {
@@ -6825,9 +6659,7 @@
     "rel": 2.2892064756463735e-16
    },
    "seconds": 1.7281692028045654
-  },
-  "proposed": 679,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-numerics-fma-001-fma-test2.fpcore": {
   "size1": {
@@ -6901,9 +6733,7 @@
     "rel": Infinity
    },
    "seconds": 0.10725855827331543
-  },
-  "proposed": 46,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-numerics-great-debate-002-kahan-p9-example.fpcore": {
   "size1": {
@@ -6977,9 +6807,7 @@
     "rel": Infinity
    },
    "seconds": 0.21255111694335938
-  },
-  "proposed": 703,
-  "split": 4
+  }
  },
  "rewriting_cores/herbie-numerics-martel-006-expression-p6.fpcore": {
   "size1": {
@@ -7059,9 +6887,7 @@
     "rel": Infinity
    },
    "seconds": 0.3554267883300781
-  },
-  "proposed": 628,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-numerics-rosa-000-rosa-s-dopplerbench.fpcore": {
   "size1": {
@@ -7141,9 +6967,7 @@
     "rel": 2.982401539287683e-16
    },
    "seconds": 0.911344051361084
-  },
-  "proposed": 218,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-numerics-rosa-002-rosa-s-floatvsdoublebenchmark.fpcore": {
   "size1": {
@@ -7223,9 +7047,7 @@
     "rel": 4.890925308944367e-15
    },
    "seconds": 3.299360990524292
-  },
-  "proposed": 2487,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-numerics-rump-000-rump-s-expression-from-stadtherr-s-award.fpcore": {
   "size1": {
@@ -7305,9 +7127,7 @@
     "rel": Infinity
    },
    "seconds": 4.242117166519165
-  },
-  "proposed": 806,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-numerics-rump-001-from-rump-in-a-1983-paper.fpcore": {
   "size1": {
@@ -7387,9 +7207,7 @@
     "rel": Infinity
    },
    "seconds": 0.42865705490112305
-  },
-  "proposed": 204,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-numerics-rump-002-from-rump-in-a-1983-paper-rewritten.fpcore": {
   "size1": {
@@ -7469,9 +7287,7 @@
     "rel": Infinity
    },
    "seconds": 0.6581852436065674
-  },
-  "proposed": 98,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-physics-kalman-001-kalman-filter-per-x.fpcore": {
   "size1": {
@@ -7549,9 +7365,7 @@
     "rel": Infinity
    },
    "seconds": 2.9020566940307617
-  },
-  "proposed": 4748,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-physics-kalman-002-kalman-filter-per-p.fpcore": {
   "size1": {
@@ -7629,9 +7443,7 @@
     "rel": Infinity
    },
    "seconds": 1.9688239097595215
-  },
-  "proposed": 1315,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-physics-superfluidity-breakdown-003-toniolo-and-linder-equation-7.fpcore": {
   "size1": {
@@ -7711,9 +7523,7 @@
     "rel": 2.104047911656933e-15
    },
    "seconds": 2.1380112171173096
-  },
-  "proposed": 859,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-physics-superfluidity-breakdown-006-toniolo-and-linder-equation-13.fpcore": {
   "size1": {
@@ -7793,9 +7603,7 @@
     "rel": 3.938923566221411e-15
    },
    "seconds": 14.598627090454102
-  },
-  "proposed": 4129,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-physics-tea-whistle-003-henrywood-and-agarwal-equation-13.fpcore": {
   "size1": {
@@ -7873,9 +7681,7 @@
     "rel": Infinity
    },
    "seconds": 121.62289500236511
-  },
-  "proposed": 2109,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-physics-universal-linear-optics-000-bouland-and-aaronson-equation-24.fpcore": {
   "size1": {
@@ -7955,9 +7761,7 @@
     "rel": 6.669346518428662e-16
    },
    "seconds": 1.8855650424957275
-  },
-  "proposed": 2256,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-physics-universal-linear-optics-001-bouland-and-aaronson-equation-25.fpcore": {
   "size1": {
@@ -8037,9 +7841,7 @@
     "rel": Infinity
    },
    "seconds": 1.2794098854064941
-  },
-  "proposed": 2061,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-proj-omerc-001-forward-half-diff.fpcore": {
   "size1": {
@@ -8119,9 +7921,7 @@
     "rel": Infinity
    },
    "seconds": 0.5069429874420166
-  },
-  "proposed": 431,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-proj-som-015-setup-w.fpcore": {
   "size1": {
@@ -8201,9 +8001,7 @@
     "rel": Infinity
    },
    "seconds": 0.9254019260406494
-  },
-  "proposed": 1550,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-proj-som-016-setup-t.fpcore": {
   "size1": {
@@ -8281,9 +8079,7 @@
     "rel": Infinity
    },
    "seconds": 0.42088913917541504
-  },
-  "proposed": 902,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-regression-000-xlohi-overflows.fpcore": {
   "size1": {
@@ -8363,9 +8159,7 @@
     "rel": 3.106063334159877e-16
    },
    "seconds": 0.4720127582550049
-  },
-  "proposed": 507,
-  "split": 0
+  }
  },
  "rewriting_cores/herbie-regression-015-bug333-missed-optimization.fpcore": {
   "size1": {
@@ -8439,9 +8233,7 @@
     "rel": Infinity
    },
    "seconds": 0.06826186180114746
-  },
-  "proposed": 263,
-  "split": 8
+  }
  },
  "rewriting_cores/herbie-tutorial-002-commute-and-associate.fpcore": {
   "size1": {
@@ -8521,8 +8313,6 @@
     "rel": 0.0
    },
    "seconds": 1.8355789184570312
-  },
-  "proposed": 1306,
-  "split": 0
+  }
  }
 }

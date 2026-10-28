@@ -3524,9 +3524,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.23,
+    "seconds": 0.16,
     "status": "ok",
-    "abs": 90.62654150888076,
+    "abs": 38.982901602252845,
     "rel": null
    },
    "herbie": {
@@ -3550,9 +3550,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.83,
+    "seconds": 0.45,
     "status": "ok",
-    "abs": 377512668.53081745,
+    "abs": 340291596.5176231,
     "rel": null
    },
    "herbie": {
@@ -3576,9 +3576,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 97.46,
-    "status": "memory",
-    "abs": null,
+    "seconds": 1.04,
+    "status": "ok",
+    "abs": 120.26888937281822,
     "rel": null
    },
    "herbie": {
@@ -3739,7 +3739,7 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.02,
+    "seconds": 0.03,
     "status": "fail",
     "abs": null,
     "rel": null
@@ -3759,9 +3759,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.04,
+    "seconds": 0.06,
     "status": "ok",
-    "abs": 3.6807821884381034e-16,
+    "abs": 2.5588742105654737e-16,
     "rel": null
    },
    "herbie": {
@@ -3779,7 +3779,7 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.33,
+    "seconds": 0.28,
     "status": "fail",
     "abs": null,
     "rel": null
@@ -10277,9 +10277,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.36,
-    "status": "fail",
-    "abs": null,
+    "seconds": 24.8,
+    "status": "ok",
+    "abs": 3.44025832197603e-16,
     "rel": null
    },
    "herbie": {
@@ -10303,9 +10303,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.3,
+    "seconds": 0.43,
     "status": "ok",
-    "abs": 1.905459575471359e-15,
+    "abs": 2.1560925888695834e-15,
     "rel": null
    },
    "herbie": {
@@ -10331,7 +10331,7 @@
    "ours": {
     "seconds": 0.27,
     "status": "ok",
-    "abs": 4.251916123469447e-15,
+    "abs": 5.368924141598764e-15,
     "rel": null
    },
    "herbie": {
@@ -11937,9 +11937,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.05,
+    "seconds": 0.03,
     "status": "ok",
-    "abs": 4.440892098500627e-16,
+    "abs": 6.106226635438362e-16,
     "rel": null
    },
    "herbie": {
@@ -11963,7 +11963,7 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.04,
+    "seconds": 0.03,
     "status": "ok",
     "abs": 4.440892098500626e-16,
     "rel": null
@@ -11989,9 +11989,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.28,
+    "seconds": 0.29,
     "status": "ok",
-    "abs": 6.661338147750939e-16,
+    "abs": 7.771561172376096e-16,
     "rel": null
    },
    "herbie": {
@@ -13577,10 +13577,10 @@
     "rel": 7.798505124610922e-15
    },
    "ours": {
-    "seconds": 38.89,
+    "seconds": 43.16,
     "status": "ok",
-    "abs": 2.948077337805444e-10,
-    "rel": 5.654482651193971e-15
+    "abs": 2.8940760898876766e-10,
+    "rel": 5.675865626937515e-15
    },
    "herbie": {
     "seconds": 59.19,
@@ -13603,10 +13603,10 @@
     "rel": 1.3313166494321916e-15
    },
    "ours": {
-    "seconds": 0.47,
+    "seconds": 0.45,
     "status": "ok",
-    "abs": 2.7213786779611837e-10,
-    "rel": 9.206001219919335e-16
+    "abs": 2.667377430043416e-10,
+    "rel": 9.210558644623096e-16
    },
    "herbie": {
     "seconds": 0.84,
@@ -13629,10 +13629,10 @@
     "rel": 8.78236570902403e-15
    },
    "ours": {
-    "seconds": 0.28,
+    "seconds": 0.29,
     "status": "ok",
-    "abs": 3.609805787618825e-10,
-    "rel": 1.0437791428460632e-14
+    "abs": 3.5558045397010574e-10,
+    "rel": 1.0281646251737963e-14
    },
    "herbie": {
     "seconds": 0.29,
@@ -16633,9 +16633,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.32,
-    "status": "fail",
-    "abs": null,
+    "seconds": 90.08,
+    "status": "ok",
+    "abs": 4.298340238416803e-08,
     "rel": null
    },
    "herbie": {
@@ -16653,9 +16653,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.38,
+    "seconds": 0.19,
     "status": "ok",
-    "abs": 2.5608819670215217,
+    "abs": 367130317.07890564,
     "rel": null
    },
    "herbie": {
@@ -16675,7 +16675,7 @@
    "ours": {
     "seconds": 0.28,
     "status": "ok",
-    "abs": 6.432043617958596e-10,
+    "abs": 6.859427230667141e-10,
     "rel": null
    },
    "herbie": {
@@ -17397,9 +17397,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.02,
+    "seconds": 0.03,
     "status": "ok",
-    "abs": 8.326672684688675e-17,
+    "abs": 2.363033516138447e-16,
     "rel": null
    },
    "herbie": {
@@ -17423,9 +17423,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.03,
+    "seconds": 0.04,
     "status": "ok",
-    "abs": 8.326672684688674e-17,
+    "abs": 1.5265566588595902e-16,
     "rel": null
    },
    "herbie": {
@@ -17449,9 +17449,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.28,
+    "seconds": 0.29,
     "status": "ok",
-    "abs": 2.220446049250313e-16,
+    "abs": 8.326672684688675e-16,
     "rel": null
    },
    "herbie": {
@@ -17857,9 +17857,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.23,
-    "status": "fail",
-    "abs": null,
+    "seconds": 2.27,
+    "status": "ok",
+    "abs": 3.6436631489777944e-11,
     "rel": null
    },
    "herbie": {
@@ -17883,7 +17883,7 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.05,
+    "seconds": 0.02,
     "status": "ok",
     "abs": 3.637978807091713e-11,
     "rel": null
@@ -17909,9 +17909,9 @@
     "rel": null
    },
    "ours": {
-    "seconds": 0.28,
+    "seconds": 0.29,
     "status": "ok",
-    "abs": 4.547473508864641e-11,
+    "abs": 4.729372449219227e-11,
     "rel": null
    },
    "herbie": {

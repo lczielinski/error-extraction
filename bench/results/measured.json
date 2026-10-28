@@ -590,12 +590,12 @@
    "equivalent": true
   },
   "ours": {
-   "ulps": 4613584792505745401,
-   "mean": 5.8919,
+   "ulps": 13,
+   "mean": 2.211,
    "equivalent": true
   },
   "herbie": {
-   "ulps": 11,
+   "ulps": 12,
    "mean": 2.2208,
    "equivalent": true
   },
@@ -635,7 +635,7 @@
   },
   "ours": {
    "ulps": 4,
-   "mean": 0.5417,
+   "mean": 0.5341,
    "equivalent": true
   },
   "herbie": {
@@ -1092,7 +1092,7 @@
   },
   "ours": {
    "ulps": 4,
-   "mean": 0.6485,
+   "mean": 0.6151,
    "equivalent": true
   },
   "herbie": {
@@ -1289,8 +1289,8 @@
    "equivalent": true
   },
   "ours": {
-   "ulps": 524287,
-   "mean": 1.8313,
+   "ulps": 1,
+   "mean": 0.2938,
    "equivalent": true
   },
   "herbie": {
@@ -1465,8 +1465,8 @@
    "equivalent": true
   },
   "ours": {
-   "ulps": 5,
-   "mean": 0.6543,
+   "ulps": 4,
+   "mean": 0.6407,
    "equivalent": true
   },
   "herbie": {
@@ -1945,8 +1945,8 @@
    "equivalent": true
   },
   "ours": {
-   "ulps": 4448488142024280974,
-   "mean": 2.586432604388147e+18,
+   "ulps": 3,
+   "mean": 0.2803,
    "equivalent": true
   },
   "herbie": {
@@ -2074,8 +2074,8 @@
    "equivalent": true
   },
   "ours": {
-   "ulps": 33554432,
-   "mean": 0.8863,
+   "ulps": 2,
+   "mean": 0.4816,
    "equivalent": true
   },
   "herbie": {
@@ -2119,7 +2119,7 @@
   },
   "ours": {
    "ulps": 3,
-   "mean": 0.2476,
+   "mean": 0.2429,
    "equivalent": true
   },
   "herbie": {

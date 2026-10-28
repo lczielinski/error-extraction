@@ -84,9 +84,22 @@ def bound(e):
 
 
 def metric(bounds):
-    """The metric a program is picked by and compared on, from the best bound on each: relative
-    error where it is below 1, since a relative bound of 1 or more says nothing."""
+    """The metric a program is compared on, from the best bound on each: relative error where it is
+    below 1, since a relative bound of 1 or more says nothing about the error's size."""
     return "rel" if bounds["rel"] < 1 else "abs"
+
+
+def pick(bounds):
+    """The metric our program is picked by, from the best bound on each: relative error wherever it is
+    finite. Even a relative bound of 1 or more makes the error shrink with the real value near its zeros,
+    which no absolute bound does."""
+    return "rel" if math.isfinite(bounds["rel"]) else "abs"
+
+
+def readout(m):
+    """The m-bound of a cost, with ties broken by the bound in the other metric."""
+    other = "abs" if m == "rel" else "rel"
+    return lambda e: (BOUNDS[m](e), BOUNDS[other](e))
 
 
 def ours_metric(o):
@@ -118,7 +131,7 @@ def ours_one(name):
         g = build(core, 4, False, EGGLOG_LIMIT)
         built = time.time()
         F, k, cut = extract(g, EXTRACT_LIMIT)
-        chosen = {m: best(F[g.root], b) for m, b in BOUNDS.items()} if F[g.root] else {}
+        chosen = {m: best(F[g.root], readout(m)) for m in BOUNDS} if F[g.root] else {}
         return dict(out, egglog_s=built - start, extract_s=time.time() - built, rounds=k, cut=cut,
                     nodes=sum(map(len, g.nodes.values())), classes=len(g.nodes), root_frontier=len(F[g.root]),
                     max_frontier=max(map(len, F.values())),
@@ -197,14 +210,6 @@ def variants_one(name):
         start = time.time()
         p = chosen(variants.single(g, m, EXTRACT_LIMIT))
         out[f"{m}-only"] = {"abs": p, "rel": p, "seconds": built + time.time() - start}
-    try:
-        g = build(core, 4, True, EGGLOG_LIMIT)
-    except Exception:
-        return out
-    nodes = [(c, n) for c, ns in g.nodes.items() for n in ns]
-    out["proposed"] = sum(n.op == "Add" and sum(g.interval[x].mag for x in n.children) > 10 * g.interval[c].mig
-                          for c, n in nodes)
-    out["split"] = sum(n.op == "If" for c, n in nodes)
     return out
 
 
@@ -217,7 +222,7 @@ def alternatives():
 def candidates(name):
     """The rewrites of a Benchmark (2) core by our tool, Herbie and Daisy, by who produced them."""
     o, r = ours()[name], rewrites()[name]
-    out = {"ours": o.get("programs", {}).get(ours_metric(o)), **{tool: r[tool].get("program") for tool in r}}
+    out = {"ours": o.get("programs", {}).get(pick(o["bounds"])), **{tool: r[tool].get("program") for tool in r}}
     return {who: p for who, p in out.items() if p}
 
 
@@ -299,8 +304,8 @@ def branching_one(name, reports):
         if not F[g.root]:
             out[who] = {"status": "no program"}
             continue
-        chosen = {m: best(F[g.root], b) for m, b in BOUNDS.items()}
-        programs[who] = chosen[metric({m: bound(e)[m] for m, (e, p) in chosen.items()})][1]
+        chosen = {m: best(F[g.root], readout(m)) for m in BOUNDS}
+        programs[who] = chosen[pick({m: bound(e)[m] for m, (e, p) in chosen.items()})][1]
     for who, report in reports.items():
         if report.get("program"):
             programs[who] = program(report["program"])

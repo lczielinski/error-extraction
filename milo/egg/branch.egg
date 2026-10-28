@@ -17,3 +17,15 @@
 ; conjugate rule: a + b = (a*a - b*b) / (a - b)
 (rule ((= e (Add a b)) (= d (Add a (Neg b))) (Nonzero d))
       ((union e (Div (Add (Mul a a) (Neg (Mul b b))) d))) :ruleset opt)
+
+; move a conditional up past the operation applied to it
+(rewrite (Neg (If x k a b)) (If x k (Neg a) (Neg b)) :ruleset opt)
+(rewrite (Sqrt (If x k a b)) (If x k (Sqrt a) (Sqrt b)) :ruleset opt)
+(rewrite (Add (If x k a b) c) (If x k (Add a (Ctx x k true c)) (Add b (Ctx x k false c))) :ruleset opt)
+(rewrite (Mul (If x k a b) c) (If x k (Mul a (Ctx x k true c)) (Mul b (Ctx x k false c))) :ruleset opt)
+(rewrite (Div (If x k a b) c) (If x k (Div a (Ctx x k true c)) (Div b (Ctx x k false c))) :ruleset opt)
+(rewrite (Div c (If x k a b)) (If x k (Div (Ctx x k true c) a) (Div (Ctx x k false c) b)) :ruleset opt)
+
+; remove redundant conditional
+(rewrite (Ctx x k true (If x k a b)) a :ruleset dist)
+(rewrite (Ctx x k false (If x k a b)) b :ruleset dist)
